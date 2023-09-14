@@ -2,9 +2,9 @@ export default function ProfileUser() {
   return (
     <main>
       <section className="bg-gradient-to-br from-black via-gray-900 to-gray-800">
-        <div className="container mx-auto py-5">
+        <div className="py-5">
           <div className="flex justify-center items-center">
-            <div className="w-full lg:w-3/4 xl:w-7/12">
+            <div className="w-full lg:w-full xl:w-full">
               <div className="bg-white rounded-lg shadow-lg">
                 <div className="bg-black text-white flex flex-col lg:flex-row rounded-t p-4 lg:p-8">
                   <div className="lg:mr-4 lg:mt-0 flex flex-col items-center w-full lg:w-36">
