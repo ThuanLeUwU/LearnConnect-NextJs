@@ -44,7 +44,7 @@
   content: "";
   width: 4px;
   height: 25px;
-  background-color: #3c9d60;
+  background-color: #fff;
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
   top: 50%;
@@ -93,20 +93,4 @@
 .sidebar-wrapper .menu-list a:hover {
   background-color: #3c9d60;
   border-color: #3c9d60;
-}
-.sidebar-wrapper .menu-list a.active::before,
-.sidebar-wrapper .menu-list a:hover::before {
-  opacity: 1;
-  visibility: visible;
-}
-
-.sidebar-wrapper .menu-list a.active,
-.sidebar-wrapper .menu-list a:hover {
-  background-color: #3c9d60;
-  border-color: #3c9d60;
-}
-.sidebar-wrapper .menu-list a.active::before,
-.sidebar-wrapper .menu-list a:hover::before {
-  opacity: 1;
-  visibility: visible;
 }
