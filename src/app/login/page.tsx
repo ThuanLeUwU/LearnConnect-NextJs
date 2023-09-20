@@ -12,7 +12,7 @@ export default function LoginPage() {
             </div>
             <div className="">
               <div className="mx-auto max-w-md">
-                <h3 className="text-[30px] font-medium text-black px-10 pt-32">
+                <h3 className="text-[30px] font-medium text-[#212832] px-10 pt-32">
                   Login <span className="text-[#309255]">Now</span>
                 </h3>
                 <div className="pt-8">

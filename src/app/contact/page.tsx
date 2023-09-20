@@ -3,7 +3,7 @@ import styles from "../contact/styles.module.scss";
 
 export default function ContactPage() {
   return (
-    <div className="bg-[#f8f9fa]">
+    <div className="bg-[#fff]">
       <div className="container mx-auto max-w-screen-lg py-20">
         <div className="grid lg:grid-cols-2 pt-6 px-10 pb-16 border border-solid border-opacity-20 border-[#30925533] rounded-10">
           <div className="mx-auto">
