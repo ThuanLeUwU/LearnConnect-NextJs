@@ -3,7 +3,7 @@ import styles from "../user-manage/styles.module.scss";
 
 export default function UserManagePage() {
   return (
-    <div className="bg-gray-200">
+    <div className="bg-[#fff]">
       <div className="grid cols-2 lg:grid-cols-12">
         <div className="lg:cols-span-1 w-full">
           <div className={styles["sidebar-wrapper"]}>

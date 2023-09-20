@@ -4,7 +4,7 @@ import styles from "../login/styles.module.scss";
 export default function LoginPage() {
   return (
     <div className={styles["main-wrapper"]}>
-      <div className="bg-gray-200">
+      <div className="bg-[#fff]">
         <div className="container mx-auto max-w-screen-xl py-20">
           <div className="grid lg:grid-cols-2 pt-6 px-10 pb-16 border border-solid border-opacity-20 border-[#30925533] rounded-10">
             <div className="mx-auto pt-16">

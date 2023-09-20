@@ -4,7 +4,7 @@ import styles from "../login/styles.module.scss";
 export default function CourseDetailPage() {
   return (
     <div className="contain-wrapper">
-      <div className="bg-gray-200">
+      <div className="bg-[#fff]">
         <div className="grid cols-3 lg:grid-cols-3">
           <div className="lg:cols-span-2">
             <div>
