@@ -1,0 +1,112 @@
+.sidebar-wrapper .menu-list {
+  padding: 40px 22px;
+}
+@media only screen and (min-width: 768px) and (max-width: 991px),
+  only screen and (max-width: 767px) {
+  .sidebar-wrapper .menu-list {
+    display: flex;
+    justify-content: center;
+    padding: 15px;
+  }
+}
+@media only screen and (max-width: 575px) {
+  .sidebar-wrapper .menu-list {
+    padding: 10px;
+  }
+}
+.sidebar-wrapper .menu-list a {
+  width: 55px;
+  height: 55px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  transition: all 0.3s ease 0s;
+  font-size: 15px;
+}
+@media only screen and (min-width: 768px) and (max-width: 991px),
+  only screen and (max-width: 767px) {
+  .sidebar-wrapper .menu-list a {
+    margin: 0 10px;
+    width: 45px;
+    height: 45px;
+  }
+}
+@media only screen and (max-width: 575px) {
+  .sidebar-wrapper .menu-list a {
+    margin: 0 7px;
+  }
+}
+.sidebar-wrapper .menu-list a::before {
+  position: absolute;
+  content: "";
+  width: 4px;
+  height: 25px;
+  background-color: #3c9d60;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  top: 50%;
+  left: -24px;
+  transform: translateY(-50%);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease 0s;
+}
+@media only screen and (min-width: 768px) and (max-width: 991px),
+  only screen and (max-width: 767px) {
+  .sidebar-wrapper .menu-list a::before {
+    width: 25px;
+    height: 4px;
+    left: 50%;
+    top: auto;
+    bottom: -17px;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+@media only screen and (max-width: 575px) {
+  .sidebar-wrapper .menu-list a::before {
+    bottom: -12px;
+  }
+}
+.sidebar-wrapper .menu-list a + a {
+  margin-top: 30px;
+}
+@media only screen and (min-width: 768px) and (max-width: 991px),
+  only screen and (max-width: 767px) {
+  .sidebar-wrapper .menu-list a + a {
+    margin-top: 0;
+  }
+}
+.sidebar-wrapper .menu-list a.active,
+.sidebar-wrapper .menu-list a:hover {
+  background-color: #3c9d60;
+  border-color: #3c9d60;
+}
+.sidebar-wrapper .menu-list a.active::before,
+.sidebar-wrapper .menu-list a:hover::before {
+  opacity: 1;
+  visibility: visible;
+}
+.sidebar-wrapper .menu-list a.active,
+.sidebar-wrapper .menu-list a:hover {
+  background-color: #3c9d60;
+  border-color: #3c9d60;
+}
+.sidebar-wrapper .menu-list a.active::before,
+.sidebar-wrapper .menu-list a:hover::before {
+  opacity: 1;
+  visibility: visible;
+}
+
+.sidebar-wrapper .menu-list a.active,
+.sidebar-wrapper .menu-list a:hover {
+  background-color: #3c9d60;
+  border-color: #3c9d60;
+}
+.sidebar-wrapper .menu-list a.active::before,
+.sidebar-wrapper .menu-list a:hover::before {
+  opacity: 1;
+  visibility: visible;
+}

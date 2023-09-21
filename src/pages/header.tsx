@@ -138,7 +138,7 @@ const Header = () => {
                                     <ul className={`${headerStyles.sub_menu}`}>
                                         <li><a href="about.html">About</a></li>
                                         <li><a href="register.html">Register</a></li>
-                                        <li><a href="login.html">Login</a></li>
+                                        <li><Link href="/login">Login</Link></li>
                                         <li><a href="faq.html">FAQ</a></li>
                                         <li><a href="404-error.html">404 Error</a></li>
                                         <li><a href="after-enroll.html">After Enroll</a></li>
@@ -181,7 +181,7 @@ const Header = () => {
             <div className={`${headerStyles.header_sign_in_up}`}>
               <ul>
                 <li>
-                  <Link className={`${headerStyles.sign_in}`} href="login.html">
+                  <Link className={`${headerStyles.sign_in}`} href="/login">
                     Sign In
                   </Link>
                 </li>
