@@ -97,17 +97,17 @@ export default function CourseDetailPage() {
                   {activeTab === "tab1" && (
                     <div className="tab-description">
                       <div className="">
-                        <h3 className="text-[#212832] text-2xl font-medium mt-6">
+                        <h3 className="text-[#212832] text-2xl font-medium mt-6 px-2">
                           Description:
                         </h3>
-                        <p className="mt-3.5 text-[#52565b] text-base font-extralight">
+                        <p className="mt-3.5 text-[#52565b] text-base font-extralight px-4">
                           Lorem Ipsum is simply dummy text of the printing and
                           typesetting industry. Lorem Ipsum has been the
                           industry's standard dummy text ever since the 1500s
                           when an unknown printer took a galley of type and
                           scrambled it to make a type specimen book.
                         </p>
-                        <p className="mt-3.5 text-[#52565b] text-base font-extralight">
+                        <p className="mt-3.5 text-[#52565b] text-base font-extralight px-4">
                           Lorem Ipsum is simply dummy text of the printing and
                           typesetting industry. Lorem Ipsum has been the
                           industry's standard dummy text ever since the 1500s
@@ -121,10 +121,10 @@ export default function CourseDetailPage() {
                         </p>
                       </div>
                       <div className="description-wrapper">
-                        <h3 className="text-[#212832] text-2xl font-medium mt-6">
+                        <h3 className="text-[#212832] text-2xl font-medium mt-6 px-2">
                           Curriculum:
                         </h3>
-                        <p className="mt-3.5 text-[#52565b] text-base font-extralight">
+                        <p className="mt-3.5 text-[#52565b] text-base font-extralight px-4">
                           Lorem Ipsum is simply dummy text of the printing and
                           typesetting industry. Lorem Ipsum has been the
                           industry's standard dummy text ever since the 1500s
@@ -138,10 +138,10 @@ export default function CourseDetailPage() {
                         </p>
                       </div>
                       <div className="description-wrapper">
-                        <h3 className="text-[#212832] text-2xl font-medium mt-6">
+                        <h3 className="text-[#212832] text-2xl font-medium mt-6 px-2">
                           Certification:
                         </h3>
-                        <p className="mt-3.5 text-[#52565b] text-base font-extralight">
+                        <p className="mt-3.5 text-[#52565b] text-base font-extralight px-4">
                           Lorem Ipsum is simply dummy text of the printing and
                           typesetting industry. Lorem Ipsum has been the
                           industry's standard dummy text ever since the 1500s
@@ -459,78 +459,80 @@ export default function CourseDetailPage() {
               </div>
             </div>
             <div className="lg:col-span-4 lg:max-w-sm px-6 mt-8 lg:mt-0">
-              <div className="border rounded-lg border-solid border-opacity-20 border-green-600 rounded-10 bg-[#e7f8ee] pt-7 pl-7 pr-7 pb-9">
-                <div className="sidebar-widget widget-information">
-                  <div className="text-center py-3.5">
-                    <span className="text-[#309255] text-3xl font-bold">
-                      $420.38
-                    </span>
-                  </div>
-                  <div className=" text-black">
-                    <ul className="py-15">
-                      <li className="border-b border-solid border-[#d1e6d9] py-3.5">
-                        <i className="icofont-man-in-glasses"></i>{" "}
-                        <strong className="text-[#212832] text-base font-medium">
-                          Instructor
-                        </strong>{" "}
-                        <span className="text-[#52565b] float-right text-base font-normal">
-                          Pamela Foster
-                        </span>
-                      </li>
-                      <li className="border-b border-solid border-[#d1e6d9] py-3.5">
-                        <i className="icofont-clock-time"></i>{" "}
-                        <strong className="text-[#212832] text-base font-medium">
-                          Duration
-                        </strong>{" "}
-                        <span className="text-[#52565b] float-right text-base font-normal">
-                          08 hr 15 mins
-                        </span>
-                      </li>
-                      <li className="border-b border-solid border-[#d1e6d9] py-3.5">
-                        <i className="icofont-ui-video-play"></i>{" "}
-                        <strong className="text-[#212832] text-base font-medium">
-                          Lectures
-                        </strong>{" "}
-                        <span className="text-[#52565b] float-right text-base font-normal">
-                          29
-                        </span>
-                      </li>
-                      <li className="border-b border-solid border-[#d1e6d9] py-3.5">
-                        <i className="icofont-bars"></i>{" "}
-                        <strong className="text-[#212832] text-base font-medium">
-                          Level
-                        </strong>{" "}
-                        <span className="text-[#52565b] float-right text-base font-normal">
-                          Secondary
-                        </span>
-                      </li>
-                      <li className="border-b border-solid border-[#d1e6d9] py-3.5">
-                        <i className="icofont-book-alt"></i>{" "}
-                        <strong className="text-[#212832] text-base font-medium">
-                          Language
-                        </strong>{" "}
-                        <span className="text-[#52565b] float-right text-base font-normal">
-                          English
-                        </span>
-                      </li>
-                      <li className="border-b border-solid border-[#d1e6d9] py-3.5">
-                        <i className="icofont-certificate-alt-1"></i>{" "}
-                        <strong className="text-[#212832] text-base font-medium">
-                          Certificate
-                        </strong>{" "}
-                        <span className="text-[#52565b] float-right text-base font-normal">
-                          Yes
-                        </span>
-                      </li>
-                    </ul>
-                  </div>
-                  <div className="text-center mt-10">
-                    <a
-                      href="#"
-                      className="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded-2xl py-4 px-3 leading-normal no-underline bg-[#309255] text-white hover:bg-black btn-outline w-44 border-[#a9f9c8] hover:text-white transition-all duration-300 ease-in-out delay-0 my-2"
-                    >
-                      Enroll Now
-                    </a>
+              <div className="">
+                <div className="border rounded-lg border-solid border-opacity-20 border-green-600 rounded-10 bg-[#e7f8ee] pt-7 pl-7 pr-7 pb-9">
+                  <div className="sidebar-widget widget-information">
+                    <div className="text-center py-3.5">
+                      <span className="text-[#309255] text-3xl font-bold">
+                        $420.38
+                      </span>
+                    </div>
+                    <div className=" text-black">
+                      <ul className="py-15">
+                        <li className="border-b border-solid border-[#d1e6d9] py-3.5">
+                          <i className="icofont-man-in-glasses"></i>{" "}
+                          <strong className="text-[#212832] text-base font-medium">
+                            Instructor
+                          </strong>{" "}
+                          <span className="text-[#52565b] float-right text-base font-normal">
+                            Pamela Foster
+                          </span>
+                        </li>
+                        <li className="border-b border-solid border-[#d1e6d9] py-3.5">
+                          <i className="icofont-clock-time"></i>{" "}
+                          <strong className="text-[#212832] text-base font-medium">
+                            Duration
+                          </strong>{" "}
+                          <span className="text-[#52565b] float-right text-base font-normal">
+                            08 hr 15 mins
+                          </span>
+                        </li>
+                        <li className="border-b border-solid border-[#d1e6d9] py-3.5">
+                          <i className="icofont-ui-video-play"></i>{" "}
+                          <strong className="text-[#212832] text-base font-medium">
+                            Lectures
+                          </strong>{" "}
+                          <span className="text-[#52565b] float-right text-base font-normal">
+                            29
+                          </span>
+                        </li>
+                        <li className="border-b border-solid border-[#d1e6d9] py-3.5">
+                          <i className="icofont-bars"></i>{" "}
+                          <strong className="text-[#212832] text-base font-medium">
+                            Level
+                          </strong>{" "}
+                          <span className="text-[#52565b] float-right text-base font-normal">
+                            Secondary
+                          </span>
+                        </li>
+                        <li className="border-b border-solid border-[#d1e6d9] py-3.5">
+                          <i className="icofont-book-alt"></i>{" "}
+                          <strong className="text-[#212832] text-base font-medium">
+                            Language
+                          </strong>{" "}
+                          <span className="text-[#52565b] float-right text-base font-normal">
+                            English
+                          </span>
+                        </li>
+                        <li className="border-b border-solid border-[#d1e6d9] py-3.5">
+                          <i className="icofont-certificate-alt-1"></i>{" "}
+                          <strong className="text-[#212832] text-base font-medium">
+                            Certificate
+                          </strong>{" "}
+                          <span className="text-[#52565b] float-right text-base font-normal">
+                            Yes
+                          </span>
+                        </li>
+                      </ul>
+                    </div>
+                    <div className="text-center mt-10">
+                      <a
+                        href="#"
+                        className="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded-2xl py-4 px-3 leading-normal no-underline bg-[#309255] text-white hover:bg-black btn-outline w-44 border-[#a9f9c8] hover:text-white transition-all duration-300 ease-in-out delay-0 my-2"
+                      >
+                        Enroll Now
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>
