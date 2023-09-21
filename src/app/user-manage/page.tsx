@@ -3,25 +3,25 @@ import styles from "../user-manage/styles.module.scss";
 
 export default function UserManagePage() {
   return (
-    <div className="bg-gray-200">
+    <div className="bg-[#fff]">
       <div className="grid cols-2 lg:grid-cols-12">
-        <div className="lg:cols-span-1 w-full">
+        <div className="lg:cols-span-1 w-full bg-[#309255] mx-auto">
           <div className={styles["sidebar-wrapper"]}>
             <div className={styles["menu-list"]}>
               <a className={styles["active"]} href="#">
-                <img src="assets/images/menu-icon/icon-1.png" alt="Icon" />
+                <img src="./menu-icon/icon-1.png" alt="Icon" />
               </a>
               <a href="#">
-                <img src="assets/images/menu-icon/icon-2.png" alt="Icon" />
+                <img src="./menu-icon/icon-2.png" alt="Icon" />
               </a>
               <a href="#">
-                <img src="assets/images/menu-icon/icon-3.png" alt="Icon" />
+                <img src="./menu-icon/icon-3.png" alt="Icon" />
               </a>
               <a href="#">
-                <img src="assets/images/menu-icon/icon-4.png" alt="Icon" />
+                <img src="./menu-icon/icon-4.png" alt="Icon" />
               </a>
               <a href="#">
-                <img src="assets/images/menu-icon/icon-5.png" alt="Icon" />
+                <img src="./menu-icon/icon-5.png" alt="Icon" />
               </a>
             </div>
           </div>

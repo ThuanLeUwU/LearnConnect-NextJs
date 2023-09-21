@@ -5,7 +5,7 @@ export default function ProfileUser() {
         <div className="py-5">
           <div className="flex justify-center items-center">
             <div className="w-full lg:w-full xl:w-full">
-              <div className="bg-white rounded-lg shadow-lg">
+              <div className="bg-[#f8f9fa] rounded-lg shadow-lg">
                 <div className="bg-black text-white flex flex-col lg:flex-row rounded-t p-4 lg:p-8">
                   <div className="lg:mr-4 lg:mt-0 flex flex-col items-center w-full lg:w-36">
                     <img
