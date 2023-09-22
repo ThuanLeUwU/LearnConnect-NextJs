@@ -103,16 +103,16 @@ export default function CourseDetailPage() {
                         <p className="mt-3.5 text-[#52565b] text-base font-extralight px-4">
                           Lorem Ipsum is simply dummy text of the printing and
                           typesetting industry. Lorem Ipsum has been the
-                          industrys standard dummy text ever since the 1500s
-                          when an unknown printer took a galley of type and
-                          scrambled it to make a type specimen book.
+                          industry&apos;s standard dummy text ever since the
+                          1500s when an unknown printer took a galley of type
+                          and scrambled it to make a type specimen book.
                         </p>
                         <p className="mt-3.5 text-[#52565b] text-base font-extralight px-4">
                           Lorem Ipsum is simply dummy text of the printing and
                           typesetting industry. Lorem Ipsum has been the
-                          industrys standard dummy text ever since the 1500s
-                          when an unknown printer took a galley of type and
-                          scrambled it to make a type specimen book. It has
+                          industry&apos;s standard dummy text ever since the
+                          1500s when an unknown printer took a galley of type
+                          and scrambled it to make a type specimen book. It has
                           survived not only five centuries, but also the leap
                           into electronic typesetting, remaining essentially
                           unchanged. It was popularsed in the 1960 with release
@@ -127,9 +127,9 @@ export default function CourseDetailPage() {
                         <p className="mt-3.5 text-[#52565b] text-base font-extralight px-4">
                           Lorem Ipsum is simply dummy text of the printing and
                           typesetting industry. Lorem Ipsum has been the
-                          industrys standard dummy text ever since the 1500s
-                          when an unknown printer took a galley of type and
-                          scrambled it to make a type specimen book. It has
+                          industry&apos;s standard dummy text ever since the
+                          1500s when an unknown printer took a galley of type
+                          and scrambled it to make a type specimen book. It has
                           survived not only five centuries, but also the leap
                           into electronic typesetting, remaining essentially
                           unchanged. It was popularsed in the 1960 with release
@@ -144,9 +144,9 @@ export default function CourseDetailPage() {
                         <p className="mt-3.5 text-[#52565b] text-base font-extralight px-4">
                           Lorem Ipsum is simply dummy text of the printing and
                           typesetting industry. Lorem Ipsum has been the
-                          industrys standard dummy text ever since the 1500s
-                          when an unknown printer took a galley of type and
-                          scrambled it to make a type specimen book. It has
+                          industry&apos;s standard dummy text ever since the
+                          1500s when an unknown printer took a galley of type
+                          and scrambled it to make a type specimen book. It has
                           survived not only five centuries, but also the leap
                           into electronic typesetting, remaining essentially
                           unchanged. It was popularsed in the 1960 with release
@@ -277,8 +277,8 @@ export default function CourseDetailPage() {
                             <p className="mt-4 text-[#52565b] text-base font-extralight pl-4">
                               Lorem Ipsum is simply dummy text of printing and
                               typesetting industry. Lorem Ipsum has been the i
-                              dustrys standard dummy text ever since the 1500
-                              unknown printer took a galley of type.
+                              dustry&apos;s standard dummy text ever since the
+                              1500 unknown printer took a galley of type.
                             </p>
                             <p className="mt-4 text-[#52565b] text-base font-extralight pl-4">
                               Lorem Ipsum is simply dummy text of printing and
@@ -286,8 +286,8 @@ export default function CourseDetailPage() {
                             </p>
                             <p className="mt-4 text-[#52565b] text-base font-extralight pl-4">
                               Lorem Ipsum is simply dummy text of printing and
-                              dustrys standard dummy text ever since the 1500
-                              unknown printer took a galley of type.
+                              dustry&apos;s standard dummy text ever since the
+                              1500 unknown printer took a galley of type.
                             </p>
                           </div>
                         </div>
@@ -382,11 +382,12 @@ export default function CourseDetailPage() {
                                 </div>
                               </div>
                               <p className="mt-3 font-light text-[#52565b] text-sm">
-                                Lorem Ipsum has been the industrys standard
-                                dummy text since the 1500 when unknown printer
-                                took a galley of type and scrambled to make type
-                                specimen book has survived not five centuries
-                                but also the leap into electronic type and book.
+                                Lorem Ipsum has been the industry&apos;s
+                                standard dummy text since the 1500 when unknown
+                                printer took a galley of type and scrambled to
+                                make type specimen book has survived not five
+                                centuries but also the leap into electronic type
+                                and book.
                               </p>
                             </div>
 
@@ -413,11 +414,12 @@ export default function CourseDetailPage() {
                                 </div>
                               </div>
                               <p className="mt-3 font-light text-[#52565b] text-sm">
-                                Lorem Ipsum has been the industrys standard
-                                dummy text since the 1500 when unknown printer
-                                took a galley of type and scrambled to make type
-                                specimen book has survived not five centuries
-                                but also the leap into electronic type and book.
+                                Lorem Ipsum has been the industry&apos;s
+                                standard dummy text since the 1500 when unknown
+                                printer took a galley of type and scrambled to
+                                make type specimen book has survived not five
+                                centuries but also the leap into electronic type
+                                and book.
                               </p>
                             </div>
 
@@ -444,11 +446,12 @@ export default function CourseDetailPage() {
                                 </div>
                               </div>
                               <p className="mt-7 font-light text-[#52565b] text-sm">
-                                Lorem Ipsum has been the industrys standard
-                                dummy text since the 1500 when unknown printer
-                                took a galley of type and scrambled to make type
-                                specimen book has survived not five centuries
-                                but also the leap into electronic type and book.
+                                Lorem Ipsum has been the industry&apos;s
+                                standard dummy text since the 1500 when unknown
+                                printer took a galley of type and scrambled to
+                                make type specimen book has survived not five
+                                centuries but also the leap into electronic type
+                                and book.
                               </p>
                             </div>
                           </div>
