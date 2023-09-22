@@ -22,7 +22,7 @@ export default function CourseDetailPage() {
                 Finance & Investment Series: Learn to Budget and Calculate Your
                 Net Worth.
               </h2>
-              <div className="courses-details-admin text-[#212832] flex justify-between items-center pt-2.5">
+              <div className="courses-details-admin text-[#212832] flex justify-between items-center py-2.5">
                 <div className="admin-author flex items-center">
                   <div className="w-12 h-12 ">
                     <img
@@ -51,8 +51,8 @@ export default function CourseDetailPage() {
                   </span>
                 </div>
               </div>
-              <div className="pt-7 text-[#212832] bg-[#e7f8ee]">
-                <div className="flex justify-center">
+              <div className=" text-[#212832] ">
+                <div className="flex justify-center bg-[#e7f8ee] py-4 rounded-md">
                   <ul className="tabs flex space-x-5 ">
                     <li
                       className={`cursor-pointer rounded-md ${
@@ -158,7 +158,7 @@ export default function CourseDetailPage() {
                   )}
                   {activeTab === "tab2" && (
                     <div className="tab-instructors">
-                      <h3 className="text-[#212832] text-2xl font-medium mt-6">
+                      <h3 className="text-[#212832] text-2xl font-medium mt-6 pl-2">
                         Course Instructor:
                       </h3>
                       <div className="grid lg:grid-cols-4 grid-cols-2">
@@ -271,18 +271,20 @@ export default function CourseDetailPage() {
                       <div className="row text-[#212832] grid cols-2 lg:grid-cols-12">
                         <div className="lg:col-span-6">
                           <div className="tab-rating-content mt-11">
-                            <h3 className="text-2xl font-medium">Rating:</h3>
-                            <p className="mt-4 text-[#52565b] text-base font-extralight">
+                            <h3 className="text-2xl font-medium pl-2">
+                              Rating:
+                            </h3>
+                            <p className="mt-4 text-[#52565b] text-base font-extralight pl-4">
                               Lorem Ipsum is simply dummy text of printing and
                               typesetting industry. Lorem Ipsum has been the i
                               dustry's standard dummy text ever since the 1500
                               unknown printer took a galley of type.
                             </p>
-                            <p className="mt-4 text-[#52565b] text-base font-extralight">
+                            <p className="mt-4 text-[#52565b] text-base font-extralight pl-4">
                               Lorem Ipsum is simply dummy text of printing and
                               typesetting industry text ever since
                             </p>
-                            <p className="mt-4 text-[#52565b] text-base font-extralight">
+                            <p className="mt-4 text-[#52565b] text-base font-extralight pl-4">
                               Lorem Ipsum is simply dummy text of printing and
                               dustry's standard dummy text ever since the 1500
                               unknown printer took a galley of type.
