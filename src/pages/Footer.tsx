@@ -1,4 +1,4 @@
-"use client";
+// "use client";
 import headerStyles from "./styles/styles.module.scss";
 import React from "react";
 import "../app/./globals.css";
@@ -138,7 +138,9 @@ const Footer = () => {
             <div className="">
               {/* <!-- Footer Widget Start --> */}
               <div className={`${headerStyles.footer_widget}`}>
-                <h4 className={`${headerStyles.footer_widget_title}`}>Subscribe</h4>
+                <h4 className={`${headerStyles.footer_widget_title}`}>
+                  Subscribe
+                </h4>
 
                 <div className={`${headerStyles.footer_widget_subscribe}`}>
                   <p>
@@ -146,10 +148,14 @@ const Footer = () => {
                     make book.
                   </p>
 
-                  <div className={`${headerStyles.footer_widget_subscribe_form}`}>
+                  <div
+                    className={`${headerStyles.footer_widget_subscribe_form}`}
+                  >
                     <form action="#">
                       <input type="text" placeholder="Email here" />
-                      <button className={`${headerStyles.footer_widget_subscribe_form_btn}`}>
+                      <button
+                        className={`${headerStyles.footer_widget_subscribe_form_btn}`}
+                      >
                         Subscribe Now
                       </button>
                     </form>

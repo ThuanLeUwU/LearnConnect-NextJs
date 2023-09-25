@@ -1,7 +1,27 @@
+"use client";
 import Image from "next/image";
 import styles from "../login/styles.module.scss";
+import { UserAuth } from "@/app/context/AuthContext";
 
 export default function LoginPage() {
+  const { user, googleSignIn, logOut } = UserAuth();
+
+  const handleSignIn = async () => {
+    try {
+      await googleSignIn();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await logOut();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  // console.log(user);
   return (
     <div className={styles["main-wrapper"]}>
       <div className="bg-[#fff]">
@@ -27,12 +47,27 @@ export default function LoginPage() {
                       <button className="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded-2xl py-4 px-3 leading-normal no-underline bg-[#309255] text-white hover:bg-black btn-hover-dark w-full transition-all duration-300 ease-in-out delay-0 my-2">
                         Login
                       </button>
-                      <a
-                        className="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded-2xl py-4 px-3 leading-normal no-underline bg-white text-[#309255] hover:bg-[#309255] btn-outline w-full border-[#a9f9c8] hover:text-white transition-all duration-300 ease-in-out delay-0 my-2"
-                        href="#"
-                      >
-                        Login with Google
-                      </a>
+                      {!user ? (
+                        <a
+                          className="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded-2xl py-4 px-3 leading-normal no-underline bg-white text-[#309255] hover:bg-[#309255] btn-outline w-full border-[#a9f9c8] hover:text-white transition-all duration-300 ease-in-out delay-0 my-2"
+                          href="#"
+                          onClick={handleSignIn}
+                        >
+                          Login with Google
+                        </a>
+                      ) : (
+                        <div>
+                          <a
+                            onClick={handleSignOut}
+                            className="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded-2xl py-4 px-3 leading-normal no-underline bg-white text-[#309255] hover:bg-[#309255] btn-outline w-full border-[#a9f9c8] hover:text-white transition-all duration-300 ease-in-out delay-0 my-2"
+                          >
+                            Logout
+                          </a>
+                          <p className="text-black ">
+                            Wellcome, {user.displayName}
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </form>
                 </div>

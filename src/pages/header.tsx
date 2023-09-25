@@ -5,11 +5,22 @@ import "../app/./globals.css";
 import Link from "next/link";
 import React, { useState } from "react";
 import { CourseDropDown } from "../app/test/CourseDropdown";
-// import { useClient } from 'next/client';
+import { UserAuth } from "@/app/context/AuthContext";
 
 const Header = () => {
   const [click, setClick] = useState(false);
   const [dropdown, setDropdown] = useState(false);
+
+  const { user, googleSignIn, logOut } = UserAuth();
+
+  const handleSignIn = async () => {
+    try {
+      await googleSignIn();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  // console.log(user);
 
   const onMouseEnter = () => {
     if (window.innerWidth < 960) {
@@ -29,15 +40,16 @@ const Header = () => {
 
   const handleClick = () => setClick(!click);
 
-  const course = [{
-    href: "/",
-    title: "All Course",
-  }, 
-  {
-    href: "/",
-    title: "Course Details"
-  }
-]
+  const course = [
+    {
+      href: "/",
+      title: "All Course",
+    },
+    {
+      href: "/",
+      title: "Course Details",
+    },
+  ];
 
   return (
     // <!-- Header Section Start -->
@@ -109,72 +121,117 @@ const Header = () => {
           <div className={`${headerStyles.header_main_wrapper}`}>
             {/* <!-- Header Logo Start --> */}
             <div className={`${headerStyles.header_logo}`}>
-              <a href="index.html">
-                Image
-              </a>
+              <a href="index.html">Image</a>
             </div>
             {/* <!-- Header Logo End --> */}
 
             {/* <!-- Header Menu Start --> */}
             <div className={`${headerStyles.header_menu}`}>
-                            <ul className={`${headerStyles.nav_menu}`}>
-                                <li>
-                                    <Link href="/about">Home</Link>
-                                    </li>
-                                <li>
-                                    <a href="#">All Course</a>
-                                    <ul className={`${headerStyles.sub_menu}`}>
-                                      {course.map((item,index) => (
-                                        <li key={index}>
-                                          <Link href={item.href}>{item.title}</Link>
-                                        </li>
-                                      ))}
-                                        {/* <li><a href="courses.html">Courses</a></li>
+              <ul className={`${headerStyles.nav_menu}`}>
+                <li>
+                  <Link href="/about">Home</Link>
+                </li>
+                <li>
+                  <a href="#">All Course</a>
+                  <ul className={`${headerStyles.sub_menu}`}>
+                    {course.map((item, index) => (
+                      <li key={index}>
+                        <Link href={item.href}>{item.title}</Link>
+                      </li>
+                    ))}
+                    {/* <li><a href="courses.html">Courses</a></li>
                                         <li><a href="courses-details.html">Courses Details</a></li> */}
-                                    </ul>
-                                </li>
-                                <li>
-                                    <a href="#">Pages </a>
-                                    <ul className={`${headerStyles.sub_menu}`}>
-                                        <li><a href="about.html">About</a></li>
-                                        <li><a href="register.html">Register</a></li>
-                                        <li><Link href="/login">Login</Link></li>
-                                        <li><a href="faq.html">FAQ</a></li>
-                                        <li><a href="404-error.html">404 Error</a></li>
-                                        <li><a href="after-enroll.html">After Enroll</a></li>
-                                        <li><a href="courses-admin.html">Instructor Dashboard (Course List)</a></li>
-                                        <li><a href="overview.html">Instructor Dashboard (Performance)</a></li>
-                                        <li><a href="students.html">Students</a></li>
-                                        <li><a href="reviews.html">Reviews</a></li>
-                                        <li><a href="engagement.html">Course engagement</a></li>
-                                        <li><a href="traffic-conversion.html">Traffic & conversion</a></li>
-                                        <li><a href="messages.html">Messages</a></li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <a href="#">Blog</a>
-                                    <ul className={`${headerStyles.sub_menu}`}>
-                                        <li>
-                                            <a href="#">Blog</a>
-                                            <ul className={`${headerStyles.sub_menu}`}>
-                                                <li><a href="blog-grid.html">Blog</a></li>
-                                                <li><a href="blog-left-sidebar.html">Blog Left Sidebar</a></li>
-                                                <li><a href="blog-right-sidebar.html">Blog Right Sidebar</a></li>
-                                            </ul>
-                                        </li>
-                                        <li>
-                                            <a href="#">Blog Details</a>
-                                            <ul className={`${headerStyles.sub_menu}`}>
-                                                <li><a href="blog-details-left-sidebar.html">Blog Details Left Sidebar</a></li>
-                                                <li><a href="blog-details-right-sidebar.html">Blog Details Right Sidebar</a></li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li><a href="contact.html">Contact</a></li>
-                            </ul>
-
-                        </div>
+                  </ul>
+                </li>
+                <li>
+                  <a href="#">Pages </a>
+                  <ul className={`${headerStyles.sub_menu}`}>
+                    <li>
+                      <a href="about.html">About</a>
+                    </li>
+                    <li>
+                      <a href="register.html">Register</a>
+                    </li>
+                    <li>
+                      <Link href="/login">Login</Link>
+                    </li>
+                    <li>
+                      <a href="faq.html">FAQ</a>
+                    </li>
+                    <li>
+                      <a href="404-error.html">404 Error</a>
+                    </li>
+                    <li>
+                      <a href="after-enroll.html">After Enroll</a>
+                    </li>
+                    <li>
+                      <a href="courses-admin.html">
+                        Instructor Dashboard (Course List)
+                      </a>
+                    </li>
+                    <li>
+                      <a href="overview.html">
+                        Instructor Dashboard (Performance)
+                      </a>
+                    </li>
+                    <li>
+                      <a href="students.html">Students</a>
+                    </li>
+                    <li>
+                      <a href="reviews.html">Reviews</a>
+                    </li>
+                    <li>
+                      <a href="engagement.html">Course engagement</a>
+                    </li>
+                    <li>
+                      <a href="traffic-conversion.html">Traffic & conversion</a>
+                    </li>
+                    <li>
+                      <a href="messages.html">Messages</a>
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <a href="#">Blog</a>
+                  <ul className={`${headerStyles.sub_menu}`}>
+                    <li>
+                      <a href="#">Blog</a>
+                      <ul className={`${headerStyles.sub_menu}`}>
+                        <li>
+                          <a href="blog-grid.html">Blog</a>
+                        </li>
+                        <li>
+                          <a href="blog-left-sidebar.html">Blog Left Sidebar</a>
+                        </li>
+                        <li>
+                          <a href="blog-right-sidebar.html">
+                            Blog Right Sidebar
+                          </a>
+                        </li>
+                      </ul>
+                    </li>
+                    <li>
+                      <a href="#">Blog Details</a>
+                      <ul className={`${headerStyles.sub_menu}`}>
+                        <li>
+                          <a href="blog-details-left-sidebar.html">
+                            Blog Details Left Sidebar
+                          </a>
+                        </li>
+                        <li>
+                          <a href="blog-details-right-sidebar.html">
+                            Blog Details Right Sidebar
+                          </a>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <a href="contact.html">Contact</a>
+                </li>
+              </ul>
+            </div>
             {/* <!-- Header Menu End --> */}
 
             {/* <!-- Header Sing In & Up Start --> */}
@@ -186,7 +243,10 @@ const Header = () => {
                   </Link>
                 </li>
                 <li>
-                  <Link className={`${headerStyles.sign_up}`} href="register.html">
+                  <Link
+                    className={`${headerStyles.sign_up}`}
+                    href="register.html"
+                  >
                     Sign Up
                   </Link>
                 </li>
@@ -209,9 +269,8 @@ const Header = () => {
       </div>
       {/* <!-- Header Main End --> */}
       {/* <!-- Overlay Start --> */}
-        {/* <div className="overlay"></div> */}
-        {/* <!-- Overlay End --> */}
-
+      {/* <div className="overlay"></div> */}
+      {/* <!-- Overlay End --> */}
     </div>
   );
 };
