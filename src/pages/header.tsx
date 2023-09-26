@@ -11,22 +11,6 @@ const Header = () => {
   const [click, setClick] = useState(false);
   const [dropdown, setDropdown] = useState(false);
 
-  const onMouseEnter = () => {
-    if (window.innerWidth < 960) {
-      setDropdown(false);
-    } else {
-      setDropdown(true);
-    }
-  };
-
-  const onMouseLeave = () => {
-    if (window.innerWidth < 960) {
-      setDropdown(false);
-    } else {
-      setDropdown(false);
-    }
-  };
-
   const handleClick = () => setClick(!click);
 
   const course = [{

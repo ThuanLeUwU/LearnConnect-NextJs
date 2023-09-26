@@ -624,12 +624,12 @@
 .copyright_link {
   padding-top: 15px;
 }
-.copyright_link a {
-  font-weight: 400;
-  font-size: 14px;
-  color: #fff;
-  position: relative;
-}
+// .copyright_link a {
+//   font-weight: 400;
+//   font-size: 14px;
+//   color: #fff;
+//   position: relative;
+// }
 .copyright_link a + a::before {
   content: "*";
   font-size: 15px;
@@ -874,4 +874,22 @@
   grid-template-rows: repeat(1, minmax(0, 1fr));
   padding: 0px 0px 0px 0px;
   gap: 0;
+}
+
+.copyright_wrapper {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 15px;
+  padding-top: 5px;
+}
+
+.copyright_link {
+  padding-top: 15px;
+}
+
+.copyright_link a {
+  // font-weight: 400;
+  // font-size: 14px;
+  color: #fff;
+  // position: relative;
 }

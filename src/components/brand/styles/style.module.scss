@@ -1,0 +1,17 @@
+.brand_logo_wrapper {
+    background-color: #e7f8ee;
+    padding: 60px 100px;
+    border-radius: 10px;
+    position: relative;
+    margin-bottom: 60px;
+  }
+  @media only screen and (min-width: 768px) and (max-width: 991px), only screen and (max-width: 767px) {
+    .brand_logo_wrapper {
+      padding: 50px 50px;
+    }
+  }
+  @media only screen and (max-width: 575px) {
+    .brand_logo_wrapper {
+      padding: 30px 30px;
+    }
+  }
