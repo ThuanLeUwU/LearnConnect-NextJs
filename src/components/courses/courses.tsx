@@ -4,7 +4,6 @@ import "../../app/./globals.css";
 import CourseStyle from "./styles/style.module.scss";
 import Link from "next/link";
 import Image from "next/image";
-import Rating from "react-star-rating-component";
 
 const Courses = () => {
     // const [rating, setRating] = useState(0);

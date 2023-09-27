@@ -30,7 +30,6 @@
     "typescript": "5.2.2"
   },
   "devDependencies": {
-    "@types/react-star-rating-component": "^1.4.1",
     "sass": "^1.66.1"
   }
 }
