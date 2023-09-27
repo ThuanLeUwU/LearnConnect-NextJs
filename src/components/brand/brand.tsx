@@ -6,6 +6,21 @@ import Link from "next/link";
 import Image from "next/image";
 
 const BrandSupport = () => {
+  const Logo = [
+    {
+      image: "/images/logo-1.png",
+    },
+    {
+      image: "/images/logo-1.png",
+    },
+    {
+      image: "/images/logo-1.png",
+    },
+    {
+      image: "/images/logo-1.png",
+    },
+  ];
+
   return (
     <div className="section section-padding-02">
       <div className="container">
@@ -32,43 +47,23 @@ const BrandSupport = () => {
           {/* <!-- Section Title End --> */}
 
           {/* <!-- Brand Logo Start --> */}
-          <div className="brand-logo brand-active">
+          <div className={`${BrandStyle.brand_logo}`}>
             <div className="swiper-container">
-              <div className="swiper-wrapper">
+              <div className={`${BrandStyle.brand_grid}`}>
+                {Logo.map((item, index) => {
+                  return (
+                    <div className={`${BrandStyle.single_brand}`} key={index}>
+                      <Image
+                        width={200}
+                        height={60}
+                        src={item.image}
+                        alt="Brand"
+                      />
+                    </div>
+                  );
+                })}
                 {/* <!-- Single Brand Start --> */}
-                <div className="single-brand swiper-slide">
-                  <img src="assets/images/brand/brand-01.png" alt="Brand" />
-                </div>
-                {/* <!-- Single Brand End --> */}
 
-                {/* <!-- Single Brand Start --> */}
-                <div className="single-brand swiper-slide">
-                  <img src="assets/images/brand/brand-02.png" alt="Brand" />
-                </div>
-                {/* <!-- Single Brand End --> */}
-
-                {/* <!-- Single Brand Start --> */}
-                <div className="single-brand swiper-slide">
-                  <img src="assets/images/brand/brand-03.png" alt="Brand" />
-                </div>
-                {/* <!-- Single Brand End --> */}
-
-                {/* <!-- Single Brand Start --> */}
-                <div className="single-brand swiper-slide">
-                  <img src="assets/images/brand/brand-04.png" alt="Brand" />
-                </div>
-                {/* <!-- Single Brand End --> */}
-
-                {/* <!-- Single Brand Start --> */}
-                <div className="single-brand swiper-slide">
-                  <img src="assets/images/brand/brand-05.png" alt="Brand" />
-                </div>
-                {/* <!-- Single Brand End --> */}
-
-                {/* <!-- Single Brand Start --> */}
-                <div className="single-brand swiper-slide">
-                  <img src="assets/images/brand/brand-06.png" alt="Brand" />
-                </div>
                 {/* <!-- Single Brand End --> */}
               </div>
             </div>

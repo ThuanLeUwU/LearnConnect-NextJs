@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import React from "react";
 import Footer from "@/pages/Footer";
+import { AuthContextProvider } from "./context/AuthContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,9 +21,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="main_wrapper">
-        <Header />
-        {children}
-        <Footer />
+        <AuthContextProvider>
+          <Header />
+          {children}
+          <Footer />
+        </AuthContextProvider>
       </body>
     </html>
   );

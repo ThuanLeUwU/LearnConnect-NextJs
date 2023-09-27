@@ -1,10 +1,24 @@
 "use client";
 import headerStyles from "./styles/styles.module.scss";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "../app/./globals.css";
 import Link from "next/link";
+import axios from "axios";
 
 const Footer = () => {
+  const [category, setCategory] = useState([]);
+
+  // console.log("category", category);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const responseData = await axios.get(
+  //       `https://learnconnectapitest.azurewebsites.net/api/Category`
+  //     );
+  //     setCategory(responseData?.data);
+  //   };
+  //   fetchData();
+  // }, []);
+
   return (
     // <!-- Footer Start  -->
     <div className={`${headerStyles.footer_section}`}>
@@ -138,7 +152,9 @@ const Footer = () => {
             <div className="">
               {/* <!-- Footer Widget Start --> */}
               <div className={`${headerStyles.footer_widget}`}>
-                <h4 className={`${headerStyles.footer_widget_title}`}>Subscribe</h4>
+                <h4 className={`${headerStyles.footer_widget_title}`}>
+                  Subscribe
+                </h4>
 
                 <div className={`${headerStyles.footer_widget_subscribe}`}>
                   <p>
@@ -146,10 +162,14 @@ const Footer = () => {
                     make book.
                   </p>
 
-                  <div className={`${headerStyles.footer_widget_subscribe_form}`}>
+                  <div
+                    className={`${headerStyles.footer_widget_subscribe_form}`}
+                  >
                     <form action="#">
                       <input type="text" placeholder="Email here" />
-                      <button className={`${headerStyles.footer_widget_subscribe_form_btn}`}>
+                      <button
+                        className={`${headerStyles.footer_widget_subscribe_form_btn}`}
+                      >
                         Subscribe Now
                       </button>
                     </form>

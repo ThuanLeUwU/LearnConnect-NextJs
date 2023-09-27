@@ -1,3 +1,4 @@
+"use client"
 import BrandSupport from "@/components/brand/brand";
 import Courses from "@/components/courses/courses";
 import HowItWork from "@/components/howItWorks/HowItWork";
