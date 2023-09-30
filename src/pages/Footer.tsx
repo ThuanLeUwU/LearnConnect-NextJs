@@ -1,10 +1,24 @@
-// "use client";
+"use client";
 import headerStyles from "./styles/styles.module.scss";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "../app/./globals.css";
 import Link from "next/link";
+import axios from "axios";
 
 const Footer = () => {
+  const [category, setCategory] = useState([]);
+
+  // console.log("category", category);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const responseData = await axios.get(
+  //       `https://learnconnectapitest.azurewebsites.net/api/Category`
+  //     );
+  //     setCategory(responseData?.data);
+  //   };
+  //   fetchData();
+  // }, []);
+
   return (
     // <!-- Footer Start  -->
     <div className={`${headerStyles.footer_section}`}>
@@ -175,18 +189,18 @@ const Footer = () => {
       <div className={`${headerStyles.footer_copyright}`}>
         <div className="container">
           {/* <!-- Footer Copyright Start --> */}
-          <div className="copyright-wrapper">
-            <div className="copyright-link">
-              <a href="#">Terms of Service</a>
-              <a href="#">Privacy Policy</a>
-              <a href="#">Sitemap</a>
-              <a href="#">Security</a>
+          <div className={`${headerStyles.copyright_wrapper}`}>
+            <div className={`${headerStyles.copyright_link}`}>
+              <Link href="#">Terms of Service</Link>
+              <Link href="#">Privacy Policy</Link>
+              <Link href="#">Sitemap</Link>
+              <Link href="#">Security</Link>
             </div>
-            <div className="copyright-text">
+            <div className={`${headerStyles.copyright_text}`}>
               <p>
                 &copy; 2021 <span> Edule </span> Made with{" "}
-                <i className="icofont-heart-alt"></i> by{" "}
-                <a href="#">Codecarnival</a>
+                {/* <i className="icofont-heart-alt"></i> by{" "} */}
+                <Link href="#">Codecarnival</Link>
               </p>
             </div>
           </div>

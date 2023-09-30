@@ -2,13 +2,23 @@
 import Image from "next/image";
 import styles from "../login/styles.module.scss";
 import { UserAuth } from "@/app/context/AuthContext";
+import { auth } from "../firebase";
+import { useRouter } from "next/navigation";
+
 
 export default function LoginPage() {
   const { user, googleSignIn, logOut } = UserAuth();
+  const router = useRouter();
+  console.log("tao nè", user)
 
   const handleSignIn = async () => {
     try {
-      await googleSignIn();
+      googleSignIn();
+      // console.log("má",auth)
+      // if(user){
+      //   router.push('/')
+      // }
+ 
     } catch (error) {
       console.log(error);
     }

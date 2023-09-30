@@ -624,12 +624,12 @@
 .copyright_link {
   padding-top: 15px;
 }
-.copyright_link a {
-  font-weight: 400;
-  font-size: 14px;
-  color: #fff;
-  position: relative;
-}
+// .copyright_link a {
+//   font-weight: 400;
+//   font-size: 14px;
+//   color: #fff;
+//   position: relative;
+// }
 .copyright_link a + a::before {
   content: "*";
   font-size: 15px;
@@ -691,8 +691,7 @@
 /*  5.1 - Footer Widget CSS
 /*----------------------------------------*/
 .footer_widget_section{
-  padding-top: 30px;
-  padding-bottom: 80px;
+  padding-bottom: 60px;
   position: relative;
   z-index: 1;
 
@@ -874,4 +873,32 @@
   grid-template-rows: repeat(1, minmax(0, 1fr));
   padding: 0px 0px 0px 0px;
   gap: 0;
+}
+
+.copyright_wrapper {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 15px;
+  padding-top: 5px;
+}
+
+.copyright_link {
+  padding-top: 15px;
+}
+
+.copyright_link a {
+  // font-weight: 400;
+  // font-size: 14px;
+  color: #fff;
+  // position: relative;
+}
+
+
+// Header After Login
+.header_login{
+  background-color: #212832;
+}
+
+.header_navbar{
+  display: flex;
 }

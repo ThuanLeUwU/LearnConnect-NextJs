@@ -1,6 +1,9 @@
+import Link from "next/link";
+import ".././globals.css";
+
 export default function ProfileUser() {
   return (
-    <main>
+    <main className="container">
       <section className="bg-gradient-to-br from-black via-gray-900 to-gray-800">
         <div className="py-5">
           <div className="flex justify-center items-center">
@@ -53,9 +56,9 @@ export default function ProfileUser() {
                   <div className="flex justify-between items-center mb-4">
                     <p className="font-semibold text-lg mb-0">Recent photos</p>
                     <p className="mb-0">
-                      <a href="#!" className="text-gray-500">
+                      <Link href="#!" className="text-gray-500">
                         Show all
-                      </a>
+                      </Link>
                     </p>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
