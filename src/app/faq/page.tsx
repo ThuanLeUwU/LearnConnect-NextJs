@@ -91,17 +91,18 @@ export default function FAQ() {
                     <div className="text-[15px] font-extralight mt-[25px] px-[15px]">
                       <p className="mb-4 leading-loose">
                         Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry lorem Ipsum has been the industry's
-                        standard dummy text ever since the 1500 when un known
-                        printer took make a type specimen typesetting industry
-                        lorem Ipsum has been the industry's standard dummy text
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text ever since the 1500
+                        when un known printer took make a type specimen
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text
                       </p>
 
                       <p className="leading-loose">
                         Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry lorem Ipsum has been the industry's
-                        standard dummy text ever since the 1500 when un known
-                        printer took make a type specimen
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text ever since the 1500
+                        when un known printer took make a type specimen
                       </p>
                     </div>
                   </div>
@@ -122,10 +123,11 @@ export default function FAQ() {
                     <div className="text-[15px] font-extralight mt-[25px] px-[15px]">
                       <p className="mb-4 leading-loose">
                         Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry lorem Ipsum has been the industry's
-                        standard dummy text ever since the 1500 when un known
-                        printer took make a type specimen typesetting industry
-                        lorem Ipsum has been the industry's standard dummy text
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text ever since the 1500
+                        when un known printer took make a type specimen
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text
                       </p>
                     </div>
                   </div>
@@ -146,10 +148,11 @@ export default function FAQ() {
                     <div className="text-[15px] font-extralight mt-[25px] px-[15px]">
                       <p className="mb-4 leading-loose">
                         Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry lorem Ipsum has been the industry's
-                        standard dummy text ever since the 1500 when un known
-                        printer took make a type specimen typesetting industry
-                        lorem Ipsum has been the industry's standard dummy text
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text ever since the 1500
+                        when un known printer took make a type specimen
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text
                       </p>
                     </div>
                   </div>
@@ -161,8 +164,8 @@ export default function FAQ() {
                   <div className="lg:col-span-5 px-[15px] my-auto">
                     <div className="">
                       <h4 className="text-[20px] px-[15px] group-hover:text-[#309255]">
-                        Is it possible to obtain a bachelor's degree and a
-                        master's degree at the same time?
+                        Is it possible to obtain a bachelor&apos;s degree and a
+                        master&apos;s degree at the same time?
                       </h4>
                     </div>
                   </div>
@@ -170,10 +173,11 @@ export default function FAQ() {
                     <div className="text-[15px] font-extralight mt-[25px] px-[15px]">
                       <p className="mb-4 leading-loose">
                         Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry lorem Ipsum has been the industry's
-                        standard dummy text ever since the 1500 when un known
-                        printer took make a type specimen typesetting industry
-                        lorem Ipsum has been the industry's standard dummy text
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text ever since the 1500
+                        when un known printer took make a type specimen
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text
                       </p>
                     </div>
                   </div>
@@ -194,10 +198,11 @@ export default function FAQ() {
                     <div className="text-[15px] font-extralight mt-[25px] px-[15px]">
                       <p className="mb-4 leading-loose">
                         Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry lorem Ipsum has been the industry's
-                        standard dummy text ever since the 1500 when un known
-                        printer took make a type specimen typesetting industry
-                        lorem Ipsum has been the industry's standard dummy text
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text ever since the 1500
+                        when un known printer took make a type specimen
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text
                       </p>
                     </div>
                   </div>
@@ -223,17 +228,18 @@ export default function FAQ() {
                     <div className="text-[15px] font-extralight mt-[25px] px-[15px]">
                       <p className="mb-4 leading-loose">
                         Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry lorem Ipsum has been the industry's
-                        standard dummy text ever since the 1500 when un known
-                        printer took make a type specimen typesetting industry
-                        lorem Ipsum has been the industry's standard dummy text
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text ever since the 1500
+                        when un known printer took make a type specimen
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text
                       </p>
 
                       <p className="leading-loose">
                         Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry lorem Ipsum has been the industry's
-                        standard dummy text ever since the 1500 when un known
-                        printer took make a type specimen
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text ever since the 1500
+                        when un known printer took make a type specimen
                       </p>
                     </div>
                   </div>
@@ -254,10 +260,11 @@ export default function FAQ() {
                     <div className="text-[15px] font-extralight mt-[25px] px-[15px]">
                       <p className="mb-4 leading-loose">
                         Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry lorem Ipsum has been the industry's
-                        standard dummy text ever since the 1500 when un known
-                        printer took make a type specimen typesetting industry
-                        lorem Ipsum has been the industry's standard dummy text
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text ever since the 1500
+                        when un known printer took make a type specimen
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text
                       </p>
                     </div>
                   </div>
@@ -278,10 +285,11 @@ export default function FAQ() {
                     <div className="text-[15px] font-extralight mt-[25px] px-[15px]">
                       <p className="mb-4 leading-loose">
                         Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry lorem Ipsum has been the industry's
-                        standard dummy text ever since the 1500 when un known
-                        printer took make a type specimen typesetting industry
-                        lorem Ipsum has been the industry's standard dummy text
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text ever since the 1500
+                        when un known printer took make a type specimen
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text
                       </p>
                     </div>
                   </div>
@@ -293,8 +301,8 @@ export default function FAQ() {
                   <div className="lg:col-span-5 px-[15px] my-auto">
                     <div className="">
                       <h4 className="text-[20px] px-[15px] group-hover:text-[#309255]">
-                        Is it possible to obtain a bachelor's degree and a
-                        master's degree at the same time?
+                        Is it possible to obtain a bachelor&apos;s degree and a
+                        master&apos;s degree at the same time?
                       </h4>
                     </div>
                   </div>
@@ -302,10 +310,11 @@ export default function FAQ() {
                     <div className="text-[15px] font-extralight mt-[25px] px-[15px]">
                       <p className="mb-4 leading-loose">
                         Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry lorem Ipsum has been the industry's
-                        standard dummy text ever since the 1500 when un known
-                        printer took make a type specimen typesetting industry
-                        lorem Ipsum has been the industry's standard dummy text
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text ever since the 1500
+                        when un known printer took make a type specimen
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text
                       </p>
                     </div>
                   </div>
@@ -326,10 +335,11 @@ export default function FAQ() {
                     <div className="text-[15px] font-extralight mt-[25px] px-[15px]">
                       <p className="mb-4 leading-loose">
                         Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry lorem Ipsum has been the industry's
-                        standard dummy text ever since the 1500 when un known
-                        printer took make a type specimen typesetting industry
-                        lorem Ipsum has been the industry's standard dummy text
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text ever since the 1500
+                        when un known printer took make a type specimen
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text
                       </p>
                     </div>
                   </div>
@@ -355,17 +365,18 @@ export default function FAQ() {
                     <div className="text-[15px] font-extralight mt-[25px] px-[15px]">
                       <p className="mb-4 leading-loose">
                         Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry lorem Ipsum has been the industry's
-                        standard dummy text ever since the 1500 when un known
-                        printer took make a type specimen typesetting industry
-                        lorem Ipsum has been the industry's standard dummy text
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text ever since the 1500
+                        when un known printer took make a type specimen
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text
                       </p>
 
                       <p className="leading-loose">
                         Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry lorem Ipsum has been the industry's
-                        standard dummy text ever since the 1500 when un known
-                        printer took make a type specimen
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text ever since the 1500
+                        when un known printer took make a type specimen
                       </p>
                     </div>
                   </div>
@@ -386,10 +397,11 @@ export default function FAQ() {
                     <div className="text-[15px] font-extralight mt-[25px] px-[15px]">
                       <p className="mb-4 leading-loose">
                         Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry lorem Ipsum has been the industry's
-                        standard dummy text ever since the 1500 when un known
-                        printer took make a type specimen typesetting industry
-                        lorem Ipsum has been the industry's standard dummy text
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text ever since the 1500
+                        when un known printer took make a type specimen
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text
                       </p>
                     </div>
                   </div>
@@ -410,10 +422,11 @@ export default function FAQ() {
                     <div className="text-[15px] font-extralight mt-[25px] px-[15px]">
                       <p className="mb-4 leading-loose">
                         Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry lorem Ipsum has been the industry's
-                        standard dummy text ever since the 1500 when un known
-                        printer took make a type specimen typesetting industry
-                        lorem Ipsum has been the industry's standard dummy text
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text ever since the 1500
+                        when un known printer took make a type specimen
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text
                       </p>
                     </div>
                   </div>
@@ -425,8 +438,8 @@ export default function FAQ() {
                   <div className="lg:col-span-5 px-[15px] my-auto">
                     <div className="">
                       <h4 className="text-[20px] px-[15px] group-hover:text-[#309255]">
-                        Is it possible to obtain a bachelor's degree and a
-                        master's degree at the same time?
+                        Is it possible to obtain a bachelor&apos;s degree and a
+                        master&apos;s degree at the same time?
                       </h4>
                     </div>
                   </div>
@@ -434,10 +447,11 @@ export default function FAQ() {
                     <div className="text-[15px] font-extralight mt-[25px] px-[15px]">
                       <p className="mb-4 leading-loose">
                         Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry lorem Ipsum has been the industry's
-                        standard dummy text ever since the 1500 when un known
-                        printer took make a type specimen typesetting industry
-                        lorem Ipsum has been the industry's standard dummy text
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text ever since the 1500
+                        when un known printer took make a type specimen
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text
                       </p>
                     </div>
                   </div>
@@ -458,10 +472,11 @@ export default function FAQ() {
                     <div className="text-[15px] font-extralight mt-[25px] px-[15px]">
                       <p className="mb-4 leading-loose">
                         Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry lorem Ipsum has been the industry's
-                        standard dummy text ever since the 1500 when un known
-                        printer took make a type specimen typesetting industry
-                        lorem Ipsum has been the industry's standard dummy text
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text ever since the 1500
+                        when un known printer took make a type specimen
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text
                       </p>
                     </div>
                   </div>
@@ -487,17 +502,18 @@ export default function FAQ() {
                     <div className="text-[15px] font-extralight mt-[25px] px-[15px]">
                       <p className="mb-4 leading-loose">
                         Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry lorem Ipsum has been the industry's
-                        standard dummy text ever since the 1500 when un known
-                        printer took make a type specimen typesetting industry
-                        lorem Ipsum has been the industry's standard dummy text
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text ever since the 1500
+                        when un known printer took make a type specimen
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text
                       </p>
 
                       <p className="leading-loose">
                         Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry lorem Ipsum has been the industry's
-                        standard dummy text ever since the 1500 when un known
-                        printer took make a type specimen
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text ever since the 1500
+                        when un known printer took make a type specimen
                       </p>
                     </div>
                   </div>
@@ -518,10 +534,11 @@ export default function FAQ() {
                     <div className="text-[15px] font-extralight mt-[25px] px-[15px]">
                       <p className="mb-4 leading-loose">
                         Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry lorem Ipsum has been the industry's
-                        standard dummy text ever since the 1500 when un known
-                        printer took make a type specimen typesetting industry
-                        lorem Ipsum has been the industry's standard dummy text
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text ever since the 1500
+                        when un known printer took make a type specimen
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text
                       </p>
                     </div>
                   </div>
@@ -542,10 +559,11 @@ export default function FAQ() {
                     <div className="text-[15px] font-extralight mt-[25px] px-[15px]">
                       <p className="mb-4 leading-loose">
                         Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry lorem Ipsum has been the industry's
-                        standard dummy text ever since the 1500 when un known
-                        printer took make a type specimen typesetting industry
-                        lorem Ipsum has been the industry's standard dummy text
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text ever since the 1500
+                        when un known printer took make a type specimen
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text
                       </p>
                     </div>
                   </div>
@@ -557,8 +575,8 @@ export default function FAQ() {
                   <div className="lg:col-span-5 px-[15px] my-auto">
                     <div className="">
                       <h4 className="text-[20px] px-[15px] group-hover:text-[#309255]">
-                        Is it possible to obtain a bachelor's degree and a
-                        master's degree at the same time?
+                        Is it possible to obtain a bachelor&apos;s degree and a
+                        master&apos;s degree at the same time?
                       </h4>
                     </div>
                   </div>
@@ -566,10 +584,11 @@ export default function FAQ() {
                     <div className="text-[15px] font-extralight mt-[25px] px-[15px]">
                       <p className="mb-4 leading-loose">
                         Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry lorem Ipsum has been the industry's
-                        standard dummy text ever since the 1500 when un known
-                        printer took make a type specimen typesetting industry
-                        lorem Ipsum has been the industry's standard dummy text
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text ever since the 1500
+                        when un known printer took make a type specimen
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text
                       </p>
                     </div>
                   </div>
@@ -590,10 +609,11 @@ export default function FAQ() {
                     <div className="text-[15px] font-extralight mt-[25px] px-[15px]">
                       <p className="mb-4 leading-loose">
                         Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry lorem Ipsum has been the industry's
-                        standard dummy text ever since the 1500 when un known
-                        printer took make a type specimen typesetting industry
-                        lorem Ipsum has been the industry's standard dummy text
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text ever since the 1500
+                        when un known printer took make a type specimen
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text
                       </p>
                     </div>
                   </div>
@@ -619,17 +639,18 @@ export default function FAQ() {
                     <div className="text-[15px] font-extralight mt-[25px] px-[15px]">
                       <p className="mb-4 leading-loose">
                         Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry lorem Ipsum has been the industry's
-                        standard dummy text ever since the 1500 when un known
-                        printer took make a type specimen typesetting industry
-                        lorem Ipsum has been the industry's standard dummy text
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text ever since the 1500
+                        when un known printer took make a type specimen
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text
                       </p>
 
                       <p className="leading-loose">
                         Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry lorem Ipsum has been the industry's
-                        standard dummy text ever since the 1500 when un known
-                        printer took make a type specimen
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text ever since the 1500
+                        when un known printer took make a type specimen
                       </p>
                     </div>
                   </div>
@@ -650,10 +671,11 @@ export default function FAQ() {
                     <div className="text-[15px] font-extralight mt-[25px] px-[15px]">
                       <p className="mb-4 leading-loose">
                         Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry lorem Ipsum has been the industry's
-                        standard dummy text ever since the 1500 when un known
-                        printer took make a type specimen typesetting industry
-                        lorem Ipsum has been the industry's standard dummy text
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text ever since the 1500
+                        when un known printer took make a type specimen
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text
                       </p>
                     </div>
                   </div>
@@ -674,10 +696,11 @@ export default function FAQ() {
                     <div className="text-[15px] font-extralight mt-[25px] px-[15px]">
                       <p className="mb-4 leading-loose">
                         Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry lorem Ipsum has been the industry's
-                        standard dummy text ever since the 1500 when un known
-                        printer took make a type specimen typesetting industry
-                        lorem Ipsum has been the industry's standard dummy text
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text ever since the 1500
+                        when un known printer took make a type specimen
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text
                       </p>
                     </div>
                   </div>
@@ -689,8 +712,8 @@ export default function FAQ() {
                   <div className="lg:col-span-5 px-[15px] my-auto">
                     <div className="">
                       <h4 className="text-[20px] px-[15px] group-hover:text-[#309255]">
-                        Is it possible to obtain a bachelor's degree and a
-                        master's degree at the same time?
+                        Is it possible to obtain a bachelor&apos;s degree and a
+                        master&apos;s degree at the same time?
                       </h4>
                     </div>
                   </div>
@@ -698,10 +721,11 @@ export default function FAQ() {
                     <div className="text-[15px] font-extralight mt-[25px] px-[15px]">
                       <p className="mb-4 leading-loose">
                         Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry lorem Ipsum has been the industry's
-                        standard dummy text ever since the 1500 when un known
-                        printer took make a type specimen typesetting industry
-                        lorem Ipsum has been the industry's standard dummy text
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text ever since the 1500
+                        when un known printer took make a type specimen
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text
                       </p>
                     </div>
                   </div>
@@ -722,10 +746,11 @@ export default function FAQ() {
                     <div className="text-[15px] font-extralight mt-[25px] px-[15px]">
                       <p className="mb-4 leading-loose">
                         Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry lorem Ipsum has been the industry's
-                        standard dummy text ever since the 1500 when un known
-                        printer took make a type specimen typesetting industry
-                        lorem Ipsum has been the industry's standard dummy text
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text ever since the 1500
+                        when un known printer took make a type specimen
+                        typesetting industry lorem Ipsum has been the
+                        industry&apos;s standard dummy text
                       </p>
                     </div>
                   </div>
@@ -740,7 +765,7 @@ export default function FAQ() {
           className="bg-[#309255] text-[18px] px-[35px] py-[20px] rounded-lg text-[#fff] hover:bg-[#000] transition-all duration-300 ease-in-out delay-0"
           href="#"
         >
-          Other’s Question
+          Other&apos;s Question
         </a>
       </div>
     </div>
