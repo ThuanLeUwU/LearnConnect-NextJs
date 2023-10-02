@@ -1,0 +1,97 @@
+.call_to_action_wrapper {
+  background-color: #e7f8ee;
+  border-radius: 10px;
+  padding: 20px 100px 50px;
+  position: relative;
+}
+@media only screen and (min-width: 992px) and (max-width: 1199px),
+  only screen and (min-width: 768px) and (max-width: 991px),
+  only screen and (max-width: 767px) {
+  .call_to_action_wrapper {
+    padding: 20px 60px 50px;
+  }
+}
+@media only screen and (max-width: 575px) {
+  .call_to_action_wrapper {
+    padding: 0px 30px 30px;
+  }
+}
+.call_to_action_wrapper .cat-shape-01 {
+  position: absolute;
+  bottom: 30px;
+  left: 30px;
+}
+@media only screen and (max-width: 575px) {
+  .call_to_action_wrapper .cat-shape-01 {
+    display: none;
+  }
+}
+.call_to_action_wrapper .cat-shape-02 {
+  position: absolute;
+  top: 50%;
+  left: 57.5%;
+  transform: translate(-50%, -50%);
+  width: 179px;
+}
+@media only screen and (min-width: 992px) and (max-width: 1199px) {
+  .call_to_action_wrapper .cat-shape-02 {
+    width: 150px;
+  }
+}
+@media only screen and (min-width: 768px) and (max-width: 991px),
+  only screen and (max-width: 767px) {
+  .call_to_action_wrapper .cat-shape-02 {
+    display: none;
+  }
+}
+.call_to_action_wrapper .cat-shape-03 {
+  position: absolute;
+  top: 30px;
+  right: 30px;
+}
+@media only screen and (max-width: 575px) {
+  .call_to_action_wrapper .cat-shape-03 {
+    display: none;
+  }
+}
+.call_to_action_wrapper .section-title {
+  max-width: 415px;
+  margin-top: 25px;
+}
+.call_to_action_btn {
+  text-align: right;
+  margin-top: 30px;
+}
+@media only screen and (max-width: 767px) {
+  .call_to_action_btn {
+    text-align: left;
+  }
+}
+
+.call_to_action_row{
+    display: contents;
+}
+
+.call_to_action_grid {
+  display: grid;
+  grid-template-columns: auto auto;
+}
+
+.regis_btn{
+    background-color: #309255;
+    color: #fff;
+    display: inline-block;
+    width: 200px;
+    height: 60px;
+    border-radius: 10px;
+    line-height: 50px;
+    font-size: 20px;
+    font-weight: 500;
+    padding: 5px;
+    text-align: center;
+    &:hover{
+        transition: all 0.9s linear;
+        background-color: black;
+    }
+}
+
