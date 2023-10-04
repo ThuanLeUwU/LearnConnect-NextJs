@@ -259,7 +259,7 @@ const Header = () => {
                   <Link href="#">Pages </Link>
                   <ul className={`${headerStyles.sub_menu}`}>
                     <li>
-                      <Link href="about.html">About</Link>
+                      <Link href="/about">About</Link>
                     </li>
                     <li>
                       <Link href="register.html">Register</Link>
