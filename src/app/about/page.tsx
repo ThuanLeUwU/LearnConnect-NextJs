@@ -54,32 +54,13 @@ const About = () => {
               </div>
             </div>
             <p className="mt-[25px] text-[15px] font-extralight">
-              Lorem Ipsum has been the industry's standard dumy text since the
-              when took and scrambled to make type specimen book has survived.
+              Lorem Ipsum has been the industry&apos;s standard dumy text since
+              the when took and scrambled to make type specimen book has
+              survived.
             </p>
             <p className="mt-[25px] text-[15px] font-extralight">
-              Lorem Ipsum has been the industry's standard dumy text since the
-              when took and scrambled make.
-            </p>
-          </div>
-        </div>
-        <div className="lg:col-span-4 border-[#E7F8EE] border border-solid rounded-lg p-[30px] mx-[15px] hover:border-[#309255] group">
-          <div className="about-item">
-            <div className="flex mx-auto text-center items-center justify-center h-20">
-              <div className="item-icon h-20 w-20 bg-[#E7F8EE] rounded-full group-hover:bg-[#309255] group-hover:text-[#fff]">
-                <i className="">icon</i>
-              </div>
-              <div className="item-title">
-                <h3 className="text-[22px] pl-4">Top Instructors</h3>
-              </div>
-            </div>
-            <p className="mt-[25px] text-[15px] font-extralight">
-              Lorem Ipsum has been the industry's standard dumy text since the
-              when took and scrambled to make type specimen book has survived.
-            </p>
-            <p className="mt-[25px] text-[15px] font-extralight">
-              Lorem Ipsum has been the industry's standard dumy text since the
-              when took and scrambled make.
+              Lorem Ipsum has been the industry&apos;s standard dumy text since
+              the when took and scrambled make.
             </p>
           </div>
         </div>
@@ -94,12 +75,34 @@ const About = () => {
               </div>
             </div>
             <p className="mt-[25px] text-[15px] font-extralight">
-              Lorem Ipsum has been the industry's standard dumy text since the
-              when took and scrambled to make type specimen book has survived.
+              Lorem Ipsum has been the industry&apos;s standard dumy text since
+              the when took and scrambled to make type specimen book has
+              survived.
             </p>
             <p className="mt-[25px] text-[15px] font-extralight">
-              Lorem Ipsum has been the industry's standard dumy text since the
-              when took and scrambled make.
+              Lorem Ipsum has been the industry&apos;s standard dumy text since
+              the when took and scrambled make.
+            </p>
+          </div>
+        </div>
+        <div className="lg:col-span-4 border-[#E7F8EE] border border-solid rounded-lg p-[30px] mx-[15px] hover:border-[#309255] group">
+          <div className="about-item">
+            <div className="flex mx-auto text-center items-center justify-center h-20">
+              <div className="item-icon h-20 w-20 bg-[#E7F8EE] rounded-full group-hover:bg-[#309255] group-hover:text-[#fff]">
+                <i className="">icon</i>
+              </div>
+              <div className="item-title">
+                <h3 className="text-[22px] pl-4">Top Instructors</h3>
+              </div>
+            </div>
+            <p className="mt-[25px] text-[15px] font-extralight">
+              Lorem Ipsum has been the industry&apos;s standard dumy text since
+              the when took and scrambled to make type specimen book has
+              survived.
+            </p>
+            <p className="mt-[25px] text-[15px] font-extralight">
+              Lorem Ipsum has been the industry&apos;s standard dumy text since
+              the when took and scrambled make.
             </p>
           </div>
         </div>
