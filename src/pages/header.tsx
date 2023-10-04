@@ -9,9 +9,19 @@ import { UserAuth } from "@/app/context/AuthContext";
 
 const Header = () => {
   const [click, setClick] = useState(false);
-  const [dropdown, setDropdown] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+
+    const toggleDropdown = () => {
+        setIsOpen(!isOpen);
+    };
+
+    const closeDropdown = () => {
+        setIsOpen(false);
+    };
 
   const { user, googleSignIn, logOut } = UserAuth();
+
+  // console.log("tui ne", user?.photoURL);
 
   const handleSignIn = async () => {
     try {
@@ -24,6 +34,7 @@ const Header = () => {
   const handleSignOut = async () => {
     try {
       await logOut();
+      closeDropdown();
     } catch (error) {
       console.log(error);
     }
@@ -71,7 +82,7 @@ const Header = () => {
               {/* <!-- Header Top Left Start --> */}
               <div className={`${headerStyles.header_top_left}`}>
                 <p>
-                  All course 28% off for <a href="#">Liberian people’s.</a>
+                  All course 28% off for <Link href="#">Liberian people’s.</Link>
                 </p>
               </div>
               {/* <!-- Header Top Left End --> */}
@@ -81,11 +92,11 @@ const Header = () => {
                 <div className={`${headerStyles.top_info}`}>
                   <p>
                     <i className="flaticon-phone-call"></i>{" "}
-                    <a href="tel:9702621413">(970) 262-1413</a>
+                    <Link href="tel:9702621413">(970) 262-1413</Link>
                   </p>
                   <p>
                     <i className="flaticon-email"></i>{" "}
-                    <a href="mailto:address@gmail.com">address@gmail.com</a>
+                    <Link href="mailto:address@gmail.com">address@gmail.com</Link>
                   </p>
                 </div>
               </div>
@@ -95,24 +106,24 @@ const Header = () => {
               <div className={`${headerStyles.header_top_right}`}>
                 <ul className={`${headerStyles.header_top_right_social}`}>
                   <li>
-                    <a href="#">
+                    <Link href="#">
                       <i className="flaticon-facebook"></i>
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a href="#">
+                    <Link href="#">
                       <i className="flaticon-twitter"></i>
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a href="#">
+                    <Link href="#">
                       <i className="flaticon-skype"></i>
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a href="#">
+                    <Link href="#">
                       <i className="flaticon-instagram"></i>
-                    </a>
+                    </Link>
                   </li>
                 </ul>
               </div>
@@ -128,9 +139,9 @@ const Header = () => {
 
         //         {/* <!-- Header Logo Start --> */}
         //         <div className="login-header-logo">
-        //             <a href="index.html">
+        //             <Link href="index.html">
         //               {/* <img src="assets/images/logo-icon.png" alt="Logo"/> */}
-        //               </a>
+        //               </Link>
         //         </div>
         //         {/* <!-- Header Logo End --> */}
 
@@ -146,59 +157,59 @@ const Header = () => {
         //                         <li className="notification-item">
         //                             <span className="notify-icon bg-success text-white"><i className="icofont-ui-user"></i></span>
         //                             <div className="dropdown-body">
-        //                                 <a href="#">
+        //                                 <Link href="#">
         //                                     <p><strong>Martin</strong> has added a <strong>customer</strong> Successfully
         //                                     </p>
-        //                                 </a>
+        //                                 </Link>
         //                             </div>
         //                             <span className="notify-time">3:20 am</span>
         //                         </li>
         //                         <li className="notification-item">
         //                             <span className="notify-icon bg-success text-white"><i className="icofont-shopping-cart"></i></span>
         //                             <div className="dropdown-body">
-        //                                 <a href="#">
+        //                                 <Link href="#">
         //                                     <p><strong>Jennifer</strong> purchased Light Dashboard 2.0.</p>
-        //                                 </a>
+        //                                 </Link>
         //                             </div>
         //                             <span className="notify-time">3:20 am</span>
         //                         </li>
         //                         <li className="notification-item">
         //                             <span className="notify-icon bg-danger text-white"><i className="icofont-book-mark"></i></span>
         //                             <div className="dropdown-body">
-        //                                 <a href="#">
+        //                                 <Link href="#">
         //                                     <p><strong>Robin</strong> marked a <strong>ticket</strong> as unsolved.
         //                                     </p>
-        //                                 </a>
+        //                                 </Link>
         //                             </div>
         //                             <span className="notify-time">3:20 am</span>
         //                         </li>
         //                         <li className="notification-item">
         //                             <span className="notify-icon bg-success text-white"><i className="icofont-heart-alt"></i></span>
         //                             <div className="dropdown-body">
-        //                                 <a href="#">
+        //                                 <Link href="#">
         //                                     <p><strong>David</strong> purchased Light Dashboard 1.0.</p>
-        //                                 </a>
+        //                                 </Link>
         //                             </div>
         //                             <span className="notify-time">3:20 am</span>
         //                         </li>
         //                         <li className="notification-item">
         //                             <span className="notify-icon bg-success text-white"><i className="icofont-image"></i></span>
         //                             <div className="dropdown-body">
-        //                                 <a href="#">
+        //                                 <Link href="#">
         //                                     <p><strong> James.</strong> has added a<strong>customer</strong> Successfully
         //                                     </p>
-        //                                 </a>
+        //                                 </Link>
         //                             </div>
         //                             <span className="notify-time">3:20 am</span>
         //                         </li>
         //                     </ul>
-        //                     <a className="all-notification" href="#">See all notifications <i className="icofont-simple-right"></i></a>
+        //                     <Link className="all-notification" href="#">See all notifications <i className="icofont-simple-right"></i></Link>
         //                 </div>
         //             </div>
 
-        //             <a className="action author" href="#">
+        //             <Link className="action author" href="#">
         //                 <img src="assets/images/author/author-07.jpg" alt="Author"/>
-        //             </a>
+        //             </Link>
 
         //             <div className="dropdown">
         //                 <button className="action more" data-bs-toggle="dropdown">
@@ -207,9 +218,9 @@ const Header = () => {
         //                     <span></span>
         //                 </button>
         //                 <ul className="dropdown-menu">
-        //                     <li><a className="" href="#"><i className="icofont-user"></i> Profile</a></li>
-        //                     <li><a className="" href="#"><i className="icofont-inbox"></i> Inbox</a></li>
-        //                     <li><a className="" href="#"><i className="icofont-logout"></i> Sign Out</a></li>
+        //                     <li><Link className="" href="#"><i className="icofont-user"></i> Profile</Link></li>
+        //                     <li><Link className="" href="#"><i className="icofont-inbox"></i> Inbox</Link></li>
+        //                     <li><Link className="" href="#"><i className="icofont-logout"></i> Sign Out</Link></li>
         //                 </ul>
         //             </div>
         //         </div>
@@ -218,8 +229,59 @@ const Header = () => {
         //     </div>
         //     {/* <!-- Login Header Wrapper End --> */}
         // </div>
-        <>
-        He he</>
+        <div className={`${headerStyles.header_login}`}>
+          <div className={`${headerStyles.header_navbar}`}>
+            <div className={`${headerStyles.header_login_left}`}>
+              <Link href="/">
+                <img src=""/>
+              </Link>
+            </div>
+          <ul className={`${headerStyles.header_login_right}`}>
+              <li className={`${headerStyles.header_notification}`}>hehe</li>
+              <li className={`${headerStyles.header_info_img}`}> 
+                <img className={`${headerStyles.header_info_src}`} 
+                src={user?.photoURL || 'www.default.imageurl'}
+                 alt="author"></img>
+              </li>
+              <li>
+                  <button className={`${headerStyles.header_more}`} onClick={toggleDropdown}/>
+                  {isOpen && (
+                    <div className="origin-top-right absolute right-0 mt-2 w-44 rounded-lg shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                        <ul role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                            <li>
+                                <Link
+                                    href="/profile"
+                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                    onClick={closeDropdown}
+                                >
+                                    Profile
+                                </Link>
+                            </li>
+                            <li>
+                                <a
+                                    href="#"
+                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                    onClick={closeDropdown}
+                                >
+                                    Option 2
+                                </a>
+                            </li>
+                            <li>
+                                <a
+                                    href="#"
+                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                    onClick={handleSignOut}
+                                >
+                                    Sign out
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                )}
+              </li>
+          </ul>
+          </div>
+        </div>
       )}
 
       {/* <!-- Header Top End --> */}
@@ -231,7 +293,7 @@ const Header = () => {
           <div className={`${headerStyles.header_main_wrapper}`}>
             {/* <!-- Header Logo Start --> */}
             <div className={`${headerStyles.header_logo}`}>
-              <a href="index.html">Image</a>
+              <Link href="/">Image</Link>
             </div>
             {/* <!-- Header Logo End --> */}
 
@@ -242,96 +304,96 @@ const Header = () => {
                   <Link href="/">Home</Link>
                 </li>
                 <li>
-                  <a href="#">All Course</a>
+                  <Link href="#">All Course</Link>
                   <ul className={`${headerStyles.sub_menu}`}>
                     {course.map((item, index) => (
                       <li key={index}>
                         <Link href={item.href}>{item.title}</Link>
                       </li>
                     ))}
-                    {/* <li><a href="courses.html">Courses</a></li>
-                                        <li><a href="courses-details.html">Courses Details</a></li> */}
+                    {/* <li><Link href="courses.html">Courses</Link></li>
+                                        <li><Link href="courses-details.html">Courses Details</Link></li> */}
                   </ul>
                 </li>
                 <li>
-                  <a href="#">Pages </a>
+                  <Link href="#">Pages </Link>
                   <ul className={`${headerStyles.sub_menu}`}>
                     <li>
-                      <a href="about.html">About</a>
+                      <Link href="about.html">About</Link>
                     </li>
                     <li>
-                      <a href="register.html">Register</a>
+                      <Link href="register.html">Register</Link>
                     </li>
                     <li>
                       <Link href="/login">Login</Link>
                     </li>
                     <li>
-                      <a href="faq.html">FAQ</a>
+                      <Link href="faq.html">FAQ</Link>
                     </li>
                     <li>
-                      <a href="404-error.html">404 Error</a>
+                      <Link href="404-error.html">404 Error</Link>
                     </li>
                     <li>
-                      <a href="after-enroll.html">After Enroll</a>
+                      <Link href="after-enroll.html">After Enroll</Link>
                     </li>
                     <li>
-                      <a href="courses-admin.html">
+                      <Link href="courses-admin.html">
                         Instructor Dashboard (Course List)
-                      </a>
+                      </Link>
                     </li>
                     <li>
-                      <a href="overview.html">
+                      <Link href="overview.html">
                         Instructor Dashboard (Performance)
-                      </a>
+                      </Link>
                     </li>
                     <li>
-                      <a href="students.html">Students</a>
+                      <Link href="students.html">Students</Link>
                     </li>
                     <li>
-                      <a href="reviews.html">Reviews</a>
+                      <Link href="reviews.html">Reviews</Link>
                     </li>
                     <li>
-                      <a href="engagement.html">Course engagement</a>
+                      <Link href="engagement.html">Course engagement</Link>
                     </li>
                     <li>
-                      <a href="traffic-conversion.html">Traffic & conversion</a>
+                      <Link href="traffic-conversion.html">Traffic & conversion</Link>
                     </li>
                     <li>
-                      <a href="messages.html">Messages</a>
+                      <Link href="messages.html">Messages</Link>
                     </li>
                   </ul>
                 </li>
                 <li>
-                  <a href="#">Blog</a>
+                  <Link href="#">Blog</Link>
                   <ul className={`${headerStyles.sub_menu}`}>
                     <li>
-                      <a href="#">Blog</a>
+                      <Link href="#">Blog</Link>
                       <ul className={`${headerStyles.sub_menu}`}>
                         <li>
-                          <a href="blog-grid.html">Blog</a>
+                          <Link href="blog-grid.html">Blog</Link>
                         </li>
                         <li>
-                          <a href="blog-left-sidebar.html">Blog Left Sidebar</a>
+                          <Link href="blog-left-sidebar.html">Blog Left Sidebar</Link>
                         </li>
                         <li>
-                          <a href="blog-right-sidebar.html">
+                          <Link href="blog-right-sidebar.html">
                             Blog Right Sidebar
-                          </a>
+                          </Link>
                         </li>
                       </ul>
                     </li>
                     <li>
-                      <a href="#">Blog Details</a>
+                      <Link href="#">Blog Details</Link>
                       <ul className={`${headerStyles.sub_menu}`}>
                         <li>
-                          <a href="blog-details-left-sidebar.html">
+                          <Link href="blog-details-left-sidebar.html">
                             Blog Details Left Sidebar
-                          </a>
+                          </Link>
                         </li>
                         <li>
-                          <a href="blog-details-right-sidebar.html">
+                          <Link href="blog-details-right-sidebar.html">
                             Blog Details Right Sidebar
-                          </a>
+                          </Link>
                         </li>
                       </ul>
                     </li>
@@ -378,11 +440,11 @@ const Header = () => {
 
             {/* <!-- Header Mobile Toggle Start --> */}
             <div className="header-toggle d-lg-none">
-              <a className="menu-toggle" href="javascript:void(0)">
+              <Link className="menu-toggle" href="javascript:void(0)">
                 <span></span>
                 <span></span>
                 <span></span>
-              </a>
+              </Link>
             </div>
             {/* <!-- Header Mobile Toggle End --> */}
           </div>

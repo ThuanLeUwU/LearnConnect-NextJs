@@ -1,9 +1,10 @@
 "use client";
 import { CourseDropDown } from "@/app/test/CourseDropdown";
+// import ".././globals.css"
 
 const About = () => {
     return(
-        <div>
+        <div className="container">
             about<br/>
             sdasd<br/>
         dsa<br/>

@@ -1,18 +1,46 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../../app/./globals.css";
 import CourseStyle from "./styles/style.module.scss";
 import Link from "next/link";
 import Image from "next/image";
+import axios from "axios";
+
+export type Course = {
+  id: string | number;
+  name: string;
+  description: string;
+  shortDescription: string;
+  difficultyLevel: string;
+  image: string;
+  price: number;
+  rating: number;
+  categoryId: number | string;
+  contentLength: number;
+}
 
 const Courses = () => {
-    // const [rating, setRating] = useState(0);
-    // const handleStarClick = (nextValue, prevValue, name) => {
-    //    setRating(nextValue);
-    // }
+  // const [rating, setRating] = useState(0);
+  // const handleStarClick = (nextValue, prevValue, name) => {
+  //    setRating(nextValue);
+  // }
+
+  const [courses, setCourses] = useState<Course[]>([]);
+
+  console.log("course", courses);
+  useEffect(() => {
+    const fetchData = async () => {
+      const responseData = await axios.get(
+        `https://learnconnectapitest.azurewebsites.net/api/Course`
+      );
+      setCourses(responseData?.data);
+    };
+    fetchData();
+  }, []);
 
   const courseMenu = [
     {
+      id:1,
       author: "Jason Williams",
       category: "Science",
       title: "Data Science and Machine Learning with Python - Hands On!",
@@ -23,6 +51,7 @@ const Courses = () => {
       image: "/images/courses-01.jpg",
     },
     {
+      id:2,
       author: "Jason Williams",
       category: "Science",
       title: "Data Science and Machine Learning with Python - Hands On!",
@@ -33,6 +62,7 @@ const Courses = () => {
       image: "/images/courses-01.jpg",
     },
     {
+      id:3,
       author: "Jason Williams",
       category: "Science",
       title: "Data Science and Machine Learning with Python - Hands On!",
@@ -43,6 +73,8 @@ const Courses = () => {
       image: "/images/courses-01.jpg",
     },
   ];
+
+  // console.log("coursetest,id",courseMenu)
 
   return (
     <div className="section section-padding-02">
@@ -65,10 +97,14 @@ const Courses = () => {
         {/* <!-- All Courses Wrapper Start --> */}
         <div className={`${CourseStyle.courses_wrapper}`}>
           <div className={`${CourseStyle.courses_grid}`}>
-            {courseMenu.map((item, index) => {
+            {/* {courses.map((item) => {
+              return <div key={item.id}>{item.description}</div>;
+            })} */}
+
+            {courses.map((item) => {
               return (
                 // <>
-                <div key={index}>
+                <div key={item.id}>
                   {/* <!-- Single Courses Start --> */}
                   <div className={`${CourseStyle.single_courses}`}>
                     <div className={`${CourseStyle.single_courses_image}`}>
@@ -97,12 +133,12 @@ const Courses = () => {
                           </div>
                           <div className="author-name">
                             <Link className="name" href="#">
-                              {item.author}
+                              {item.name}
                             </Link>
                           </div>
                         </div>
                         <div className={`${CourseStyle.single_courses_tag}`}>
-                          <Link href="#">{item.category}</Link>
+                          <Link href="#">{item.categoryId}</Link>
                         </div>
                       </div>
 
@@ -111,22 +147,27 @@ const Courses = () => {
                           href="courses-details.html"
                           className={`${CourseStyle.single_courses_title}`}
                         >
-                          {item.title}
+                          {item.description}
                         </Link>
                       </h4>
                       <div className={`${CourseStyle.single_courses_timeline}`}>
                         <span>
                           {" "}
-                          <i className="icofont-clock-time"></i> {item.time}
+                          {/* <i className="icofont-clock-time"></i>  */}
+                          {item.difficultyLevel}
                         </span>
                         <span>
                           {" "}
-                          <i className="icofont-read-book"></i> {item.lesson}{" "}
+                          <i className="icofont-read-book"></i> {item.contentLength}{" "}
                         </span>
                       </div>
                       <div className={`${CourseStyle.single_courses_price}`}>
                         <div className="courses-price">
-                          <span className={`${CourseStyle.single_courses_price_sale}`}>{item.sale}</span>
+                          <span
+                            className={`${CourseStyle.single_courses_price_sale}`}
+                          >
+                            {/* {item.sale} */}
+                          </span>
                           <span className="old-parice">{item.price}</span>
                         </div>
                         <div className="courses-review">
@@ -155,10 +196,7 @@ const Courses = () => {
 
         {/* <!-- All Courses BUtton Start --> */}
         <div className={`${CourseStyle.course_btn}`}>
-          <Link
-            href="/courses"
-            className={`${CourseStyle.course_btn_more}`}
-          >
+          <Link href="/listCourses" className={`${CourseStyle.course_btn_more}`}>
             Show More
           </Link>
         </div>

@@ -504,7 +504,6 @@
         @media #{$desktop-device} {
           font-size: 16px;
         }
-
       }
     }
   }
@@ -596,8 +595,6 @@
   }
 }
 
-
-
 /* Footer */
 .footer_section {
   background-color: #e7f8ee;
@@ -614,7 +611,8 @@
   padding-bottom: 15px;
   padding-top: 5px;
 }
-@media only screen and (min-width: 768px) and (max-width: 991px), only screen and (max-width: 767px) {
+@media only screen and (min-width: 768px) and (max-width: 991px),
+  only screen and (max-width: 767px) {
   .copyright_wrapper {
     display: block;
     text-align: center;
@@ -687,179 +685,177 @@
   background-color: #212832;
 }
 
-
 /*  5.1 - Footer Widget CSS
 /*----------------------------------------*/
-.footer_widget_section{
+.footer_widget_section {
   padding-bottom: 60px;
   position: relative;
   z-index: 1;
 
-  @media #{$large-mobile}{
-      padding-top: 10px;
-      padding-bottom: 60px;
+  @media #{$large-mobile} {
+    padding-top: 10px;
+    padding-bottom: 60px;
   }
 
-  & .shape-1{
-      position: absolute;
-      top: 80px;
-      left: 5%;
-      z-index: -1;
+  & .shape-1 {
+    position: absolute;
+    top: 80px;
+    left: 5%;
+    z-index: -1;
 
-      @media #{$tablet-device, $large-mobile}{
-          display: none;
-      }
+    @media #{$tablet-device, $large-mobile} {
+      display: none;
+    }
   }
-  & .shape-2{
-      position: absolute;
-      right: 3%;
-      bottom: 95px;
-      z-index: -1;
+  & .shape-2 {
+    position: absolute;
+    right: 3%;
+    bottom: 95px;
+    z-index: -1;
   }
 }
 
 // Footer Widget Title
-.footer_widget_title{
+.footer_widget_title {
   color: $dark;
   font-weight: 500;
   font-size: 22px;
   margin-bottom: 0px;
 }
 
-// Footer Widget 
-.footer_widget{
+// Footer Widget
+.footer_widget {
   margin-top: 50px;
-  
-  &_logo{
-      & a{}
+
+  &_logo {
+    & a {
+    }
   }
 
-  &_address{
-      margin-top: 27px;
+  &_address {
+    margin-top: 27px;
 
-      & p{
-          font-size: 15px;
-          font-weight: 400;
+    & p {
+      font-size: 15px;
+      font-weight: 400;
+      color: $primary;
+      margin-top: 6px;
+    }
+  }
+
+  &_info {
+    padding-top: 25px;
+
+    & li {
+      & p {
+        font-size: 15px;
+        color: $dark;
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 0;
+
+        & i {
+          font-size: 20px;
           color: $primary;
-          margin-top: 6px;
+        }
+        & a {
+          margin-top: 3px;
+          margin-left: 15px;
+        }
       }
+    }
   }
 
-  &_info{
-      padding-top: 25px;
+  &_social {
+    display: flex;
+    padding-top: 20px;
 
-      & li{
-          & p{
-              font-size: 15px;
-              color: $dark;
-              display: flex;
-              align-items: flex-start;
-              margin-bottom: 0;
+    & li {
+      margin-right: 20px;
 
-              & i{
-                  font-size: 20px;
-                  color: $primary;
-              }
-              & a{
-                  margin-top: 3px;
-                  margin-left: 15px;
-              }
-          }
+      &:last-child {
+        margin-right: 0;
       }
+
+      & a {
+        font-size: 20px;
+        color: $dark;
+
+        &:hover {
+          color: $primary;
+        }
+      }
+    }
   }
 
-  &_social{
-      display: flex;
-      padding-top: 20px;
+  &_link {
+    padding-top: 26px;
 
-      & li{
-          margin-right: 20px;
+    & li {
+      margin-top: 12px;
 
-          &:last-child{
-              margin-right: 0;
-          }
+      & a {
+        color: $dark;
+        transition: $transition-base;
+        font-size: 15px;
+        font-weight: 400;
 
-          & a{
-              font-size: 20px;
-              color: $dark;
-
-              &:hover{
-                  color: $primary;
-              }
-          }
+        &:hover {
+          color: $primary;
+        }
       }
+    }
   }
 
-  &_link{
-      padding-top: 26px;
+  &_subscribe {
+    padding-top: 36px;
 
-      & li{
-          margin-top: 12px;
-
-          & a{
-              color: $dark;
-              transition: $transition-base;
-              font-size: 15px;
-              font-weight: 400;
-
-              &:hover{
-                  color: $primary;
-              }
-          }
+    & p {
+      color: $dark;
+      font-size: 15px;
+    }
+    &_form {
+      margin-top: 20px;
+      & input {
+        width: 100%;
+        height: 55px;
+        padding: 0 30px;
+        border: 1px solid rgba($primary, 0.2);
+        border-radius: 10px;
+        background-color: $white;
+        color: $dark;
+        font-size: 15px;
+        font-weight: 500;
+        outline: none;
       }
-  }   
-  
-  &_subscribe{
-      padding-top: 36px;
-
-      & p{
-          color: $dark;
-          font-size: 15px;
-      }
-      &_form{
+      &_btn {
+        background-color: #309255;
         margin-top: 20px;
-          & input{
-              width: 100%;
-              height: 55px;
-              padding: 0 30px;
-              border: 1px solid rgba($primary, 0.2);
-              border-radius: 10px;
-              background-color: $white;
-              color: $dark;
-              font-size: 15px;
-              font-weight: 500;
-              outline: none;
-              
-          }
-          &_btn{
-            background-color: #309255;
-              margin-top: 20px;
-              height: 55px;
-              line-height: 55px;
-              padding: 0 30px;
-              font-size: 15px;
-              border-radius: 10px;
-          }
-          &_btn:hover{
-            background-color: black;
-            color: white;
-            transition: 0.4s all linear;
-          }
+        height: 55px;
+        line-height: 55px;
+        padding: 0 30px;
+        font-size: 15px;
+        border-radius: 10px;
       }
+      &_btn:hover {
+        background-color: black;
+        color: white;
+        transition: 0.4s all linear;
+      }
+    }
   }
 }
 
-
-// Footer Widget Link 
-.footer_link{
+// Footer Widget Link
+.footer_link {
   display: flex;
-  flex-wrap: wrap; 
+  flex-wrap: wrap;
 
-  & .footer-widget{
-      width: 50%;
-      @media #{$small-mobile}{
-          width: 100%;
-      }
+  & .footer-widget {
+    width: 50%;
+    @media #{$small-mobile} {
+      width: 100%;
+    }
   }
 }
 
@@ -868,7 +864,7 @@
   overflow: hidden;
   display: grid;
   justify-content: center;
-  grid-template-columns: repeat(4, minmax(1px, 1fr));
+  grid-template-columns: repeat(3, minmax(1px, 1fr));
   grid-auto-rows: minmax(0, 1fr);
   grid-template-rows: repeat(1, minmax(0, 1fr));
   padding: 0px 0px 0px 0px;
@@ -893,12 +889,72 @@
   // position: relative;
 }
 
-
 // Header After Login
-.header_login{
+.header_login {
   background-color: #212832;
 }
 
-.header_navbar{
+.header_navbar {
   display: flex;
+  justify-content: space-between;
+}
+
+.header_login_left {
+  padding: 25px 25px;
+  background-color: #28313d;
+}
+
+.header_login_left a + a {
+  margin-left: 15px;
+}
+
+.header_login_right {
+  display: flex;
+  align-items: center;
+  padding-right: 25px;
+  gap: 15px;
+}
+
+.header_notification {
+  font-size: 36px;
+  color: #309255;
+  position: relative;
+  padding-top: 3px;
+  border: 0;
+  background: none;
+}
+
+.header_info_src {
+  width: 60px;
+  border-radius: 50%;
+}
+
+.header_more {
+  width: 36px;
+  height: 36px;
+  border: 0;
+  background-color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &_details {
+    width: 160px;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px 0 rgba(33, 40, 50, 0.1);
+    background-color: #fff;
+    left: auto;
+    right: 0;
+
+    & li {
+      display: block;
+      color: #212832;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 9px 14px;
+      transition: all 0.3s ease 0s;
+    }
+  }
 }

@@ -87,39 +87,6 @@ const Footer = () => {
               {/* <!-- Footer Widget End --> */}
             </div>
             <div className="">
-              {/* <!-- Footer Widget Link Start --> */}
-              <div className={`${headerStyles.footer_link}`}>
-                {/* <!-- Footer Widget Start --> */}
-                <div className={`${headerStyles.footer_widget}`}>
-                  <h4 className={`${headerStyles.footer_widget_title}`}>
-                    Category
-                  </h4>
-
-                  <ul className={`${headerStyles.footer_widget_link}`}>
-                    <li>
-                      <a href="#">Creative Writing</a>
-                    </li>
-                    <li>
-                      <a href="#">Film & Video</a>
-                    </li>
-                    <li>
-                      <a href="#">Graphic Design</a>
-                    </li>
-                    <li>
-                      <a href="#">UI/UX Design</a>
-                    </li>
-                    <li>
-                      <a href="#">Business Analytics</a>
-                    </li>
-                    <li>
-                      <a href="#">Marketing</a>
-                    </li>
-                  </ul>
-                </div>
-                {/* <!-- Footer Widget End --> */}
-              </div>
-            </div>
-            <div className="">
               <div className="">
                 {/* <!-- Footer Widget Start --> */}
                 <div className={`${headerStyles.footer_widget}`}>
