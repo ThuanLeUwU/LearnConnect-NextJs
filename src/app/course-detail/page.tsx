@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import styles from "../login/styles.module.scss";
 import React, { useState } from "react";
 
@@ -32,9 +33,9 @@ export default function CourseDetailPage() {
                     />
                   </div>
                   <div className="author-content pl-4">
-                    <a className="text-base pl-4 pb-1.5" href="#">
+                    <Link className="text-base pl-4 pb-1.5" href="#">
                       Pamela Foster
-                    </a>
+                    </Link>
                     <span className="mx-5"></span>
                     <span className="text-sm font-normal text-[#309255]">
                       286 Enrolled Students
@@ -546,29 +547,29 @@ export default function CourseDetailPage() {
                 <h4 className="widget-title">Share Course:</h4>
                 <ul className="social">
                   <li>
-                    <a href="#">
+                    <Link href="#">
                       <i className="flaticon-facebook"></i>
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a href="#">
+                    <Link href="#">
                       <i className="flaticon-linkedin"></i>
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a href="#">
+                    <Link href="#">
                       <i className="flaticon-twitter"></i>
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a href="#">
+                    <Link href="#">
                       <i className="flaticon-skype"></i>
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a href="#">
+                    <Link href="#">
                       <i className="flaticon-instagram"></i>
-                    </a>
+                    </Link>
                   </li>
                 </ul>
               </div>

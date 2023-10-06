@@ -1,6 +1,7 @@
-"use client"
+"use client";
 import Image from "next/image";
 import styles from "../contact/styles.module.scss";
+import Link from "next/link";
 
 export default function ContactPage() {
   return (
@@ -18,7 +19,7 @@ export default function ContactPage() {
                     Phone No.
                   </h6>
                   <p className="text-black">
-                    <a href="tel:88193326867">(88) 193 326 867</a>
+                    <Link href="tel:88193326867">(88) 193 326 867</Link>
                   </p>
                 </div>
               </div>
@@ -31,7 +32,9 @@ export default function ContactPage() {
                     Email Address.
                   </h6>
                   <p className="text-black">
-                    <a href="mailto:edule100@gmail.com">edule100@gmail.com</a>
+                    <Link href="mailto:edule100@gmail.com">
+                      edule100@gmail.com
+                    </Link>
                   </p>
                 </div>
               </div>

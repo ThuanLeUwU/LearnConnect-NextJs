@@ -1,5 +1,6 @@
 import Image from "next/image";
 import styles from "../user-manage/styles.module.scss";
+import Link from "next/link";
 
 export default function UserManagePage() {
   return (
@@ -8,21 +9,21 @@ export default function UserManagePage() {
         <div className="lg:cols-span-1 w-full bg-[#309255] mx-auto">
           <div className={styles["sidebar-wrapper"]}>
             <div className={styles["menu-list"]}>
-              <a className={styles["active"]} href="#">
+              <Link className={styles["active"]} href="#">
                 <img src="./menu-icon/icon-1.png" alt="Icon" />
-              </a>
-              <a href="#">
+              </Link>
+              <Link href="#">
                 <img src="./menu-icon/icon-2.png" alt="Icon" />
-              </a>
-              <a href="#">
+              </Link>
+              <Link href="#">
                 <img src="./menu-icon/icon-3.png" alt="Icon" />
-              </a>
-              <a href="#">
+              </Link>
+              <Link href="#">
                 <img src="./menu-icon/icon-4.png" alt="Icon" />
-              </a>
-              <a href="#">
+              </Link>
+              <Link href="#">
                 <img src="./menu-icon/icon-5.png" alt="Icon" />
-              </a>
+              </Link>
             </div>
           </div>
         </div>

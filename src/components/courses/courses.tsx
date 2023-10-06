@@ -124,7 +124,7 @@ const Courses = () => {
                       <div className={`${CourseStyle.single_courses_author}`}>
                         <div className="author">
                           <div className="author-thumb">
-                            <Link href="#">
+                            <Link href="/course-detail">
                               {/* <img
                                   src="assets/images/author/author-01.jpg"
                                   alt="Author"
@@ -144,7 +144,7 @@ const Courses = () => {
 
                       <h4 className="title">
                         <Link
-                          href="courses-details.html"
+                          href="/course-detail"
                           className={`${CourseStyle.single_courses_title}`}
                         >
                           {item.description}
@@ -168,7 +168,7 @@ const Courses = () => {
                           >
                             {/* {item.sale} */}
                           </span>
-                          <span className="old-parice">{item.price}</span>
+                          <span className="old-parice">${item.price}</span>
                         </div>
                         <div className="courses-review">
                           {/* <span className="rating-count">4.9</span> */}
