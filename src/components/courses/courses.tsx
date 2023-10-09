@@ -6,10 +6,10 @@ import Link from "next/link";
 import Image from "next/image";
 
 const Courses = () => {
-    // const [rating, setRating] = useState(0);
-    // const handleStarClick = (nextValue, prevValue, name) => {
-    //    setRating(nextValue);
-    // }
+  // const [rating, setRating] = useState(0);
+  // const handleStarClick = (nextValue, prevValue, name) => {
+  //    setRating(nextValue);
+  // }
 
   const courseMenu = [
     {
@@ -126,7 +126,11 @@ const Courses = () => {
                       </div>
                       <div className={`${CourseStyle.single_courses_price}`}>
                         <div className="courses-price">
-                          <span className={`${CourseStyle.single_courses_price_sale}`}>{item.sale}</span>
+                          <span
+                            className={`${CourseStyle.single_courses_price_sale}`}
+                          >
+                            {item.sale}
+                          </span>
                           <span className="old-parice">{item.price}</span>
                         </div>
                         <div className="courses-review">
@@ -155,10 +159,7 @@ const Courses = () => {
 
         {/* <!-- All Courses BUtton Start --> */}
         <div className={`${CourseStyle.course_btn}`}>
-          <Link
-            href="/courses"
-            className={`${CourseStyle.course_btn_more}`}
-          >
+          <Link href="/courses" className={`${CourseStyle.course_btn_more}`}>
             Show More
           </Link>
         </div>
