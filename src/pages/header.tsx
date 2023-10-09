@@ -150,17 +150,17 @@ const Header = () => {
             <ul className={`${headerStyles.header_login_right}`}>
               <li className={`${headerStyles.header_notification}`}>hehe</li>
               <li className={`${headerStyles.header_info_img}`}>
-                <img
-                  className={`${headerStyles.header_info_src}`}
-                  src={user?.photoURL || "www.default.imageurl"}
-                  alt="author"
-                ></img>
+                
               </li>
               <li>
                 <button
                   className={`${headerStyles.header_more}`}
                   onClick={toggleDropdown}
-                />
+                ><img
+                className={`${headerStyles.header_info_src}`}
+                src={user?.photoURL || "www.default.imageurl"}
+                alt="author"
+              ></img></button>
                 {isOpen && (
                   <div className="origin-top-right absolute right-0 mt-2 w-44 rounded-lg shadow-lg bg-white ring-1 ring-black ring-opacity-5">
                     <ul

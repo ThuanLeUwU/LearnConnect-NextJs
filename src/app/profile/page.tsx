@@ -1,18 +1,23 @@
+"use client"
 import Link from "next/link";
 import ".././globals.css";
+import { UserAuth } from "../context/AuthContext";
 
 export default function ProfileUser() {
+
+  const { user, googleSignIn, logOut } = UserAuth();
+
   return (
-    <main className="container">
-      <section className="bg-gradient-to-br from-black via-gray-900 to-gray-800">
+    <div className="container">
+      <section className="bg-gradient-to-b">
         <div className="py-5">
           <div className="flex justify-center items-center">
-            <div className="w-full lg:w-full xl:w-full">
+            <div className="max-w-[1200px]">
               <div className="bg-[#fff] rounded-lg shadow-lg">
-                <div className="bg-black text-white flex flex-col lg:flex-row rounded-t p-4 lg:p-8">
+                <div className="bg-[#309255] text-white flex flex-col lg:flex-row rounded-t p-4 lg:p-8">
                   <div className="lg:mr-4 lg:mt-0 flex flex-col items-center w-full lg:w-36">
                     <img
-                      src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-profiles/avatar-1.webp"
+                      src={user?.photoURL || "www.default.imageurl"}
                       alt="Generic placeholder image"
                       className="w-36 h-36 rounded-full mt-4 mb-2"
                     />
@@ -24,8 +29,8 @@ export default function ProfileUser() {
                     </button>
                   </div>
                   <div className="mt-4 lg:mt-0 lg:ms-3">
-                    <h5 className="text-lg">Andy Horwitz</h5>
-                    <p>New York</p>
+                    <h5 className="text-lg">{user?.displayName}</h5>
+                    <p>{user?.email}</p>
                   </div>
                 </div>
                 <div className="p-4 text-black bg-gray-200">
@@ -125,6 +130,6 @@ export default function ProfileUser() {
           </div>
         </div>
       </section>
-    </main>
+    </div>
   );
 }
