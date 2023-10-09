@@ -1,6 +1,4 @@
-import Link from "next/link";
 import ".././globals.css";
-import styles from "../contact/styles.module.scss";
 
 export default function EditProfile() {
   return (

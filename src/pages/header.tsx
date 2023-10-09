@@ -259,7 +259,7 @@ const Header = () => {
                   <Link href="#">Pages </Link>
                   <ul className={`${headerStyles.sub_menu}`}>
                     <li>
-                      <Link href="/about">About</Link>
+                      <Link href="/about  ">About</Link>
                     </li>
                     <li>
                       <Link href="register.html">Register</Link>
@@ -274,7 +274,7 @@ const Header = () => {
                       <Link href="404-error.html">404 Error</Link>
                     </li>
                     <li>
-                      <Link href="after-enroll.html">After Enroll</Link>
+                      <Link href="/after-enroll">After Enroll</Link>
                     </li>
                     <li>
                       <Link href="courses-admin.html">

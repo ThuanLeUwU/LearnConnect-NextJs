@@ -1,6 +1,5 @@
 "use client";
 import Link from "next/link";
-import styles from "../login/styles.module.scss";
 import React, { useState } from "react";
 
 export default function CourseDetailPage() {
