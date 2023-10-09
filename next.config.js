@@ -9,3 +9,9 @@ const nextConfig = {
 };
 
 module.exports = nextConfig;
+
+module.exports = {
+  images: {
+    domains: ['example.com'], // Thêm tên miền hoặc hostname vào đây
+  },
+}
