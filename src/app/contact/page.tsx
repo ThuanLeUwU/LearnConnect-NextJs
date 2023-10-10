@@ -1,16 +1,14 @@
 "use client";
-import Image from "next/image";
-import styles from "../contact/styles.module.scss";
 import Link from "next/link";
 
 export default function ContactPage() {
   return (
     <div className="bg-[#fff]">
       <div className="container mx-auto max-w-screen-lg py-20">
-        <div className="grid lg:grid-cols-2 pt-6 px-10 pb-16 border border-solid border-opacity-20 border-[#30925533] rounded-10">
+        <div className="grid lg:grid-cols-2 pt-6 px-10 pb-16 border border-solid border-opacity-20 border-[#30925533] rounded-lg">
           <div className="mx-auto">
-            <div className="px-14 py-16 mt-12">
-              <div className="flex items-center">
+            <div className="px-14 py-16 bg-[#e7f8ee] h-full rounded-lg">
+              <div className="flex items-center ">
                 <div className="hover:bg-[#309255] my-2 w-24 h-24 border border-solid border-green-600 border-opacity-20 rounded-full transition-all duration-300 ease-in-out delay-0">
                   <i className="flaticon-phone-call"></i>
                 </div>
@@ -51,36 +49,111 @@ export default function ContactPage() {
               </div>
             </div>
           </div>
-          <div className="mx-auto">
+          <div className="">
             <div className="max-w-md mt-11 ml-24">
               <h3 className="text-[30px] font-medium text-black">
                 Get in Touch <span className="text-[#309255]">With Us</span>
               </h3>
-
-              <div className="form-wrapper pt-8">
-                <form
-                  id="contact-form"
-                  action="https://htmlmail.hasthemes.com/humayun/edule-contact.php"
-                  method="POST"
-                >
-                  <div className={styles["single-form"]}>
-                    <input type="text" name="name" placeholder="Name" />
+              <div className="pt-8">
+                <form>
+                  <div className="grid gap-6 mb-6 md:grid-cols-2">
+                    <div>
+                      <label
+                        htmlFor="first_name"
+                        className="block mb-2 text-base font-medium text-[#000]"
+                      >
+                        First name
+                      </label>
+                      <input
+                        type="text"
+                        id="first_name"
+                        className="bg-[#fff] border border-[#30925533] text-[#000] text-base rounded-lg block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-[#309255]"
+                        placeholder="John"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="last_name"
+                        className="block mb-2 text-base font-medium text-[#000]"
+                      >
+                        Last name
+                      </label>
+                      <input
+                        type="text"
+                        id="last_name"
+                        className="bg-[#fff] border border-[#30925533] text-[#000] text-base rounded-lg block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-[#309255]"
+                        placeholder="Doe"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="company"
+                        className="block mb-2 text-base font-medium text-[#000]"
+                      >
+                        Company
+                      </label>
+                      <input
+                        type="text"
+                        id="company"
+                        className="bg-[#fff] border border-[#30925533] text-[#000] text-base rounded-lg block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-[#309255]"
+                        placeholder="Flowbite"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="phone"
+                        className="block mb-2 text-base font-medium text-[#000]"
+                      >
+                        Phone number
+                      </label>
+                      <input
+                        type="number"
+                        id="phone"
+                        className="bg-[#fff] border border-[#30925533] text-[#000] text-base rounded-lg block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-[#309255]"
+                        placeholder="012345678"
+                        required
+                      />
+                    </div>
                   </div>
-                  <div className={styles["single-form"]}>
-                    <input type="email" name="email" placeholder="Email" />
+                  <div className="mb-6">
+                    <label
+                      htmlFor="password"
+                      className="block mb-2 text-base font-medium text-[#000]"
+                    >
+                      Password
+                    </label>
+                    <input
+                      type="password"
+                      id="password"
+                      className="bg-[#fff] border border-[#30925533] text-[#000] text-base rounded-lg block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-[#309255]"
+                      placeholder="•••••••••"
+                      required
+                    />
                   </div>
-                  <div className={styles["single-form"]}>
-                    <input type="text" name="subject" placeholder="Subject" />
+                  <div className="mb-6">
+                    <label
+                      htmlFor="confirm_password"
+                      className="block mb-2 text-base font-medium text-[#000]"
+                    >
+                      Confirm password
+                    </label>
+                    <input
+                      type="password"
+                      id="confirm_password"
+                      className="bg-[#fff] border border-[#30925533] text-[#000] text-base rounded-lg block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-[#309255]"
+                      placeholder="•••••••••"
+                      required
+                    />
                   </div>
-                  <div className={styles["single-form"]}>
-                    <textarea name="message" placeholder="Message"></textarea>
-                  </div>
-                  <p className="form-message"></p>
-                  <div className="className=inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded-2xl py-4 px-10 leading-normal no-underline bg-[#309255] text-white hover:bg-black btn-hover-dark w-full h-full transition-all duration-300 ease-in-out delay-0">
-                    <button>
-                      Send Message <i className="flaticon-right"></i>
-                    </button>
-                  </div>
+                  <button
+                    type="submit"
+                    className="bg-[#309255] text-[18px] px-[35px] py-[15px] rounded-lg text-[#fff] hover:bg-[#000] transition-all duration-300 ease-in-out delay-0"
+                  >
+                    Submit
+                  </button>
                 </form>
               </div>
             </div>

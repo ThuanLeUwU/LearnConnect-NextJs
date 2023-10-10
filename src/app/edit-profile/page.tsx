@@ -101,7 +101,7 @@ export default function EditProfile() {
               </div>
               <button
                 type="submit"
-                className="bg-[#309255] text-[18px] px-[35px] py-[20px] rounded-lg text-[#fff] hover:bg-[#000] transition-all duration-300 ease-in-out delay-0"
+                className="bg-[#309255] text-[18px] px-[35px] py-[15px] rounded-lg text-[#fff] hover:bg-[#000] transition-all duration-300 ease-in-out delay-0"
               >
                 Submit
               </button>
