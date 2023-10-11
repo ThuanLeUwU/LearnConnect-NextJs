@@ -173,7 +173,7 @@ export default function AfterEnroll() {
                     onClick={() => handleTabClick("tab4")}
                   >
                     <button className="w-28 h-14 px-[15px] text-center text-sm font-medium  border-opacity-20 rounded-md hover:border-[#309255] hover:text-[#fff] hover:bg-[#309255]">
-                      Instructor
+                      lecture
                     </button>
                   </li>
                   <li
@@ -412,12 +412,26 @@ export default function AfterEnroll() {
                         <div className="lg:col-span-4 px-[15px]">
                           <div className="">
                             <h4 className="text-[25px] px-[15px] pt-5 text-[#212832]">
-                              Instructor
+                              lecture
                             </h4>
                           </div>
                         </div>
                         <div className="lg:col-span-8">
-                          <div className="flex flex-col">
+                          <AccordionItem
+                            header="Lesson-01: Mindful Growth & the Creative Journey, Find
+                      Your Spark & Map Your Future"
+                            time="01 hour 48 minutes"
+                            timevideo="08 minutes"
+                            onLinkClick={changeVideoSource}
+                          />
+                          <AccordionItem
+                            header="Lesson-02: Mindful Growth & the Creative Journey, Find
+                      Your Spark & Map Your Future"
+                            time="01 hour 48 minutes"
+                            timevideo="08 minutes"
+                            onLinkClick={changeVideoSource}
+                          />
+                          {/* <div className="flex flex-col">
                             <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
                               <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
                                 <div className="overflow-hidden">
@@ -532,7 +546,7 @@ export default function AfterEnroll() {
                                 </div>
                               </div>
                             </div>
-                          </div>
+                          </div> */}
                         </div>
                       </div>
                     </div>
@@ -552,7 +566,55 @@ export default function AfterEnroll() {
           </div>
           <div className="video-playlist bg-[#eefbf3] text-black">
             <div className="accordion" id="videoPlaylist">
-              <AccordionItem
+              <nav className="vids">
+                <a
+                  className={`link ${
+                    videoSrc ===
+                    "https://player.vimeo.com/external/215175080.hd.mp4?s=5b17787857fd95646e67ad0f666ea69388cb703c&profile_id=119"
+                      ? "active text-[#309255] "
+                      : ""
+                  }`}
+                  href="#"
+                  onClick={() =>
+                    changeVideoSource(
+                      "https://player.vimeo.com/external/215175080.hd.mp4?s=5b17787857fd95646e67ad0f666ea69388cb703c&profile_id=119"
+                    )
+                  }
+                >
+                  <div className="pl-20 py-2 pr-[30px]">
+                    <p>01. The Complete Medicine Masterclass</p>
+                    <span
+                      className={`total-duration text-[#848886] text-[13px] mt-1.5`}
+                    >
+                      08 minutes
+                    </span>
+                  </div>
+                </a>
+                <a
+                  className={`link ${
+                    videoSrc ===
+                    "https://player.vimeo.com/external/207590826.hd.mp4?s=6a918d074abf8f3add7858018855524d384f6934&amp;profile_id=119"
+                      ? "active text-[#309255]"
+                      : ""
+                  }`}
+                  href="#"
+                  onClick={() =>
+                    changeVideoSource(
+                      "https://player.vimeo.com/external/207590826.hd.mp4?s=6a918d074abf8f3add7858018855524d384f6934&amp;profile_id=119"
+                    )
+                  }
+                >
+                  <div className="pl-20 py-2 pr-[30px]">
+                    <p>02. The Complete Medicine Masterclass</p>
+                    <span
+                      className={`total-duration text-[#848886] text-[13px] mt-1.5`}
+                    >
+                      08 minutes
+                    </span>
+                  </div>
+                </a>
+              </nav>
+              {/* <AccordionItem
                 header="Lesson-01: Mindful Growth & the Creative Journey, Find
                       Your Spark & Map Your Future"
                 time="01 hour 48 minutes"
@@ -565,7 +627,7 @@ export default function AfterEnroll() {
                 time="01 hour 48 minutes"
                 timevideo="08 minutes"
                 onLinkClick={changeVideoSource}
-              />
+              /> */}
             </div>
           </div>
           <div className="video-playlist bg-[#eefbf3] text-black">

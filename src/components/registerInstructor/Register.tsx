@@ -40,7 +40,9 @@ const RegisInstructor = () => {
                   <Link
                     className={`${regisInstructorStyle.regis_btn}`}
                     href="/login"
-                  >Drop Information</Link>
+                  >
+                    Drop Information
+                  </Link>
                 ) : (
                   <Button
                     className={`${regisInstructorStyle.regis_btn}`}
