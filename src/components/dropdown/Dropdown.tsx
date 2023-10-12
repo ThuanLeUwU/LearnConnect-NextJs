@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-const AccordionItem = ({ header, time, text, onLinkClick }: any) => {
+const AccordionItem = ({ header, text }: any) => {
   const [active, setActive] = useState(false);
 
   const handleToggle = () => {
@@ -7,10 +7,10 @@ const AccordionItem = ({ header, time, text, onLinkClick }: any) => {
     setActive(!active);
   };
   return (
-    <div className="single-faq mb-8 w-full rounded-lg bg-[#eefbf3]">
+    <div className="single-faq mb-8 w-full rounded-lg bg-[#fff]">
       <button
         className={`faq-btn flex w-full text-left py-2 pl-[50px] pr-[30px]
-        ${active ? "bg-[#e0f1e7]" : ""}`}
+        ${active ? "bg-[#fff]" : ""}`}
         onClick={() => handleToggle()}
       >
         <div className="mr-5 flex h-10 w-full max-w-[40px] items-center justify-center rounded-lg bg-primary bg-opacity-5 text-primary">
@@ -39,7 +39,6 @@ const AccordionItem = ({ header, time, text, onLinkClick }: any) => {
           >
             {header}
           </p>
-          <span className="text-[#848886] text-[13px] font-light">{time}</span>
         </div>
       </button>
 
@@ -55,7 +54,17 @@ const AccordionItem = ({ header, time, text, onLinkClick }: any) => {
           active ? "block" : "hidden"
         }`}
       >
-        <a
+        <div className="pl-20 py-2 pr-[30px]">
+          <p className="text-[#212832] text-[15px] font-medium title-link">
+            01. The Complete Medicine Masterclass
+          </p>
+        </div>
+        <div className="pl-20 py-2 pr-[30px]">
+          <p className="text-[#212832] text-[15px] font-medium title-link">
+            02. The Complete Medicine Masterclass
+          </p>
+        </div>
+        {/* <a
           className="relative"
           href="#"
           onClick={(e) => {
@@ -98,7 +107,7 @@ const AccordionItem = ({ header, time, text, onLinkClick }: any) => {
               08 minutes
             </span>
           </div>
-        </a>
+        </a> */}
       </div>
     </div>
   );

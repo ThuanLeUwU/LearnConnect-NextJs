@@ -502,30 +502,12 @@ export default function CourseDetailPage() {
                           </span>
                         </li>
                         <li className="border-b border-solid border-[#d1e6d9] py-3.5">
-                          <i className="icofont-bars"></i>{" "}
-                          <strong className="text-[#212832] text-base font-medium">
-                            Level
-                          </strong>{" "}
-                          <span className="text-[#52565b] float-right text-base font-normal">
-                            Secondary
-                          </span>
-                        </li>
-                        <li className="border-b border-solid border-[#d1e6d9] py-3.5">
                           <i className="icofont-book-alt"></i>{" "}
                           <strong className="text-[#212832] text-base font-medium">
                             Language
                           </strong>{" "}
                           <span className="text-[#52565b] float-right text-base font-normal">
                             English
-                          </span>
-                        </li>
-                        <li className="border-b border-solid border-[#d1e6d9] py-3.5">
-                          <i className="icofont-certificate-alt-1"></i>{" "}
-                          <strong className="text-[#212832] text-base font-medium">
-                            Certificate
-                          </strong>{" "}
-                          <span className="text-[#52565b] float-right text-base font-normal">
-                            Yes
                           </span>
                         </li>
                       </ul>
