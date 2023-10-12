@@ -1,6 +1,7 @@
 "use client";
 import ".././globals.css";
 import CourseItem from "@/components/course-item/course";
+import Paginate from "@/components/pagination/pagination";
 const MyCourse = () => {
   return (
     <div className="container">
@@ -13,6 +14,7 @@ const MyCourse = () => {
         <CourseItem />
         <CourseItem />
       </div>
+      <Paginate />
     </div>
   );
 };
