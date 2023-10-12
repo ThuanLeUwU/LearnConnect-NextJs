@@ -114,14 +114,14 @@ export default function AfterEnroll() {
   };
 
   return (
-    <div className="">
-      <div className="grid cols-2 lg:grid-cols-12">
+    <div className="container">
+      <div className="grid cols-2 lg:grid-cols-12 mt-[40px]">
         <div className="lg:col-span-8">
           <video width="full" height="full" controls id="courseVideo">
             <source src={videoSrc} type="video/mp4" />
           </video>
           <div>
-            <div className="px-[70px]">
+            <div className="px-3">
               <h2 className="text-[25px] leading-normal text-[#212832] font-medium mt-2.5">
                 Finance & Investment Series: Learn to Budget and Calculate Your
                 Net Worth.
@@ -152,7 +152,7 @@ export default function AfterEnroll() {
                       Description
                     </button>
                   </li>
-                  <li
+                  {/* <li
                     className={`cursor-pointer rounded-md ${
                       activeTab === "tab3"
                         ? " text-[#fff] bg-[#309255]"
@@ -163,7 +163,7 @@ export default function AfterEnroll() {
                     <button className="w-28 h-14 px-[15px] text-center text-sm font-medium  border-opacity-20 rounded-md hover:border-[#309255] hover:text-[#fff] hover:bg-[#309255]">
                       Certificates
                     </button>
-                  </li>
+                  </li> */}
                   <li
                     className={`cursor-pointer rounded-md ${
                       activeTab === "tab4"
@@ -255,7 +255,7 @@ export default function AfterEnroll() {
                                             2,16
                                           </td>
                                         </tr>
-                                        <tr className="border-b border-b-[#e7f8ee]">
+                                        {/* <tr className="border-b border-b-[#e7f8ee]">
                                           <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-medium">
                                             Level
                                           </td>
@@ -265,7 +265,7 @@ export default function AfterEnroll() {
                                           <td className="whitespace-nowrap px-6 py-4 text-[#52565b] text-[15px] font-normal">
                                             Secondary
                                           </td>
-                                        </tr>
+                                        </tr> */}
                                         <tr className="border-b border-b-[#e7f8ee]">
                                           <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-medium">
                                             Language

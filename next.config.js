@@ -12,6 +12,6 @@ module.exports = nextConfig;
 
 module.exports = {
   images: {
-    domains: ['example.com'], // Thêm tên miền hoặc hostname vào đây
+    domains: ['media.wired.com','www.simplilearn.com'], // Thêm tên miền hoặc hostname vào đây
   },
 }

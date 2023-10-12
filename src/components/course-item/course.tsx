@@ -5,7 +5,7 @@ const CourseItem = () => {
     <div className="lg:col-span-4 border border-solid border-[#acd6bc] p-[20px] rounded-lg my-[10px] hover:border-[#309255] mx-[15px]">
       <div className="single-courses">
         <div className="courses-images">
-          <a href="courses-details.html">
+          <a href="/after-enroll">
             <img
               className="rounded-lg w-full"
               src="./courses-01.jpg"
@@ -58,9 +58,12 @@ const CourseItem = () => {
               <span className="rating-star">
                 <span className="rating-bar"></span>
               </span>
-              <p className="text-[#52565b] text-[14px] text-right pt-2">
-                Your rating
-              </p>
+              <div className="flex justify-between">
+              <a href="/after-enroll" className="text-[#52565b] text-[14px] text-right pt-2">
+                Continue
+              </a>
+              <button > Report </button>
+              </div>
             </div>
           </div>
         </div>

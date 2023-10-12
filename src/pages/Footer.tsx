@@ -96,19 +96,13 @@ const Footer = () => {
 
                   <ul className={`${headerStyles.footer_widget_link}`}>
                     <li>
-                      <a href="#">Privacy Policy</a>
+                      <a href="/about">About Us</a>
                     </li>
                     <li>
-                      <a href="#">Discussion</a>
+                      <a href="/contact">Contact Us</a>
                     </li>
                     <li>
-                      <a href="#">Terms & Conditions</a>
-                    </li>
-                    <li>
-                      <a href="#">Customer Support</a>
-                    </li>
-                    <li>
-                      <a href="#">Course FAQ’s</a>
+                      <a href="/faq">Course FAQ’s</a>
                     </li>
                   </ul>
                 </div>
@@ -165,7 +159,7 @@ const Footer = () => {
             </div>
             <div className={`${headerStyles.copyright_text}`}>
               <p>
-                &copy; 2021 <span> Edule </span> Made with{" "}
+                &copy; 2021 <span> LearnConnect </span> Made with{" "}
                 {/* <i className="icofont-heart-alt"></i> by{" "} */}
                 <Link href="#">Codecarnival</Link>
               </p>

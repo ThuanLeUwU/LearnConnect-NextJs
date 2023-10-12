@@ -101,8 +101,8 @@ const Header = () => {
                   </p>
                   <p>
                     <i className="flaticon-email"></i>{" "}
-                    <Link href="mailto:address@gmail.com">
-                      address@gmail.com
+                    <Link href="mailto:learnconnect@gmail.com">
+                      learnconnect@gmail.com
                     </Link>
                   </p>
                 </div>
@@ -144,11 +144,13 @@ const Header = () => {
           <div className={`${headerStyles.header_navbar}`}>
             <div className={`${headerStyles.header_login_left}`}>
               <Link href="/">
-                <img src="" />
+                <img src="/" />
               </Link>
             </div>
             <ul className={`${headerStyles.header_login_right}`}>
-              <li className={`${headerStyles.header_notification}`}>hehe</li>
+              <li className={`${headerStyles.header_notification}`}>
+                <Image width={32} height={32} src="/images/notification.png"/>
+              </li>
               <li className={`${headerStyles.header_info_img}`}>
                 
               </li>
@@ -215,7 +217,9 @@ const Header = () => {
             <div className={`${headerStyles.header_main_wrapper}`}>
             {/* <!-- Header Logo Start --> */}
             <div className={`${headerStyles.header_logo}`}>
-              <Link href="/">Image</Link>
+              <Link href="/">
+                <Image width={60} height={60} src="/images/nhoam.gif" alt="logo"/>
+              </Link>
             </div>
             {/* <!-- Header Logo End --> */}
 
@@ -368,7 +372,7 @@ const Header = () => {
             <div className={`${headerStyles.header_main_wrapper}`}>
               {/* <!-- Header Logo Start --> */}
               <div className={`${headerStyles.header_logo}`}>
-                <Link href="/">Image</Link>
+                <Link href="/"><Image width={60} height={60} src="/images/nhoam.gif" alt="logo"/></Link>
               </div>
               {/* <!-- Header Logo End --> */}
 
@@ -389,7 +393,7 @@ const Header = () => {
                     </ul> */}
                   </li>
                   <li>
-                    <Link href="/myCourse">My Courses </Link>
+                    <Link href="/my-course">My Courses </Link>
                     {/* <ul className={`${headerStyles.sub_menu}`}>
                       <li>
                         <Link href="/about">About</Link>
@@ -488,7 +492,7 @@ const Header = () => {
               <Button
                   onClick={() => {
                     Modal.confirm({
-                      title: "Create New Course",
+                      title: "Register Mentor Form",
                       content: (
                         <RegisterForm
                           visible={visible}

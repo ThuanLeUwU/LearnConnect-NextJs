@@ -25,7 +25,9 @@ export default function ProfileUser() {
                       type="button"
                       className="btn btn-outline-dark btn-sm"
                     >
+                      <Link href="/edit-profile">
                       Edit profile
+                      </Link>
                     </button>
                   </div>
                   <div className="mt-4 lg:mt-0 lg:ms-3">

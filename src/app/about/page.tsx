@@ -21,10 +21,10 @@ const About = () => {
           <div className="lg:col-span-6 px-[15px]">
             <div className="about-content ml-10 mt-[45px]">
               <h5 className="text-[20px] pb-5 text-[#309255]">
-                Welcome to Edule.
+                Welcome to LearnConnect.
               </h5>
               <h2 className="text-[40px] font-normal pb-6 leading-snug">
-                You can join with Edule and upgrade your skill for your{" "}
+                You can join with LearnConnect and upgrade your skill for your{" "}
                 <span className="text-[#309255]">bright future.</span>
               </h2>
               <p className="mt-[25px] font-extralight">

@@ -29,7 +29,7 @@ const RegisInstructor = () => {
               <div className="section-title shape-02">
                 <h5 className="sub-title">Become A Instructor</h5>
                 <h2 className="main-title">
-                  You can join with Edule as <span>a instructor?</span>
+                  You can join with LearnConnect as <span>a instructor?</span>
                 </h2>
               </div>
               {/* <!-- Section Title End --> */}
@@ -48,7 +48,7 @@ const RegisInstructor = () => {
                     className={`${regisInstructorStyle.regis_btn}`}
                     onClick={() => {
                       Modal.confirm({
-                        title: "Create New Course",
+                        title: "Register Mentor Form",
                         content: (
                           <RegisterForm
                             visible={visible}

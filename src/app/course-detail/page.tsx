@@ -1,8 +1,13 @@
 "use client";
+import { Payment } from "@/components/payment";
+import { Modal } from "antd";
 import Link from "next/link";
 import React, { useState } from "react";
+import { Button } from "react-bootstrap";
 
 export default function CourseDetailPage() {
+  const [visible, setVisible] = useState(false);
+
   const [activeTab, setActiveTab] = useState("tab1");
   const handleTabClick = (tabName: string) => {
     setActiveTab(tabName);
@@ -513,12 +518,27 @@ export default function CourseDetailPage() {
                       </ul>
                     </div>
                     <div className="text-center mt-10">
-                      <a
-                        href="#"
+                      <Button
+                        // href="/after-enroll"
                         className="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded-2xl py-4 px-3 leading-normal no-underline bg-[#309255] text-white hover:bg-black btn-outline w-44 border-[#a9f9c8] hover:text-white transition-all duration-300 ease-in-out delay-0 my-2"
+                        onClick={() => {
+                          Modal.confirm({
+                            title: "Payment successful",
+                            content: (
+                              <Payment
+                                visible={visible}
+                                setVisible={setVisible}
+                                onCancel={() => {
+                                  setVisible(false);
+                                }}
+                                isEdit={false}
+                              />
+                            ),
+                          });
+                        }}
                       >
                         Enroll Now
-                      </a>
+                      </Button>
                     </div>
                   </div>
                 </div>
