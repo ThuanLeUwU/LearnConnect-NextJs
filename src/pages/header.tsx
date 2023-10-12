@@ -101,8 +101,8 @@ const Header = () => {
                   </p>
                   <p>
                     <i className="flaticon-email"></i>{" "}
-                    <Link href="mailto:address@gmail.com">
-                      address@gmail.com
+                    <Link href="mailto:learnconnect@gmail.com">
+                      learnconnect@gmail.com
                     </Link>
                   </p>
                 </div>
@@ -144,7 +144,7 @@ const Header = () => {
           <div className={`${headerStyles.header_navbar}`}>
             <div className={`${headerStyles.header_login_left}`}>
               <Link href="/">
-                <img src="" />
+                <img src="/" />
               </Link>
             </div>
             <ul className={`${headerStyles.header_login_right}`}>
@@ -215,7 +215,9 @@ const Header = () => {
             <div className={`${headerStyles.header_main_wrapper}`}>
             {/* <!-- Header Logo Start --> */}
             <div className={`${headerStyles.header_logo}`}>
-              <Link href="/">Image</Link>
+              <Link href="/">
+                <Image width={60} height={60} src="/images/nhoam.gif" alt="logo"/>
+              </Link>
             </div>
             {/* <!-- Header Logo End --> */}
 
@@ -368,7 +370,7 @@ const Header = () => {
             <div className={`${headerStyles.header_main_wrapper}`}>
               {/* <!-- Header Logo Start --> */}
               <div className={`${headerStyles.header_logo}`}>
-                <Link href="/">Image</Link>
+                <Link href="/"><Image width={60} height={60} src="/images/nhoam.gif" alt="logo"/></Link>
               </div>
               {/* <!-- Header Logo End --> */}
 

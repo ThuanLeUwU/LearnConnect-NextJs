@@ -12,7 +12,7 @@ export type Course = {
   description: string;
   shortDescription: string;
   difficultyLevel: string;
-  image: string;
+  imageUrl: string;
   price: number;
   rating: number;
   categoryId: number | string;
@@ -115,7 +115,8 @@ const Courses = () => {
                           //   objectFit="contain"
                           layout="fill"
                           className={`${CourseStyle.single_courses_image_details}`}
-                          src={item.image}
+                          src={item.imageUrl}
+                          // src={item.imageUrl}
                           alt="Courses"
                         />
                       </Link>
