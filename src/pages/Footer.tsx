@@ -159,7 +159,7 @@ const Footer = () => {
             </div>
             <div className={`${headerStyles.copyright_text}`}>
               <p>
-                &copy; 2021 <span> Edule </span> Made with{" "}
+                &copy; 2021 <span> LearnConnect </span> Made with{" "}
                 {/* <i className="icofont-heart-alt"></i> by{" "} */}
                 <Link href="#">Codecarnival</Link>
               </p>

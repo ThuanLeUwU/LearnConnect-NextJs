@@ -148,7 +148,9 @@ const Header = () => {
               </Link>
             </div>
             <ul className={`${headerStyles.header_login_right}`}>
-              <li className={`${headerStyles.header_notification}`}>hehe</li>
+              <li className={`${headerStyles.header_notification}`}>
+                <Image width={32} height={32} src="/images/notification.png"/>
+              </li>
               <li className={`${headerStyles.header_info_img}`}>
                 
               </li>
@@ -391,7 +393,7 @@ const Header = () => {
                     </ul> */}
                   </li>
                   <li>
-                    <Link href="/myCourse">My Courses </Link>
+                    <Link href="/my-course">My Courses </Link>
                     {/* <ul className={`${headerStyles.sub_menu}`}>
                       <li>
                         <Link href="/about">About</Link>
@@ -490,7 +492,7 @@ const Header = () => {
               <Button
                   onClick={() => {
                     Modal.confirm({
-                      title: "Create New Course",
+                      title: "Register Mentor Form",
                       content: (
                         <RegisterForm
                           visible={visible}

@@ -84,7 +84,7 @@ const Courses = () => {
           {/* <!-- Section Title Start --> */}
           <div className="section-title shape-01">
             <h2 className="main-title">
-              All <span>Courses</span> of Edule
+              All <span>Courses</span> of LearnConnect
             </h2>
           </div>
           {/* <!-- Section Title End --> */}
@@ -109,11 +109,11 @@ const Courses = () => {
                   <div className={`${CourseStyle.single_courses}`}>
                     <div className={`${CourseStyle.single_courses_image}`}>
                       <Link href="/course-detail">
-                        <Image
-                          // width={100}
-                          // height={100}
+                        <img
+                          //  width={100}
+                          //    height={100}
                           //   objectFit="contain"
-                          layout="fill"
+                          // layout="fill"
                           className={`${CourseStyle.single_courses_image_details}`}
                           src={item.imageUrl}
                           // src={item.imageUrl}
@@ -155,12 +155,12 @@ const Courses = () => {
                         <span>
                           {" "}
                           {/* <i className="icofont-clock-time"></i>  */}
-                          {item.difficultyLevel}
+                          {/* {item.difficultyLevel} */}
                         </span>
                         <span>
                           {" "}
                           <i className="icofont-read-book"></i>{" "}
-                          {item.contentLength}{" "}
+                          {item.contentLength} Lectures
                         </span>
                       </div>
                       <div className={`${CourseStyle.single_courses_price}`}>
