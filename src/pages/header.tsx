@@ -144,7 +144,7 @@ const Header = () => {
           <div className={`${headerStyles.header_navbar}`}>
             <div className={`${headerStyles.header_login_left}`}>
               <Link href="/">
-                <img src="/" />
+                <img src="/" alt="Logo" />
               </Link>
             </div>
             <ul className={`${headerStyles.header_login_right}`}>

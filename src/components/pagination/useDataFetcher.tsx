@@ -36,7 +36,6 @@ const useDataFetcher = () => {
     };
     fetchData();
   }, [currentPage]);
-
   return {
     loading,
     courses,
