@@ -153,7 +153,7 @@ const Header = () => {
                   width={32}
                   height={32}
                   src="/images/notification.png"
-                  alt={""}
+                  alt={"Logo"}
                 />
               </li>
               <li className={`${headerStyles.header_info_img}`}></li>
