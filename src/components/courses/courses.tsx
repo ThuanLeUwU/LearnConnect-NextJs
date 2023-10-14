@@ -5,6 +5,8 @@ import CourseStyle from "./styles/style.module.scss";
 import Link from "next/link";
 import Image from "next/image";
 import axios from "axios";
+import Paginate from "../pagination/pagination";
+import useDataFetcher from "../pagination/useDataFetcher";
 
 export type Course = {
   id: string | number;
@@ -24,7 +26,8 @@ const Courses = () => {
   // const handleStarClick = (nextValue, prevValue, name) => {
   //    setRating(nextValue);
   // }
-
+  // const { loading, courses, totalPages, currentPage, setCurrentPage } =
+  //   useDataFetcher();
   const [courses, setCourses] = useState<Course[]>([]);
 
   console.log("course", courses);
@@ -84,7 +87,7 @@ const Courses = () => {
           {/* <!-- Section Title Start --> */}
           <div className="section-title shape-01">
             <h2 className="main-title">
-              All <span>Courses</span> of LearnConnect
+              All <span>Courses</span> of Edule
             </h2>
           </div>
           {/* <!-- Section Title End --> */}
@@ -109,14 +112,13 @@ const Courses = () => {
                   <div className={`${CourseStyle.single_courses}`}>
                     <div className={`${CourseStyle.single_courses_image}`}>
                       <Link href="/course-detail">
-                        <img
-                          //  width={100}
-                          //    height={100}
+                        <Image
+                          // width={100}
+                          // height={100}
                           //   objectFit="contain"
-                          // layout="fill"
+                          layout="fill"
                           className={`${CourseStyle.single_courses_image_details}`}
                           src={item.imageUrl}
-                          // src={item.imageUrl}
                           alt="Courses"
                         />
                       </Link>
@@ -155,12 +157,12 @@ const Courses = () => {
                         <span>
                           {" "}
                           {/* <i className="icofont-clock-time"></i>  */}
-                          {/* {item.difficultyLevel} */}
+                          {item.difficultyLevel}
                         </span>
                         <span>
                           {" "}
                           <i className="icofont-read-book"></i>{" "}
-                          {item.contentLength} Lectures
+                          {item.contentLength}{" "}
                         </span>
                       </div>
                       <div className={`${CourseStyle.single_courses_price}`}>
@@ -193,6 +195,11 @@ const Courses = () => {
               );
             })}
           </div>
+          {/* <Paginate
+            totalPages={totalPages}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+          /> */}
         </div>
         {/* <!-- All Courses Wrapper End --> */}
 
