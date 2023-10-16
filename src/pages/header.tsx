@@ -149,7 +149,7 @@ const Header = () => {
             </div>
             <ul className={`${headerStyles.header_login_right}`}>
               <li className={`${headerStyles.header_notification}`}>
-                <Image width={32} height={32} src="/images/notification.png"/>
+                <Image width={32} height={32} src="/images/notification.png" alt="notification"/>
               </li>
               <li className={`${headerStyles.header_info_img}`}>
                 
