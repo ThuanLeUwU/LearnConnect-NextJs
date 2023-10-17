@@ -5,12 +5,11 @@ import { UserAuth } from "@/app/context/AuthContext";
 import { auth } from "../firebase";
 import { useRouter } from "next/navigation";
 
-
 export default function LoginPage() {
   const { user, googleSignIn, logOut } = UserAuth();
   const router = useRouter();
-  console.log("tao nè", user)
-
+  console.log("User i4", user);
+  console.log("token", user); // Check if user exists before accessing accessToken
   const handleSignIn = async () => {
     try {
       googleSignIn();
@@ -18,7 +17,6 @@ export default function LoginPage() {
       // if(user){
       //   router.push('/')
       // }
- 
     } catch (error) {
       console.log(error);
     }

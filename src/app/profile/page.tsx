@@ -1,12 +1,12 @@
-"use client"
+"use client";
 import Link from "next/link";
 import ".././globals.css";
 import { UserAuth } from "../context/AuthContext";
 
 export default function ProfileUser() {
-
   const { user, googleSignIn, logOut } = UserAuth();
 
+  console.log("token", user);
   return (
     <div className="container">
       <section className="bg-gradient-to-b">
@@ -25,9 +25,7 @@ export default function ProfileUser() {
                       type="button"
                       className="btn btn-outline-dark btn-sm"
                     >
-                      <Link href="/edit-profile">
-                      Edit profile
-                      </Link>
+                      <Link href="/edit-profile">Edit profile</Link>
                     </button>
                   </div>
                   <div className="mt-4 lg:mt-0 lg:ms-3">
