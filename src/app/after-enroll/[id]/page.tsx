@@ -17,7 +17,7 @@ export type Course = {
   categoryId: number | string;
   contentLength: number;
 };
-export default function AfterEnroll({ id }: { id: { id: string } }) {
+export default function AfterEnroll() {
   const [activeTab, setActiveTab] = useState("tab1");
   const router = useRouter();
   const idcourse = router.query.id;
