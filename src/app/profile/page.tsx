@@ -2,11 +2,33 @@
 import Link from "next/link";
 import ".././globals.css";
 import { UserAuth } from "../context/AuthContext";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { User } from "firebase/auth";
 
 export default function ProfileUser() {
   const { user, googleSignIn, logOut } = UserAuth();
+  let token = user && user.accessToken ? user.accessToken : null; //cho nay` eo loi do thg db ts
+  console.log("token nef", token);
+  const [userToken, setUserToken] = useState<User>();
+  useEffect(() => {
+    const fetchData = async () => {
+      const responseData = await axios.post(
+        `https://learnconnectapitest.azurewebsites.net/api/user/login?accessToken=${token}`
+      );
+      setUserToken(responseData?.data);
+      console.log("userToken", userToken);
+      const api_token = userToken.data;
+      var jwt = require("jsonwebtoken");
+      var decoded = jwt.decode(api_token);
+      console.log("decoded", decoded);
+    };
+    console.log("token ne", token);
+    fetchData();
+  }, []);
+  console.log("token ne", token);
+  console.log("userToken", userToken);
 
-  console.log("token", user);
   return (
     <div className="container">
       <section className="bg-gradient-to-b">
