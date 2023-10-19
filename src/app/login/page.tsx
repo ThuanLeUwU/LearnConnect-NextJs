@@ -9,7 +9,9 @@ import axios from "axios";
 import { User } from "firebase/auth";
 
 export default function LoginPage() {
-  const { user, googleSignIn, logOut } = UserAuth();
+  const { user, token, googleSignIn, logOut } = UserAuth();
+  console.log("token is :", token);
+
   const router = useRouter();
   // let token = user && user.accessToken ? user.accessToken : null; //cho nay` eo loi do thg db ts
   // console.log("token nef", token);
@@ -19,6 +21,7 @@ export default function LoginPage() {
   const handleSignIn = async () => {
     try {
       googleSignIn();
+
       // getToken();
     } catch (error) {
       console.log(error);

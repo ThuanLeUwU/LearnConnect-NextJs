@@ -7,27 +7,25 @@ import axios from "axios";
 import { User } from "firebase/auth";
 
 export default function ProfileUser() {
-  const { user, googleSignIn, logOut } = UserAuth();
-  let token = user && user.accessToken ? user.accessToken : null; //cho nay` eo loi do thg db ts
-  console.log("token nef", token);
-  const [userToken, setUserToken] = useState<User>();
-  useEffect(() => {
-    const fetchData = async () => {
-      const responseData = await axios.post(
-        `https://learnconnectapitest.azurewebsites.net/api/user/login?accessToken=${token}`
-      );
-      setUserToken(responseData?.data);
-      console.log("userToken", userToken);
-      const api_token = userToken.data;
-      var jwt = require("jsonwebtoken");
-      var decoded = jwt.decode(api_token);
-      console.log("decoded", decoded);
-    };
-    console.log("token ne", token);
-    fetchData();
-  }, []);
-  console.log("token ne", token);
-  console.log("userToken", userToken);
+  const { user, token, id, googleSignIn, logOut } = UserAuth();
+  console.log("token :", token);
+  console.log("id :", id);
+  // const [userToken, setUserToken] = useState<User>();
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const responseData = await axios.post(
+  //       `https://learnconnectapitest.azurewebsites.net/api/user/login?accessToken=${token}`
+  //     );
+  //     setUserToken(responseData?.data);
+  //     console.log("userToken", userToken);
+  //     const api_token = responseData?.data.data;
+  //     var jwt = require("jsonwebtoken");
+  //     var decoded = jwt.decode(api_token);
+  //     console.log("decoded", decoded);
+  //     console.log("responseData", responseData?.data.data);
+  //   };
+  //   fetchData();
+  // }, []);
 
   return (
     <div className="container">
