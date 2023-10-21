@@ -4,29 +4,21 @@ import ".././globals.css";
 import { UserAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { User } from "firebase/auth";
-
+// import { User } from "firebase/auth";
+export type User = {
+  id: string | number;
+  password: string;
+  email: string;
+  role: 0;
+  fullName: string;
+  phoneNumber: string;
+  gender: 0;
+  bioDescription: string;
+  profilePictureUrl: string;
+  status: number;
+};
 export default function ProfileUser() {
-  const { user, token, id, googleSignIn, logOut } = UserAuth();
-  console.log("token :", token);
-  console.log("id :", id);
-  // const [userToken, setUserToken] = useState<User>();
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const responseData = await axios.post(
-  //       `https://learnconnectapitest.azurewebsites.net/api/user/login?accessToken=${token}`
-  //     );
-  //     setUserToken(responseData?.data);
-  //     console.log("userToken", userToken);
-  //     const api_token = responseData?.data.data;
-  //     var jwt = require("jsonwebtoken");
-  //     var decoded = jwt.decode(api_token);
-  //     console.log("decoded", decoded);
-  //     console.log("responseData", responseData?.data.data);
-  //   };
-  //   fetchData();
-  // }, []);
-
+  const { user, token, id, userData, googleSignIn, logOut } = UserAuth();
   return (
     <div className="container">
       <section className="bg-gradient-to-b">
@@ -37,7 +29,9 @@ export default function ProfileUser() {
                 <div className="bg-[#309255] text-white flex flex-col lg:flex-row rounded-t p-4 lg:p-8">
                   <div className="lg:mr-4 lg:mt-0 flex flex-col items-center w-full lg:w-36">
                     <img
-                      src={user?.photoURL || "www.default.imageurl"}
+                      src={
+                        userData?.profilePictureUrl || "www.default.imageurl"
+                      }
                       alt="Generic placeholder image"
                       className="w-36 h-36 rounded-full mt-4 mb-2"
                     />
@@ -49,8 +43,8 @@ export default function ProfileUser() {
                     </button>
                   </div>
                   <div className="mt-4 lg:mt-0 lg:ms-3">
-                    <h5 className="text-lg">{user?.displayName}</h5>
-                    <p>{user?.email}</p>
+                    <h5 className="text-lg">{userData?.fullName}</h5>
+                    <p>{userData?.email}</p>
                   </div>
                 </div>
                 <div className="p-4 text-black bg-gray-200">

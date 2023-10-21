@@ -240,7 +240,7 @@ const Header = () => {
                     <Link href="/">Home</Link>
                   </li>
                   <li>
-                    <Link href="/listCourses">Courses</Link>
+                    <Link href="/courses">Courses</Link>
                     {/* <ul className={`${headerStyles.sub_menu}`}> */}
                     {/* {course.map((item, index) => (
                       <li key={index}>
@@ -400,7 +400,7 @@ const Header = () => {
                     <Link href="/">Home</Link>
                   </li>
                   <li>
-                    <Link href="/listCourses">Courses</Link>
+                    <Link href="/courses">Courses</Link>
                     {/* <ul className={`${headerStyles.sub_menu}`}>
                       {course.map((item, index) => (
                         <li key={index}>
