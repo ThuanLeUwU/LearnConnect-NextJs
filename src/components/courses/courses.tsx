@@ -31,9 +31,10 @@ const Courses = () => {
   useEffect(() => {
     const fetchData = async () => {
       const responseData = await axios.get(
-        `https://learnconnectapitest.azurewebsites.net/api/Course`
+        `https://learnconnectapitest.azurewebsites.net/api/course`
       );
       setCourses(responseData?.data);
+
     };
     fetchData();
   }, []);

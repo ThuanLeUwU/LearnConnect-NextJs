@@ -1,6 +1,36 @@
 import ProgressBar from "@ramonak/react-progress-bar";
+import axios from "axios";
+import { useEffect, useState } from "react";
+
+
+export type Course = {
+  id: string | number;
+  name: string;
+  description: string;
+  shortDescription: string;
+  difficultyLevel: string;
+  imageUrl: string;
+  price: number;
+  rating: number;
+  categoryId: number | string;
+  contentLength: number;
+};
+
 
 const CourseItem = () => {
+  const [courses, setCourses] = useState<Course[]>([]);
+
+  console.log("1 course", courses);
+  useEffect(() => {
+    const fetchData = async () => {
+      const responseData = await axios.get(
+        `https://learnconnectapitest.azurewebsites.net/api/course/2`
+      );
+      setCourses(responseData?.data);
+    };
+    fetchData();
+  }, []);
+
   return (
     <div className="lg:col-span-4 border border-solid border-[#acd6bc] p-[20px] rounded-lg my-[10px] hover:border-[#309255] mx-[15px]">
       <div className="single-courses">
