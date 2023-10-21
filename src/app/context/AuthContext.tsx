@@ -38,7 +38,7 @@ interface AuthContextValue {
   user: FirebaseUser | null;
   token: string;
   id: string;
-  userData: User | null; // Added userData of type User
+  userData: User | null;
   googleSignIn: () => void;
   logOut: () => void;
 }
@@ -47,7 +47,7 @@ const AuthContext = createContext<AuthContextValue>({
   user: null,
   token: "",
   id: "",
-  userData: null, // Initialized userData to null
+  userData: null,
   googleSignIn: () => {},
   logOut: () => {},
 });
@@ -58,7 +58,7 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [token, setToken] = useState("");
   const [id, setId] = useState("");
-  const [userData, setUserData] = useState<User | null>(null); // Initialized userData to null
+  const [userData, setUserData] = useState<User | null>(null);
   const router = useRouter();
   const googleSignIn = async () => {
     const provider = new GoogleAuthProvider();
@@ -91,8 +91,7 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
               const responseUser = await axios.get(
                 `https://learnconnectapitest.azurewebsites.net/api/user/${userId}`
               );
-              setUserData(responseUser?.data); // Set the userData state
-              console.log("user is :", responseUser);
+              setUserData(responseUser?.data);
             };
             fetchUser();
           };
