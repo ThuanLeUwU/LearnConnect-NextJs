@@ -1,28 +1,30 @@
 "use client";
 import { ChangeEvent, FormEvent, SetStateAction, useState } from "react";
 import ".././globals.css";
-import { UserAuth } from "../context/AuthContext";
+import { AuthContextProvider, UserAuth } from "../context/AuthContext";
 import axios from "axios";
 import { Modal } from "antd";
+import { useRouter } from "next/navigation";
 
 export default function EditProfile() {
+  const router = useRouter();
   const { id, userData } = UserAuth();
   const [fullName, setFullName] = useState(userData?.fullName);
   const [gender, setGender] = useState(userData?.gender || 0);
   const [phoneNumber, setPhoneNumber] = useState(userData?.phoneNumber || "");
   const [password, setPassword] = useState(userData?.password || "");
   const [email, setEmail] = useState(userData?.email || "");
-  const [profilePictureUrl, setProfilePictureUrl] = useState(
-    userData?.profilePictureUrl || ""
-  );
   const [role, setRole] = useState(userData?.role || 3);
   const [status, setStatus] = useState(userData?.status || 0);
-
   const [bioDescription, setBioDescription] = useState(
     userData?.bioDescription || ""
   );
+  const [profilePictureUrl, setProfilePictureUrl] = useState(
+    userData?.profilePictureUrl || ""
+  );
   const [isSuccessModalVisible, setIsSuccessModalVisible] = useState(false);
   const [isErrorModalVisible, setIsErrorModalVisible] = useState(false);
+
   const showSuccessModal = () => {
     setIsSuccessModalVisible(true);
   };
@@ -34,6 +36,8 @@ export default function EditProfile() {
   const handleOk = () => {
     setIsSuccessModalVisible(false);
     setIsErrorModalVisible(false);
+    router.prefetch("/profile");
+    router.push("/profile");
   };
   const handleFullNameChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFullName(e.target.value);
@@ -72,7 +76,7 @@ export default function EditProfile() {
       )
       .then((response) => {
         showSuccessModal();
-        console.log("Profile updated successfully:", response.data);
+        AuthContextProvider;
       })
       .catch((error) => {
         showErrorModal();
@@ -91,7 +95,6 @@ export default function EditProfile() {
         }
         console.error("Error updating profile:", error);
       });
-    console.log("update usser data: ", updatedUserData);
   };
   return (
     <div className="container">
