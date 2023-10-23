@@ -54,7 +54,7 @@ export default function CourseDetailPage({ params }: any) {
                     </Link>
                     <span className="mx-5"></span>
                     <span className="text-sm font-normal text-[#309255]">
-                      286 Enrolled Students
+                      {courses?.totalEnrollment} Enrolled Students
                     </span>
                   </div>
                 </div>

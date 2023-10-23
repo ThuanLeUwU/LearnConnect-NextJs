@@ -58,6 +58,7 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [token, setToken] = useState("");
   const [id, setId] = useState("");
+  // console.log("info", id)
   const [userData, setUserData] = useState<User | null>(null);
   const router = useRouter();
   const googleSignIn = async () => {
@@ -74,13 +75,22 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       // const token = auth.currentUser.accessToken
       setUser(currentUser);
+      console.log("token", currentUser?.getIdToken());
+
       if (currentUser) {
         currentUser.getIdToken().then((token) => {
-          console.log("token nef", token)
+          // console.log("token nef", token)
           const fetchData = async () => {
             const responseData = await axios.post(
-              `https://learnconnectapitest.azurewebsites.net/api/user/login`, token
+              `https://learnconnectapitest.azurewebsites.net/api/user/login`,
+              token,
+              {
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              }
             );
+            console.log("token is:", token);
             setToken(responseData?.data);
             const api_token = responseData?.data.data;
             var jwt = require("jsonwebtoken");
@@ -88,6 +98,7 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
             setToken(api_token);
             const userId = decoded.Id;
             setId(userId);
+            // console.log("full info", decoded)
 
             const fetchUser = async () => {
               const responseUser = await axios.get(

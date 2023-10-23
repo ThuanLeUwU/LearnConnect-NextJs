@@ -9,11 +9,13 @@ import { UserAuth } from "@/app/context/AuthContext";
 import { Button } from "react-bootstrap";
 import { RegisterForm } from "@/components/registerForm";
 import { Modal } from "antd";
+import { useRouter } from "next/navigation";
 
 const Header = () => {
   const [click, setClick] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [visible, setVisible] = useState(false);
+  const router = useRouter();
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -39,6 +41,7 @@ const Header = () => {
     try {
       await logOut();
       closeDropdown();
+      router.push("/");
     } catch (error) {
       console.log(error);
     }
@@ -178,7 +181,7 @@ const Header = () => {
                       <li>
                         <Link
                           href="/profile"
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-tl-lg rounded-tr-lg hover:rounded-bl-lg hover:rounded-br-lg"
                           onClick={closeDropdown}
                         >
                           Profile
@@ -187,7 +190,7 @@ const Header = () => {
                       <li>
                         <a
                           href="#"
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-bl-lg rounded-br-lg hover:rounded-tl-lg hover:rounded-tr-lg"
                           onClick={closeDropdown}
                         >
                           Transaction
@@ -196,7 +199,7 @@ const Header = () => {
                       <li>
                         <a
                           href="#"
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-bl-lg rounded-br-lg hover:rounded-tl-lg hover:rounded-tr-lg"
                           onClick={handleSignOut}
                         >
                           Sign out
