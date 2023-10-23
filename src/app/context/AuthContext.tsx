@@ -72,12 +72,14 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      // const token = auth.currentUser.accessToken
       setUser(currentUser);
       if (currentUser) {
         currentUser.getIdToken().then((token) => {
+          console.log("token nef", token)
           const fetchData = async () => {
             const responseData = await axios.post(
-              `https://learnconnectapitest.azurewebsites.net/api/user/login?accessToken=${token}`
+              `https://learnconnectapitest.azurewebsites.net/api/user/login`, token
             );
             setToken(responseData?.data);
             const api_token = responseData?.data.data;
