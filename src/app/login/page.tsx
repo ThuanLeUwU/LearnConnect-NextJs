@@ -4,21 +4,25 @@ import styles from "../login/styles.module.scss";
 import { UserAuth } from "@/app/context/AuthContext";
 import { auth } from "../firebase";
 import { useRouter } from "next/navigation";
-
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { User } from "firebase/auth";
 
 export default function LoginPage() {
-  const { user, googleSignIn, logOut } = UserAuth();
+  const { user, token, googleSignIn, logOut } = UserAuth();
+  console.log("token is :", token);
+
   const router = useRouter();
-  console.log("tao nè", user)
+  // let token = user && user.accessToken ? user.accessToken : null; //cho nay` eo loi do thg db ts
+  // console.log("token nef", token);
+  // console.log("User i4", user);
+  // console.log("token", user); // Check if user exists before accessing accessToken
 
   const handleSignIn = async () => {
     try {
       googleSignIn();
-      // console.log("má",auth)
-      // if(user){
-      //   router.push('/')
-      // }
- 
+
+      // getToken();
     } catch (error) {
       console.log(error);
     }

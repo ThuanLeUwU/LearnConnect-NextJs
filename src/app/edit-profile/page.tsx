@@ -1,6 +1,21 @@
+"use client";
+import { useState } from "react";
 import ".././globals.css";
+import { UserAuth } from "../context/AuthContext";
 
 export default function EditProfile() {
+  const { user, googleSignIn, logOut } = UserAuth();
+
+  const [selectedFile, setSelectedFile] = useState(null);
+  // const handleImageChange = (e: { target: { files: any[] } }) => {
+  //   const file = e.target.files[0];
+  //   setSelectedFile(file);
+  //   // Update user object with the new photo
+  //   const updatedUser = { ...user, photoURL: URL.createObjectURL(file) };
+  //   console.log("userid", user?.uid);
+  //   console.log("user", user);
+  //   // Further actions with updatedUser if required
+  // };
   return (
     <div className="container">
       <div className="bg-[#fff]">
@@ -69,6 +84,7 @@ export default function EditProfile() {
                   />
                 </div>
               </div>
+
               <div className="mb-6">
                 <label
                   htmlFor="password"
@@ -99,6 +115,49 @@ export default function EditProfile() {
                   required
                 />
               </div>
+              <div>
+                <label
+                  htmlFor="first_name"
+                  className="block mb-2 text-base font-medium text-[#000]"
+                >
+                  First name
+                </label>
+                <input
+                  type="text"
+                  id="first_name"
+                  className="bg-[#fff] border border-[#30925533] text-[#000] text-base rounded-lg block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-[#309255]"
+                  placeholder="John"
+                  required
+                />
+              </div>
+              {/* <div className="">
+                <img
+                  src={user?.photoURL || "www.default.imageurl"}
+                  alt="Generic placeholder image"
+                  className="w-36 h-36 rounded-full mt-4 mb-2"
+                />
+                <div>
+                  <label
+                    htmlFor="profile_image"
+                    className="block mb-2 text-base font-medium text-[#000]"
+                  >
+                    Profile Image
+                  </label>
+                  <input
+                    type="file"
+                    id="profile_image"
+                    onChange={handleImageChange}
+                    className="text-base"
+                  />
+                  {selectedFile && (
+                    <img
+                      src={URL.createObjectURL(selectedFile)}
+                      alt="Selected"
+                      className="w-36 h-36 rounded-full mt-4 mb-2"
+                    />
+                  )}
+                </div>
+              </div> */}
               <button
                 type="submit"
                 className="bg-[#309255] text-[18px] px-[35px] py-[15px] rounded-lg text-[#fff] hover:bg-[#000] transition-all duration-300 ease-in-out delay-0"

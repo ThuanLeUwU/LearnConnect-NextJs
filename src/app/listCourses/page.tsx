@@ -22,7 +22,7 @@ const ListCourse = () => {
     //     <CourseItem />
     //   </div>
     // </div>
-    <Courses/>
+    <Courses imageUrl={""} name={""} description={""} id={""} />
   );
 };
 

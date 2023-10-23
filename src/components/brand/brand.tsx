@@ -41,7 +41,7 @@ const BrandSupport = () => {
           {/* <!-- Section Title Start --> */}
           <div className="section-title shape-03">
             <h2 className="main-title">
-              Best Supporter of <span> Edule.</span>
+              Best Supporter of <span> LearnConnect.</span>
             </h2>
           </div>
           {/* <!-- Section Title End --> */}

@@ -1,5 +1,5 @@
 "use client";
-import ".././globals.css";
+import "../../globals.css";
 import CourseItem from "@/components/course-item/course";
 import Paginate from "@/components/pagination/pagination";
 import useDataFetcher from "@/components/pagination/useDataFetcher";

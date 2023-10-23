@@ -144,25 +144,30 @@ const Header = () => {
           <div className={`${headerStyles.header_navbar}`}>
             <div className={`${headerStyles.header_login_left}`}>
               <Link href="/">
-                <img src="/" />
+                <img src="/" alt="Logo" />
               </Link>
             </div>
             <ul className={`${headerStyles.header_login_right}`}>
               <li className={`${headerStyles.header_notification}`}>
-                <Image width={32} height={32} src="/images/notification.png" alt="notification"/>
+                <Image
+                  width={32}
+                  height={32}
+                  src="/images/notification.png"
+                  alt={"Logo"}
+                />
               </li>
-              <li className={`${headerStyles.header_info_img}`}>
-                
-              </li>
+              <li className={`${headerStyles.header_info_img}`}></li>
               <li>
                 <button
                   className={`${headerStyles.header_more}`}
                   onClick={toggleDropdown}
-                ><img
-                className={`${headerStyles.header_info_src}`}
-                src={user?.photoURL || "www.default.imageurl"}
-                alt="author"
-              ></img></button>
+                >
+                  <img
+                    className={`${headerStyles.header_info_src}`}
+                    src={user?.photoURL || "www.default.imageurl"}
+                    alt="author"
+                  ></img>
+                </button>
                 {isOpen && (
                   <div className="origin-top-right absolute right-0 mt-2 w-44 rounded-lg shadow-lg bg-white ring-1 ring-black ring-opacity-5">
                     <ul
@@ -215,23 +220,28 @@ const Header = () => {
           {/* <!-- Header Main Start --> */}
           {!user ? (
             <div className={`${headerStyles.header_main_wrapper}`}>
-            {/* <!-- Header Logo Start --> */}
-            <div className={`${headerStyles.header_logo}`}>
-              <Link href="/">
-                <Image width={60} height={60} src="/images/nhoam.gif" alt="logo"/>
-              </Link>
-            </div>
-            {/* <!-- Header Logo End --> */}
+              {/* <!-- Header Logo Start --> */}
+              <div className={`${headerStyles.header_logo}`}>
+                <Link href="/">
+                  <Image
+                    width={60}
+                    height={60}
+                    src="/images/nhoam.gif"
+                    alt="logo"
+                  />
+                </Link>
+              </div>
+              {/* <!-- Header Logo End --> */}
 
-            {/* <!-- Header Menu Start --> */}
-            <div className={`${headerStyles.header_menu}`}>
-              <ul className={`${headerStyles.nav_menu}`}>
-                <li>
-                  <Link href="/">Home</Link>
-                </li>
-                <li>
-                  <Link href="/listCourses">Courses</Link>
-                  {/* <ul className={`${headerStyles.sub_menu}`}> */}
+              {/* <!-- Header Menu Start --> */}
+              <div className={`${headerStyles.header_menu}`}>
+                <ul className={`${headerStyles.nav_menu}`}>
+                  <li>
+                    <Link href="/">Home</Link>
+                  </li>
+                  <li>
+                    <Link href="/listCourses">Courses</Link>
+                    {/* <ul className={`${headerStyles.sub_menu}`}> */}
                     {/* {course.map((item, index) => (
                       <li key={index}>
                         <Link href={item.href}>{item.title}</Link>
@@ -241,11 +251,11 @@ const Header = () => {
                                         <li><Link href="courses-details.html">Courses Details</Link></li> */}
                     {/* <li><Link href="courses.html">Courses</Link></li>
                                         <li><Link href="courses-details.html">Courses Details</Link></li> */}
-                  {/* </ul> */}
-                </li>
-                <li>
-                  <Link href="/about">About </Link>
-                  {/* <ul className={`${headerStyles.sub_menu}`}>
+                    {/* </ul> */}
+                  </li>
+                  <li>
+                    <Link href="/about">About </Link>
+                    {/* <ul className={`${headerStyles.sub_menu}`}>
                     <li>
                       <Link href="/about  ">About</Link>
                     </li>
@@ -292,10 +302,10 @@ const Header = () => {
                       <Link href="messages.html">Messages</Link>
                     </li>
                   </ul> */}
-                </li>
-                <li>
-                  <Link href="/faq">FAQ</Link>
-                  {/* <ul className={`${headerStyles.sub_menu}`}>
+                  </li>
+                  <li>
+                    <Link href="/faq">FAQ</Link>
+                    {/* <ul className={`${headerStyles.sub_menu}`}>
                     <li>
                       <Link href="#">Blog</Link>
                       <ul className={`${headerStyles.sub_menu}`}>
@@ -330,13 +340,13 @@ const Header = () => {
                       </ul>
                     </li>
                   </ul> */}
-                </li>
-                <li>
-                  <Link href="/contact">Contact</Link>
-                </li>
-              </ul>
-            </div>
-            <div className={`${headerStyles.header_sign_in_up}`}>
+                  </li>
+                  <li>
+                    <Link href="/contact">Contact</Link>
+                  </li>
+                </ul>
+              </div>
+              <div className={`${headerStyles.header_sign_in_up}`}>
                 <ul>
                   <li>
                     <Link className={`${headerStyles.sign_in}`} href="/login">
@@ -353,26 +363,33 @@ const Header = () => {
                   </li>
                 </ul>
               </div>
-            {/* <!-- Header Menu End --> */}
-            {/* <!-- Header Sing In & Up Start --> */}
+              {/* <!-- Header Menu End --> */}
+              {/* <!-- Header Sing In & Up Start --> */}
 
-            {/* <!-- Header Sing In & Up End --> */}
+              {/* <!-- Header Sing In & Up End --> */}
 
-            {/* <!-- Header Mobile Toggle Start --> */}
-            {/* <div className="header-toggle d-lg-none">
+              {/* <!-- Header Mobile Toggle Start --> */}
+              {/* <div className="header-toggle d-lg-none">
               <Link className="menu-toggle" href="javascript:void(0)">
                 <span></span>
                 <span></span>
                 <span></span>
               </Link>
             </div> */}
-            {/* <!-- Header Mobile Toggle End --> */}
-          </div>
+              {/* <!-- Header Mobile Toggle End --> */}
+            </div>
           ) : (
             <div className={`${headerStyles.header_main_wrapper}`}>
               {/* <!-- Header Logo Start --> */}
               <div className={`${headerStyles.header_logo}`}>
-                <Link href="/"><Image width={60} height={60} src="/images/nhoam.gif" alt="logo"/></Link>
+                <Link href="/">
+                  <Image
+                    width={60}
+                    height={60}
+                    src="/images/nhoam.gif"
+                    alt="logo"
+                  />
+                </Link>
               </div>
               {/* <!-- Header Logo End --> */}
 
@@ -443,7 +460,7 @@ const Header = () => {
                     </ul> */}
                   </li>
                   <li>
-                    <Link href="/wishList">WishList</Link>
+                    <Link href="/wish-list">WishList</Link>
                     {/* <ul className={`${headerStyles.sub_menu}`}>
                       <li>
                         <Link href="#">Contact</Link>
@@ -489,7 +506,7 @@ const Header = () => {
               {/* <!-- Header Sing In & Up Start --> */}
 
               <div className={`${headerStyles.regis_btn}`}>
-              <Button
+                <Button
                   onClick={() => {
                     Modal.confirm({
                       title: "Register Mentor Form",

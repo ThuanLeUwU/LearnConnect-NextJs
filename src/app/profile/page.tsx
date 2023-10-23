@@ -1,11 +1,31 @@
-"use client"
+"use client";
 import Link from "next/link";
 import ".././globals.css";
 import { UserAuth } from "../context/AuthContext";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { User } from "firebase/auth";
 
 export default function ProfileUser() {
-
-  const { user, googleSignIn, logOut } = UserAuth();
+  const { user, token, id, googleSignIn, logOut } = UserAuth();
+  console.log("token :", token);
+  console.log("id :", id);
+  // const [userToken, setUserToken] = useState<User>();
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const responseData = await axios.post(
+  //       `https://learnconnectapitest.azurewebsites.net/api/user/login?accessToken=${token}`
+  //     );
+  //     setUserToken(responseData?.data);
+  //     console.log("userToken", userToken);
+  //     const api_token = responseData?.data.data;
+  //     var jwt = require("jsonwebtoken");
+  //     var decoded = jwt.decode(api_token);
+  //     console.log("decoded", decoded);
+  //     console.log("responseData", responseData?.data.data);
+  //   };
+  //   fetchData();
+  // }, []);
 
   return (
     <div className="container">
@@ -25,9 +45,7 @@ export default function ProfileUser() {
                       type="button"
                       className="btn btn-outline-dark btn-sm"
                     >
-                      <Link href="/edit-profile">
-                      Edit profile
-                      </Link>
+                      <Link href="/edit-profile">Edit profile</Link>
                     </button>
                   </div>
                   <div className="mt-4 lg:mt-0 lg:ms-3">
