@@ -12,7 +12,7 @@ export default function AfterEnroll({ params }: any) {
     setActiveTab(tabName);
   };
   const idCourse = params.id;
-  console.log("id is", idCourse);
+  // console.log("id is", idCourse);
   //   const id = router.query.id;
   //   console.log("id", id);
   const [videoSrc, setVideoSrc] = useState(

@@ -11,9 +11,8 @@ import {
   signOut,
   onAuthStateChanged,
   GoogleAuthProvider,
-  User,
+  User as FirebaseUser,
 } from "firebase/auth";
-
 import { auth } from "../firebase";
 import { useRouter } from "next/navigation";
 import axios from "axios";
@@ -22,22 +21,24 @@ interface AuthContextProps {
   children: ReactNode;
 }
 
-// export type User = {
-//   id: string | number;
-//   password: string;
-//   email: string;
-//   role: 0;
-//   fullName: string;
-//   phoneNumber: string;
-//   gender: 0;
-//   bioDescription: string;
-//   profilePictureUrl: string;
-//   status: number;
-// };
+export type User = {
+  id: string | number;
+  password: string;
+  email: string;
+  role: 0;
+  fullName: string;
+  phoneNumber: string;
+  gender: 0;
+  bioDescription: string;
+  profilePictureUrl: string;
+  status: number;
+};
+
 interface AuthContextValue {
-  user: User | null;
+  user: FirebaseUser | null;
   token: string;
   id: string;
+  userData: User | null;
   googleSignIn: () => void;
   logOut: () => void;
 }
@@ -46,6 +47,7 @@ const AuthContext = createContext<AuthContextValue>({
   user: null,
   token: "",
   id: "",
+  userData: null,
   googleSignIn: () => {},
   logOut: () => {},
 });
@@ -53,11 +55,11 @@ const AuthContext = createContext<AuthContextValue>({
 export const AuthContextProvider: React.FC<AuthContextProps> = ({
   children,
 }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<FirebaseUser | null>(null);
   const [token, setToken] = useState("");
   const [id, setId] = useState("");
+  const [userData, setUserData] = useState<User | null>(null);
   const router = useRouter();
-  const [userToken, setUserToken] = useState<User>();
   const googleSignIn = async () => {
     const provider = new GoogleAuthProvider();
     await signInWithPopup(auth, provider);
@@ -77,13 +79,21 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
             const responseData = await axios.post(
               `https://learnconnectapitest.azurewebsites.net/api/user/login?accessToken=${token}`
             );
-            setUserToken(responseData?.data);
+            setToken(responseData?.data);
             const api_token = responseData?.data.data;
             var jwt = require("jsonwebtoken");
             var decoded = jwt.decode(api_token);
             setToken(api_token);
-            const id = decoded.Id;
-            setId(id);
+            const userId = decoded.Id;
+            setId(userId);
+
+            const fetchUser = async () => {
+              const responseUser = await axios.get(
+                `https://learnconnectapitest.azurewebsites.net/api/user/${userId}`
+              );
+              setUserData(responseUser?.data);
+            };
+            fetchUser();
           };
           fetchData();
         });
@@ -91,21 +101,12 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
     });
 
     return () => unsubscribe();
-  }, [router, user]);
-
-  // useEffect(() => {
-  //   const fetchUser = async () => {
-  //     const responseUser = await axios.get(
-  //       `https://learnconnectapitest.azurewebsites.net/api/user/${id}`
-  //     );
-  //     setUser(responseUser?.data);
-  //     console.log("user is :", responseUser);
-  //   };
-  //   fetchUser();
-  // }, []);
+  }, [router]);
 
   return (
-    <AuthContext.Provider value={{ user, token, id, googleSignIn, logOut }}>
+    <AuthContext.Provider
+      value={{ user, token, id, userData, googleSignIn, logOut }}
+    >
       {children}
     </AuthContext.Provider>
   );

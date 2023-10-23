@@ -1,14 +1,12 @@
 "use client";
+import Courses from "@/components/courses/courses";
 import ".././globals.css";
 import CourseItem from "@/components/course-item/course";
-import Courses from "@/components/courses/courses";
-import Paginate from "@/components/pagination/pagination";
 import useDataFetcher from "@/components/pagination/useDataFetcher";
-
-const MyCourse = () => {
+import Paginate from "@/components/pagination/pagination";
+const ListCourse = () => {
   const { loading, courses, totalPages, currentPage, setCurrentPage } =
     useDataFetcher();
-
   return (
     <div className="container">
       {loading ? (
@@ -35,4 +33,4 @@ const MyCourse = () => {
   );
 };
 
-export default MyCourse;
+export default ListCourse;

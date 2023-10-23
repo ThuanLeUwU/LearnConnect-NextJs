@@ -34,7 +34,7 @@ const useDataFetcher = () => {
   const totalPages = 10;
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
-  console.log("course fetchdata", courses);
+  // console.log("course fetchdata", courses);
   useEffect(() => {
     const fetchData = async () => {
       const page = Math.min(currentPage + 1, totalPages);
@@ -42,8 +42,8 @@ const useDataFetcher = () => {
         `${API_URL}?currentPage=${page}&pageSize=${pagesize}`
       );
       setCourses(result?.data);
-      console.log("result", result);
-      console.log("currentPage", page);
+      // console.log("result", result);
+      // console.log("currentPage", page);
       setLoading(false);
     };
     fetchData();
