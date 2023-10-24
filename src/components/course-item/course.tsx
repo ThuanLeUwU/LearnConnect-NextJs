@@ -3,6 +3,7 @@ import ProgressBar from "@ramonak/react-progress-bar";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { Button } from "react-bootstrap";
 
 export type CourseItem = {
   id: string | number;
@@ -40,7 +41,7 @@ const CourseItem = ({
       <div className="single-courses">
         <div>
           <div className="courses-images">
-            <a onClick={handleClick}>
+            <a href={`/course-detail/${id}`}>
               <img
                 className="rounded-lg w-full h-[180px] object-cover"
                 src={imageUrl}
@@ -85,7 +86,7 @@ const CourseItem = ({
 
               <div className="rating-progress-bar mt-2">
                 <ProgressBar
-                  completed={38}
+                  completed={60}
                   bgColor="#309255"
                   height="15px"
                   customLabel=""
@@ -96,12 +97,12 @@ const CourseItem = ({
                   <span className="rating-bar"></span>
                 </span>
                 <div className="flex justify-between">
-                  <a
-                    href="/after-enroll"
+                  <Button
+                    onClick={handleClick}
                     className="text-[#52565b] text-[14px] text-right pt-2"
                   >
                     Continue
-                  </a>
+                  </Button>
                   <button> Report </button>
                 </div>
               </div>

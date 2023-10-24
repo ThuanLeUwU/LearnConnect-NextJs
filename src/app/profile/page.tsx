@@ -13,7 +13,7 @@ export type User = {
   role: 1;
   fullName: string;
   phoneNumber: string;
-  gender: 0;
+  gender: number;
   bioDescription: string;
   profilePictureUrl: string;
   status: number;
@@ -80,16 +80,18 @@ export default function ProfileUser() {
                     </div>
                     <div className="mt-4 lg:mt-0 lg:ms-3">
                       <h5 className="text-lg">
-                        FullName: {userData?.fullName}
+                        Full Name: {userData?.fullName}
                       </h5>
                       <p>Email: {userData?.email}</p>
                       <p>Gender: {displayGenderText(userData.gender)}</p>
                       <p>Phone: {userData?.phoneNumber}</p>
+                      {/* <p>Role: {userData?.role}</p> */}
+                      {/* <p>Bio: {userData?.bioDescription}</p> */}
                       {/* <p>Phone: {userData?.status}</p>
                       <p>Phone: {userData?.profilePictureUrl}</p> */}
                     </div>
                   </div>
-                  <div className="p-4 text-black bg-gray-200">
+                  {/* <div className="p-4 text-black bg-gray-200">
                     <div className="flex justify-center lg:justify-end text-center py-2 lg:py-1">
                       <div className="px-3">
                         <p className="mb-1 text-lg">253</p>
@@ -104,7 +106,7 @@ export default function ProfileUser() {
                         <p className="text-sm text-gray-500 mb-0">Following</p>
                       </div>
                     </div>
-                  </div>
+                  </div> */}
                   <div className="card-body p-4 text-black">
                     <div className="mb-5">
                       <p className="font-semibold text-lg mb-2">About</p>
@@ -114,7 +116,7 @@ export default function ProfileUser() {
                         </p>
                       </div>
                     </div>
-                    <div className="flex justify-between items-center mb-4">
+                    {/* {/* <div className="flex justify-between items-center mb-4">
                       <p className="font-semibold text-lg mb-0">
                         Recent photos
                       </p>
@@ -123,7 +125,7 @@ export default function ProfileUser() {
                           Show all
                         </Link>
                       </p>
-                    </div>
+                    </div> */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
                       <div className="mb-2">
                         <img

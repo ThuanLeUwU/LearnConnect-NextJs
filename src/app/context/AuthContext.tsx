@@ -58,6 +58,7 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [token, setToken] = useState("");
   const [id, setId] = useState("");
+  // console.log("info", id)
   const [userData, setUserData] = useState<User | null>(null);
   const router = useRouter();
   const googleSignIn = async () => {
@@ -72,11 +73,13 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      // const token = auth.currentUser.accessToken
       setUser(currentUser);
       console.log("token", currentUser?.getIdToken());
 
       if (currentUser) {
         currentUser.getIdToken().then((token) => {
+          // console.log("token nef", token)
           const fetchData = async () => {
             const responseData = await axios.post(
               `https://learnconnectapitest.azurewebsites.net/api/user/login`,

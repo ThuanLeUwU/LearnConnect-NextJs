@@ -30,8 +30,8 @@ export default function ContactPage() {
                     Email Address.
                   </h6>
                   <p className="text-black">
-                    <Link href="mailto:edule100@gmail.com">
-                      edule100@gmail.com
+                    <Link href="mailto:learnconnect@gmail.com">
+                      learnConnect@gmail.com
                     </Link>
                   </p>
                 </div>

@@ -54,7 +54,7 @@ export default function CourseDetailPage({ params }: any) {
                     </Link>
                     <span className="mx-5"></span>
                     <span className="text-sm font-normal text-[#309255]">
-                      286 Enrolled Students
+                      {courses?.totalEnrollment} Enrolled Students
                     </span>
                   </div>
                 </div>
@@ -80,7 +80,7 @@ export default function CourseDetailPage({ params }: any) {
                       onClick={() => handleTabClick("tab1")}
                     >
                       <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#309255]">
-                        Curriculum:
+                        Overview
                       </button>
                     </li>
                     <li
@@ -92,7 +92,7 @@ export default function CourseDetailPage({ params }: any) {
                       onClick={() => handleTabClick("tab2")}
                     >
                       <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#309255]">
-                        Instructors
+                        Lecture
                       </button>
                     </li>
                     <li
@@ -468,7 +468,7 @@ export default function CourseDetailPage({ params }: any) {
                             29
                           </span>
                         </li>
-                        <li className="border-b border-solid border-[#d1e6d9] py-3.5">
+                        {/* <li className="border-b border-solid border-[#d1e6d9] py-3.5">
                           <i className="icofont-book-alt"></i>{" "}
                           <strong className="text-[#212832] text-base font-medium">
                             Language
@@ -476,7 +476,7 @@ export default function CourseDetailPage({ params }: any) {
                           <span className="text-[#52565b] float-right text-base font-normal">
                             English
                           </span>
-                        </li>
+                        </li> */}
                       </ul>
                     </div>
                     <div className="text-center mt-10">
@@ -506,7 +506,7 @@ export default function CourseDetailPage({ params }: any) {
                 </div>
               </div>
 
-              <div className="sidebar-widget">
+              {/* <div className="sidebar-widget">
                 <h4 className="widget-title">Share Course:</h4>
                 <ul className="social">
                   <li>
@@ -535,7 +535,7 @@ export default function CourseDetailPage({ params }: any) {
                     </Link>
                   </li>
                 </ul>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

@@ -5,12 +5,52 @@ import AccordionItem from "@/components/dropdown/Dropdown";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { Course } from "@/components/courses/courses";
+import Image from "next/image";
+// import { Button } from "react-bootstrap";
+import { Button, Form, Input, Modal, Select, Space, Upload } from "antd";
+// import { Option } from "antd/es/mentions";
 
 export default function AfterEnroll({ params }: any) {
   const [activeTab, setActiveTab] = useState("tab1");
+  const [form] = Form.useForm();
+  const [selected, setSelected] = useState(null);
+  const { Option } = Select;
+  const { TextArea } = Input;
   const handleTabClick = (tabName: string) => {
     setActiveTab(tabName);
   };
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
+  const Reasons = [
+    { id: "1", name: "Nội dung không phù hợp" },
+    { id: "2", name: "Vi phạm bản quyền" },
+    { id: "3", name: "Vi phạm tiêu chuẩn cộng đồng " },
+  ];
+
+  const handleChangeReason = (value: React.SetStateAction<null>) => {
+    setSelected(value);
+  };
+
+  const normFile = (e: any) => {
+    if (Array.isArray(e)) {
+      return e;
+    }
+    return e?.fileList;
+  };
+
   const idCourse = params.id;
   // console.log("id is", idCourse);
   //   const id = router.query.id;
@@ -50,9 +90,80 @@ export default function AfterEnroll({ params }: any) {
           </video>
           <div>
             <div className="px-3">
-              <h2 className="text-[25px] leading-normal text-[#212832] font-medium mt-2.5">
-                {courses?.name}
-              </h2>
+              <div className="flex justify-between">
+                <h2 className="text-[25px] leading-normal text-[#212832] font-medium mt-2.5">
+                  {courses?.name}
+                </h2>
+                <a onClick={showModal}>
+                  <Image
+                    width={40}
+                    height={40}
+                    src="/menu-icon/flag-icon.jpg"
+                    alt="flag"
+                  />
+                </a>
+                <Modal
+                  title={`Report ${courses?.name} của ai`}
+                  open={isModalOpen}
+                  // onOk={handleOk}
+                  onCancel={handleCancel}
+                  footer={false}
+                >
+                  <Form
+                    autoComplete="off"
+                    form={form}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 14 }}
+                    layout="horizontal"
+                    className="mt-5"
+                    style={{ width: 600 }}
+                    onFinish={handleOk}
+                  >
+                    <Form.Item label="Reason">
+                      <Select
+                        defaultValue={selected}
+                        onChange={handleChangeReason}
+                      >
+                        {Reasons.map((option) => {
+                          return (
+                            <Option key={option.id} value={option.id}>
+                              {option.name}
+                            </Option>
+                          );
+                        })}
+                      </Select>
+                    </Form.Item>
+                    <Form.Item label="Comment">
+                      <TextArea rows={4} />
+                    </Form.Item>
+                    {/* <Form.Item
+                      label="Capture"
+                      // valuePropName="fileList"
+                      getValueFromEvent={normFile}
+                    >
+                      <Upload action="/upload.do" listType="picture-card">
+                        <div>
+                          <div style={{ marginTop: 8 }}>Upload</div>
+                        </div>
+                      </Upload>
+                    </Form.Item> */}
+                    <Space className="justify-end w-full pr-[150px]">
+                      <Form.Item className="mb-0">
+                        <Space>
+                          <Button onClick={handleCancel}>Cancel</Button>
+                          <Button
+                            type="primary"
+                            htmlType="submit"
+                            style={{ color: "black" }}
+                          >
+                            Report
+                          </Button>
+                        </Space>
+                      </Form.Item>
+                    </Space>
+                  </Form>
+                </Modal>
+              </div>
               <div className="flex justify-center bg-[#e7f8ee] p-3 rounded-lg mt-5">
                 <ul className="tabs flex space-x-5">
                   <li
@@ -76,7 +187,7 @@ export default function AfterEnroll({ params }: any) {
                     onClick={() => handleTabClick("tab2")}
                   >
                     <button className="w-28 h-14 px-[15px] text-center text-sm font-medium  border-opacity-20 rounded-md hover:border-[#309255] hover:text-[#fff] hover:bg-[#309255]">
-                      lecture
+                      Lecture
                     </button>
                   </li>
                   <li
