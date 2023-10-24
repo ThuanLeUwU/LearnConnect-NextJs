@@ -41,7 +41,7 @@ const CourseItem = ({
       <div className="single-courses">
         <div>
           <div className="courses-images">
-            <a href={`/course-detail/${id}`}>
+            <a href={`/my-course/${id}`}>
               <img
                 className="rounded-lg w-full h-[180px] object-cover"
                 src={imageUrl}

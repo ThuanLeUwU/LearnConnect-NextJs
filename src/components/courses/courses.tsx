@@ -378,7 +378,7 @@ const Courses = ({
             <span className="old-parice">{price} VND</span>
           </div>
           <div className="courses-review">
-            a{/* <span className="rating-count">4.9</span> */}
+            {/* <span className="rating-count">4.9</span> */}
             {/* <Rating
                             value={rating}
                             onStarClick={(nextValue, prevValue, name) =>

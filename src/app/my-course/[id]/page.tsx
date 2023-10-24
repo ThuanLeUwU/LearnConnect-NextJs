@@ -7,13 +7,31 @@ import axios from "axios";
 import { Course } from "@/components/courses/courses";
 import Image from "next/image";
 // import { Button } from "react-bootstrap";
-import { Button, Form, Input, Modal, Select, Space, Upload } from "antd";
+import {
+  Button,
+  Form,
+  Input,
+  Modal,
+  Select,
+  Space,
+  Upload,
+  message,
+} from "antd";
 // import { Option } from "antd/es/mentions";
+import { ToastContainer, toast } from "react-toastify";
+import { UserAuth } from "@/app/context/AuthContext";
 
 export default function AfterEnroll({ params }: any) {
   const [activeTab, setActiveTab] = useState("tab1");
+  const {user} = UserAuth();
+  // console.log("usser", user)
   const [form] = Form.useForm();
+  const [formDataImage, setFormDataImage] = useState();
+  // console.log("url", formDataImage)
   const [selected, setSelected] = useState(null);
+  const [image, setImage] = useState<string>();
+  // console.log("imag",image)
+  // console.log("Rason", selected);
   const { Option } = Select;
   const { TextArea } = Input;
   const handleTabClick = (tabName: string) => {
@@ -21,17 +39,59 @@ export default function AfterEnroll({ params }: any) {
   };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
 
   const showModal = () => {
     setIsModalOpen(true);
   };
 
-  const handleOk = () => {
+  const handleOk = (data: any) => {
+    // console.log(e)
     setIsModalOpen(false);
+    const formdata = new FormData();
+    formdata.append("reason", selected || "1");
+    formdata.append("comment", data.comment);
+    
+    console.log("fomdata", selected);
+    setTimeout(() => {
+      message.success("Report successful");
+    });
   };
 
   const handleCancel = () => {
     setIsModalOpen(false);
+  };
+
+  const handleChange = (info: any) => {
+    if (info.file.status === "uploading") {
+      return;
+    }
+    if (info.file.status === "done") {
+      // Get this url from response in real world.
+
+      setFormDataImage(info.file.originFileObj);
+      getBase64(info.file.originFileObj, (url) => {
+        setImage(url);
+      });
+    }
+  };
+
+  const getBase64 = (img : any, callback: (url: string) => void) => {
+    const reader = new FileReader();
+    reader.addEventListener("load", () => callback(reader.result as string));
+    reader.readAsDataURL(img);
+  };
+
+  const beforeUpload = (file: any) => {
+    const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
+    if (!isJpgOrPng) {
+      message.error("You can only upload JPG/PNG file!");
+    }
+    const isLt2M = file.size / 1024 / 1024 < 2;
+    if (!isLt2M) {
+      message.error("Image must smaller than 2MB!");
+    }
+    return isJpgOrPng && isLt2M;
   };
 
   const Reasons = [
@@ -50,6 +110,12 @@ export default function AfterEnroll({ params }: any) {
     }
     return e?.fileList;
   };
+
+  // const uploadImage = () => {
+  //   const fetchImg= async () => {
+  //     const res = await axios.post(`https://learnconnectapitest.azurewebsites.net/api/image`)
+  //   }
+  // }
 
   const idCourse = params.id;
   // console.log("id is", idCourse);
@@ -90,20 +156,21 @@ export default function AfterEnroll({ params }: any) {
           </video>
           <div>
             <div className="px-3">
-              <div className="flex justify-between">
-                <h2 className="text-[25px] leading-normal text-[#212832] font-medium mt-2.5">
+              <div className="flex justify-between mt-2.5">
+                <h2 className="text-[25px] leading-normal text-[#212832] font-medium ">
                   {courses?.name}
                 </h2>
-                <a onClick={showModal}>
-                  <Image
+                <Button danger type="primary" onClick={showModal}>
+                  {/* <Image
                     width={40}
                     height={40}
                     src="/menu-icon/flag-icon.jpg"
                     alt="flag"
-                  />
-                </a>
+                  /> */}
+                  Report
+                </Button>
                 <Modal
-                  title={`Report ${courses?.name} của ai`}
+                  title={`Report ${courses?.name} bởi ${user?.displayName}`}
                   open={isModalOpen}
                   // onOk={handleOk}
                   onCancel={handleCancel}
@@ -133,25 +200,36 @@ export default function AfterEnroll({ params }: any) {
                         })}
                       </Select>
                     </Form.Item>
-                    <Form.Item label="Comment">
-                      <TextArea rows={4} />
+                    <Form.Item label="Comment" name="comment">
+                      <Input.TextArea rows={4} />
                     </Form.Item>
-                    {/* <Form.Item
+                    <Form.Item
                       label="Capture"
                       // valuePropName="fileList"
                       getValueFromEvent={normFile}
                     >
-                      <Upload action="/upload.do" listType="picture-card">
-                        <div>
-                          <div style={{ marginTop: 8 }}>Upload</div>
-                        </div>
+                      <Upload
+                        accept="image/png, image/jpeg"
+                        onChange={handleChange}
+                        beforeUpload={beforeUpload}
+                        // headers={{ Authorization: authorization }}
+                        action="https://learnconnectapitest.azurewebsites.net/api/image"
+                        listType="picture-card"
+                      >
+                        Upload
                       </Upload>
-                    </Form.Item> */}
+                    </Form.Item>
                     <Space className="justify-end w-full pr-[150px]">
                       <Form.Item className="mb-0">
-                        <Space >
-                          <Button onClick={handleCancel} >Cancel</Button>
-                          <Button type="primary" htmlType="submit" style={{color: "black"}}>Report</Button>
+                        <Space>
+                          <Button onClick={handleCancel}>Cancel</Button>
+                          <Button
+                            type="primary"
+                            htmlType="submit"
+                            style={{ color: "black" }}
+                          >
+                            Report
+                          </Button>
                         </Space>
                       </Form.Item>
                     </Space>
@@ -368,6 +446,7 @@ export default function AfterEnroll({ params }: any) {
           </div>
         </div>
       </div>
+      {/* <ToastContainer/> */}
     </div>
   );
 }
