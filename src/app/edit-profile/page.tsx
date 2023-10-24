@@ -3,7 +3,7 @@ import { ChangeEvent, FormEvent, SetStateAction, useState } from "react";
 import ".././globals.css";
 import { AuthContextProvider, UserAuth } from "../context/AuthContext";
 import axios from "axios";
-import { Modal } from "antd";
+import { Modal, message } from "antd";
 import { useRouter } from "next/navigation";
 
 export default function EditProfile() {
@@ -11,7 +11,7 @@ export default function EditProfile() {
   const { id, userData } = UserAuth();
   const [fullName, setFullName] = useState(userData?.fullName);
   const [gender, setGender] = useState(userData?.gender || 0);
-  console.log('gioi tinh', gender)
+  console.log("gioi tinh", gender);
   const [phoneNumber, setPhoneNumber] = useState(userData?.phoneNumber || "");
   const [password, setPassword] = useState(userData?.password || "");
   const [email, setEmail] = useState(userData?.email || "");
@@ -76,7 +76,11 @@ export default function EditProfile() {
         updatedUserData
       )
       .then((response) => {
-        showSuccessModal();
+        setTimeout(() => {
+          message.success("Edit successful");
+        });
+        router.prefetch("/profile");
+        router.push("/profile");
         AuthContextProvider;
       })
       .catch((error) => {
@@ -103,7 +107,7 @@ export default function EditProfile() {
         <div className="container mx-auto max-w-screen-lg py-20">
           <div className="pt-6 px-10 pb-16 border border-solid border-opacity-20 border-[#30925533] rounded-lg">
             <form onSubmit={handleSubmit}>
-              <div className="mb-6">
+              {/* <div className="mb-6">
                 <label
                   htmlFor="first_name"
                   className="block mb-2 text-base font-medium text-[#000]"
@@ -119,7 +123,7 @@ export default function EditProfile() {
                   placeholder="Your Name"
                   required
                 />
-              </div>
+              </div> */}
               <div className="mb-6">
                 <label
                   htmlFor="gender"

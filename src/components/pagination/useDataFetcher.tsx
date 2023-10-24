@@ -13,7 +13,6 @@ export type CourseItem = {
   averageRating: number;
   status: number;
   categoryId: number;
-  categoryName: string;
 };
 export type User = {
   id: string | number;
@@ -32,10 +31,9 @@ const useDataFetcher = () => {
   const API_URL =
     "https://learnconnectapitest.azurewebsites.net/api/course/get-courses-paging";
   const pagesize = 6;
-  const totalPages = 10;
+  const [totalPages, setTotalPages] = useState(10);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
-  // console.log("course fetchdata", courses);
   useEffect(() => {
     const fetchData = async () => {
       const page = Math.min(currentPage + 1, totalPages);
@@ -43,9 +41,8 @@ const useDataFetcher = () => {
         `${API_URL}?currentPage=${page}&pageSize=${pagesize}`
       );
       setCourses(result?.data);
-      // console.log("result", result);
-      // console.log("currentPage", page);
       setLoading(false);
+      console.log("totalPages", result);
     };
     fetchData();
   }, [currentPage]);

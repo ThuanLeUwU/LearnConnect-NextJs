@@ -1,14 +1,12 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import "../../app/./globals.css";
-import ProgressBar from "@ramonak/react-progress-bar";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 import CourseStyle from "./styles/style.module.scss";
-import Box from "@mui/material/Box";
 import Rating from "@mui/material/Rating";
-import Typography from "@mui/material/Typography";
-import Stack from "@mui/material/Stack";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHeart } from "@fortawesome/free-solid-svg-icons";
+import { FaRegHeart, FaHeart } from "react-icons/fa6";
 
 export type Course = {
   id: string | number;
@@ -22,6 +20,8 @@ export type Course = {
   rating: number;
   categoryId: number | string;
   contentLength: number;
+  lectureCount: number;
+  averageRating: number;
 };
 
 const Courses = ({
@@ -33,6 +33,8 @@ const Courses = ({
   categoryName,
   totalEnrollment,
   contentLength,
+  lectureCount,
+  averageRating,
 }: {
   imageUrl: string;
   name: string;
@@ -42,24 +44,48 @@ const Courses = ({
   categoryName: string;
   totalEnrollment: string | number;
   contentLength: string | number;
+  lectureCount: string | number;
+  averageRating: number;
 }) => {
   const router = useRouter();
+  const [isLiked, setIsLiked] = useState(false);
 
   const handleClick = () => {
     router.push(`/course-detail/${id}`);
   };
+  const handleLike = () => {
+    setIsLiked(!isLiked);
+  };
 
-  const ratingValue = 4.3;
+  const formattedPrice =
+    typeof price === "string"
+      ? parseFloat(price)
+          .toFixed(3)
+          .replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+      : price.toFixed(3).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
   return (
     <div className={`${CourseStyle.single_courses}`}>
       <div className={`${CourseStyle.single_courses_image}`}>
-        <a onClick={handleClick}>
-          <img
-            className="rounded-lg w-full h-[180px] object-cover"
-            src={imageUrl}
-            alt="Courses"
-          />
-        </a>
+        <div className="relative">
+          <a onClick={handleClick}>
+            <img
+              className="rounded-lg w-full h-[180px] object-cover"
+              src={imageUrl}
+              alt="Courses"
+            />
+          </a>
+          <div
+            onClick={handleLike}
+            className="absolute top-2 right-2 cursor-pointer"
+          >
+            {isLiked ? (
+              <FaHeart className={`text-2xl text-red-500`} />
+            ) : (
+              <FaRegHeart className={`text-2xl text-[#000]`} />
+            )}
+          </div>
+        </div>
       </div>
       <div className={`${CourseStyle.single_courses_content}`}>
         <div className={`${CourseStyle.single_courses_author}`}>
@@ -73,9 +99,11 @@ const Courses = ({
               </a>
             </div>
             <div className="author-name">
-              <a className="font-bold	" href="#">
-                {name}
-              </a>
+              <div className="min-h-[60px]">
+                <a className="font-bold" href="#">
+                  {name}
+                </a>
+              </div>
             </div>
           </div>
           {/* <div className={`${CourseStyle.single_courses_tag}`}>
@@ -106,7 +134,7 @@ const Courses = ({
           <span>
             <Rating
               name="half-rating-read"
-              defaultValue={ratingValue}
+              defaultValue={averageRating}
               precision={0.1}
               readOnly
             />
@@ -118,7 +146,7 @@ const Courses = ({
             <span className={`${CourseStyle.single_courses_price_sale}`}>
               {/* {item.sale} */}
             </span>
-            <span className="old-parice">{price}</span>
+            <span className="old-parice">{formattedPrice}</span>
           </div>
           <div className="courses-review">VND</div>
         </div>

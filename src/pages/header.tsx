@@ -8,7 +8,7 @@ import { CourseDropDown } from "../app/test/CourseDropdown";
 import { UserAuth } from "@/app/context/AuthContext";
 import { Button } from "react-bootstrap";
 import { RegisterForm } from "@/components/registerForm";
-import { Modal } from "antd";
+import {  Modal } from "antd";
 import { useRouter } from "next/navigation";
 
 const Header = () => {
@@ -509,7 +509,7 @@ const Header = () => {
               {/* <!-- Header Sing In & Up Start --> */}
 
               <div className={`${headerStyles.regis_btn}`}>
-                <Button
+                {/* <Button
                   onClick={() => {
                     Modal.confirm({
                       title: "Register Mentor Form",
@@ -520,14 +520,35 @@ const Header = () => {
                           onCancel={() => {
                             setVisible(false);
                           }}
-                          isEdit={false}
+                          isEdit={true}
                         />
                       ),
                     });
                   }}
                 >
                   Become a Mentor
+                </Button> */}
+                <Button
+                  // danger
+                  // type="primary"
+                  onClick={() => setVisible(true)}
+                >
+                  {/* <Image
+                    width={40}
+                    height={40}
+                    src="/menu-icon/flag-icon.jpg"
+                    alt="flag"
+                  /> */}
+                  Become a Mentor
                 </Button>
+                <RegisterForm
+                  visible={visible}
+                  setVisible={setVisible}
+                  onCancel={() => {
+                    setVisible(false);
+                  }}
+                  isEdit={true}
+                />
               </div>
               {/* <!-- Header Sing In & Up End --> */}
 

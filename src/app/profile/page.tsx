@@ -109,7 +109,9 @@ export default function ProfileUser() {
                   </div> */}
                   <div className="card-body p-4 text-black">
                     <div className="mb-5">
-                      <p className="font-semibold text-lg mb-2">About</p>
+                      <p className="font-semibold text-lg mb-2">
+                        Bio Description
+                      </p>
                       <div className="p-4 bg-gray-200">
                         <p className="italic mb-1">
                           {userData?.bioDescription}

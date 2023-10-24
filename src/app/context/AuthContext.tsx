@@ -16,6 +16,7 @@ import {
 import { auth } from "../firebase";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { message } from "antd";
 
 interface AuthContextProps {
   children: ReactNode;
@@ -65,6 +66,10 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
     const provider = new GoogleAuthProvider();
     await signInWithPopup(auth, provider);
     router.push("/");
+    setTimeout(() => {
+      message.success("Login successful")
+    });
+    
   };
 
   const logOut = () => {

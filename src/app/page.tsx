@@ -22,7 +22,12 @@ export default function Home() {
               {courses.map((item, index) => {
                 return (
                   <div key={index}>
-                    <Courses categoryName={""} key={item.id} {...item} />
+                    <Courses
+                      lectureCount={""}
+                      categoryName={""}
+                      key={item.id}
+                      {...item}
+                    />
                   </div>
                 );
               })}

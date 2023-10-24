@@ -17,7 +17,12 @@ const ListCourse = () => {
             {courses.map((item) => {
               return (
                 <>
-                  <Courses categoryName={""} key={item.id} {...item} />
+                  <Courses
+                    lectureCount={""}
+                    categoryName={""}
+                    key={item.id}
+                    {...item}
+                  />
                 </>
               );
             })}

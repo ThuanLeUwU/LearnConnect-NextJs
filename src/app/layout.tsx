@@ -5,6 +5,7 @@ import { Inter } from "next/font/google";
 import React from "react";
 import Footer from "@/pages/Footer";
 import { AuthContextProvider } from "./context/AuthContext";
+import { ToastContainer } from "react-toastify";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,6 +27,7 @@ export default function RootLayout({
           {children}
           <Footer />
         </AuthContextProvider>
+        {/* <ToastContainer/> */}
       </body>
     </html>
   );
