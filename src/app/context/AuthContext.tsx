@@ -87,7 +87,6 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
                 },
               }
             );
-            console.log("token is:", token);
             setToken(responseData?.data);
             const api_token = responseData?.data.data;
             var jwt = require("jsonwebtoken");
@@ -95,7 +94,6 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
             setToken(api_token);
             const userId = decoded.Id;
             setId(userId);
-
             const fetchUser = async () => {
               const responseUser = await axios.get(
                 `https://learnconnectapitest.azurewebsites.net/api/user/${userId}`

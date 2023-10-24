@@ -30,24 +30,19 @@ export type User = {
 const useDataUserFetcher = () => {
   const { id } = UserAuth();
   const [courses, setCourses] = useState<CourseItem[]>([]);
-  console.log("id", id);
   const API_URL =
     "https://learnconnectapitest.azurewebsites.net/api/course/get-courses-by-userid?userId=";
   const pagesize = 6;
   const totalPages = 10;
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
-  // console.log("course fetchdata", courses);
   useEffect(() => {
     const fetchData = async () => {
       const page = Math.min(currentPage + 1, totalPages);
       const result = await axios.get(
         `${API_URL}${id}&currentPage=${page}&pageSize=${pagesize}`
-        // `https://learnconnectapitest.azurewebsites.net/api/course/get-courses-by-userid/${id}`
       );
       setCourses(result?.data);
-      // console.log("result", result);
-      // console.log("currentPage", page);
       setLoading(false);
     };
     fetchData();
