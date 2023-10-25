@@ -6,6 +6,7 @@ import React, { useState, useEffect, ReactNode } from "react";
 import axios from "axios";
 import { Button } from "react-bootstrap";
 import { Course, Lectures } from "@/components/courses/courses";
+import { UserAuth } from "@/app/context/AuthContext";
 
 export default function CourseDetailPage({ params }: any) {
   const [visible, setVisible] = useState(false);
@@ -16,6 +17,10 @@ export default function CourseDetailPage({ params }: any) {
   };
   const [courses, setCourses] = useState<Course>();
   const [lectures, setLectures] = useState<Lectures>();
+  const { id, userData } = UserAuth();
+  const idUser = id;
+  console.log("id user is", idUser);
+  console.log("id course is", idCourse);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,8 +44,34 @@ export default function CourseDetailPage({ params }: any) {
     fetchData();
   }, []);
 
-  console.log("lectures: ", lectures);
-  console.log("id is : ", idCourse);
+  const payment = async (
+    userId: any,
+    courseId: any,
+    returnUrl: string | number | boolean
+  ) => {
+    const url = `https://learnconnectapitest.azurewebsites.net/api/enrollment/Enroll?userId=${userId}&courseId=${courseId}&returnUrl=${encodeURIComponent(
+      returnUrl
+    )}`;
+    try {
+      const response = await axios.post(url);
+      console.log("Response from API:", response.data);
+
+      // const responseDataPayment = await axios.get(response.data);
+      // console.log("responseDataPayment", responseDataPayment.data);
+
+      if (response.data) {
+        const newTab = window.open(response.data, "_blank");
+        if (newTab) {
+          newTab.focus();
+        } else {
+          alert("Popup blocked. Please allow popups for this website.");
+        }
+      }
+    } catch (error) {
+      console.error("Error occurred:", error);
+    }
+  };
+
   return (
     <div className="contain-wrapper">
       <div className="bg-[#fff]">
@@ -70,7 +101,6 @@ export default function CourseDetailPage({ params }: any) {
                     </Link>
                     <span className="mx-5"></span>
                     <span className="text-sm font-normal text-[#309255]">
-                      {/* {courses?.totalEnrollment} Enrolled Students */}
                       {courses?.totalEnrollment &&
                         courses?.totalEnrollment.toLocaleString()}{" "}
                       Enrolled Students
@@ -324,34 +354,48 @@ export default function CourseDetailPage({ params }: any) {
                             {courses?.lectureCount}
                           </span>
                         </li>
-                        {/* <li className="border-b border-solid border-[#d1e6d9] py-3.5">
-                          <i className="icofont-book-alt"></i>{" "}
-                          <strong className="text-[#212832] text-base font-medium">
-                            Language
-                          </strong>{" "}
-                          <span className="text-[#52565b] float-right text-base font-normal">
-                            English
-                          </span>
-                        </li> */}
                       </ul>
                     </div>
                     <div className="text-center mt-10">
                       <Button
-                        // href="/after-enroll"
                         className="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded-2xl py-4 px-3 leading-normal no-underline bg-[#309255] text-white hover:bg-black btn-outline w-44 border-[#a9f9c8] hover:text-white transition-all duration-300 ease-in-out delay-0 my-2"
                         onClick={() => {
                           Modal.confirm({
-                            title: "Payment successful",
+                            title: "Your Order",
                             content: (
-                              <Payment
-                                visible={visible}
-                                setVisible={setVisible}
-                                onCancel={() => {
-                                  setVisible(false);
-                                }}
-                                isEdit={false}
-                              />
+                              <div className="pr-[34px]">
+                                <img
+                                  src={courses?.imageUrl}
+                                  alt="course-detail"
+                                  className="rounded-md w-full h-[170px] object-cover"
+                                />
+                                <p className="mt-2">
+                                  Your price needs to be paid is:{" "}
+                                  {courses?.price} VND
+                                </p>
+                                {/* <Payment
+                                  visible={visible}
+                                  setVisible={setVisible}
+                                  onCancel={() => {
+                                    setVisible(false);
+                                  }}
+                                  isEdit={false}
+                                /> */}
+                              </div>
                             ),
+                            onOk() {
+                              // payment();
+                              payment(
+                                idUser,
+                                idCourse,
+                                "https://learnconnectapitest.azurewebsites.net/api/payment-transaction/query-vnpay-transaction"
+                              );
+
+                              console.log("Enrollment confirmed");
+                            },
+                            onCancel() {
+                              console.log("Enrollment canceled");
+                            },
                           });
                         }}
                       >
@@ -361,37 +405,6 @@ export default function CourseDetailPage({ params }: any) {
                   </div>
                 </div>
               </div>
-
-              {/* <div className="sidebar-widget">
-                <h4 className="widget-title">Share Course:</h4>
-                <ul className="social">
-                  <li>
-                    <Link href="#">
-                      <i className="flaticon-facebook"></i>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="#">
-                      <i className="flaticon-linkedin"></i>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="#">
-                      <i className="flaticon-twitter"></i>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="#">
-                      <i className="flaticon-skype"></i>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="#">
-                      <i className="flaticon-instagram"></i>
-                    </Link>
-                  </li>
-                </ul>
-              </div> */}
             </div>
           </div>
         </div>

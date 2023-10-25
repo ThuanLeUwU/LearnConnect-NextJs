@@ -11,7 +11,6 @@ export default function EditProfile() {
   const { id, userData } = UserAuth();
   const [fullName, setFullName] = useState(userData?.fullName);
   const [gender, setGender] = useState(userData?.gender || 0);
-  console.log("gioi tinh", gender);
   const [phoneNumber, setPhoneNumber] = useState(userData?.phoneNumber || "");
   const [password, setPassword] = useState(userData?.password || "");
   const [email, setEmail] = useState(userData?.email || "");

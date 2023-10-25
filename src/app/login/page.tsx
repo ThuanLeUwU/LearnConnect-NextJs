@@ -10,7 +10,7 @@ import { User } from "firebase/auth";
 
 export default function LoginPage() {
   const { user, token, googleSignIn, logOut } = UserAuth();
-  // console.log("token is :", token);
+  // console.log("token is :" , token);
 
   const router = useRouter();
   // let token = user && user.accessToken ? user.accessToken : null; //cho nay` eo loi do thg db ts
