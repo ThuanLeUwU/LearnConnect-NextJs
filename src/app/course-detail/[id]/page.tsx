@@ -2,10 +2,10 @@
 import { Payment } from "@/components/payment";
 import { Modal } from "antd";
 import Link from "next/link";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, ReactNode } from "react";
 import axios from "axios";
 import { Button } from "react-bootstrap";
-import { Course } from "@/components/courses/courses";
+import { Course, Lectures } from "@/components/courses/courses";
 
 export default function CourseDetailPage({ params }: any) {
   const [visible, setVisible] = useState(false);
@@ -15,6 +15,8 @@ export default function CourseDetailPage({ params }: any) {
     setActiveTab(tabName);
   };
   const [courses, setCourses] = useState<Course>();
+  const [lectures, setLectures] = useState<Lectures>();
+
   useEffect(() => {
     const fetchData = async () => {
       const responseData = await axios.get(
@@ -25,6 +27,20 @@ export default function CourseDetailPage({ params }: any) {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const responseData = await axios.get(
+        `https://learnconnectapitest.azurewebsites.net/api/lecture/by-course/${idCourse}`
+      );
+      setLectures(responseData?.data);
+    };
+
+    fetchData();
+  }, []);
+
+  console.log("lectures: ", lectures);
+  console.log("id is : ", idCourse);
   return (
     <div className="contain-wrapper">
       <div className="bg-[#fff]">
@@ -54,7 +70,10 @@ export default function CourseDetailPage({ params }: any) {
                     </Link>
                     <span className="mx-5"></span>
                     <span className="text-sm font-normal text-[#309255]">
-                      {courses?.totalEnrollment} Enrolled Students
+                      {/* {courses?.totalEnrollment} Enrolled Students */}
+                      {courses?.totalEnrollment &&
+                        courses?.totalEnrollment.toLocaleString()}{" "}
+                      Enrolled Students
                     </span>
                   </div>
                 </div>
@@ -126,235 +145,29 @@ export default function CourseDetailPage({ params }: any) {
                     </div>
                   )}
                   {activeTab === "tab2" && (
-                    // <div className="tab-instructors">
-                    //   <h3 className="text-[#212832] text-2xl font-medium mt-6 pl-2">
-                    //     Course Instructor:
-                    //   </h3>
-                    //   <div className="grid lg:grid-cols-4 grid-cols-2">
-                    //     <div className="col-md-3 col-6">
-                    //       <div className="single-team text-center mt-10">
-                    //         <div className="team-thumb mx-auto w-44 h-44">
-                    //           <img
-                    //             className="rounded-full w-40 h-40 p-2.5 border border-solid border-opacity-20 border-[#30925533] transition-colors hover:border-green-700"
-                    //             src="./author/author-01.jpg"
-                    //             alt="Author"
-                    //           />
-                    //         </div>
-                    //         <div className="team-content">
-                    //           <div className="rating">
-                    //             <span className="text-sm font-normal">4.9</span>
-                    //             <i className="icofont-star"></i>
-                    //             <span className="text-[#848886] text-xs font-light">
-                    //               (rating)
-                    //             </span>
-                    //           </div>
-                    //           <h4 className="font-medium text-xl">
-                    //             Margarita James
-                    //           </h4>
-                    //           <span className="mt-2.5 text-[#309255] text-sm font-extralight">
-                    //             MSC, Instructor
-                    //           </span>
-                    //         </div>
-                    //       </div>
-                    //     </div>
-                    //     <div className="col-md-3 col-6">
-                    //       <div className="single-team text-center mt-10">
-                    //         <div className="team-thumb mx-auto w-44 h-44">
-                    //           <img
-                    //             className="rounded-full w-40 h-40 p-2.5 border border-solid border-opacity-20 border-[#30925533] transition-colors hover:border-green-700"
-                    //             src="./author/author-02.jpg"
-                    //             alt="Author"
-                    //           />
-                    //         </div>
-                    //         <div className="team-content">
-                    //           <div className="rating">
-                    //             <span className="text-sm font-normal">4.9</span>
-                    //             <i className="icofont-star"></i>
-                    //             <span className="text-[#848886] text-xs font-light">
-                    //               (rating)
-                    //             </span>
-                    //           </div>
-                    //           <h4 className="font-medium text-xl">
-                    //             Mitchell Colon
-                    //           </h4>
-                    //           <span className="mt-2.5 text-[#309255] text-sm font-extralight">
-                    //             BBA, Instructor
-                    //           </span>
-                    //         </div>
-                    //       </div>
-                    //     </div>
-                    //     <div className="col-md-3 col-6">
-                    //       <div className="single-team text-center mt-10">
-                    //         <div className="team-thumb mx-auto w-44 h-44">
-                    //           <img
-                    //             className="rounded-full w-40 h-40 p-2.5 border border-solid border-opacity-20 border-[#30925533] transition-colors hover:border-green-700"
-                    //             src="./author/author-03.jpg"
-                    //             alt="Author"
-                    //           />
-                    //         </div>
-                    //         <div className="team-content">
-                    //           <div className="rating">
-                    //             <span className="text-sm font-normal">4.9</span>
-                    //             <i className="icofont-star"></i>
-                    //             <span className="text-[#848886] text-xs font-light">
-                    //               (rating)
-                    //             </span>
-                    //           </div>
-                    //           <h4 className="font-medium text-xl">
-                    //             Sonya Gordon
-                    //           </h4>
-                    //           <span className="mt-2.5 text-[#309255] text-sm font-extralight">
-                    //             MBA, Instructor
-                    //           </span>
-                    //         </div>
-                    //       </div>
-                    //     </div>
-                    //     <div className="col-md-3 col-6">
-                    //       <div className="single-team text-center mt-10">
-                    //         <div className="team-thumb mx-auto w-44 h-44">
-                    //           <img
-                    //             className="rounded-full w-40 h-40 p-2.5 border border-solid border-opacity-20 border-[#30925533] transition-colors hover:border-green-700"
-                    //             src="./author/author-04.jpg"
-                    //             alt="Author"
-                    //           />
-                    //         </div>
-                    //         <div className="team-content">
-                    //           <div className="rating">
-                    //             <span className="text-sm font-normal">4.9</span>
-                    //             <i className="icofont-star"></i>
-                    //             <span className="text-[#848886] text-xs font-light">
-                    //               (rating)
-                    //             </span>
-                    //           </div>
-                    //           <h4 className="font-medium text-xl">
-                    //             Archie Neal
-                    //           </h4>
-                    //           <span className="mt-2.5 text-[#309255] text-sm font-extralight">
-                    //             BBS, Instructor
-                    //           </span>
-                    //         </div>
-                    //       </div>
-                    //     </div>
-                    //   </div>
-
-                    //   <div className="row text-[#212832] grid cols-2 lg:grid-cols-12">
-                    //     <div className="lg:col-span-6">
-                    //       <div className="tab-rating-content mt-11">
-                    //         <h3 className="text-2xl font-medium pl-2">
-                    //           Rating:
-                    //         </h3>
-                    //         <p className="mt-4 text-[#52565b] text-base font-extralight pl-4">
-                    //           Lorem Ipsum is simply dummy text of printing and
-                    //           typesetting industry. Lorem Ipsum has been the i
-                    //           dustry&apos;s standard dummy text ever since the
-                    //           1500 unknown printer took a galley of type.
-                    //         </p>
-                    //         <p className="mt-4 text-[#52565b] text-base font-extralight pl-4">
-                    //           Lorem Ipsum is simply dummy text of printing and
-                    //           typesetting industry text ever since
-                    //         </p>
-                    //         <p className="mt-4 text-[#52565b] text-base font-extralight pl-4">
-                    //           Lorem Ipsum is simply dummy text of printing and
-                    //           dustry&apos;s standard dummy text ever since the
-                    //           1500 unknown printer took a galley of type.
-                    //         </p>
-                    //       </div>
-                    //     </div>
-                    //     <div className="lg:col-span-6 text-center mt-11 py-10 px-8">
-                    //       <div className="tab-rating-box">
-                    //         <span className="text-3xl font-light text-[#309255]">
-                    //           4.8 <i className="icofont-star"></i>
-                    //         </span>
-                    //         <p className="text-[#52565b text-sm] font-extralight">
-                    //           Rating (86K+)
-                    //         </p>
-
-                    //         <div className="rating-box-wrapper">
-                    //           <div className="single-rating">
-                    //             <span className="rating-star">
-                    //               <span className="rating-bar"></span>
-                    //             </span>
-                    //             <div className="rating-progress-bar">
-                    //               <div className="rating-line"></div>
-                    //             </div>
-                    //           </div>
-
-                    //           <div className="single-rating">
-                    //             <span className="rating-star">
-                    //               <span className="rating-bar"></span>
-                    //             </span>
-                    //             <div className="rating-progress-bar">
-                    //               <div className="rating-line"></div>
-                    //             </div>
-                    //           </div>
-
-                    //           <div className="single-rating">
-                    //             <span className="rating-star">
-                    //               <span className="rating-bar"></span>
-                    //             </span>
-                    //             <div className="rating-progress-bar">
-                    //               <div className="rating-line"></div>
-                    //             </div>
-                    //           </div>
-
-                    //           <div className="single-rating">
-                    //             <span className="rating-star">
-                    //               <span className="rating-bar"></span>
-                    //             </span>
-                    //             <div className="rating-progress-bar">
-                    //               <div className="rating-line"></div>
-                    //             </div>
-                    //           </div>
-
-                    //           <div className="single-rating">
-                    //             <span className="rating-star">
-                    //               <span className="rating-bar"></span>
-                    //             </span>
-                    //             <div className="rating-progress-bar">
-                    //               <div className="rating-line"></div>
-                    //             </div>
-                    //           </div>
-                    //         </div>
-                    //       </div>
-                    //     </div>
-                    //   </div>
-                    // </div>
                     <div className="w-full mx-auto">
                       <div className="faq-wrapper">
                         <div className="single-faq-item">
                           <div className="grid cols-2 lg:grid-cols-12 border-[#dff0e6] border border-solid rounded-lg px-[70px] pb-[35px] mt-5">
                             <div className="lg:col-span-4 px-[15px]">
                               <div className="">
-                                <h4 className="text-[25px] px-[15px] pt-5 text-[#212832]">
-                                  Lectures
+                                <h4 className="text-[#212832] text-2xl font-medium mt-6 px-2">
+                                  Lectures:
                                 </h4>
                               </div>
                             </div>
                             <div className="lg:col-span-8">
-                              {/* <AccordionItem
-                            header="Lesson-01: Mindful Growth & the Creative Journey, Find
-                      Your Spark & Map Your Future"
-                            time="01 hour 48 minutes"
-                            timevideo="08 minutes"
-                            onLinkClick={changeVideoSource}
-                          />
-                          <AccordionItem
-                            header="Lesson-02: Mindful Growth & the Creative Journey, Find
-                      Your Spark & Map Your Future"
-                            time="01 hour 48 minutes"
-                            timevideo="08 minutes"
-                            onLinkClick={changeVideoSource}
-                          /> */}
-                              <div className="">
-                                <p className="mt-5">
-                                  Lesson-01: Mindful Growth & the Creative
-                                  Journey, Find Your Spark & Map Your Future
-                                </p>
-                                <p className="mt-5">
-                                  Lesson-02: Mindful Growth & the Creative
-                                  Journey, Find Your Spark & Map Your Future
-                                </p>
-                              </div>
+                              {lectures &&
+                                lectures.map((item, index) => (
+                                  <div key={index}>
+                                    <p className="mt-5 font-bold">
+                                      Lecture-{item.id} : {item.title}
+                                    </p>
+                                    <p className="mt-3.5 text-[#52565b] text-base font-extralight">
+                                      {item?.content}
+                                    </p>
+                                  </div>
+                                ))}
                             </div>
                           </div>
                         </div>
@@ -479,7 +292,7 @@ export default function CourseDetailPage({ params }: any) {
                   <div className="sidebar-widget widget-information">
                     <div className="text-center py-3.5">
                       <span className="text-[#309255] text-3xl font-bold">
-                        {courses?.price} $
+                        {courses?.price && courses?.price.toLocaleString()} VND
                       </span>
                     </div>
                     <div className=" text-black">

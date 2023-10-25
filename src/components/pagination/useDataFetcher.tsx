@@ -40,7 +40,7 @@ const useDataFetcher = () => {
       const result = await axios.get(
         `${API_URL}?currentPage=${page}&pageSize=${pagesize}`
       );
-      setCourses(result?.data);
+      setCourses(result?.data.listCourse);
       setLoading(false);
       console.log("totalPages", result);
     };

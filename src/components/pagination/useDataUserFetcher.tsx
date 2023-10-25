@@ -42,7 +42,7 @@ const useDataUserFetcher = () => {
       const result = await axios.get(
         `${API_URL}${id}&currentPage=${page}&pageSize=${pagesize}`
       );
-      setCourses(result?.data);
+      setCourses(result?.data.listCourse);
       setLoading(false);
     };
     fetchData();

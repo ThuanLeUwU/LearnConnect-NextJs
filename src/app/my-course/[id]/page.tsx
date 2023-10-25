@@ -4,7 +4,7 @@ import "../../globals.css";
 import AccordionItem from "@/components/dropdown/Dropdown";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { Course } from "@/components/courses/courses";
+import { Course, Lectures } from "@/components/courses/courses";
 import Image from "next/image";
 // import { Button } from "react-bootstrap";
 import {
@@ -23,23 +23,23 @@ import { UserAuth } from "@/app/context/AuthContext";
 export default function AfterEnroll({ params }: any) {
   const [activeTab, setActiveTab] = useState("tab1");
   const { user } = UserAuth();
-  // console.log("usser", user)
   const [form] = Form.useForm();
   const [formDataImage, setFormDataImage] = useState();
-  // console.log("url", formDataImage)
   const [selected, setSelected] = useState(null);
   const [image, setImage] = useState<string>();
-  // console.log("imag",image)
-  // console.log("Rason", selected);
   const { Option } = Select;
   const { TextArea } = Input;
   const handleTabClick = (tabName: string) => {
     setActiveTab(tabName);
   };
-
+  const [lectures, setLectures] = useState<Lectures>();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
-
+  const idCourse = params.id;
+  const [courses, setCourses] = useState<Course>();
+  const [videoSrc, setVideoSrc] = useState(
+    "https://player.vimeo.com/external/215175080.hd.mp4?s=5b17787857fd95646e67ad0f666ea69388cb703c&profile_id=119"
+  );
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -66,8 +66,6 @@ export default function AfterEnroll({ params }: any) {
       return;
     }
     if (info.file.status === "done") {
-      // Get this url from response in real world.
-
       setFormDataImage(info.file.originFileObj);
       getBase64(info.file.originFileObj, (url) => {
         setImage(url);
@@ -116,13 +114,10 @@ export default function AfterEnroll({ params }: any) {
   //   }
   // }
 
-  const idCourse = params.id;
   // console.log("id is", idCourse);
   //   const id = router.query.id;
   //   console.log("id", id);
-  const [videoSrc, setVideoSrc] = useState(
-    "https://player.vimeo.com/external/215175080.hd.mp4?s=5b17787857fd95646e67ad0f666ea69388cb703c&profile_id=119"
-  );
+
   const changeVideoSource = (newSrc: React.SetStateAction<string>) => {
     setVideoSrc(newSrc);
     const videoElement = document.getElementById(
@@ -132,7 +127,6 @@ export default function AfterEnroll({ params }: any) {
       videoElement.load();
     }
   };
-  const [courses, setCourses] = useState<Course>();
   useEffect(() => {
     const fetchData = async () => {
       const responseData = await axios.get(
@@ -144,7 +138,18 @@ export default function AfterEnroll({ params }: any) {
     fetchData();
   }, []);
 
-  console.log("course123", courses);
+  useEffect(() => {
+    const fetchData = async () => {
+      const responseData = await axios.get(
+        `https://learnconnectapitest.azurewebsites.net/api/lecture/by-course/${idCourse}`
+      );
+      setLectures(responseData?.data);
+    };
+
+    fetchData();
+  }, []);
+  console.log("lectures:", lectures);
+  console.log("course", courses);
 
   return (
     <div className="container">
@@ -357,6 +362,17 @@ export default function AfterEnroll({ params }: any) {
                           </div>
                         </div>
                         <div className="lg:col-span-8">
+                          {lectures &&
+                            lectures.map((item, index) => (
+                              <div key={index}>
+                                <p className="mt-5 font-bold">
+                                  Lecture-{item.id} : {item.title}
+                                </p>
+                                <p className="mt-3.5 text-[#52565b] text-base font-extralight">
+                                  {item?.content}
+                                </p>
+                              </div>
+                            ))}
                           {/* <AccordionItem
                             header="Lesson-01: Mindful Growth & the Creative Journey, Find
                       Your Spark & Map Your Future"
@@ -371,7 +387,7 @@ export default function AfterEnroll({ params }: any) {
                             timevideo="08 minutes"
                             onLinkClick={changeVideoSource}
                           /> */}
-                          <div className="">
+                          {/* <div className="">
                             <p className="mt-5">
                               Lesson-01: Mindful Growth & the Creative Journey,
                               Find Your Spark & Map Your Future
@@ -380,7 +396,7 @@ export default function AfterEnroll({ params }: any) {
                               Lesson-02: Mindful Growth & the Creative Journey,
                               Find Your Spark & Map Your Future
                             </p>
-                          </div>
+                          </div> */}
                         </div>
                       </div>
                     </div>

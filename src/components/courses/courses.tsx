@@ -24,6 +24,18 @@ export type Course = {
   averageRating: number;
 };
 
+export type Lectures = {
+  map(arg0: (item: any, index: any) => React.JSX.Element): React.ReactNode;
+  id: string | number;
+  title: string;
+  content: string;
+  contentUrl: string;
+  contentType: number;
+  rejectReason: null;
+  status: number;
+  courseId: number;
+};
+
 const Courses = ({
   imageUrl,
   name,
@@ -56,13 +68,6 @@ const Courses = ({
   const handleLike = () => {
     setIsLiked(!isLiked);
   };
-
-  const formattedPrice =
-    typeof price === "string"
-      ? parseFloat(price)
-          .toFixed(3)
-          .replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-      : price.toFixed(3).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 
   return (
     <div className={`${CourseStyle.single_courses}`}>
@@ -122,8 +127,8 @@ const Courses = ({
         <div className={`${CourseStyle.single_courses_timeline}`}>
           <span>
             {" "}
-            {/* <i className="icofont-clock-time"></i>  */}
-            {totalEnrollment} Students Joined
+            {totalEnrollment && totalEnrollment.toLocaleString()} Students
+            Joined
           </span>
           <span>
             {" "}
@@ -146,7 +151,8 @@ const Courses = ({
             <span className={`${CourseStyle.single_courses_price_sale}`}>
               {/* {item.sale} */}
             </span>
-            <span className="old-parice">{formattedPrice}</span>
+            {/* <span className="old-parice">{formattedPrice}</span> */}
+            <span> {price && price.toLocaleString()}</span>
           </div>
           <div className="courses-review">VND</div>
         </div>
