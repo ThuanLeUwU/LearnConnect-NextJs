@@ -23,15 +23,15 @@ import { UserAuth } from "@/app/context/AuthContext";
 
 export default function AfterEnroll({ params }: any) {
   const [activeTab, setActiveTab] = useState("tab1");
-  const {user} = UserAuth();
-  // console.log("usser", user)
+  const { id, user } = UserAuth();
+  console.log("usser", user);
   const [form] = Form.useForm();
   const [formDataImage, setFormDataImage] = useState();
-  // console.log("url", formDataImage)
+  console.log("url", formDataImage);
   const [selected, setSelected] = useState(null);
   const [image, setImage] = useState<string>();
-  // console.log("imag",image)
-  // console.log("Rason", selected);
+  console.log("imag", image);
+  console.log("Rason", selected);
   const { Option } = Select;
   const { TextArea } = Input;
   const handleTabClick = (tabName: string) => {
@@ -45,17 +45,36 @@ export default function AfterEnroll({ params }: any) {
     setIsModalOpen(true);
   };
 
-  const handleOk = (data: any) => {
+  const handleOk = async (data: any) => {
     // console.log(e)
     setIsModalOpen(false);
     const formdata = new FormData();
-    formdata.append("reason", selected || "1");
-    formdata.append("comment", data.comment);
-    
+    formdata.append("reportReason", selected || "1");
+    formdata.append("reportComment", data.comment);
+    if (formDataImage !== undefined) {
+      formdata.append("reportImage", formDataImage);
+    }
+    try {
+      await axios.post(
+        `https://learnconnectapitest.azurewebsites.net/api/report/report-course?userId=${id}&courseId=${idCourse}`,
+        formdata,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      handleCancel();
+      setTimeout(() => {
+        message.success("Report successful");
+      });
+    } catch (err) {
+      setTimeout(() => {
+        message.error("Report fail");
+      });
+    }
+
     console.log("fomdata", selected);
-    setTimeout(() => {
-      message.success("Report successful");
-    });
   };
 
   const handleCancel = () => {
@@ -76,7 +95,7 @@ export default function AfterEnroll({ params }: any) {
     }
   };
 
-  const getBase64 = (img : any, callback: (url: string) => void) => {
+  const getBase64 = (img: any, callback: (url: string) => void) => {
     const reader = new FileReader();
     reader.addEventListener("load", () => callback(reader.result as string));
     reader.readAsDataURL(img);
@@ -193,7 +212,7 @@ export default function AfterEnroll({ params }: any) {
                       >
                         {Reasons.map((option) => {
                           return (
-                            <Option key={option.id} value={option.id}>
+                            <Option key={option.id} value={option.name}>
                               {option.name}
                             </Option>
                           );
@@ -203,6 +222,9 @@ export default function AfterEnroll({ params }: any) {
                     <Form.Item label="Comment" name="comment">
                       <Input.TextArea rows={4} />
                     </Form.Item>
+                    {/* <Form.Item>
+                      {/* <Image width={200} height={200} src={image} /> */}
+                    {/* </Form.Item> */}
                     <Form.Item
                       label="Capture"
                       // valuePropName="fileList"
@@ -213,7 +235,7 @@ export default function AfterEnroll({ params }: any) {
                         onChange={handleChange}
                         beforeUpload={beforeUpload}
                         // headers={{ Authorization: authorization }}
-                        action="https://learnconnectapitest.azurewebsites.net/api/image"
+                        action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
                         listType="picture-card"
                       >
                         Upload
