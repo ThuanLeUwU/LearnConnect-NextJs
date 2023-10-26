@@ -7,10 +7,11 @@ import Image from "next/image";
 import React from "react";
 import useDataFetcher from "@/components/pagination/useDataFetcher";
 import Paginate from "@/components/pagination/pagination";
+import useDataHomeFetcher from "@/components/pagination/useDataHomeFetcher";
 
 export default function Home() {
   const { loading, courses, totalPages, currentPage, setCurrentPage } =
-    useDataFetcher();
+    useDataHomeFetcher();
   return (
     <>
       <div className="container">
@@ -34,11 +35,11 @@ export default function Home() {
             </div>
           </div>
         )}
-        <Paginate
-          totalPages={totalPages}
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-        />
+        <div className="flex items-center justify-center mt-4">
+          <button className="bg-[#309255] hover:bg-black text-white font-bold py-2 px-4 rounded-lg">
+            <a href="/courses">Show more</a>
+          </button>
+        </div>
       </div>
 
       <RegisInstructor />
