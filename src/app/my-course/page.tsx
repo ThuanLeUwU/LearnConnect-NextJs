@@ -6,9 +6,11 @@ import useDataUserFetcher from "@/components/pagination/useDataUserFetcher";
 import ProgressBar from "@ramonak/react-progress-bar";
 import { useEffect } from "react";
 import { FC } from "react";
+import { UserAuth } from "../context/AuthContext";
 
 const MyCourse = () => {
-  const { loading, courses, totalPages, currentPage, setCurrentPage } =
+  // const {id} = UserAuth();
+  const {loading, courses, totalPages, currentPage, setCurrentPage } =
     useDataUserFetcher();
 
   return (

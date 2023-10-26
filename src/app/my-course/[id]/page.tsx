@@ -471,7 +471,7 @@ export default function AfterEnroll({ params }: any) {
           <div className="bg-[#dff0e6] px-[30px] pt-[15px] pb-[25px]">
             <h3 className="text-[22px] mt-2.5">{courses?.name}</h3>
             <span className="mt-2.5 text-[#309255] text-[18px]">
-              {courses?.lectureCount} Lessons ({courses?.contentLength} m)
+              {courses?.lectureCount} Lectures ({courses?.contentLength} m)
             </span>
           </div>
           <div className="video-playlist bg-[#eefbf3] text-black">
@@ -491,7 +491,7 @@ export default function AfterEnroll({ params }: any) {
                       onClick={() => changeVideoSource(`${item.contentUrl}`)}
                     >
                       <div className="pl-20 py-2 pr-[30px]">
-                        <p>Lesson {index + 1} : {item.title}</p>
+                        <p>Lecture {index + 1} : {item.title}</p>
                         <span
                           className={`total-duration text-[#848886] text-[13px] mt-1.5`}
                         >

@@ -29,9 +29,11 @@ export type User = {
 };
 const useDataUserFetcher = () => {
   const { id } = UserAuth();
+  console.log("id của tau nè: ", id)
   const [courses, setCourses] = useState<CourseItem[]>([]);
+  console.log("my course", courses)
   const API_URL =
-    "https://learnconnectapitest.azurewebsites.net/api/course/get-courses-by-userid?userId=";
+    `https://learnconnectapitest.azurewebsites.net/api/course/get-courses-by-userid?userId=${id}`;
   const pagesize = 6;
   const totalPages = 10;
   const [loading, setLoading] = useState(true);
@@ -40,7 +42,7 @@ const useDataUserFetcher = () => {
     const fetchData = async () => {
       const page = Math.min(currentPage + 1, totalPages);
       const result = await axios.get(
-        `${API_URL}${id}&currentPage=${page}&pageSize=${pagesize}`
+        `${API_URL}&currentPage=${page}&pageSize=${pagesize}`
       );
       setCourses(result?.data.listCourse);
       setLoading(false);
