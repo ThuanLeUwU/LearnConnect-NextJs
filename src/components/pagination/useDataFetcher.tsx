@@ -41,6 +41,8 @@ const useDataFetcher = () => {
         `${API_URL}?currentPage=${page}&pageSize=${pagesize}`
       );
       setCourses(result?.data.listCourse);
+      // console.log("result", result);
+      // console.log("currentPage", page);
       setLoading(false);
       console.log("totalPages", result);
     };

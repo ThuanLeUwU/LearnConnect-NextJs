@@ -1,94 +1,90 @@
 "use client";
-import { CourseDropDown } from "@/app/test/CourseDropdown";
-import Link from "next/link";
-import { useEffect, useState } from "react";
-import './style.css';
+import { useState } from "react";
+import ".././globals.css";
 
-const Test = () => {
-  const [click, setClick] = useState(false);
-  const [dropdown, setDropdown] = useState(false);
+interface Question {
+  id: number;
+  question: string;
+  options: string[];
+}
 
-  const onMouseEnter = () => {
-    if (window.innerWidth < 960) {
-      setDropdown(false);
-    } else {
-      setDropdown(true);
+const Quiz = () => {
+  const questions: Question[] = [
+    {
+      id: 1,
+      question: "What is the capital of France?",
+      options: ["London", "Berlin", "Paris", "Madrid"],
+    },
+    {
+      id: 2,
+      question: "What is the largest mammal?",
+      options: ["Elephant", "Blue Whale", "Giraffe", "Lion"],
+    },
+  ];
+
+  const [selectedAnswers, setSelectedAnswers] = useState<{
+    [key: number]: string | null;
+  }>({});
+
+  const handleCheckboxChange = (questionId: number, option: string) => {
+    const newSelectedAnswers = { ...selectedAnswers };
+
+    // If another option was selected for the same question, clear the previous selection
+    for (const id in newSelectedAnswers) {
+      if (id !== questionId.toString() && newSelectedAnswers[id] === option) {
+        newSelectedAnswers[id] = null;
+      }
     }
+
+    // Set the new selection for the current question
+    newSelectedAnswers[questionId] =
+      selectedAnswers[questionId] === option ? null : option;
+
+    setSelectedAnswers(newSelectedAnswers);
+  };
+  const handleSubmit = () => {
+    // Implement your submit logic here
+    console.log(selectedAnswers);
   };
 
-  const onMouseLeave = () => {
-    if (window.innerWidth < 960) {
-      setDropdown(false);
-    } else {
-      setDropdown(false);
-    }
-  };
-
-  const handleClick = () => setClick(!click);
-  const closeMobileMenu = () => setClick(false);
   return (
-    <div>
-      <nav className='navbar'>
-        <Link href='/' className='navbar-logo' onClick={closeMobileMenu}>
-          EPIC
-          <i className='fab fa-firstdraft' />
-        </Link>
-        <div className='menu-icon' onClick={handleClick}>
-          <i className={click ? 'fas fa-times' : 'fas fa-bars'} />
-        </div>
-        <ul className={click ? 'nav-menu active' : 'nav-menu'}>
-          <li className='nav-item'>
-            <Link href='/' className='nav-links' onClick={closeMobileMenu}>
-              Home
-            </Link>
-          </li>
-          <li
-            className='nav-item'
-            onMouseEnter={onMouseEnter}
-            onMouseLeave={onMouseLeave}
+    <div className="container">
+      <div className="p-4">
+        <h2 className="text-2xl font-bold mb-4">Multiple Choice Quiz</h2>
+        {questions.map((question) => (
+          <div key={question.id} className="mb-4">
+            <h3 className="text-lg font-semibold mb-2">{question.question}</h3>
+            {question.options.map((option, index) => (
+              <div key={index} className="flex items-center mb-2">
+                <label className="flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={selectedAnswers[question.id] === option}
+                    onChange={() => handleCheckboxChange(question.id, option)}
+                    className="hidden"
+                  />
+                  <div className="w-6 h-6 border-2 border-gray-400 rounded-full mr-2 flex items-center justify-center">
+                    {selectedAnswers[question.id] === option && (
+                      <div className="w-3 h-3 bg-[#309255] rounded-full"></div>
+                    )}
+                  </div>
+                  <span>{option}</span>
+                </label>
+              </div>
+            ))}
+          </div>
+        ))}
+        <div className="flex justify-end">
+          <button
+            onClick={handleSubmit}
+            className="bg-[#309255] hover:bg-black text-white font-bold py-2 px-4 rounded-lg"
           >
-            <Link
-              href='/services'
-              className='nav-links'
-              onClick={closeMobileMenu}
-            >
-              Services <i className="fa-solid fa-caret-down"></i>
-            </Link>
-            {dropdown && <CourseDropDown />}
-            {/* <CourseDropDown/> */}
-          </li>
-          <li className='nav-item'>
-            <Link
-              href='/products'
-              className='nav-links'
-              onClick={closeMobileMenu}
-            >
-              Products
-            </Link>
-          </li>
-          <li className='nav-item'>
-            <Link
-              href='/contact-us'
-              className='nav-links'
-              onClick={closeMobileMenu}
-            >
-              Contact Us
-            </Link>
-          </li>
-          <li>
-            <Link
-              href='/sign-up'
-              className='nav-links-mobile'
-              onClick={closeMobileMenu}
-            >
-              Sign Up
-            </Link>
-          </li>
-        </ul>
-        {/* <Button /> */}
-      </nav>
+            Submit
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
 
-export default Test;
+export default Quiz;

@@ -52,10 +52,11 @@ export default function CourseDetailPage({ params }: any) {
     const url = `https://learnconnectapitest.azurewebsites.net/api/enrollment/Enroll?userId=${userId}&courseId=${courseId}&returnUrl=${encodeURIComponent(
       returnUrl
     )}`;
+
     try {
       const response = await axios.post(url);
       console.log("Response from API:", response.data);
-
+      console.log("url", url);
       // const responseDataPayment = await axios.get(response.data);
       // console.log("responseDataPayment", responseDataPayment.data);
 
@@ -361,7 +362,7 @@ export default function CourseDetailPage({ params }: any) {
                         className="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded-2xl py-4 px-3 leading-normal no-underline bg-[#309255] text-white hover:bg-black btn-outline w-44 border-[#a9f9c8] hover:text-white transition-all duration-300 ease-in-out delay-0 my-2"
                         onClick={() => {
                           Modal.confirm({
-                            title: "Your Order",
+                            title: "Your Order Preview",
                             content: (
                               <div className="pr-[34px]">
                                 <img
@@ -369,10 +370,24 @@ export default function CourseDetailPage({ params }: any) {
                                   alt="course-detail"
                                   className="rounded-md w-full h-[170px] object-cover"
                                 />
-                                <p className="mt-2">
-                                  Your price needs to be paid is:{" "}
-                                  {courses?.price} VND
-                                </p>
+                                <h3 className="mt-2">
+                                  Course Name:{" "}
+                                  <span className="font-bold">
+                                    {courses?.name}
+                                  </span>
+                                </h3>
+                                <h3 className="mt-2">
+                                  Instructor Name:{" "}
+                                  <span className="font-bold">Some One</span>
+                                </h3>
+                                <h3 className="mt-2">
+                                  Course Price:{" "}
+                                  <span className="font-bold">
+                                    {courses?.price &&
+                                      courses?.price.toLocaleString()}
+                                  </span>{" "}
+                                  VND
+                                </h3>
                                 {/* <Payment
                                   visible={visible}
                                   setVisible={setVisible}
