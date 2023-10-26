@@ -26,10 +26,10 @@ export type User = {
   profilePictureUrl: string;
   status: number;
 };
-const useDataFetcher = () => {
+const useDataHomeFetcher = () => {
   const [courses, setCourses] = useState<CourseItem[]>([]);
   const API_URL =
-    "https://learnconnectapitest.azurewebsites.net/api/course/get-courses-paging";
+    "https://learnconnectapitest.azurewebsites.net/api/course/get-top-enrolled-courses";
   const pagesize = 6;
   const [totalPages, setTotalPages] = useState(10);
   const [loading, setLoading] = useState(true);
@@ -37,15 +37,9 @@ const useDataFetcher = () => {
   useEffect(() => {
     const fetchData = async () => {
       const page = Math.min(currentPage + 1, totalPages);
-      const result = await axios.get(
-        `${API_URL}?currentPage=${page}&pageSize=${pagesize}`
-      );
-      setCourses(result?.data.listCourse);
-      // console.log("result", result);
-      setTotalPages(result?.data.paginationData.totalPages);
-      // console.log("toalpage", totalPages);
+      const result = await axios.get(`${API_URL}`);
+      setCourses(result?.data);
       setLoading(false);
-      // console.log("totalPages", result);
     };
     fetchData();
   }, [currentPage]);
@@ -58,4 +52,4 @@ const useDataFetcher = () => {
   };
 };
 
-export default useDataFetcher;
+export default useDataHomeFetcher;
