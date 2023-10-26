@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "../../globals.css";
 import AccordionItem from "@/components/dropdown/Dropdown";
 import { useRouter } from "next/navigation";
@@ -20,17 +20,24 @@ import {
 // import { Option } from "antd/es/mentions";
 import { UserAuth } from "@/app/context/AuthContext";
 
+export type Lecture = {
+  id: string | number;
+  title: string;
+  content: string;
+  contentUrl: string;
+};
+
 export default function AfterEnroll({ params }: any) {
   const [activeTab, setActiveTab] = useState("tab1");
   const { id, user } = UserAuth();
   console.log("usser", user);
   const [form] = Form.useForm();
   const [formDataImage, setFormDataImage] = useState();
-  console.log("url", formDataImage);
+  // console.log("url", formDataImage)
   const [selected, setSelected] = useState(null);
   const [image, setImage] = useState<string>();
-  console.log("imag", image);
-  console.log("Rason", selected);
+  // console.log("imag",image)
+  // console.log("Rason", selected);
   const { Option } = Select;
   const { TextArea } = Input;
   const handleTabClick = (tabName: string) => {
@@ -41,9 +48,9 @@ export default function AfterEnroll({ params }: any) {
   const [messageApi, contextHolder] = message.useMessage();
   const idCourse = params.id;
   const [courses, setCourses] = useState<Course>();
-  const [videoSrc, setVideoSrc] = useState(
-    "https://player.vimeo.com/external/215175080.hd.mp4?s=5b17787857fd95646e67ad0f666ea69388cb703c&profile_id=119"
-  );
+  // const [videoSrc, setVideoSrc] = useState(
+  //   "https://player.vimeo.com/external/215175080.hd.mp4?s=5b17787857fd95646e67ad0f666ea69388cb703c&profile_id=119"
+  // );
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -68,6 +75,7 @@ export default function AfterEnroll({ params }: any) {
         }
       );
       handleCancel();
+
       setTimeout(() => {
         message.success("Report successful");
       });
@@ -82,6 +90,10 @@ export default function AfterEnroll({ params }: any) {
 
   const handleCancel = () => {
     setIsModalOpen(false);
+    // data.target.reset();
+    // event.preventDefault();
+    // event.target.reset();
+    form.resetFields();
   };
 
   const handleChange = (info: any) => {
@@ -140,7 +152,19 @@ export default function AfterEnroll({ params }: any) {
   // console.log("id is", idCourse);
   //   const id = router.query.id;
   //   console.log("id", id);
+  const [testVideo, setTestVideo] = useState<Lecture[]>([]);
+  console.log("test", testVideo);
+  useEffect(() => {
+    const fetchData = async () => {
+      const responseData = await axios.get(
+        `https://learnconnectapitest.azurewebsites.net/api/lecture/by-course/${idCourse}`
+      );
+      setTestVideo(responseData?.data);
+    };
 
+    fetchData();
+  }, []);
+  const [videoSrc, setVideoSrc] = useState("");
   const changeVideoSource = (newSrc: React.SetStateAction<string>) => {
     setVideoSrc(newSrc);
     const videoElement = document.getElementById(
@@ -161,24 +185,33 @@ export default function AfterEnroll({ params }: any) {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const responseData = await axios.get(
-        `https://learnconnectapitest.azurewebsites.net/api/lecture/by-course/${idCourse}`
-      );
-      setLectures(responseData?.data);
-    };
+  console.log("course123", courses);
 
-    fetchData();
-  }, []);
-  console.log("lectures:", lectures);
-  console.log("course", courses);
+  const videoRef = useRef(null);
+
+  const handleSeek = (e: any) => {
+    // const video = videoRef.current;
+    // if (video) {
+    //   const currentTime = video.currentTime;
+    //   // Hạn chế tua nhanh bằng cách đặt thời gian hiện tại của video
+    //   if (currentTime < video.currentTime) {
+    //     video.currentTime = currentTime;
+    //   }
+    // }
+  };
 
   return (
     <div className="container">
       <div className="grid cols-2 lg:grid-cols-12 mt-[40px]">
         <div className="lg:col-span-8">
-          <video width="full" height="full" controls id="courseVideo">
+          <video
+            width="full"
+            height="full"
+            controls
+            id="courseVideo"
+            onSeeking={handleSeek}
+            ref={videoRef}
+          >
             <source src={videoSrc} type="video/mp4" />
           </video>
           <div>
@@ -197,7 +230,8 @@ export default function AfterEnroll({ params }: any) {
                   Report
                 </Button>
                 <Modal
-                  title={`Report ${courses?.name} bởi ${user?.displayName}`}
+                  destroyOnClose={true}
+                  title={`Report ${courses?.name} by ${user?.displayName}`}
                   open={isModalOpen}
                   // onOk={handleOk}
                   onCancel={handleCancel}
@@ -215,7 +249,7 @@ export default function AfterEnroll({ params }: any) {
                   >
                     <Form.Item label="Reason">
                       <Select
-                        defaultValue={selected}
+                        // defaultValue={selected}
                         onChange={handleChangeReason}
                       >
                         {Reasons.map((option) => {
@@ -336,7 +370,7 @@ export default function AfterEnroll({ params }: any) {
                                             :
                                           </td>
                                           <td className="whitespace-nowrap px-6 py-4 text-[#52565b] text-[15px] font-normal">
-                                            Pamela Foster
+                                            {/* {courses.} */}{courses?.mentorName}
                                           </td>
                                         </tr>
                                         <tr className="border-b border-b-[#e7f8ee]">
@@ -388,11 +422,11 @@ export default function AfterEnroll({ params }: any) {
                           </div>
                         </div>
                         <div className="lg:col-span-8">
-                          {lectures &&
-                            lectures.map((item, index) => (
+                          {testVideo &&
+                            testVideo.map((item, index) => (
                               <div key={index}>
                                 <p className="mt-5 font-bold">
-                                  Lecture-{item.id} : {item.title}
+                                  Lecture-{index + 1} : {item.title}
                                 </p>
                                 <p className="mt-3.5 text-[#52565b] text-base font-extralight">
                                   {item?.content}
@@ -437,58 +471,59 @@ export default function AfterEnroll({ params }: any) {
           <div className="bg-[#dff0e6] px-[30px] pt-[15px] pb-[25px]">
             <h3 className="text-[22px] mt-2.5">{courses?.name}</h3>
             <span className="mt-2.5 text-[#309255] text-[18px]">
-              80 Lessons ({courses?.contentLength} m)
+              {courses?.lectureCount} Lessons ({courses?.contentLength} m)
             </span>
           </div>
           <div className="video-playlist bg-[#eefbf3] text-black">
             <div className="accordion" id="videoPlaylist">
               <nav className="vids">
-                <a
-                  className={`link ${
-                    videoSrc ===
-                    "https://player.vimeo.com/external/215175080.hd.mp4?s=5b17787857fd95646e67ad0f666ea69388cb703c&profile_id=119"
-                      ? "active text-[#309255] "
-                      : ""
-                  }`}
-                  href="#"
-                  onClick={() =>
-                    changeVideoSource(
-                      "https://player.vimeo.com/external/215175080.hd.mp4?s=5b17787857fd95646e67ad0f666ea69388cb703c&profile_id=119"
-                    )
-                  }
-                >
-                  <div className="pl-20 py-2 pr-[30px]">
-                    <p>01. The Complete Medicine Masterclass</p>
-                    <span
-                      className={`total-duration text-[#848886] text-[13px] mt-1.5`}
+                {testVideo.map((item,index) => {
+                  // console.log("tutle", item.contentUrl);
+                  return (
+                    <a
+                      key={item.id}
+                      className={`link ${
+                        videoSrc === `${item.contentUrl}`
+                          ? "active text-[#309255] "
+                          : ""
+                      }`}
+                      href="#"
+                      onClick={() => changeVideoSource(`${item.contentUrl}`)}
                     >
-                      08 minutes
-                    </span>
-                  </div>
-                </a>
-                <a
-                  className={`link ${
-                    videoSrc ===
-                    "https://player.vimeo.com/external/207590826.hd.mp4?s=6a918d074abf8f3add7858018855524d384f6934&amp;profile_id=119"
-                      ? "active text-[#309255]"
-                      : ""
-                  }`}
-                  href="#"
-                  onClick={() =>
-                    changeVideoSource(
+                      <div className="pl-20 py-2 pr-[30px]">
+                        <p>Lesson {index + 1} : {item.title}</p>
+                        <span
+                          className={`total-duration text-[#848886] text-[13px] mt-1.5`}
+                        >
+                          {/* 08 minutes */}
+                        </span>
+                      </div>
+                    </a>
+                  );
+                })}
+                {/* <a
+                    className={`link ${
+                      videoSrc ===
                       "https://player.vimeo.com/external/207590826.hd.mp4?s=6a918d074abf8f3add7858018855524d384f6934&amp;profile_id=119"
-                    )
-                  }
-                >
-                  <div className="pl-20 py-2 pr-[30px]">
-                    <p>02. The Complete Medicine Masterclass</p>
-                    <span
-                      className={`total-duration text-[#848886] text-[13px] mt-1.5`}
-                    >
-                      08 minutes
-                    </span>
-                  </div>
-                </a>
+                        ? "active text-[#309255]"
+                        : ""
+                    }`}
+                    href="#"
+                    onClick={() =>
+                      changeVideoSource(
+                        "https://player.vimeo.com/external/207590826.hd.mp4?s=6a918d074abf8f3add7858018855524d384f6934&amp;profile_id=119"
+                      )
+                    }
+                  >
+                    <div className="pl-20 py-2 pr-[30px]">
+                      <p>02. The Complete Medicine Masterclass</p>
+                      <span
+                        className={`total-duration text-[#848886] text-[13px] mt-1.5`}
+                      >
+                        08 minutes
+                      </span>
+                    </div>
+                  </a> */}
               </nav>
             </div>
           </div>

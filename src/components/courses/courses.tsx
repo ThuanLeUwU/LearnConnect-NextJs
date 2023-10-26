@@ -22,6 +22,7 @@ export type Course = {
   contentLength: number;
   lectureCount: number;
   averageRating: number;
+  mentorName: string;
 };
 
 export type Lectures = {
