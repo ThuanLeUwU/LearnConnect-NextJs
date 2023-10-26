@@ -4,7 +4,7 @@ import "../../globals.css";
 import AccordionItem from "@/components/dropdown/Dropdown";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { Course } from "@/components/courses/courses";
+import { Course, Lectures } from "@/components/courses/courses";
 import Image from "next/image";
 // import { Button } from "react-bootstrap";
 import {
@@ -18,7 +18,6 @@ import {
   message,
 } from "antd";
 // import { Option } from "antd/es/mentions";
-import { ToastContainer, toast } from "react-toastify";
 import { UserAuth } from "@/app/context/AuthContext";
 
 export type Lecture = {
@@ -34,20 +33,24 @@ export default function AfterEnroll({ params }: any) {
   console.log("usser", user);
   const [form] = Form.useForm();
   const [formDataImage, setFormDataImage] = useState();
-  console.log("url", formDataImage);
+  // console.log("url", formDataImage)
   const [selected, setSelected] = useState(null);
   const [image, setImage] = useState<string>();
-  console.log("imag", image);
-  console.log("Rason", selected);
+  // console.log("imag",image)
+  // console.log("Rason", selected);
   const { Option } = Select;
   const { TextArea } = Input;
   const handleTabClick = (tabName: string) => {
     setActiveTab(tabName);
   };
-
+  const [lectures, setLectures] = useState<Lectures>();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
-
+  const idCourse = params.id;
+  const [courses, setCourses] = useState<Course>();
+  // const [videoSrc, setVideoSrc] = useState(
+  //   "https://player.vimeo.com/external/215175080.hd.mp4?s=5b17787857fd95646e67ad0f666ea69388cb703c&profile_id=119"
+  // );
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -98,8 +101,6 @@ export default function AfterEnroll({ params }: any) {
       return;
     }
     if (info.file.status === "done") {
-      // Get this url from response in real world.
-
       setFormDataImage(info.file.originFileObj);
       getBase64(info.file.originFileObj, (url) => {
         setImage(url);
@@ -148,7 +149,6 @@ export default function AfterEnroll({ params }: any) {
   //   }
   // }
 
-  const idCourse = params.id;
   // console.log("id is", idCourse);
   //   const id = router.query.id;
   //   console.log("id", id);
@@ -174,7 +174,6 @@ export default function AfterEnroll({ params }: any) {
       videoElement.load();
     }
   };
-  const [courses, setCourses] = useState<Course>();
   useEffect(() => {
     const fetchData = async () => {
       const responseData = await axios.get(
@@ -324,7 +323,7 @@ export default function AfterEnroll({ params }: any) {
                     onClick={() => handleTabClick("tab2")}
                   >
                     <button className="w-28 h-14 px-[15px] text-center text-sm font-medium  border-opacity-20 rounded-md hover:border-[#309255] hover:text-[#fff] hover:bg-[#309255]">
-                      lecture
+                      Lecture
                     </button>
                   </li>
                   <li
@@ -348,7 +347,7 @@ export default function AfterEnroll({ params }: any) {
                         <div className="lg:col-span-4 px-[15px]">
                           <div className="">
                             <h4 className="text-[25px] px-[15px] pt-5 text-[#212832]">
-                              Course Details
+                              Details
                             </h4>
                           </div>
                         </div>
@@ -359,7 +358,7 @@ export default function AfterEnroll({ params }: any) {
                             </p>
                             <div className="flex flex-col">
                               <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
-                                <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
+                                <div className="inline-block min-w-full sm:px-6 lg:px-8">
                                   <div className="overflow-hidden">
                                     <table className="min-w-full text-left text-sm font-light">
                                       <tbody>
@@ -371,7 +370,7 @@ export default function AfterEnroll({ params }: any) {
                                             :
                                           </td>
                                           <td className="whitespace-nowrap px-6 py-4 text-[#52565b] text-[15px] font-normal">
-                                            Pamela Foster
+                                            {/* {courses.} */}Name
                                           </td>
                                         </tr>
                                         <tr className="border-b border-b-[#e7f8ee]">
@@ -394,7 +393,7 @@ export default function AfterEnroll({ params }: any) {
                                             :
                                           </td>
                                           <td className="whitespace-nowrap px-6 py-4 text-[#52565b] text-[15px] font-normal">
-                                            2,16
+                                            {courses?.lectureCount}
                                           </td>
                                         </tr>
                                       </tbody>
@@ -418,12 +417,23 @@ export default function AfterEnroll({ params }: any) {
                         <div className="lg:col-span-4 px-[15px]">
                           <div className="">
                             <h4 className="text-[25px] px-[15px] pt-5 text-[#212832]">
-                              lecture
+                              Lectures
                             </h4>
                           </div>
                         </div>
                         <div className="lg:col-span-8">
-                          <AccordionItem
+                          {testVideo &&
+                            testVideo.map((item, index) => (
+                              <div key={index}>
+                                <p className="mt-5 font-bold">
+                                  Lecture-{item.id} : {item.title}
+                                </p>
+                                <p className="mt-3.5 text-[#52565b] text-base font-extralight">
+                                  {item?.content}
+                                </p>
+                              </div>
+                            ))}
+                          {/* <AccordionItem
                             header="Lesson-01: Mindful Growth & the Creative Journey, Find
                       Your Spark & Map Your Future"
                             time="01 hour 48 minutes"
@@ -436,7 +446,17 @@ export default function AfterEnroll({ params }: any) {
                             time="01 hour 48 minutes"
                             timevideo="08 minutes"
                             onLinkClick={changeVideoSource}
-                          />
+                          /> */}
+                          {/* <div className="">
+                            <p className="mt-5">
+                              Lesson-01: Mindful Growth & the Creative Journey,
+                              Find Your Spark & Map Your Future
+                            </p>
+                            <p className="mt-5">
+                              Lesson-02: Mindful Growth & the Creative Journey,
+                              Find Your Spark & Map Your Future
+                            </p>
+                          </div> */}
                         </div>
                       </div>
                     </div>
@@ -458,7 +478,7 @@ export default function AfterEnroll({ params }: any) {
             <div className="accordion" id="videoPlaylist">
               <nav className="vids">
                 {testVideo.map((item) => {
-                  console.log("tutle", item.contentUrl);
+                  // console.log("tutle", item.contentUrl);
                   return (
                     <a
                       key={item.id}
@@ -471,11 +491,11 @@ export default function AfterEnroll({ params }: any) {
                       onClick={() => changeVideoSource(`${item.contentUrl}`)}
                     >
                       <div className="pl-20 py-2 pr-[30px]">
-                        <p>{item.title}</p>
+                        <p>Lesson {item.id} : {item.title}</p>
                         <span
                           className={`total-duration text-[#848886] text-[13px] mt-1.5`}
                         >
-                          08 minutes
+                          {/* 08 minutes */}
                         </span>
                       </div>
                     </a>

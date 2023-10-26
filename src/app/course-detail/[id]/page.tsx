@@ -2,10 +2,11 @@
 import { Payment } from "@/components/payment";
 import { Modal } from "antd";
 import Link from "next/link";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, ReactNode } from "react";
 import axios from "axios";
 import { Button } from "react-bootstrap";
-import { Course } from "@/components/courses/courses";
+import { Course, Lectures } from "@/components/courses/courses";
+import { UserAuth } from "@/app/context/AuthContext";
 
 export default function CourseDetailPage({ params }: any) {
   const [visible, setVisible] = useState(false);
@@ -15,6 +16,12 @@ export default function CourseDetailPage({ params }: any) {
     setActiveTab(tabName);
   };
   const [courses, setCourses] = useState<Course>();
+  const [lectures, setLectures] = useState<Lectures>();
+  const { id, userData } = UserAuth();
+  const idUser = id;
+  console.log("id user is", idUser);
+  console.log("id course is", idCourse);
+
   useEffect(() => {
     const fetchData = async () => {
       const responseData = await axios.get(
@@ -25,6 +32,46 @@ export default function CourseDetailPage({ params }: any) {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const responseData = await axios.get(
+        `https://learnconnectapitest.azurewebsites.net/api/lecture/by-course/${idCourse}`
+      );
+      setLectures(responseData?.data);
+    };
+
+    fetchData();
+  }, []);
+
+  const payment = async (
+    userId: any,
+    courseId: any,
+    returnUrl: string | number | boolean
+  ) => {
+    const url = `https://learnconnectapitest.azurewebsites.net/api/enrollment/Enroll?userId=${userId}&courseId=${courseId}&returnUrl=${encodeURIComponent(
+      returnUrl
+    )}`;
+    try {
+      const response = await axios.post(url);
+      console.log("Response from API:", response.data);
+
+      // const responseDataPayment = await axios.get(response.data);
+      // console.log("responseDataPayment", responseDataPayment.data);
+
+      if (response.data) {
+        const newTab = window.open(response.data, "_blank");
+        if (newTab) {
+          newTab.focus();
+        } else {
+          alert("Popup blocked. Please allow popups for this website.");
+        }
+      }
+    } catch (error) {
+      console.error("Error occurred:", error);
+    }
+  };
+
   return (
     <div className="contain-wrapper">
       <div className="bg-[#fff]">
@@ -54,12 +101,16 @@ export default function CourseDetailPage({ params }: any) {
                     </Link>
                     <span className="mx-5"></span>
                     <span className="text-sm font-normal text-[#309255]">
-                      {courses?.totalEnrollment} Enrolled Students
+                      {courses?.totalEnrollment &&
+                        courses?.totalEnrollment.toLocaleString()}{" "}
+                      Enrolled Students
                     </span>
                   </div>
                 </div>
                 <div className="admin-rating">
-                  <span className="font-medium text-sm">4.9</span>
+                  <span className="font-medium text-sm">
+                    {courses?.averageRating}{" "}
+                  </span>
                   <span className="rating-star">
                     <span className="rating-bar"></span>
                   </span>
@@ -80,7 +131,7 @@ export default function CourseDetailPage({ params }: any) {
                       onClick={() => handleTabClick("tab1")}
                     >
                       <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#309255]">
-                        Curriculum:
+                        Overview
                       </button>
                     </li>
                     <li
@@ -92,7 +143,7 @@ export default function CourseDetailPage({ params }: any) {
                       onClick={() => handleTabClick("tab2")}
                     >
                       <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#309255]">
-                        Instructors
+                        Lecture
                       </button>
                     </li>
                     <li
@@ -124,194 +175,29 @@ export default function CourseDetailPage({ params }: any) {
                     </div>
                   )}
                   {activeTab === "tab2" && (
-                    <div className="tab-instructors">
-                      <h3 className="text-[#212832] text-2xl font-medium mt-6 pl-2">
-                        Course Instructor:
-                      </h3>
-                      <div className="grid lg:grid-cols-4 grid-cols-2">
-                        <div className="col-md-3 col-6">
-                          <div className="single-team text-center mt-10">
-                            <div className="team-thumb mx-auto w-44 h-44">
-                              <img
-                                className="rounded-full w-40 h-40 p-2.5 border border-solid border-opacity-20 border-[#30925533] transition-colors hover:border-green-700"
-                                src="./author/author-01.jpg"
-                                alt="Author"
-                              />
+                    <div className="w-full mx-auto">
+                      <div className="faq-wrapper">
+                        <div className="single-faq-item">
+                          <div className="grid cols-2 lg:grid-cols-12 border-[#dff0e6] border border-solid rounded-lg px-[70px] pb-[35px] mt-5">
+                            <div className="lg:col-span-4 px-[15px]">
+                              <div className="">
+                                <h4 className="text-[#212832] text-2xl font-medium mt-6 px-2">
+                                  Lectures:
+                                </h4>
+                              </div>
                             </div>
-                            <div className="team-content">
-                              <div className="rating">
-                                <span className="text-sm font-normal">4.9</span>
-                                <i className="icofont-star"></i>
-                                <span className="text-[#848886] text-xs font-light">
-                                  (rating)
-                                </span>
-                              </div>
-                              <h4 className="font-medium text-xl">
-                                Margarita James
-                              </h4>
-                              <span className="mt-2.5 text-[#309255] text-sm font-extralight">
-                                MSC, Instructor
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="col-md-3 col-6">
-                          <div className="single-team text-center mt-10">
-                            <div className="team-thumb mx-auto w-44 h-44">
-                              <img
-                                className="rounded-full w-40 h-40 p-2.5 border border-solid border-opacity-20 border-[#30925533] transition-colors hover:border-green-700"
-                                src="./author/author-02.jpg"
-                                alt="Author"
-                              />
-                            </div>
-                            <div className="team-content">
-                              <div className="rating">
-                                <span className="text-sm font-normal">4.9</span>
-                                <i className="icofont-star"></i>
-                                <span className="text-[#848886] text-xs font-light">
-                                  (rating)
-                                </span>
-                              </div>
-                              <h4 className="font-medium text-xl">
-                                Mitchell Colon
-                              </h4>
-                              <span className="mt-2.5 text-[#309255] text-sm font-extralight">
-                                BBA, Instructor
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="col-md-3 col-6">
-                          <div className="single-team text-center mt-10">
-                            <div className="team-thumb mx-auto w-44 h-44">
-                              <img
-                                className="rounded-full w-40 h-40 p-2.5 border border-solid border-opacity-20 border-[#30925533] transition-colors hover:border-green-700"
-                                src="./author/author-03.jpg"
-                                alt="Author"
-                              />
-                            </div>
-                            <div className="team-content">
-                              <div className="rating">
-                                <span className="text-sm font-normal">4.9</span>
-                                <i className="icofont-star"></i>
-                                <span className="text-[#848886] text-xs font-light">
-                                  (rating)
-                                </span>
-                              </div>
-                              <h4 className="font-medium text-xl">
-                                Sonya Gordon
-                              </h4>
-                              <span className="mt-2.5 text-[#309255] text-sm font-extralight">
-                                MBA, Instructor
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="col-md-3 col-6">
-                          <div className="single-team text-center mt-10">
-                            <div className="team-thumb mx-auto w-44 h-44">
-                              <img
-                                className="rounded-full w-40 h-40 p-2.5 border border-solid border-opacity-20 border-[#30925533] transition-colors hover:border-green-700"
-                                src="./author/author-04.jpg"
-                                alt="Author"
-                              />
-                            </div>
-                            <div className="team-content">
-                              <div className="rating">
-                                <span className="text-sm font-normal">4.9</span>
-                                <i className="icofont-star"></i>
-                                <span className="text-[#848886] text-xs font-light">
-                                  (rating)
-                                </span>
-                              </div>
-                              <h4 className="font-medium text-xl">
-                                Archie Neal
-                              </h4>
-                              <span className="mt-2.5 text-[#309255] text-sm font-extralight">
-                                BBS, Instructor
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="row text-[#212832] grid cols-2 lg:grid-cols-12">
-                        <div className="lg:col-span-6">
-                          <div className="tab-rating-content mt-11">
-                            <h3 className="text-2xl font-medium pl-2">
-                              Rating:
-                            </h3>
-                            <p className="mt-4 text-[#52565b] text-base font-extralight pl-4">
-                              Lorem Ipsum is simply dummy text of printing and
-                              typesetting industry. Lorem Ipsum has been the i
-                              dustry&apos;s standard dummy text ever since the
-                              1500 unknown printer took a galley of type.
-                            </p>
-                            <p className="mt-4 text-[#52565b] text-base font-extralight pl-4">
-                              Lorem Ipsum is simply dummy text of printing and
-                              typesetting industry text ever since
-                            </p>
-                            <p className="mt-4 text-[#52565b] text-base font-extralight pl-4">
-                              Lorem Ipsum is simply dummy text of printing and
-                              dustry&apos;s standard dummy text ever since the
-                              1500 unknown printer took a galley of type.
-                            </p>
-                          </div>
-                        </div>
-                        <div className="lg:col-span-6 text-center mt-11 py-10 px-8">
-                          <div className="tab-rating-box">
-                            <span className="text-3xl font-light text-[#309255]">
-                              4.8 <i className="icofont-star"></i>
-                            </span>
-                            <p className="text-[#52565b text-sm] font-extralight">
-                              Rating (86K+)
-                            </p>
-
-                            <div className="rating-box-wrapper">
-                              <div className="single-rating">
-                                <span className="rating-star">
-                                  <span className="rating-bar"></span>
-                                </span>
-                                <div className="rating-progress-bar">
-                                  <div className="rating-line"></div>
-                                </div>
-                              </div>
-
-                              <div className="single-rating">
-                                <span className="rating-star">
-                                  <span className="rating-bar"></span>
-                                </span>
-                                <div className="rating-progress-bar">
-                                  <div className="rating-line"></div>
-                                </div>
-                              </div>
-
-                              <div className="single-rating">
-                                <span className="rating-star">
-                                  <span className="rating-bar"></span>
-                                </span>
-                                <div className="rating-progress-bar">
-                                  <div className="rating-line"></div>
-                                </div>
-                              </div>
-
-                              <div className="single-rating">
-                                <span className="rating-star">
-                                  <span className="rating-bar"></span>
-                                </span>
-                                <div className="rating-progress-bar">
-                                  <div className="rating-line"></div>
-                                </div>
-                              </div>
-
-                              <div className="single-rating">
-                                <span className="rating-star">
-                                  <span className="rating-bar"></span>
-                                </span>
-                                <div className="rating-progress-bar">
-                                  <div className="rating-line"></div>
-                                </div>
-                              </div>
+                            <div className="lg:col-span-8">
+                              {lectures &&
+                                lectures.map((item, index) => (
+                                  <div key={index}>
+                                    <p className="mt-5 font-bold">
+                                      Lecture-{item.id} : {item.title}
+                                    </p>
+                                    <p className="mt-3.5 text-[#52565b] text-base font-extralight">
+                                      {item?.content}
+                                    </p>
+                                  </div>
+                                ))}
                             </div>
                           </div>
                         </div>
@@ -436,7 +322,7 @@ export default function CourseDetailPage({ params }: any) {
                   <div className="sidebar-widget widget-information">
                     <div className="text-center py-3.5">
                       <span className="text-[#309255] text-3xl font-bold">
-                        {courses?.price} $
+                        {courses?.price && courses?.price.toLocaleString()} VND
                       </span>
                     </div>
                     <div className=" text-black">
@@ -465,37 +351,51 @@ export default function CourseDetailPage({ params }: any) {
                             Lectures
                           </strong>{" "}
                           <span className="text-[#52565b] float-right text-base font-normal">
-                            29
-                          </span>
-                        </li>
-                        <li className="border-b border-solid border-[#d1e6d9] py-3.5">
-                          <i className="icofont-book-alt"></i>{" "}
-                          <strong className="text-[#212832] text-base font-medium">
-                            Language
-                          </strong>{" "}
-                          <span className="text-[#52565b] float-right text-base font-normal">
-                            English
+                            {courses?.lectureCount}
                           </span>
                         </li>
                       </ul>
                     </div>
                     <div className="text-center mt-10">
                       <Button
-                        // href="/after-enroll"
                         className="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded-2xl py-4 px-3 leading-normal no-underline bg-[#309255] text-white hover:bg-black btn-outline w-44 border-[#a9f9c8] hover:text-white transition-all duration-300 ease-in-out delay-0 my-2"
                         onClick={() => {
                           Modal.confirm({
-                            title: "Payment successful",
+                            title: "Your Order",
                             content: (
-                              <Payment
-                                visible={visible}
-                                setVisible={setVisible}
-                                onCancel={() => {
-                                  setVisible(false);
-                                }}
-                                isEdit={false}
-                              />
+                              <div className="pr-[34px]">
+                                <img
+                                  src={courses?.imageUrl}
+                                  alt="course-detail"
+                                  className="rounded-md w-full h-[170px] object-cover"
+                                />
+                                <p className="mt-2">
+                                  Your price needs to be paid is:{" "}
+                                  {courses?.price} VND
+                                </p>
+                                {/* <Payment
+                                  visible={visible}
+                                  setVisible={setVisible}
+                                  onCancel={() => {
+                                    setVisible(false);
+                                  }}
+                                  isEdit={false}
+                                /> */}
+                              </div>
                             ),
+                            onOk() {
+                              // payment();
+                              payment(
+                                idUser,
+                                idCourse,
+                                "https://learnconnectapitest.azurewebsites.net/api/payment-transaction/query-vnpay-transaction"
+                              );
+
+                              console.log("Enrollment confirmed");
+                            },
+                            onCancel() {
+                              console.log("Enrollment canceled");
+                            },
                           });
                         }}
                       >
@@ -504,37 +404,6 @@ export default function CourseDetailPage({ params }: any) {
                     </div>
                   </div>
                 </div>
-              </div>
-
-              <div className="sidebar-widget">
-                <h4 className="widget-title">Share Course:</h4>
-                <ul className="social">
-                  <li>
-                    <Link href="#">
-                      <i className="flaticon-facebook"></i>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="#">
-                      <i className="flaticon-linkedin"></i>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="#">
-                      <i className="flaticon-twitter"></i>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="#">
-                      <i className="flaticon-skype"></i>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="#">
-                      <i className="flaticon-instagram"></i>
-                    </Link>
-                  </li>
-                </ul>
               </div>
             </div>
           </div>

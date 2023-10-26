@@ -1,3 +1,4 @@
+import { UserAuth } from "@/app/context/AuthContext";
 import axios from "axios";
 import { useState, useEffect } from "react";
 export type CourseItem = {
@@ -26,23 +27,23 @@ export type User = {
   profilePictureUrl: string;
   status: number;
 };
-const useDataFetcher = () => {
+const useDataUserFetcher = () => {
+  const { id } = UserAuth();
   const [courses, setCourses] = useState<CourseItem[]>([]);
   const API_URL =
-    "https://learnconnectapitest.azurewebsites.net/api/course/get-courses-paging";
+    "https://learnconnectapitest.azurewebsites.net/api/course/get-courses-by-userid?userId=";
   const pagesize = 6;
-  const [totalPages, setTotalPages] = useState(10);
+  const totalPages = 10;
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
   useEffect(() => {
     const fetchData = async () => {
       const page = Math.min(currentPage + 1, totalPages);
       const result = await axios.get(
-        `${API_URL}?currentPage=${page}&pageSize=${pagesize}`
+        `${API_URL}${id}&currentPage=${page}&pageSize=${pagesize}`
       );
       setCourses(result?.data.listCourse);
       setLoading(false);
-      console.log("totalPages", result);
     };
     fetchData();
   }, [currentPage]);
@@ -55,4 +56,4 @@ const useDataFetcher = () => {
   };
 };
 
-export default useDataFetcher;
+export default useDataUserFetcher;

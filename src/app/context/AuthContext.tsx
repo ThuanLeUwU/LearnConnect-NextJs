@@ -67,9 +67,8 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
     await signInWithPopup(auth, provider);
     router.push("/");
     setTimeout(() => {
-      message.success("Login successful")
+      message.success("Login successful");
     });
-    
   };
 
   const logOut = () => {
@@ -78,13 +77,11 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      // const token = auth.currentUser.accessToken
       setUser(currentUser);
       console.log("token", currentUser?.getIdToken());
 
       if (currentUser) {
         currentUser.getIdToken().then((token) => {
-          // console.log("token nef", token)
           const fetchData = async () => {
             const responseData = await axios.post(
               `https://learnconnectapitest.azurewebsites.net/api/user/login`,
@@ -95,7 +92,6 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
                 },
               }
             );
-            console.log("token is:", token);
             setToken(responseData?.data);
             const api_token = responseData?.data.data;
             var jwt = require("jsonwebtoken");
@@ -103,8 +99,6 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
             setToken(api_token);
             const userId = decoded.Id;
             setId(userId);
-            // console.log("full info", decoded)
-
             const fetchUser = async () => {
               const responseUser = await axios.get(
                 `https://learnconnectapitest.azurewebsites.net/api/user/${userId}`

@@ -72,17 +72,14 @@ const CourseItem = ({
                 </div>
               </div>
             </div>
-
-            <h4 className="mt-[13px] mb-2 text-[#52565b] text-[16px] hover:text-[#309255]">
-              <a href="">
-                {name}
-                {/* Data Science and Machine Learning with Python - Hands On! */}
-              </a>
-              {/* <a href="">{description}</a> */}
-            </h4>
+            <div className="min-h-[60px]">
+              <h4 className="mt-[13px] mb-2 text-[#52565b] text-[16px] hover:text-[#309255] font-bold">
+                <a href={`/my-course/${id}`}>{name}</a>
+              </h4>
+            </div>
 
             <div className="courses-rating">
-              <p className="text-[#52565b] text-[14px]">38% Complete</p>
+              <p className="text-[#52565b] text-[14px]">60% Complete</p>
 
               <div className="rating-progress-bar mt-2">
                 <ProgressBar

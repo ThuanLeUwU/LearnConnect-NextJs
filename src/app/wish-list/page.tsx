@@ -19,7 +19,12 @@ const MyCourse = () => {
             {courses.map((item) => {
               return (
                 <>
-                  <Courses key={item.id} {...item} />
+                  <Courses
+                    lectureCount={""}
+                    categoryName={""}
+                    key={item.id}
+                    {...item}
+                  />
                 </>
               );
             })}
