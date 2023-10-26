@@ -463,7 +463,7 @@ const Header = () => {
                     </ul> */}
                   </li>
                   <li>
-                    <Link href="/wish-list">WishList</Link>
+                    <Link href="/wish-list">Favorites</Link>
                     {/* <ul className={`${headerStyles.sub_menu}`}>
                       <li>
                         <Link href="#">Contact</Link>
