@@ -20,6 +20,9 @@ const MyCourse = () => {
               return (
                 <>
                   <Courses
+                    mentorId={0}
+                    mentorProfilePictureUrl={""}
+                    totalRatingCount={0}
                     lectureCount={""}
                     categoryName={""}
                     key={item.id}
