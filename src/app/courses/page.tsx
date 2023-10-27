@@ -1,14 +1,15 @@
 "use client";
 import Courses from "@/components/courses/courses";
 import ".././globals.css";
-import CourseItem from "@/components/course-item/course";
 import useDataFetcher from "@/components/pagination/useDataFetcher";
 import Paginate from "@/components/pagination/pagination";
+import Search from "@/components/search/search";
 const ListCourse = () => {
   const { loading, courses, totalPages, currentPage, setCurrentPage } =
     useDataFetcher();
   return (
     <div className="container">
+      <Search />
       {loading ? (
         <div className="text-center text-5xl">loading...</div>
       ) : (

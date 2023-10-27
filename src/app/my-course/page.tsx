@@ -7,6 +7,7 @@ import ProgressBar from "@ramonak/react-progress-bar";
 import { useEffect } from "react";
 import { FC } from "react";
 import { UserAuth } from "../context/AuthContext";
+import Search from "@/components/search/search";
 
 const MyCourse = () => {
   // const {id} = UserAuth();
@@ -15,6 +16,7 @@ const MyCourse = () => {
 
   return (
     <div className="container">
+      <Search />
       {loading ? (
         <div className="text-center text-5xl">loading...</div>
       ) : (

@@ -8,6 +8,7 @@ import React from "react";
 import useDataFetcher from "@/components/pagination/useDataFetcher";
 import Paginate from "@/components/pagination/pagination";
 import useDataHomeFetcher from "@/components/pagination/useDataHomeFetcher";
+import Search from "@/components/search/search";
 
 export default function Home() {
   const { loading, courses, totalPages, currentPage, setCurrentPage } =
@@ -15,6 +16,7 @@ export default function Home() {
   return (
     <>
       <div className="container">
+        <Search />
         {loading ? (
           <div className="text-center text-5xl">loading...</div>
         ) : (
