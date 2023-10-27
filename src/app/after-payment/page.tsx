@@ -18,25 +18,38 @@ export type Payment = {
 };
 
 const AfterPayment = () => {
-  const urlParams = new URLSearchParams(window.location.search);
-  const vnp_TxnRef = urlParams.get("vnp_TxnRef");
-  const vnp_PayDate = urlParams.get("vnp_PayDate");
+  const [urlParams, setUrlParams] = useState<URLSearchParams | null>(null);
   const [payment, setPayment] = useState<Payment>();
   const [courseId, setCourseId] = useState("");
-  useEffect(() => {
-    const fetchData = async () => {
-      const responseData = await axios.get(
-        `https://learnconnectapitest.azurewebsites.net/api/payment-transaction/query-vnpay-transaction?vnp_TxnRef=${vnp_TxnRef}&vnp_PayDate=${vnp_PayDate}`
-      );
-      setPayment(responseData.data.paymentTransction);
-      setCourseId(responseData.data.courseId);
-    };
-    //total, transactionId, successDate neu thanh cong
-    //total, transactionId, transactionError neu that bai
-    fetchData();
-  }, []);
-  payment;
   const router = useRouter();
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      setUrlParams(params);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (urlParams) {
+      const vnp_TxnRef = urlParams.get("vnp_TxnRef");
+      const vnp_PayDate = urlParams.get("vnp_PayDate");
+      const fetchData = async () => {
+        try {
+          const responseData = await axios.get(
+            `https://learnconnectapitest.azurewebsites.net/api/payment-transaction/query-vnpay-transaction?vnp_TxnRef=${vnp_TxnRef}&vnp_PayDate=${vnp_PayDate}`
+          );
+          setPayment(responseData.data.paymentTransaction);
+          setCourseId(responseData.data.courseId);
+        } catch (error) {
+          // Handle error here
+          console.error("Error fetching data:", error);
+        }
+      };
+      fetchData();
+    }
+  }, [urlParams]);
+  payment;
   const handleClickGotoCourse = () => {
     router.push(`/my-course/${courseId}`);
   };
@@ -45,8 +58,6 @@ const AfterPayment = () => {
     router.push(`/`);
   };
   console.log("payment", payment);
-  console.log("vnp_TxnRef", vnp_TxnRef);
-  console.log("vnp_PayDate", vnp_PayDate);
   console.log("courseID", courseId);
   return (
     <div className="container mx-auto mt-20 text-center min-h-[60vh]">
