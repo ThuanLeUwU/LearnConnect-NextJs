@@ -18,6 +18,9 @@ const ListCourse = () => {
               return (
                 <>
                   <Courses
+                    totalRatingCount={0}
+                    mentorProfilePictureUrl={""}
+                    mentorId={0}
                     lectureCount={""}
                     categoryName={""}
                     key={item.id}

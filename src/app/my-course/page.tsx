@@ -10,7 +10,7 @@ import { UserAuth } from "../context/AuthContext";
 
 const MyCourse = () => {
   // const {id} = UserAuth();
-  const {loading, courses, totalPages, currentPage, setCurrentPage } =
+  const { loading, courses, totalPages, currentPage, setCurrentPage } =
     useDataUserFetcher();
 
   return (
@@ -21,9 +21,18 @@ const MyCourse = () => {
         <div>
           <div className="grid cols-2 lg:grid-cols-12 pt-[30px]">
             {courses.map((item) => {
+              courses.forEach((course) => {
+                console.log(`Percent Complete: ${course.percentComplete}%`);
+              });
               return (
                 <>
-                  <CourseItem key={item.id} {...item} />
+                  <CourseItem
+                    percentComplete={item.percentComplete}
+                    mentorName={""}
+                    mentorProfilePictureUrl={""}
+                    key={item.course.id}
+                    {...item.course}
+                  />
                 </>
               );
             })}

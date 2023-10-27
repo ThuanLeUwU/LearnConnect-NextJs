@@ -22,6 +22,7 @@ export default function ProfileUser() {
   const { userData, id } = UserAuth();
   AuthContextProvider;
   console.log("data:", userData?.fullName);
+  console.log("picture :", userData?.profilePictureUrl);
 
   // const [fetchedUserData, setFetchedUserData] = useState<User | null>(null);
   // useEffect(() => {
