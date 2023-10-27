@@ -1,14 +1,59 @@
 "use client";
-import { ChangeEvent, FormEvent, SetStateAction, useState } from "react";
+import {
+  ChangeEvent,
+  FormEvent,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 import ".././globals.css";
 import { AuthContextProvider, UserAuth } from "../context/AuthContext";
 import axios from "axios";
 import { Modal, message } from "antd";
 import { useRouter } from "next/navigation";
 
+export type User = {
+  id: string | number;
+  password: string;
+  email: string;
+  role: 1;
+  fullName: string;
+  phoneNumber: string;
+  gender: number;
+  bioDescription: string;
+  profilePictureUrl: string;
+  status: number;
+};
 export default function EditProfile() {
   const router = useRouter();
+  const [DataUser, SetDataUser] = useState<User>();
   const { id, userData } = UserAuth();
+
+  useEffect(() => {
+    // Fetch updated user data upon component mount
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get(
+          `https://learnconnectapitest.azurewebsites.net/api/user/${id}`
+        );
+        SetDataUser(response.data);
+        if (response.data) {
+          setPhoneNumber(response.data.phoneNumber);
+          setGender(response.data.gender);
+          setBioDescription(response.data.bioDescription);
+        }
+        console.log("id", id);
+      } catch (error) {
+        // Handle error
+        console.error("Error fetching user data:", error);
+      }
+    };
+    if (id) {
+      fetchUserData();
+    }
+  }, [id]);
+  console.log("DataUser", DataUser?.fullName);
+
   const [fullName, setFullName] = useState(userData?.fullName);
   const [gender, setGender] = useState(userData?.gender || 0);
   const [phoneNumber, setPhoneNumber] = useState(userData?.phoneNumber || "");
@@ -160,37 +205,6 @@ export default function EditProfile() {
                   required
                 />
               </div>
-
-              {/* <div className="mb-6">
-                <label
-                  htmlFor="password"
-                  className="block mb-2 text-base font-medium text-[#000]"
-                >
-                  Password
-                </label>
-                <input
-                  type="password"
-                  id="password"
-                  className="bg-[#fff] border border-[#30925533] text-[#000] text-base rounded-lg block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-[#309255]"
-                  placeholder="•••••••••"
-                  required
-                />
-              </div>
-              <div className="mb-6">
-                <label
-                  htmlFor="confirm_password"
-                  className="block mb-2 text-base font-medium text-[#000]"
-                >
-                  Confirm password
-                </label>
-                <input
-                  type="password"
-                  id="confirm_password"
-                  className="bg-[#fff] border border-[#30925533] text-[#000] text-base rounded-lg block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-[#309255]"
-                  placeholder="•••••••••"
-                  required
-                />
-              </div> */}
               <div className="mb-6">
                 <label
                   htmlFor="bio_description"

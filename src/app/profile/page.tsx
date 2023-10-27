@@ -23,7 +23,26 @@ export default function ProfileUser() {
   AuthContextProvider;
   console.log("data:", userData?.fullName);
   console.log("picture :", userData?.profilePictureUrl);
+  const [DataUser, SetDataUser] = useState<User>();
 
+  useEffect(() => {
+    // Fetch updated user data upon component mount
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get(
+          `https://learnconnectapitest.azurewebsites.net/api/user/${id}`
+        );
+        SetDataUser(response.data);
+      } catch (error) {
+        // Handle error
+        console.error("Error fetching user data:", error);
+      }
+    };
+    if (id) {
+      fetchUserData();
+    }
+  }, [id]);
+  // const [DataUser, SetDataUser] = useState<User>();
   // const [fetchedUserData, setFetchedUserData] = useState<User | null>(null);
   // useEffect(() => {
   //   // Fetch updated user data upon component mount
@@ -43,8 +62,9 @@ export default function ProfileUser() {
   //   };
   //   fetchUserData();
   // }, [id]);
+  console.log("Gender", DataUser?.gender);
 
-  const displayGenderText = (gender: number) => {
+  const displayGender = (gender: number | undefined) => {
     if (gender === 1) {
       return "Male";
     } else if (gender === 2) {
@@ -52,7 +72,7 @@ export default function ProfileUser() {
     } else if (gender === 3) {
       return "Other";
     } else {
-      return "Not Specified";
+      return "Not specified";
     }
   };
   return (
@@ -81,11 +101,11 @@ export default function ProfileUser() {
                     </div>
                     <div className="mt-4 lg:mt-0 lg:ms-3">
                       <h5 className="text-lg">
-                        Full Name: {userData?.fullName}
+                        Full Name: {DataUser?.fullName}
                       </h5>
-                      <p>Email: {userData?.email}</p>
-                      <p>Gender: {displayGenderText(userData.gender)}</p>
-                      <p>Phone: {userData?.phoneNumber}</p>
+                      <p>Email: {DataUser?.email}</p>
+                      <p>Gender: {displayGender(DataUser?.gender)}</p>
+                      <p>Phone: {DataUser?.phoneNumber}</p>
                       {/* <p>Role: {userData?.role}</p> */}
                       {/* <p>Bio: {userData?.bioDescription}</p> */}
                       {/* <p>Phone: {userData?.status}</p>
@@ -115,7 +135,7 @@ export default function ProfileUser() {
                       </p>
                       <div className="p-4 bg-gray-200">
                         <p className="italic mb-1">
-                          {userData?.bioDescription}
+                          {DataUser?.bioDescription}
                         </p>
                       </div>
                     </div>
