@@ -52,7 +52,7 @@ export type User = {
 export default function UserManagePage() {
   const { user } = UserAuth();
   const [allUser, setAllUser] = useState<User[]>([]);
-  console.log("all user", allUser)
+  console.log("all user", allUser);
 
   //Table
   const [order, setOrder] = useState("asc");
@@ -61,6 +61,7 @@ export default function UserManagePage() {
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [mounted, setMounted] = useState(false);
 
   const handleRequestSort = (event: any, property: any) => {
     const isAsc = orderBy === property && order === "asc";
@@ -94,6 +95,7 @@ export default function UserManagePage() {
       //   headers
       // })
       setAllUser(response?.data);
+      setMounted(true);
     };
     fetchData();
   }, []);
@@ -142,9 +144,10 @@ export default function UserManagePage() {
       return "Active";
     } else if (status === 1) {
       return "Inactive";
-    } 
+    }
   };
 
+  // if (!mounted)
   return (
     <>
       <Head>
@@ -180,7 +183,6 @@ export default function UserManagePage() {
               <Card>
                 <Box display="flex" justifyContent="center">
                   <Typography textTransform="uppercase" variant="h3">
-                    {" "}
                     Table Of all user
                   </Typography>
                 </Box>
@@ -278,7 +280,6 @@ export default function UserManagePage() {
                               },
                               index: number
                             ) => {
-                              // const birthDate = parseISO(user.dob);
                               const num = page * rowsPerPage + index + 1;
                               return (
                                 <TableRow hover tabIndex={-1} key={index}>
@@ -287,11 +288,6 @@ export default function UserManagePage() {
                                       {num}
                                     </Typography>
                                   </TableCell>
-                                  {/* <TableCell>
-                          <div className="image">
-                            <img width="40px" height="60px" src={`${event.img}`} alt="" />
-                          </div>
-                        </TableCell> */}
                                   <TableCell align="left">
                                     <Typography variant="body1">
                                       {user.fullName}
@@ -308,44 +304,14 @@ export default function UserManagePage() {
                                     </Typography>
                                   </TableCell>
 
-                                  {/* {user.birthday === null ? (
-                                    <TableCell align="right">
-                                      <Typography variant="body1">
-                                        20/03/2001
-                                      </Typography>
-                                    </TableCell>
-                                  ) : (
-                                    <TableCell align="right">
-                                      <Typography variant="body1">
-                                        {format(birthDate, "dd/MM/yyyy")}
-                                      </Typography>
-                                    </TableCell>
-                                  )} */}
-
-                                  {/* <TableCell align="right">
-                                    <Typography variant="body1">
-                                      {user.campus_name}
-                                    </Typography>
-                                  </TableCell> */}
-                                  {/* <TableCell align="right">
-                                    <Typography variant="body1">
-                                      {user.address}
-                                    </Typography>
-                                  </TableCell> */}
                                   <TableCell align="right">
                                     <Typography variant="body1">
-                                      {/* {user.role === "admin"
-                                        ? "admin"
-                                        : "member"}{" "} */}
-                                        {displayRoleText(user.role)}
+                                      {displayRoleText(user.role)}
                                     </Typography>
                                   </TableCell>
                                   <TableCell align="right">
                                     <Typography variant="body1">
-                                      {/* {user.role === "admin"
-                                        ? "admin"
-                                        : "member"}{" "} */}
-                                        {displayActive(user.status)}
+                                      {displayActive(user.status)}
                                     </Typography>
                                   </TableCell>
                                 </TableRow>
@@ -365,7 +331,6 @@ export default function UserManagePage() {
                     </Table>
                   </TableContainer>
                   <TablePagination
-                    // display="flex"
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
                     count={allUser.length}
@@ -609,9 +574,6 @@ function descendingComparator(
   if (orderBy === "name") {
     return compareStrings(a.fullName, b.fullName);
   }
-  if (orderBy === "campus") {
-    return compareStrings(a.campus_name, b.campus_name);
-  }
   // if (orderBy === "birthday") {
   //   if (a.birthDate === null) {
   //     a.birthDate = "20/3/2001";
@@ -743,9 +705,7 @@ function EnhancedTableHead(props: {
               align={headCell.numeric ? "right" : "left"}
               padding="normal"
             >
-              <Table>
-                <Typography variant="h6">{headCell.label}</Typography>
-              </Table>
+              <Typography variant="inherit">{headCell.label}</Typography>
             </TableCell>
           ) : (
             <TableCell
@@ -755,14 +715,14 @@ function EnhancedTableHead(props: {
               sortDirection={orderBy === headCell.id ? order : false}
             >
               {headCell.id === "no" ? (
-                <Typography variant="h6">{headCell.label}</Typography>
+                <Typography variant="inherit">{headCell.label}</Typography>
               ) : (
                 <TableSortLabel
                   active={orderBy === headCell.id}
                   direction={orderBy === headCell.id ? order : "asc"}
                   onClick={createSortHandler(headCell.id)}
                 >
-                  <Typography variant="h6">{headCell.label}</Typography>
+                  <Typography variant="inherit">{headCell.label}</Typography>
                 </TableSortLabel>
               )}
             </TableCell>

@@ -8,7 +8,7 @@ import { CourseDropDown } from "../app/test/CourseDropdown";
 import { UserAuth } from "@/app/context/AuthContext";
 import { Button } from "react-bootstrap";
 import { RegisterForm } from "@/components/registerForm";
-import {  Modal } from "antd";
+import { Modal } from "antd";
 import { useRouter } from "next/navigation";
 
 const Header = () => {
@@ -25,7 +25,9 @@ const Header = () => {
     setIsOpen(false);
   };
 
-  const { user, googleSignIn, logOut } = UserAuth();
+  const { role, user, googleSignIn, logOut } = UserAuth();
+
+  console.log("user", role);
 
   // console.log("tui ne", user?.photoURL);
 
@@ -172,7 +174,7 @@ const Header = () => {
                   ></img>
                 </button>
                 {isOpen && (
-                  <div className="origin-top-right absolute right-0 mt-2 w-44 rounded-lg shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                  <div className="origin-top-right absolute right-0 mt-2 w-44 rounded-lg shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-[2]">
                     <ul
                       role="menu"
                       aria-orientation="vertical"
@@ -217,7 +219,6 @@ const Header = () => {
       {/* <!-- Header Top End --> */}
 
       {/* <!-- Header Main Start --> */}
-
       <div className="header-main ">
         <div className="container">
           {/* <!-- Header Main Start --> */}
@@ -244,67 +245,9 @@ const Header = () => {
                   </li>
                   <li>
                     <Link href="/courses">Courses</Link>
-                    {/* <ul className={`${headerStyles.sub_menu}`}> */}
-                    {/* {course.map((item, index) => (
-                      <li key={index}>
-                        <Link href={item.href}>{item.title}</Link>
-                      </li>
-                    ))} */}
-                    {/* <li><Link href="courses.html">Courses</Link></li>
-                                        <li><Link href="courses-details.html">Courses Details</Link></li> */}
-                    {/* <li><Link href="courses.html">Courses</Link></li>
-                                        <li><Link href="courses-details.html">Courses Details</Link></li> */}
-                    {/* </ul> */}
                   </li>
                   <li>
                     <Link href="/about">About </Link>
-                    {/* <ul className={`${headerStyles.sub_menu}`}>
-                    <li>
-                      <Link href="/about  ">About</Link>
-                    </li>
-                    <li>
-                      <Link href="register.html">Register</Link>
-                    </li>
-                    <li>
-                      <Link href="/login">Login</Link>
-                    </li>
-                    <li>
-                      <Link href="faq.html">FAQ</Link>
-                    </li>
-                    <li>
-                      <Link href="404-error.html">404 Error</Link>
-                    </li>
-                    <li>
-                      <Link href="/after-enroll">After Enroll</Link>
-                    </li>
-                    <li>
-                        <Link href="courses-admin.html">
-                          Instructor Dashboard (Course List)
-                        </Link>
-                    </li>
-                    <li>
-                        <Link href="overview.html">
-                          Instructor Dashboard (Performance)
-                        </Link>
-                    </li>
-                    <li>
-                      <Link href="students.html">Students</Link>
-                    </li>
-                    <li>
-                      <Link href="reviews.html">Reviews</Link>
-                    </li>
-                    <li>
-                      <Link href="engagement.html">Course engagement</Link>
-                    </li>
-                    <li>
-                      <Link href="traffic-conversion.html">
-                        Traffic & conversion
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="messages.html">Messages</Link>
-                    </li>
-                  </ul> */}
                   </li>
                   <li>
                     <Link href="/faq">FAQ</Link>
@@ -382,89 +325,44 @@ const Header = () => {
               {/* <!-- Header Mobile Toggle End --> */}
             </div>
           ) : (
-            <div className={`${headerStyles.header_main_wrapper}`}>
-              {/* <!-- Header Logo Start --> */}
-              <div className={`${headerStyles.header_logo}`}>
-                <Link href="/">
-                  <Image
-                    width={60}
-                    height={60}
-                    src="/images/nhoam.gif"
-                    alt="logo"
-                  />
-                </Link>
-              </div>
-              {/* <!-- Header Logo End --> */}
+            <>
+              {role == 3 ? (
+                <div className={`${headerStyles.header_main_wrapper}`}>
+                  {/* <!-- Header Logo Start --> */}
+                  <div className={`${headerStyles.header_logo}`}>
+                    <Link href="/">
+                      <Image
+                        width={60}
+                        height={60}
+                        src="/images/nhoam.gif"
+                        alt="logo"
+                      />
+                    </Link>
+                  </div>
+                  {/* <!-- Header Logo End --> */}
 
-              {/* <!-- Header Menu Start --> */}
-              <div className={`${headerStyles.header_menu}`}>
-                <ul className={`${headerStyles.nav_menu}`}>
-                  <li>
-                    <Link href="/">Home</Link>
-                  </li>
-                  <li>
-                    <Link href="/courses">Courses</Link>
-                    {/* <ul className={`${headerStyles.sub_menu}`}>
+                  {/* <!-- Header Menu Start --> */}
+                  <div className={`${headerStyles.header_menu}`}>
+                    <ul className={`${headerStyles.nav_menu}`}>
+                      <li>
+                        <Link href="/">Home</Link>
+                      </li>
+                      <li>
+                        <Link href="/courses">Courses</Link>
+                        {/* <ul className={`${headerStyles.sub_menu}`}>
                       {course.map((item, index) => (
                         <li key={index}>
                           <Link href={item.href}>{item.title}</Link>
                         </li>
                       ))}
                     </ul> */}
-                  </li>
-                  <li>
-                    <Link href="/my-course">My Courses </Link>
-                    {/* <ul className={`${headerStyles.sub_menu}`}>
-                      <li>
-                        <Link href="/about">About</Link>
                       </li>
                       <li>
-                        <Link href="register.html">Register</Link>
+                        <Link href="/my-course">My Courses </Link>
                       </li>
                       <li>
-                        <Link href="/login">Login</Link>
-                      </li>
-                      <li>
-                        <Link href="faq.html">FAQ</Link>
-                      </li>
-                      <li>
-                        <Link href="404-error.html">404 Error</Link>
-                      </li>
-                      <li>
-                        <Link href="after-enroll.html">After Enroll</Link>
-                      </li>
-                      <li>
-                        <Link href="courses-admin.html">
-                          Instructor Dashboard (Course List)
-                        </Link>
-                      </li>
-                      <li>
-                        <Link href="overview.html">
-                          Instructor Dashboard (Performance)
-                        </Link>
-                      </li>
-                      <li>
-                        <Link href="students.html">Students</Link>
-                      </li>
-                      <li>
-                        <Link href="reviews.html">Reviews</Link>
-                      </li>
-                      <li>
-                        <Link href="engagement.html">Course engagement</Link>
-                      </li>
-                      <li>
-                        <Link href="traffic-conversion.html">
-                          Traffic & conversion
-                        </Link>
-                      </li>
-                      <li>
-                        <Link href="messages.html">Messages</Link>
-                      </li>
-                    </ul> */}
-                  </li>
-                  <li>
-                    <Link href="/wish-list">Favorites</Link>
-                    {/* <ul className={`${headerStyles.sub_menu}`}>
+                        <Link href="/wish-list">Favorites</Link>
+                        {/* <ul className={`${headerStyles.sub_menu}`}>
                       <li>
                         <Link href="#">Contact</Link>
                         <ul className={`${headerStyles.sub_menu}`}>
@@ -499,17 +397,17 @@ const Header = () => {
                         </ul>
                       </li>
                     </ul> */}
-                  </li>
-                  <li>
-                    <Link href="/contact">Contact</Link>
-                  </li>
-                </ul>
-              </div>
-              {/* <!-- Header Menu End --> */}
-              {/* <!-- Header Sing In & Up Start --> */}
+                      </li>
+                      <li>
+                        <Link href="/contact">Contact</Link>
+                      </li>
+                    </ul>
+                  </div>
+                  {/* <!-- Header Menu End --> */}
+                  {/* <!-- Header Sing In & Up Start --> */}
 
-              <div className={`${headerStyles.regis_btn}`}>
-                {/* <Button
+                  <div className={`${headerStyles.regis_btn}`}>
+                    {/* <Button
                   onClick={() => {
                     Modal.confirm({
                       title: "Register Mentor Form",
@@ -528,40 +426,44 @@ const Header = () => {
                 >
                   Become a Mentor
                 </Button> */}
-                <Button
-                  // danger
-                  // type="primary"
-                  onClick={() => setVisible(true)}
-                >
-                  {/* <Image
+                    <Button
+                      // danger
+                      // type="primary"
+                      onClick={() => setVisible(true)}
+                    >
+                      {/* <Image
                     width={40}
                     height={40}
                     src="/menu-icon/flag-icon.jpg"
                     alt="flag"
                   /> */}
-                  Become a Mentor
-                </Button>
-                <RegisterForm
-                  visible={visible}
-                  setVisible={setVisible}
-                  onCancel={() => {
-                    setVisible(false);
-                  }}
-                  isEdit={true}
-                />
-              </div>
-              {/* <!-- Header Sing In & Up End --> */}
+                      Become a Mentor
+                    </Button>
+                    <RegisterForm
+                      visible={visible}
+                      setVisible={setVisible}
+                      onCancel={() => {
+                        setVisible(false);
+                      }}
+                      isEdit={true}
+                    />
+                  </div>
+                  {/* <!-- Header Sing In & Up End --> */}
 
-              {/* <!-- Header Mobile Toggle Start --> */}
-              {/* <div className="header-toggle d-lg-none">
+                  {/* <!-- Header Mobile Toggle Start --> */}
+                  {/* <div className="header-toggle d-lg-none">
                 <Link className="menu-toggle" href="javascript:void(0)">
                   <span></span>
                   <span></span>
                   <span></span>
                 </Link>
               </div> */}
-              {/* <!-- Header Mobile Toggle End --> */}
-            </div>
+                  {/* <!-- Header Mobile Toggle End --> */}
+                </div>
+              ) : (
+                <></>
+              )}
+            </>
           )}
           {/* <!-- Header Main End --> */}
         </div>

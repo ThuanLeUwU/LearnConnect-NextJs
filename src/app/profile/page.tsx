@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import ".././globals.css";
-import { AuthContextProvider, UserAuth } from "../context/AuthContext";
+import { UserAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
 import axios from "axios";
 // import { User } from "firebase/auth";
@@ -20,7 +20,7 @@ export type User = {
 };
 export default function ProfileUser() {
   const { userData, id } = UserAuth();
-  AuthContextProvider;
+
   console.log("data:", userData?.fullName);
 
   // const [fetchedUserData, setFetchedUserData] = useState<User | null>(null);
@@ -54,6 +54,7 @@ export default function ProfileUser() {
       return "Not Specified";
     }
   };
+
   return (
     <div className="container">
       {userData && (

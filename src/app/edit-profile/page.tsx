@@ -1,14 +1,14 @@
 "use client";
 import { ChangeEvent, FormEvent, SetStateAction, useState } from "react";
 import ".././globals.css";
-import { AuthContextProvider, UserAuth } from "../context/AuthContext";
+import { UserAuth } from "../context/AuthContext";
 import axios from "axios";
 import { Modal, message } from "antd";
 import { useRouter } from "next/navigation";
 
 export default function EditProfile() {
   const router = useRouter();
-  const { id, userData } = UserAuth();
+  const { id, userData, refetchUser } = UserAuth();
   const [fullName, setFullName] = useState(userData?.fullName);
   const [gender, setGender] = useState(userData?.gender || 0);
   const [phoneNumber, setPhoneNumber] = useState(userData?.phoneNumber || "");
@@ -75,12 +75,12 @@ export default function EditProfile() {
         updatedUserData
       )
       .then((response) => {
+        refetchUser();
         setTimeout(() => {
           message.success("Edit successful");
         });
-        router.prefetch("/profile");
+
         router.push("/profile");
-        AuthContextProvider;
       })
       .catch((error) => {
         showErrorModal();

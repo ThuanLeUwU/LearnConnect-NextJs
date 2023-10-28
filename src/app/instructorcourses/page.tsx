@@ -88,7 +88,7 @@ const InstructorCourse = () => {
               }}
               className={`${InstructorCourseStyle.create_btn}`}
             >
-              <h6> New Course</h6>
+              <span className=""> New Course</span>
             </Button>
           </div>
         </div>

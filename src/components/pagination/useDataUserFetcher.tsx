@@ -33,7 +33,8 @@ const useDataUserFetcher = () => {
   const [courses, setCourses] = useState<CourseItem[]>([]);
   console.log("my course", courses)
   const API_URL =
-    `https://learnconnectapitest.azurewebsites.net/api/course/get-courses-by-userid?userId=${id}`;
+    // `https://learnconnectapitest.azurewebsites.net/api/course/get-courses-by-userid?userId=${id}`;
+    `https://learnconnectapitest.azurewebsites.net/api/course/get-my-course-by-user-id?userId=${id}`;
   const pagesize = 6;
   const totalPages = 10;
   const [loading, setLoading] = useState(true);
