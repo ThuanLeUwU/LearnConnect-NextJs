@@ -2,7 +2,11 @@ import { UserAuth } from "@/app/context/AuthContext";
 import axios from "axios";
 import { useState, useEffect } from "react";
 export type CourseItem = {
-  percentComplete: any;
+  favorite: {
+    id: string | number;
+    courseId: number;
+    userId: number;
+  };
   course: {
     id: string | number;
     name: string;
@@ -30,10 +34,15 @@ export type User = {
   profilePictureUrl: string;
   status: number;
 };
+export type Favorite = {
+  id: string | number;
+  courseId: number;
+  userId: number;
+};
 const useDataFavoritesFetcher = () => {
   const { id } = UserAuth();
   const [courses, setCourses] = useState<CourseItem[]>([]);
-
+  // const [favorite, setFavorite] = useState<Favorite>();
   const API_URL = `https://learnconnectapitest.azurewebsites.net/api/favorite-course/get-favorite-courses-by-user?userId=`;
   const pagesize = 6;
   const [totalPages, setTotalPages] = useState(10);
@@ -49,7 +58,34 @@ const useDataFavoritesFetcher = () => {
       // setCourses(result?.data.listCourse);
       setCourses(result?.data.listFavoriteCourses);
       setTotalPages(result?.data.paginationData.totalPages);
+      // setFavorite(
+      //   result?.data.listFavoriteCourses.map((item: any) => item.favorite)
+      // );
       setLoading(false);
+      // console.log("Favorite Courses Data:", result?.data.listFavoriteCourses);
+
+      // result?.data.listFavoriteCourses.forEach(
+      //   (
+      //     item: {
+      //       course: { id: any; name: any };
+      //       favorite: { id: any; courseId: any; userId: any };
+      //     },
+      //     index: number
+      //   ) => {
+      //     // console.log(`Course ${index + 1} - ID: ${item.course.id}`);
+      //     // console.log(`Course ${index + 1} - Name: ${item.course.name}`);
+      //     console.log(`Favorite ${index + 1} - ID: ${item.favorite.id}`);
+      //     console.log(
+      //       `Favorite ${index + 1} - Course ID: ${item.favorite.courseId}`
+      //     );
+      //     console.log(
+      //       `Favorite ${index + 1} - User ID: ${item.favorite.userId}`
+      //     );
+      //     console.log("favorite are: ", item.favorite);
+      //     setFavorite(item.favorite);
+      //     // console.log("favorite is: ", favorite);
+      //   }
+      // );
     };
     fetchData();
   }, [currentPage]);

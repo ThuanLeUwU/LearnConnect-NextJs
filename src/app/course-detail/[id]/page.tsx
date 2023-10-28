@@ -438,7 +438,7 @@ export default function CourseDetailPage({ params }: any) {
                             idUser,
                             idCourse,
                             // "https://learnconnectapitest.azurewebsites.net/api/payment-transaction/query-vnpay-transaction"
-                            "http://localhost:3000/after-payment"
+                            "https://learn-connect-next-js-git-thuan-thuanleuwu.vercel.app/after-payment"
                           );
                           console.log("Enrollment confirmed");
                           setIsModalVisible(false);

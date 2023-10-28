@@ -56,6 +56,7 @@ const Courses = ({
   mentorId,
   mentorProfilePictureUrl,
   totalRatingCount,
+  favoriteId,
 }: {
   imageUrl: string;
   name: string;
@@ -70,6 +71,7 @@ const Courses = ({
   mentorId: number;
   mentorProfilePictureUrl: string;
   totalRatingCount: number;
+  favoriteId: string | number;
 }) => {
   const router = useRouter();
   const [isLiked, setIsLiked] = useState(false);
@@ -78,6 +80,17 @@ const Courses = ({
   const handleClick = () => {
     router.push(`/course-detail/${id}`);
   };
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const responseData = await axios.get(
+  //       `https://learnconnectapitest.azurewebsites.net/api/course/${idCourse}`
+  //     );
+  //     setCourses(responseData?.data);
+  //     setAverageRating(responseData?.data.averageRating);
+  //   };
+  //   fetchData();
+  // }, []);
   const handleLike = () => {
     setIsLiked(!isLiked);
     console.log("Liked Course ID:", id);

@@ -17,9 +17,13 @@ const MyCourse = () => {
         <div>
           <div className="grid cols-2 lg:grid-cols-3 pt-[30px] gap-5">
             {courses.map((item) => {
+              courses.forEach((courses) => {
+                console.log("course favorite is : ", courses.favorite);
+              });
               return (
                 <>
                   <Courses
+                    favoriteId={item.favorite.id}
                     // imageUrl={""}
                     // name={""}
                     // description={""}
