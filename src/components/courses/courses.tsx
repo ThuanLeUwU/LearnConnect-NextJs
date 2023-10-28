@@ -7,6 +7,8 @@ import Rating from "@mui/material/Rating";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { FaRegHeart, FaHeart } from "react-icons/fa6";
+import { UserAuth } from "@/app/context/AuthContext";
+import axios from "axios";
 
 export type Course = {
   id: string | number;
@@ -71,12 +73,30 @@ const Courses = ({
 }) => {
   const router = useRouter();
   const [isLiked, setIsLiked] = useState(false);
+  const { userData } = UserAuth();
 
   const handleClick = () => {
     router.push(`/course-detail/${id}`);
   };
   const handleLike = () => {
     setIsLiked(!isLiked);
+    console.log("Liked Course ID:", id);
+    console.log("user, id : ", userData?.id);
+    axios
+      .post(
+        "https://learnconnectapitest.azurewebsites.net/api/favorite-course",
+        {
+          id: 0,
+          courseId: id,
+          userId: userData?.id,
+        }
+      )
+      .then((response) => {
+        console.log("Post request success: ", response.data);
+      })
+      .catch((error) => {
+        console.error("Error making POST request: ", error);
+      });
   };
   console.log("totalRatingCount", totalRatingCount);
   return (
@@ -106,12 +126,7 @@ const Courses = ({
         <div className={`${CourseStyle.single_courses_author}`}>
           <div className="author">
             <div className="author-thumb">
-              <a onClick={handleClick}>
-                {/* <img
-                                  src="assets/images/author/author-01.jpg"
-                                  alt="Author"
-                                /> */}
-              </a>
+              <a onClick={handleClick}></a>
             </div>
             <div className="author-name">
               <div className="min-h-[60px]">
@@ -121,19 +136,7 @@ const Courses = ({
               </div>
             </div>
           </div>
-          {/* <div className={`${CourseStyle.single_courses_tag}`}>
-            <a href="#">{categoryName}</a>
-          </div> */}
         </div>
-
-        {/* <h4 className="title">
-          <a
-            onClick={handleClick}
-            className={`${CourseStyle.single_courses_title}`}
-          >
-            {description}
-          </a>
-        </h4> */}
         <div className={`${CourseStyle.single_courses_timeline}`}>
           <span>
             {" "}

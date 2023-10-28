@@ -16,7 +16,7 @@ export default function Home() {
   return (
     <>
       <div className="container">
-        <Search />
+        {/* <Search /> */}
         {loading ? (
           <div className="text-center text-5xl">loading...</div>
         ) : (

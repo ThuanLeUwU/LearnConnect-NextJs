@@ -3,11 +3,11 @@ import ".././globals.css";
 import CourseItem from "@/components/course-item/course";
 import Courses from "@/components/courses/courses";
 import Paginate from "@/components/pagination/pagination";
-import useDataFetcher from "@/components/pagination/useDataFetcher";
+import useDataFavoritesFetcher from "@/components/pagination/useDataFavoritesFetcher";
 
 const MyCourse = () => {
   const { loading, courses, totalPages, currentPage, setCurrentPage } =
-    useDataFetcher();
+    useDataFavoritesFetcher();
 
   return (
     <div className="container">
@@ -20,13 +20,21 @@ const MyCourse = () => {
               return (
                 <>
                   <Courses
+                    // imageUrl={""}
+                    // name={""}
+                    // description={""}
+                    // id={""}
+                    // price={""}
+                    // totalEnrollment={""}
+                    // contentLength={""}
+                    // averageRating={0}
                     mentorId={0}
                     mentorProfilePictureUrl={""}
                     totalRatingCount={0}
                     lectureCount={""}
                     categoryName={""}
-                    key={item.id}
-                    {...item}
+                    key={item.course.id}
+                    {...item.course}
                   />
                 </>
               );

@@ -7,6 +7,7 @@ import useDataFetcher, {
 import Search from "@/components/search/search";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import Paginate from "@/components/pagination/pagination";
 const SearchCourse = () => {
   const [courses, setCourses] = useState<CourseItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -15,17 +16,26 @@ const SearchCourse = () => {
   useEffect(() => {
     const url = window.location.href;
     const segments = url.split("/");
+
     const lastSegment = segments[segments.length - 1];
     if (lastSegment) {
       setSearchQuery(lastSegment);
     }
   }, []);
-
+  const pagesize = 6;
+  const [totalPages, setTotalPages] = useState(10);
+  const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(0);
   useEffect(() => {
     const fetchData = async () => {
+      const page = Math.min(currentPage + 1, totalPages);
       try {
-        const response = await axios.get(`${API_URL}${searchQuery}`);
-        setCourses(response.data);
+        const response = await axios.get(
+          `${API_URL}${searchQuery}&currentPage=${page}&pageSize=${pagesize}`
+        );
+        setCourses(response?.data.listCourse);
+        setTotalPages(response?.data.paginationData.totalPages);
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching data: ", error);
       }
@@ -34,29 +44,37 @@ const SearchCourse = () => {
       fetchData();
     }
   }, [searchQuery]);
-
   return (
     <div className="container">
       <Search />
-      <div className="grid cols-2 lg:grid-cols-3 pt-[30px] gap-5">
-        {courses.length === 0 ? (
-          <div className="mx-auto mt-20 text-center min-h-[60vh]">
-            <h1 className="text-3xl font-bold mb-4">No courses available.</h1>
+      {loading ? (
+        <div className="text-center text-5xl">loading...</div>
+      ) : (
+        <div>
+          <div className="grid cols-2 lg:grid-cols-3 pt-[30px] gap-5">
+            {courses.map((item) => {
+              return (
+                <>
+                  <Courses
+                    totalRatingCount={0}
+                    mentorProfilePictureUrl={""}
+                    mentorId={0}
+                    lectureCount={""}
+                    categoryName={""}
+                    key={item.id}
+                    {...item}
+                  />
+                </>
+              );
+            })}
           </div>
-        ) : (
-          courses.map((item) => (
-            <Courses
-              totalRatingCount={0}
-              mentorProfilePictureUrl={""}
-              mentorId={0}
-              lectureCount={""}
-              categoryName={""}
-              key={item.id}
-              {...item}
-            />
-          ))
-        )}
-      </div>
+        </div>
+      )}
+      <Paginate
+        totalPages={totalPages}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+      />
     </div>
   );
 };
