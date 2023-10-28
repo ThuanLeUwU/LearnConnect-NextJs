@@ -23,6 +23,9 @@ export type Course = {
   lectureCount: number;
   averageRating: number;
   mentorName: string;
+  mentorId: number;
+  mentorProfilePictureUrl: string;
+  totalRatingCount: number;
 };
 
 export type Lectures = {
@@ -48,6 +51,9 @@ const Courses = ({
   contentLength,
   lectureCount,
   averageRating,
+  mentorId,
+  mentorProfilePictureUrl,
+  totalRatingCount,
 }: {
   imageUrl: string;
   name: string;
@@ -59,6 +65,9 @@ const Courses = ({
   contentLength: string | number;
   lectureCount: string | number;
   averageRating: number;
+  mentorId: number;
+  mentorProfilePictureUrl: string;
+  totalRatingCount: number;
 }) => {
   const router = useRouter();
   const [isLiked, setIsLiked] = useState(false);
@@ -69,7 +78,7 @@ const Courses = ({
   const handleLike = () => {
     setIsLiked(!isLiked);
   };
-
+  console.log("totalRatingCount", totalRatingCount);
   return (
     <div className={`${CourseStyle.single_courses}`}>
       <div className={`${CourseStyle.single_courses_image}`}>
@@ -83,7 +92,7 @@ const Courses = ({
           </a>
           <div
             onClick={handleLike}
-            className="absolute top-2 right-2 cursor-pointer"
+            className="absolute top-2 right-2 cursor-pointer z-50"
           >
             {isLiked ? (
               <FaHeart className={`text-2xl text-red-500`} />
@@ -106,7 +115,7 @@ const Courses = ({
             </div>
             <div className="author-name">
               <div className="min-h-[60px]">
-                <a className="font-bold" href="#">
+                <a className="font-bold" onClick={handleClick}>
                   {name}
                 </a>
               </div>
@@ -145,7 +154,7 @@ const Courses = ({
               readOnly
             />
           </span>
-          <span className="font-extralight">{contentLength} Rating</span>
+          <span className="font-extralight">{totalRatingCount} Rating</span>
         </div>
         <div className={`${CourseStyle.single_courses_price}`}>
           <div className="courses-price">

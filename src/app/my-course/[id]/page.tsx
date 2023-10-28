@@ -36,6 +36,7 @@ export default function AfterEnroll({ params }: any) {
   // console.log("url", formDataImage)
   const [selected, setSelected] = useState(null);
   const [image, setImage] = useState<string>();
+  const [activeVideoIndex, setActiveVideoIndex] = useState<number>(0);
   // console.log("imag",image)
   // console.log("Rason", selected);
   const { Option } = Select;
@@ -163,10 +164,15 @@ export default function AfterEnroll({ params }: any) {
     };
 
     fetchData();
+    if (testVideo.length > 0) {
+      setVideoSrc(testVideo[0].contentUrl);
+      setActiveVideoIndex(0);
+    }
   }, []);
   const [videoSrc, setVideoSrc] = useState("");
-  const changeVideoSource = (newSrc: React.SetStateAction<string>) => {
+  const changeVideoSource = (newSrc: string, index: number) => {
     setVideoSrc(newSrc);
+    setActiveVideoIndex(index);
     const videoElement = document.getElementById(
       "courseVideo"
     ) as HTMLVideoElement;
@@ -199,7 +205,6 @@ export default function AfterEnroll({ params }: any) {
     //   }
     // }
   };
-
   return (
     <div className="container">
       <div className="grid cols-2 lg:grid-cols-12 mt-[40px]">
@@ -370,7 +375,8 @@ export default function AfterEnroll({ params }: any) {
                                             :
                                           </td>
                                           <td className="whitespace-nowrap px-6 py-4 text-[#52565b] text-[15px] font-normal">
-                                            {/* {courses.} */}{courses?.mentorName}
+                                            {/* {courses.} */}
+                                            {courses?.mentorName}
                                           </td>
                                         </tr>
                                         <tr className="border-b border-b-[#e7f8ee]">
@@ -433,30 +439,6 @@ export default function AfterEnroll({ params }: any) {
                                 </p>
                               </div>
                             ))}
-                          {/* <AccordionItem
-                            header="Lesson-01: Mindful Growth & the Creative Journey, Find
-                      Your Spark & Map Your Future"
-                            time="01 hour 48 minutes"
-                            timevideo="08 minutes"
-                            onLinkClick={changeVideoSource}
-                          />
-                          <AccordionItem
-                            header="Lesson-02: Mindful Growth & the Creative Journey, Find
-                      Your Spark & Map Your Future"
-                            time="01 hour 48 minutes"
-                            timevideo="08 minutes"
-                            onLinkClick={changeVideoSource}
-                          /> */}
-                          {/* <div className="">
-                            <p className="mt-5">
-                              Lesson-01: Mindful Growth & the Creative Journey,
-                              Find Your Spark & Map Your Future
-                            </p>
-                            <p className="mt-5">
-                              Lesson-02: Mindful Growth & the Creative Journey,
-                              Find Your Spark & Map Your Future
-                            </p>
-                          </div> */}
                         </div>
                       </div>
                     </div>
@@ -477,21 +459,21 @@ export default function AfterEnroll({ params }: any) {
           <div className="video-playlist bg-[#eefbf3] text-black">
             <div className="accordion" id="videoPlaylist">
               <nav className="vids">
-                {testVideo.map((item,index) => {
-                  // console.log("tutle", item.contentUrl);
+                {testVideo.map((item, index) => {
                   return (
                     <a
                       key={item.id}
                       className={`link ${
-                        videoSrc === `${item.contentUrl}`
-                          ? "active text-[#309255] "
+                        activeVideoIndex === index
+                          ? "active text-[#309255]"
                           : ""
                       }`}
-                      href="#"
-                      onClick={() => changeVideoSource(`${item.contentUrl}`)}
+                      onClick={() => changeVideoSource(item.contentUrl, index)}
                     >
                       <div className="pl-20 py-2 pr-[30px]">
-                        <p>Lecture {index + 1} : {item.title}</p>
+                        <p>
+                          Lecture {index + 1} : {item.title}
+                        </p>
                         <span
                           className={`total-duration text-[#848886] text-[13px] mt-1.5`}
                         >
@@ -501,29 +483,6 @@ export default function AfterEnroll({ params }: any) {
                     </a>
                   );
                 })}
-                {/* <a
-                    className={`link ${
-                      videoSrc ===
-                      "https://player.vimeo.com/external/207590826.hd.mp4?s=6a918d074abf8f3add7858018855524d384f6934&amp;profile_id=119"
-                        ? "active text-[#309255]"
-                        : ""
-                    }`}
-                    href="#"
-                    onClick={() =>
-                      changeVideoSource(
-                        "https://player.vimeo.com/external/207590826.hd.mp4?s=6a918d074abf8f3add7858018855524d384f6934&amp;profile_id=119"
-                      )
-                    }
-                  >
-                    <div className="pl-20 py-2 pr-[30px]">
-                      <p>02. The Complete Medicine Masterclass</p>
-                      <span
-                        className={`total-duration text-[#848886] text-[13px] mt-1.5`}
-                      >
-                        08 minutes
-                      </span>
-                    </div>
-                  </a> */}
               </nav>
             </div>
           </div>
@@ -532,7 +491,6 @@ export default function AfterEnroll({ params }: any) {
           </div>
         </div>
       </div>
-      {/* <ToastContainer/> */}
     </div>
   );
 }

@@ -597,6 +597,7 @@
 
 /* Footer */
 .footer_section {
+  // margin-top: 40px;
   background-color: #e7f8ee;
   // position: absolute;
 }
@@ -959,7 +960,7 @@
   }
 }
 
-.regis_btn{
+.regis_btn {
   background-color: #309255;
   color: #fff;
   display: inline-block;
@@ -971,8 +972,8 @@
   font-weight: 500;
   padding: 5px;
   text-align: center;
-  &:hover{
-      transition: all 0.9s linear;
-      background-color: black;
+  &:hover {
+    transition: all 0.9s linear;
+    background-color: black;
   }
 }

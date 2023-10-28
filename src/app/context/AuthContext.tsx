@@ -71,7 +71,7 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
     const provider = new GoogleAuthProvider();
     await signInWithPopup(auth, provider);
 
-    if (role === 3) {
+    if (role == 3) {
       router.push("/");
     } else {
       router.push("/user-manage");
