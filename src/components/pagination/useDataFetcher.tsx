@@ -1,6 +1,8 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 export type CourseItem = {
+  course: any;
+  favorite: any;
   id: string | number;
   name: string;
   description: string;

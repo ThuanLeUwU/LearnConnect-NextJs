@@ -9,6 +9,9 @@ import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { FaRegHeart, FaHeart } from "react-icons/fa6";
 import { UserAuth } from "@/app/context/AuthContext";
 import axios from "axios";
+import useDataFavoritesFetcher, {
+  CourseItem,
+} from "../pagination/useDataFavoritesFetcher";
 
 export type Course = {
   id: string | number;
@@ -76,42 +79,64 @@ const Courses = ({
   const router = useRouter();
   const [isLiked, setIsLiked] = useState(false);
   const { userData } = UserAuth();
-
+  const [courses, setCourses] = useState<CourseItem[]>([]);
   const handleClick = () => {
     router.push(`/course-detail/${id}`);
   };
+  useEffect(() => {
+    const fetchFavoriteCourses = async () => {
+      try {
+        const response = await axios.get(
+          `https://learnconnectapitest.azurewebsites.net/api/favorite-course/get-favorite-courses-by-user?userId=${userData?.id}&currentPage=1&pageSize=6`
+        );
+        setCourses(response.data.listFavoriteCourses); // Assuming the response data contains a list of favorite courses
+      } catch (error) {
+        console.error("Error fetching favorite courses: ", error);
+      }
+    };
+    fetchFavoriteCourses();
+  }, [userData?.id]);
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const responseData = await axios.get(
-  //       `https://learnconnectapitest.azurewebsites.net/api/course/${idCourse}`
-  //     );
-  //     setCourses(responseData?.data);
-  //     setAverageRating(responseData?.data.averageRating);
-  //   };
-  //   fetchData();
-  // }, []);
+  useEffect(() => {
+    const isCourseLiked = courses.some(
+      (course) => course.favorite.courseId === id
+    );
+    setIsLiked(isCourseLiked);
+  }, [courses, id]);
   const handleLike = () => {
     setIsLiked(!isLiked);
     console.log("Liked Course ID:", id);
-    console.log("user, id : ", userData?.id);
-    axios
-      .post(
-        "https://learnconnectapitest.azurewebsites.net/api/favorite-course",
-        {
-          id: 0,
-          courseId: id,
-          userId: userData?.id,
-        }
-      )
-      .then((response) => {
-        console.log("Post request success: ", response.data);
-      })
-      .catch((error) => {
-        console.error("Error making POST request: ", error);
-      });
+    console.log("user, id: ", userData?.id);
+    if (isLiked) {
+      axios
+        .delete(
+          `https://learnconnectapitest.azurewebsites.net/api/favorite-course/${favoriteId}`
+        )
+        .then((response) => {
+          console.log("Delete request success: ", response.data);
+        })
+        .catch((error) => {
+          console.error("Error making DELETE request: ", error);
+        });
+    } else {
+      // Call the POST API endpoint
+      axios
+        .post(
+          "https://learnconnectapitest.azurewebsites.net/api/favorite-course",
+          {
+            id: 0,
+            courseId: id,
+            userId: userData?.id,
+          }
+        )
+        .then((response) => {
+          console.log("Post request success: ", response.data);
+        })
+        .catch((error) => {
+          console.error("Error making POST request: ", error);
+        });
+    }
   };
-  console.log("totalRatingCount", totalRatingCount);
   return (
     <div className={`${CourseStyle.single_courses}`}>
       <div className={`${CourseStyle.single_courses_image}`}>
@@ -146,6 +171,9 @@ const Courses = ({
                 <a className="font-bold" onClick={handleClick}>
                   {name}
                 </a>
+                <a className="font-bold" onClick={handleClick}>
+                  {favoriteId}
+                </a>
               </div>
             </div>
           </div>
@@ -158,7 +186,7 @@ const Courses = ({
           </span>
           <span>
             {" "}
-            <i className="icofont-read-book"></i> {contentLength} Lectures
+            <i className="icofont-read-book"></i> {contentLength} Lectures{" "}
           </span>
         </div>
         <div className={`${CourseStyle.single_courses_timeline}`}>

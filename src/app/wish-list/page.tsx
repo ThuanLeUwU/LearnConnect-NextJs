@@ -18,7 +18,7 @@ const MyCourse = () => {
           <div className="grid cols-2 lg:grid-cols-3 pt-[30px] gap-5">
             {courses.map((item) => {
               courses.forEach((courses) => {
-                console.log("course favorite is : ", courses.favorite);
+                console.log("course favorite is : ", courses.favorite.id);
               });
               return (
                 <>
