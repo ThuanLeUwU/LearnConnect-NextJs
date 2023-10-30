@@ -8,7 +8,7 @@ import { CourseDropDown } from "../app/test/CourseDropdown";
 import { UserAuth } from "@/app/context/AuthContext";
 import { Button } from "react-bootstrap";
 import { RegisterForm } from "@/components/registerForm";
-import {  Modal } from "antd";
+import { Modal } from "antd";
 import { useRouter } from "next/navigation";
 
 const Header = () => {
@@ -63,6 +63,9 @@ const Header = () => {
   //     setDropdown(false);
   //   }
   // };
+  const handleClickTransaction = () => {
+    router.push("/transaction");
+  };
 
   const handleClick = () => setClick(!click);
 
@@ -189,9 +192,11 @@ const Header = () => {
                       </li>
                       <li>
                         <a
-                          href="#"
                           className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-bl-lg rounded-br-lg hover:rounded-tl-lg hover:rounded-tr-lg"
-                          onClick={closeDropdown}
+                          onClick={() => {
+                            closeDropdown();
+                            handleClickTransaction();
+                          }}
                         >
                           Transaction
                         </a>
@@ -463,7 +468,7 @@ const Header = () => {
                     </ul> */}
                   </li>
                   <li>
-                    <Link href="/wish-list">Favorites</Link>
+                    <Link href="/favorites">Favorites</Link>
                     {/* <ul className={`${headerStyles.sub_menu}`}>
                       <li>
                         <Link href="#">Contact</Link>
