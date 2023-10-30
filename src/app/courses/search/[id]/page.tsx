@@ -43,7 +43,7 @@ const SearchCourse = () => {
     if (searchQuery) {
       fetchData();
     }
-  }, [searchQuery]);
+  }, [searchQuery, currentPage]);
   return (
     <div className="container">
       <Search />
