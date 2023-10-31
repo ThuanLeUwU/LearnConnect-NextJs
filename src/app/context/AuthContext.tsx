@@ -39,7 +39,7 @@ interface AuthContextValue {
   user: FirebaseUser | null;
   token: string;
   id: string;
-  role: string | number;
+  role: number;
   userData: User | null;
   googleSignIn: () => void;
   logOut: () => void;
@@ -63,7 +63,7 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [token, setToken] = useState("");
   const [id, setId] = useState("");
-  const [role, setRole] = useState(0);
+  const [role, setRole] = useState(3);
   // console.log("info", id)
   const [userData, setUserData] = useState<User | null>(null);
   const router = useRouter();
@@ -71,8 +71,10 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
     const provider = new GoogleAuthProvider();
     await signInWithPopup(auth, provider);
     if (role === 3) {
+      console.log("course log", role);
       router.push("/courses");
     } else {
+      console.log("user log", role);
       router.push("/user-manage");
     }
 
@@ -120,7 +122,8 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
             const userId = decoded.Id;
             const userRole = decoded.role;
             setId(userId);
-            setRole(userRole);
+            setRole(parseInt(userRole));
+            console.log("user role", parseInt(userRole));
             const fetchUser = async (userId: string) => {
               const responseUser = await axios.get(
                 `https://learnconnectapitest.azurewebsites.net/api/user/${userId}`

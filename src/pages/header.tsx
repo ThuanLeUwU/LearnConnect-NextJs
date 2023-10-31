@@ -65,6 +65,9 @@ const Header = () => {
   //     setDropdown(false);
   //   }
   // };
+  const handleClickTransaction = () => {
+    router.push("/transaction");
+  };
 
   const handleClick = () => setClick(!click);
 
@@ -191,9 +194,11 @@ const Header = () => {
                       </li>
                       <li>
                         <a
-                          href="#"
                           className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-bl-lg rounded-br-lg hover:rounded-tl-lg hover:rounded-tr-lg"
-                          onClick={closeDropdown}
+                          onClick={() => {
+                            closeDropdown();
+                            handleClickTransaction();
+                          }}
                         >
                           Transaction
                         </a>
@@ -361,7 +366,7 @@ const Header = () => {
                         <Link href="/my-course">My Courses </Link>
                       </li>
                       <li>
-                        <Link href="/wish-list">Favorites</Link>
+                        <Link href="/favorites">Favorites</Link>
                         {/* <ul className={`${headerStyles.sub_menu}`}>
                       <li>
                         <Link href="#">Contact</Link>

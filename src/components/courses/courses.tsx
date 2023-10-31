@@ -12,13 +12,13 @@ import axios from "axios";
 import useDataFavoritesFetcher, {
   CourseItem,
 } from "../pagination/useDataFavoritesFetcher";
+import { message } from "antd";
 
 export type Course = {
   id: string | number;
   name: string;
   description: string;
   shortDescription: string;
-  // difficultyLevel: string;
   totalEnrollment: number;
   imageUrl: string;
   price: number;
@@ -31,6 +31,7 @@ export type Course = {
   mentorId: number;
   mentorProfilePictureUrl: string;
   totalRatingCount: number;
+  favoriteId: number;
 };
 
 export type Lectures = {
@@ -84,18 +85,20 @@ const Courses = ({
     router.push(`/course-detail/${id}`);
   };
   useEffect(() => {
-    const fetchFavoriteCourses = async () => {
-      try {
-        const response = await axios.get(
-          `https://learnconnectapitest.azurewebsites.net/api/favorite-course/get-favorite-courses-by-user?userId=${userData?.id}&currentPage=1&pageSize=6`
-        );
-        setCourses(response.data.listFavoriteCourses); // Assuming the response data contains a list of favorite courses
-      } catch (error) {
-        console.error("Error fetching favorite courses: ", error);
-      }
-    };
-    fetchFavoriteCourses();
-  }, [userData?.id]);
+    if (userData) {
+      const fetchFavoriteCourses = async () => {
+        try {
+          const response = await axios.get(
+            `https://learnconnectapitest.azurewebsites.net/api/favorite-course/get-favorite-courses-by-user?userId=${userData?.id}&currentPage=1&pageSize=6`
+          );
+          setCourses(response.data.listFavoriteCourses);
+        } catch (error) {
+          console.error("Error fetching favorite courses: ", error);
+        }
+      };
+      fetchFavoriteCourses();
+    }
+  }, [userData]);
 
   useEffect(() => {
     const isCourseLiked = courses.some(
@@ -107,19 +110,22 @@ const Courses = ({
     setIsLiked(!isLiked);
     console.log("Liked Course ID:", id);
     console.log("user, id: ", userData?.id);
+
     if (isLiked) {
       axios
         .delete(
           `https://learnconnectapitest.azurewebsites.net/api/favorite-course/${favoriteId}`
         )
         .then((response) => {
+          setTimeout(() => {
+            message.success("Removed successful");
+          });
           console.log("Delete request success: ", response.data);
         })
         .catch((error) => {
           console.error("Error making DELETE request: ", error);
         });
     } else {
-      // Call the POST API endpoint
       axios
         .post(
           "https://learnconnectapitest.azurewebsites.net/api/favorite-course",
@@ -130,6 +136,9 @@ const Courses = ({
           }
         )
         .then((response) => {
+          setTimeout(() => {
+            message.success("Added to favorites successful");
+          });
           console.log("Post request success: ", response.data);
         })
         .catch((error) => {
@@ -171,9 +180,9 @@ const Courses = ({
                 <a className="font-bold" onClick={handleClick}>
                   {name}
                 </a>
-                <a className="font-bold" onClick={handleClick}>
+                {/* <a className="font-bold" onClick={handleClick}>
                   {favoriteId}
-                </a>
+                </a> */}
               </div>
             </div>
           </div>
@@ -200,15 +209,23 @@ const Courses = ({
           </span>
           <span className="font-extralight">{totalRatingCount} Rating</span>
         </div>
-        <div className={`${CourseStyle.single_courses_price}`}>
-          <div className="courses-price">
-            <span className={`${CourseStyle.single_courses_price_sale}`}>
-              {/* {item.sale} */}
-            </span>
-            {/* <span className="old-parice">{formattedPrice}</span> */}
-            <span> {price && price.toLocaleString()}</span>
-          </div>
-          <div className="courses-review">VND</div>
+        <div
+          className={`${CourseStyle.single_courses_price} flex items-center`}
+        >
+          {price === 0 ? (
+            <div className="courses-price">
+              <span className={`${CourseStyle.single_courses_price_sale}`}>
+                Free
+              </span>
+            </div>
+          ) : (
+            <div className="courses-price flex">
+              <span className={`${CourseStyle.single_courses_price_sale}`}>
+                {price && price.toLocaleString()}
+              </span>
+              {price !== 0 && <div className="ml-auto">VND</div>}
+            </div>
+          )}
         </div>
       </div>
     </div>

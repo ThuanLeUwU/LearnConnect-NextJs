@@ -31,6 +31,24 @@ const ListCourse = () => {
                 </>
               );
             })}
+            {/* {courses.map((item) => {
+              courses.forEach((courses) => {
+                console.log("course favorite is : ", courses.favorite.id);
+              });
+              return (
+                <>
+                  <Courses
+                    mentorId={0}
+                    mentorProfilePictureUrl={""}
+                    totalRatingCount={0}
+                    lectureCount={""}
+                    categoryName={""}
+                    key={item.id}
+                    {...item.course}
+                  />
+                </>
+              );
+            })} */}
           </div>
         </div>
       )}

@@ -40,7 +40,7 @@ export type Favorite = {
   userId: number;
 };
 const useDataFavoritesFetcher = () => {
-  const { id } = UserAuth();
+  const { id, userData } = UserAuth();
   const [courses, setCourses] = useState<CourseItem[]>([]);
   // const [favorite, setFavorite] = useState<Favorite>();
   const API_URL = `https://learnconnectapitest.azurewebsites.net/api/favorite-course/get-favorite-courses-by-user?userId=`;

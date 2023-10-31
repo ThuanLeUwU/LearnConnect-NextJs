@@ -41,8 +41,8 @@ export default function Home() {
             </div>
           </div>
         )}
-        <div className="flex items-center justify-center mt-4">
-          <button className="bg-[#309255] hover:bg-black text-white font-bold py-2 px-4 rounded-lg">
+        <div className="flex items-center justify-center mt-10">
+          <button className="bg-[#309255] hover:bg-black text-white font-bold py-3 px-6 rounded-lg text-xl">
             <a href="/courses">Show more</a>
           </button>
         </div>

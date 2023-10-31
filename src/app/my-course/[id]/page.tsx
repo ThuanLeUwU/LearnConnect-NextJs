@@ -33,12 +33,9 @@ export default function AfterEnroll({ params }: any) {
   console.log("usser", user);
   const [form] = Form.useForm();
   const [formDataImage, setFormDataImage] = useState();
-  // console.log("url", formDataImage)
   const [selected, setSelected] = useState(null);
   const [image, setImage] = useState<string>();
   const [activeVideoIndex, setActiveVideoIndex] = useState<number>(0);
-  // console.log("imag",image)
-  // console.log("Rason", selected);
   const { Option } = Select;
   const { TextArea } = Input;
   const handleTabClick = (tabName: string) => {
@@ -209,16 +206,24 @@ export default function AfterEnroll({ params }: any) {
     <div className="container">
       <div className="grid cols-2 lg:grid-cols-12 mt-[40px]">
         <div className="lg:col-span-8">
-          <video
-            width="full"
-            height="full"
-            controls
-            id="courseVideo"
-            onSeeking={handleSeek}
-            ref={videoRef}
-          >
-            <source src={videoSrc} type="video/mp4" />
-          </video>
+          {!videoSrc && (
+            <img
+              src={courses?.imageUrl}
+              className="w-full object-cover h-[438px]"
+            />
+          )}
+          {videoSrc && (
+            <video
+              width="full"
+              height="full"
+              controls
+              id="courseVideo"
+              onSeeking={handleSeek}
+              ref={videoRef}
+            >
+              <source src={videoSrc} type="video/mp4" />
+            </video>
+          )}
           <div>
             <div className="px-3">
               <div className="flex justify-between mt-2.5">

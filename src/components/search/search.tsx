@@ -1,4 +1,3 @@
-"use client";
 import React, { SetStateAction, useEffect, useState } from "react";
 import "../../app/./globals.css";
 import { CourseItem } from "../pagination/useDataFetcher";
@@ -18,28 +17,15 @@ const Search = () => {
     setSearchQuery(e.target.value);
   };
 
-  //   const handleSearch = async () => {
-  //     const API_URL =
-  //       "https://learnconnectapitest.azurewebsites.net/api/course/search?searchQuery=";
-  //     try {
-  //       const result = await axios.get(`${API_URL}${searchQuery}`);
-  //       setCourses(result?.data);
-  //       console.log("search course", result?.data);
-  //       console.log("courses", courses);
-  //     } catch (error) {
-  //       console.error("Error fetching data: ", error);
-  //     }
-  //   };
-
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      //   handleSearch();
       handleClickSearch();
     }
   };
+
   return (
     <>
-      <div className="p-4 border-2 border-[#e7f8ee] rounded-lg mt-[30px]">
+      <div className="p-4 border-2 border-[#e7f8ee] rounded-lg flex mt-[30px]">
         <input
           type="text"
           placeholder="Search courses..."
@@ -48,6 +34,12 @@ const Search = () => {
           onKeyPress={handleKeyPress}
           className="border-none outline-none w-full p-2"
         />
+        <button
+          onClick={handleClickSearch}
+          className="bg-[#309255] text-white font-bold py-2 px-4 rounded-lg"
+        >
+          Search
+        </button>
       </div>
     </>
   );

@@ -21,8 +21,6 @@ export default function LoginPage() {
   const handleSignIn = async () => {
     try {
       googleSignIn();
-
-      // getToken();
     } catch (error) {
       console.log(error);
     }
