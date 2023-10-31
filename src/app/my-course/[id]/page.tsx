@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { Course, Lectures } from "@/components/courses/courses";
 import Image from "next/image";
+
 // import { Button } from "react-bootstrap";
 import {
   Button,
@@ -28,6 +29,7 @@ export type Lecture = {
 };
 
 export default function AfterEnroll({ params }: any) {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState("tab1");
   const { id, user } = UserAuth();
   console.log("usser", user);
@@ -188,8 +190,11 @@ export default function AfterEnroll({ params }: any) {
     fetchData();
   }, []);
 
-  console.log("course123", courses);
+  console.log("course123", courses?.id);
 
+  const handleClick = () => {
+    router.push(`/test/${courses?.id}`);
+  };
   const videoRef = useRef(null);
 
   const handleSeek = (e: any) => {
@@ -479,18 +484,19 @@ export default function AfterEnroll({ params }: any) {
                         <p>
                           Lecture {index + 1} : {item.title}
                         </p>
-                        <span
-                          className={`total-duration text-[#848886] text-[13px] mt-1.5`}
-                        >
-                          {/* 08 minutes */}
-                        </span>
                       </div>
                     </a>
                   );
                 })}
+                <div className="pl-10 py-2 pr-[30px] bg-[#dff0e6]">
+                  <button onClick={handleClick}>Test</button>
+                </div>
               </nav>
             </div>
           </div>
+          {/* <Button danger type="primary" onClick={handleClick}>
+            Test
+          </Button> */}
           <div className="video-playlist bg-[#eefbf3] text-black">
             <div className="accordion" id="videoPlaylist"></div>
           </div>

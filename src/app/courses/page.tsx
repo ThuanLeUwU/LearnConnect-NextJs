@@ -17,18 +17,17 @@ const ListCourse = () => {
           <div className="grid cols-2 lg:grid-cols-3 pt-[30px] gap-5">
             {courses.map((item) => {
               return (
-                <>
-                  <Courses
-                    favoriteId={""}
-                    totalRatingCount={0}
-                    mentorProfilePictureUrl={""}
-                    mentorId={0}
-                    lectureCount={""}
-                    categoryName={""}
-                    key={item.id}
-                    {...item}
-                  />
-                </>
+                <Courses
+                  enrolled={false}
+                  favoriteId={""}
+                  totalRatingCount={0}
+                  mentorProfilePictureUrl={""}
+                  mentorId={0}
+                  lectureCount={""}
+                  categoryName={""}
+                  key={item.id} // Assuming courseId is a unique identifier
+                  {...item}
+                />
               );
             })}
             {/* {courses.map((item) => {

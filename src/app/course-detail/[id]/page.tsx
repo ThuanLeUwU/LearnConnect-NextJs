@@ -31,14 +31,15 @@ export default function CourseDetailPage({ params }: any) {
   useEffect(() => {
     const fetchData = async () => {
       const responseData = await axios.get(
-        `https://learnconnectapitest.azurewebsites.net/api/course/${idCourse}`
+        // `https://learnconnectapitest.azurewebsites.net/api/course/${idCourse}`
+        `https://learnconnectapitest.azurewebsites.net/api/course/user/${idUser}/course/${idCourse}`
       );
       setCourses(responseData?.data);
       setAverageRating(responseData?.data.averageRating);
     };
     fetchData();
   }, []);
-
+  console.log("is enrolled", courses?.enrolled);
   useEffect(() => {
     const fetchData = async () => {
       const responseData = await axios.get(
@@ -372,64 +373,23 @@ export default function CourseDetailPage({ params }: any) {
                       </ul>
                     </div>
                     <div className="text-center mt-10">
-                      {/* <Button
-                        className="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded-2xl py-4 px-3 leading-normal no-underline bg-[#309255] text-white hover:bg-black btn-outline w-44 border-[#a9f9c8] hover:text-white transition-all duration-300 ease-in-out delay-0 my-2"
-                        onClick={() => {
-                          Modal.confirm({
-                            title: "Your Order Preview",
-                            content: (
-                              <div className="pr-[34px]">
-                                <img
-                                  src={courses?.imageUrl}
-                                  alt="course-detail"
-                                  className="rounded-md w-full h-[170px] object-cover"
-                                />
-                                <h3 className="mt-2">
-                                  Course Name:{" "}
-                                  <span className="font-bold">
-                                    {courses?.name}
-                                  </span>
-                                </h3>
-                                <h3 className="mt-2">
-                                  Instructor Name:{" "}
-                                  <span className="font-bold">
-                                    {courses?.mentorName}
-                                  </span>
-                                </h3>
-                                <h3 className="mt-2">
-                                  Course Price:{" "}
-                                  <span className="font-bold">
-                                    {courses?.price &&
-                                      courses?.price.toLocaleString()}
-                                  </span>{" "}
-                                  VND
-                                </h3>
-                              </div>
-                            ),
-                            onOk() {
-                              payment(
-                                idUser,
-                                idCourse,
-                                "https://learnconnectapitest.azurewebsites.net/api/payment-transaction/query-vnpay-transaction"
-                              );
-                              console.log("Enrollment confirmed");
-                            },
-                            onCancel() {
-                              console.log("Enrollment canceled");
-                            },
-                          });
-                        }}
-                      >
-                        Enroll Now
-                      </Button> */}
-                      <Button
-                        onClick={() => {
-                          setIsModalVisible(true);
-                        }}
-                        className="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded-2xl py-4 px-3 leading-normal no-underline bg-[#309255] text-white hover:bg-black btn-outline w-44 border-[#a9f9c8] hover:text-white transition-all duration-300 ease-in-out delay-0 my-2"
-                      >
-                        Enroll Now
-                      </Button>
+                      {courses?.enrolled ? (
+                        <Button
+                          disabled
+                          className="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded-2xl py-4 px-3 leading-normal no-underline bg-[#309255] text-white btn-outline w-44 border-[#a9f9c8] hover:text-white transition-all duration-300 ease-in-out delay-0 my-2"
+                        >
+                          Enrolled
+                        </Button>
+                      ) : (
+                        <Button
+                          onClick={() => {
+                            setIsModalVisible(true);
+                          }}
+                          className="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded-2xl py-4 px-3 leading-normal no-underline bg-[#309255] text-white hover:bg-black btn-outline w-44 border-[#a9f9c8] hover:text-white transition-all duration-300 ease-in-out delay-0 my-2"
+                        >
+                          Enroll Now
+                        </Button>
+                      )}
                       <Modal
                         title="Your Order Preview"
                         visible={isModalVisible}

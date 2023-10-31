@@ -56,6 +56,7 @@ const SearchCourse = () => {
               return (
                 <>
                   <Courses
+                    enrolled={false}
                     favoriteId={""}
                     totalRatingCount={0}
                     mentorProfilePictureUrl={""}

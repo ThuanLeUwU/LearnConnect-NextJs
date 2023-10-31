@@ -32,6 +32,7 @@ export type Course = {
   mentorProfilePictureUrl: string;
   totalRatingCount: number;
   favoriteId: number;
+  enrolled: boolean;
 };
 
 export type Lectures = {
@@ -61,6 +62,7 @@ const Courses = ({
   mentorProfilePictureUrl,
   totalRatingCount,
   favoriteId,
+  enrolled,
 }: {
   imageUrl: string;
   name: string;
@@ -76,6 +78,7 @@ const Courses = ({
   mentorProfilePictureUrl: string;
   totalRatingCount: number;
   favoriteId: string | number;
+  enrolled: boolean;
 }) => {
   const router = useRouter();
   const [isLiked, setIsLiked] = useState(false);
