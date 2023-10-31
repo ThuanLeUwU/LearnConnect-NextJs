@@ -4,7 +4,6 @@ import headerStyles from "./styles/styles.module.scss";
 import "../app/./globals.css";
 import Link from "next/link";
 import React, { useState } from "react";
-import { CourseDropDown } from "../app/test/CourseDropdown";
 import { UserAuth } from "@/app/context/AuthContext";
 import { Button } from "react-bootstrap";
 import { RegisterForm } from "@/components/registerForm";
