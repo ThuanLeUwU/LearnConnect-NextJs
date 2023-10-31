@@ -70,9 +70,8 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
   const googleSignIn = async () => {
     const provider = new GoogleAuthProvider();
     await signInWithPopup(auth, provider);
-
-    if (role == 3) {
-      router.push("/");
+    if (role === 3) {
+      router.push("/courses");
     } else {
       router.push("/user-manage");
     }
@@ -84,6 +83,7 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
 
   const logOut = () => {
     signOut(auth);
+    // setRole(0);
   };
 
   const refetchUser = async () => {
