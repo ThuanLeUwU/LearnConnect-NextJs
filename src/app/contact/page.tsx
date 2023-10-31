@@ -13,9 +13,9 @@ export default function ContactPage() {
                   <i className="flaticon-phone-call"></i>
                 </div>
                 <div className="pl-7">
-                  <h6 className="font-normal text-[#309255] text-[14px]">
+                  <p className="font-normal text-[#309255] text-[14px]">
                     Phone No.
-                  </h6>
+                  </p>
                   <p className="text-black">
                     <Link href="tel:88193326867">(88) 193 326 867</Link>
                   </p>
@@ -26,14 +26,14 @@ export default function ContactPage() {
                   <i className="flaticon-email"></i>
                 </div>
                 <div className="pl-7">
-                  <h6 className="font-normal text-[#309255] text-[14px]">
+                  <p className="font-normal text-[#309255] text-[14px]">
                     Email Address.
-                  </h6>
-                  <p className="text-black">
-                    <Link href="mailto:learnconnect@gmail.com">
+                  </p>
+                
+                    <Link className="text-black" href="mailto:learnconnect@gmail.com">
                       learnConnect@gmail.com
                     </Link>
-                  </p>
+                  
                 </div>
               </div>
               <div className="flex items-center">
@@ -41,9 +41,9 @@ export default function ContactPage() {
                   <i className="flaticon-pin"></i>
                 </div>
                 <div className="pl-7">
-                  <h6 className="font-normal text-[#309255] text-[14px]">
+                  <p className="font-normal text-[#309255] text-[14px]">
                     Office Address.
-                  </h6>
+                  </p>
                   <p className="text-black">Talga, Alabama, USA</p>
                 </div>
               </div>

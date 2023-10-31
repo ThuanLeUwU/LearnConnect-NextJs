@@ -39,18 +39,22 @@ interface AuthContextValue {
   user: FirebaseUser | null;
   token: string;
   id: string;
+  role: number;
   userData: User | null;
   googleSignIn: () => void;
   logOut: () => void;
+  refetchUser: () => void;
 }
 
 const AuthContext = createContext<AuthContextValue>({
   user: null,
   token: "",
   id: "",
+  role: 0,
   userData: null,
   googleSignIn: () => {},
   logOut: () => {},
+  refetchUser: () => {},
 });
 
 export const AuthContextProvider: React.FC<AuthContextProps> = ({
@@ -59,13 +63,21 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [token, setToken] = useState("");
   const [id, setId] = useState("");
+  const [role, setRole] = useState(3);
   // console.log("info", id)
   const [userData, setUserData] = useState<User | null>(null);
   const router = useRouter();
   const googleSignIn = async () => {
     const provider = new GoogleAuthProvider();
     await signInWithPopup(auth, provider);
-    router.push("/");
+    if (role === 3) {
+      console.log("course log", role);
+      router.push("/courses");
+    } else {
+      console.log("user log", role);
+      router.push("/user-manage");
+    }
+
     setTimeout(() => {
       message.success("Login successful");
     });
@@ -73,6 +85,16 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
 
   const logOut = () => {
     signOut(auth);
+    // setRole(0);
+  };
+
+  const refetchUser = async () => {
+    if (id) {
+      const responseUser = await axios.get(
+        `https://learnconnectapitest.azurewebsites.net/api/user/${id}`
+      );
+      setUserData(responseUser?.data);
+    }
   };
 
   useEffect(() => {
@@ -98,14 +120,17 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
             var decoded = jwt.decode(api_token);
             setToken(api_token);
             const userId = decoded.Id;
+            const userRole = decoded.role;
             setId(userId);
-            const fetchUser = async () => {
+            setRole(parseInt(userRole));
+            console.log("user role", parseInt(userRole));
+            const fetchUser = async (userId: string) => {
               const responseUser = await axios.get(
                 `https://learnconnectapitest.azurewebsites.net/api/user/${userId}`
               );
               setUserData(responseUser?.data);
             };
-            fetchUser();
+            fetchUser(userId);
           };
           fetchData();
         });
@@ -117,7 +142,16 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
 
   return (
     <AuthContext.Provider
-      value={{ user, token, id, userData, googleSignIn, logOut }}
+      value={{
+        user,
+        token,
+        id,
+        role,
+        userData,
+        googleSignIn,
+        logOut,
+        refetchUser,
+      }}
     >
       {children}
     </AuthContext.Provider>

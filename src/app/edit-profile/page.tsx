@@ -7,7 +7,7 @@ import {
   useState,
 } from "react";
 import ".././globals.css";
-import { AuthContextProvider, UserAuth } from "../context/AuthContext";
+import { UserAuth } from "../context/AuthContext";
 import axios from "axios";
 import { Modal, message } from "antd";
 import { useRouter } from "next/navigation";
@@ -26,34 +26,7 @@ export type User = {
 };
 export default function EditProfile() {
   const router = useRouter();
-  const [DataUser, SetDataUser] = useState<User>();
-  const { id, userData } = UserAuth();
-
-  useEffect(() => {
-    // Fetch updated user data upon component mount
-    const fetchUserData = async () => {
-      try {
-        const response = await axios.get(
-          `https://learnconnectapitest.azurewebsites.net/api/user/${id}`
-        );
-        SetDataUser(response.data);
-        if (response.data) {
-          setPhoneNumber(response.data.phoneNumber);
-          setGender(response.data.gender);
-          setBioDescription(response.data.bioDescription);
-        }
-        console.log("id", id);
-      } catch (error) {
-        // Handle error
-        console.error("Error fetching user data:", error);
-      }
-    };
-    if (id) {
-      fetchUserData();
-    }
-  }, [id]);
-  console.log("DataUser", DataUser?.fullName);
-
+  const { id, userData, refetchUser } = UserAuth();
   const [fullName, setFullName] = useState(userData?.fullName);
   const [gender, setGender] = useState(userData?.gender || 0);
   const [phoneNumber, setPhoneNumber] = useState(userData?.phoneNumber || "");
@@ -120,12 +93,12 @@ export default function EditProfile() {
         updatedUserData
       )
       .then((response) => {
+        refetchUser();
         setTimeout(() => {
           message.success("Edit successful");
         });
-        router.prefetch("/profile");
+
         router.push("/profile");
-        AuthContextProvider;
       })
       .catch((error) => {
         showErrorModal();

@@ -32,6 +32,7 @@ import { format, parseISO } from "date-fns";
 import axios from "axios";
 import Head from "next/head";
 import PropTypes from "prop-types";
+import { Button, Form, Modal } from "antd";
 
 export type User = {
   id: string | number;
@@ -52,7 +53,7 @@ export type User = {
 export default function UserManagePage() {
   const { user } = UserAuth();
   const [allUser, setAllUser] = useState<User[]>([]);
-  console.log("all user", allUser)
+  // console.log("all user", allUser);
 
   //Table
   const [order, setOrder] = useState("asc");
@@ -61,6 +62,7 @@ export default function UserManagePage() {
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [mounted, setMounted] = useState(false);
 
   const handleRequestSort = (event: any, property: any) => {
     const isAsc = orderBy === property && order === "asc";
@@ -94,6 +96,7 @@ export default function UserManagePage() {
       //   headers
       // })
       setAllUser(response?.data);
+      setMounted(true);
     };
     fetchData();
   }, []);
@@ -117,13 +120,23 @@ export default function UserManagePage() {
     },
   ];
 
-  // if (allUser == []) {
-  //   return (
-  //     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
-  //       <CircularProgress />
-  //     </div>
-  //   )
-  // }
+  //update Role
+  const [form] = Form.useForm();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [userName, setUserName] = useState<User>();
+
+  const showModal = (name: any) => {
+    setIsModalOpen(true);
+    setUserName(name);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+    // data.target.reset();
+    // event.preventDefault();
+    // event.target.reset();
+    form.resetFields();
+  };
 
   const displayRoleText = (role: number) => {
     if (role === 0) {
@@ -142,9 +155,10 @@ export default function UserManagePage() {
       return "Active";
     } else if (status === 1) {
       return "Inactive";
-    } 
+    }
   };
 
+  // if (!mounted)
   return (
     <>
       <Head>
@@ -180,7 +194,6 @@ export default function UserManagePage() {
               <Card>
                 <Box display="flex" justifyContent="center">
                   <Typography textTransform="uppercase" variant="h3">
-                    {" "}
                     Table Of all user
                   </Typography>
                 </Box>
@@ -278,7 +291,6 @@ export default function UserManagePage() {
                               },
                               index: number
                             ) => {
-                              // const birthDate = parseISO(user.dob);
                               const num = page * rowsPerPage + index + 1;
                               return (
                                 <TableRow hover tabIndex={-1} key={index}>
@@ -287,11 +299,6 @@ export default function UserManagePage() {
                                       {num}
                                     </Typography>
                                   </TableCell>
-                                  {/* <TableCell>
-                          <div className="image">
-                            <img width="40px" height="60px" src={`${event.img}`} alt="" />
-                          </div>
-                        </TableCell> */}
                                   <TableCell align="left">
                                     <Typography variant="body1">
                                       {user.fullName}
@@ -308,44 +315,34 @@ export default function UserManagePage() {
                                     </Typography>
                                   </TableCell>
 
-                                  {/* {user.birthday === null ? (
-                                    <TableCell align="right">
-                                      <Typography variant="body1">
-                                        20/03/2001
-                                      </Typography>
-                                    </TableCell>
-                                  ) : (
-                                    <TableCell align="right">
-                                      <Typography variant="body1">
-                                        {format(birthDate, "dd/MM/yyyy")}
-                                      </Typography>
-                                    </TableCell>
-                                  )} */}
-
-                                  {/* <TableCell align="right">
+                                  <TableCell align="left">
                                     <Typography variant="body1">
-                                      {user.campus_name}
+                                      {displayRoleText(user.role)}
                                     </Typography>
-                                  </TableCell> */}
-                                  {/* <TableCell align="right">
+                                  </TableCell>
+                                  <TableCell align="center">
                                     <Typography variant="body1">
-                                      {user.address}
-                                    </Typography>
-                                  </TableCell> */}
-                                  <TableCell align="right">
-                                    <Typography variant="body1">
-                                      {/* {user.role === "admin"
-                                        ? "admin"
-                                        : "member"}{" "} */}
-                                        {displayRoleText(user.role)}
+                                      {displayActive(user.status)}
                                     </Typography>
                                   </TableCell>
                                   <TableCell align="right">
                                     <Typography variant="body1">
-                                      {/* {user.role === "admin"
-                                        ? "admin"
-                                        : "member"}{" "} */}
-                                        {displayActive(user.status)}
+                                      <div className="flex gap-[10px]">
+                                        <Button
+                                          type="primary"
+                                          style={{ color: "black" }}
+                                          onClick={() => {
+                                            showModal(user);
+                                            console.log("t nè", user);
+                                          }}
+                                        >
+                                          Update
+                                        </Button>
+
+                                        <Button type="primary" danger>
+                                          Disable
+                                        </Button>
+                                      </div>
                                     </Typography>
                                   </TableCell>
                                 </TableRow>
@@ -365,7 +362,6 @@ export default function UserManagePage() {
                     </Table>
                   </TableContainer>
                   <TablePagination
-                    // display="flex"
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
                     count={allUser.length}
@@ -377,230 +373,34 @@ export default function UserManagePage() {
                 </Paper>
               </Card>
             </Box>
-            {/* <div className={`${InstructorCourseStyle.body_message}`}>
-        <div className={`${InstructorCourseStyle.message_icon}`}>
-          <img src="/menu-icon/icon-6.png" alt="image" />
-        </div>
-        <div className={`${InstructorCourseStyle.message_content}`}>
-          <p>
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry &apos s standard
-            dummy text ever since the 1500s when an unknown printer took a
-            galley of type and scrambled it to make a type specimen book. It
-            has survived not only five centuries, but also the leap into
-            electronic.
-          </p>
-        </div>
-      </div> */}
-          </div>
-          {/* <div className={`${InstructorCourseStyle.course_tab}`}>
-      <h3 className={`${InstructorCourseStyle.course_tab_title}`}>
-        Course
-      </h3>
-      <div className={`${InstructorCourseStyle.course_tab_btn}`}>
-        <Button
-          onClick={() => {
-            Modal.confirm({
-              title: "Create New Course",
-              content: (
-                <CreateCourse
-                  visible={visible}
-                  setVisible={setVisible}
-                  onCancel={() => {
-                    setVisible(false);
-                  }}
-                  isEdit={false}
-                />
-              ),
-            });
-          }}
-          className={`${InstructorCourseStyle.create_btn}`}
-        >
-          <h6> New Course</h6>
-        </Button>
-      </div>
-    </div>
-    <div className={`${InstructorCourseStyle.course_list_wrapper}`}>
-      <div className={`${InstructorCourseStyle.course_item}`}>
-        <div>
-          <Link href="#">
-            <img src="/images/admin-courses-01.jpg" alt="Image" />
-          </Link>
-        </div>
-        <div className={`${InstructorCourseStyle.course_item_title}`}>
-          <h2>
-            <Link href="#">
-              Build An eCommerce Site With WooCommerce and WooLentor.
-            </Link>
-          </h2>
-        </div>
-        <div className={`${InstructorCourseStyle.course_tracker}`}>
-          <div className={`${InstructorCourseStyle.course_tracker_1}`}>
-            <p>Earned</p>
-            <span
-              className={`${InstructorCourseStyle.course_tracker_count}`}
-            >
-              $5,68.00
-            </span>
-          </div>
-          <div className={`${InstructorCourseStyle.course_tracker_2}`}>
-            <p>Enrollments</p>
-            <span
-              className={`${InstructorCourseStyle.course_tracker_count}`}
-            >
-              1,500
-            </span>
-          </div>
-          <div className={`${InstructorCourseStyle.course_tracker_3}`}>
-            <p>Course Rating</p>
-            <span
-              className={`${InstructorCourseStyle.course_tracker_count}`}
-            >
-              4.5
-              <ReactStars count={1} color2={"#ffd700"}></ReactStars>
-            </span>
           </div>
         </div>
       </div>
-      <div className={`${InstructorCourseStyle.course_item}`}></div>
-      <div className={`${InstructorCourseStyle.course_item}`}></div>
-    </div> */}
-        </div>
-      </div>
+      {/* Modal Update Role */}
+      <Modal
+        destroyOnClose={true}
+        title={`Update role for ${userName?.fullName}`}
+        open={isModalOpen}
+        // onOk={handleOk}
+        onCancel={handleCancel}
+        footer={false}
+      ></Modal>
     </>
   );
-
-  // return (
-  //   <div className="bg-[#fff]">
-  //     <div className="grid cols-2 lg:grid-cols-12">
-  //       <div className="lg:cols-span-1 bg-[#309255]">
-  //         <div className={styles["sidebar-wrapper"]}>
-  //           <div className={styles["menu-list"]}>
-  //             <Link className={styles["active"]} href="#">
-  //               <img src="./menu-icon/icon-1.png" alt="Icon" />
-  //             </Link>
-  //             <Link href="#">
-  //               <img src="./menu-icon/icon-2.png" alt="Icon" />
-  //             </Link>
-  //             <Link href="#">
-  //               <img src="./menu-icon/icon-3.png" alt="Icon" />
-  //             </Link>
-  //             <Link href="#">
-  //               <img src="./menu-icon/icon-4.png" alt="Icon" />
-  //             </Link>
-  //             <Link href="#">
-  //               <img src="./menu-icon/icon-5.png" alt="Icon" />
-  //             </Link>
-  //           </div>
-  //         </div>
-  //       </div>
-  //       <div className="lg:col-span-11">
-  //         <div className="content-wrapper text-[#212832] w-full">
-  //           <div className="flex flex-col">
-  //             <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
-  //               <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
-  //                 <div className="overflow-hidden">
-  //                   <table className="min-w-full text-center text-sm font-light">
-  //                     <thead className="border-b font-medium dark:border-neutral-500">
-  //                       <tr>
-  //                         <th scope="col" className="px-6 py-4">
-  //                           Class
-  //                         </th>
-  //                         <th scope="col" className="px-6 py-4">
-  //                           Heading
-  //                         </th>
-  //                         <th scope="col" className="px-6 py-4">
-  //                           Heading
-  //                         </th>
-  //                       </tr>
-  //                     </thead>
-  //                     <tbody>
-  //                       <tr className="border-b dark:border-neutral-500">
-  //                         <td className="whitespace-nowrap px-6 py-4 font-medium">
-  //                           Default
-  //                         </td>
-  //                         <td className="whitespace-nowrap px-6 py-4">Cell</td>
-  //                         <td className="whitespace-nowrap px-6 py-4">Cell</td>
-  //                       </tr>
-  //                       <tr className="border-b border-primary-200 bg-primary-100 text-neutral-800">
-  //                         <td className="whitespace-nowrap px-6 py-4 font-medium">
-  //                           Primary
-  //                         </td>
-  //                         <td className="whitespace-nowrap px-6 py-4">Cell</td>
-  //                         <td className="whitespace-nowrap px-6 py-4">Cell</td>
-  //                       </tr>
-  //                       <tr className="border-b border-secondary-200 bg-secondary-100 text-neutral-800">
-  //                         <td className="whitespace-nowrap px-6 py-4 font-medium">
-  //                           Secondary
-  //                         </td>
-  //                         <td className="whitespace-nowrap px-6 py-4">Cell</td>
-  //                         <td className="whitespace-nowrap px-6 py-4">Cell</td>
-  //                       </tr>
-  //                       <tr className="border-b border-success-200 bg-success-100 text-neutral-800">
-  //                         <td className="whitespace-nowrap px-6 py-4 font-medium">
-  //                           Success
-  //                         </td>
-  //                         <td className="whitespace-nowrap px-6 py-4">Cell</td>
-  //                         <td className="whitespace-nowrap px-6 py-4">Cell</td>
-  //                       </tr>
-  //                       <tr className="border-b border-danger-200 bg-danger-100 text-neutral-800">
-  //                         <td className="whitespace-nowrap px-6 py-4 font-medium">
-  //                           Danger
-  //                         </td>
-  //                         <td className="whitespace-nowrap px-6 py-4">Cell</td>
-  //                         <td className="whitespace-nowrap px-6 py-4">Cell</td>
-  //                       </tr>
-  //                       <tr className="border-b border-warning-200 bg-warning-100 text-neutral-800">
-  //                         <td className="whitespace-nowrap px-6 py-4 font-medium">
-  //                           Warning
-  //                         </td>
-  //                         <td className="whitespace-nowrap px-6 py-4">Cell</td>
-  //                         <td className="whitespace-nowrap px-6 py-4">Cell</td>
-  //                       </tr>
-  //                       <tr className="border-b border-info-200 bg-info-100 text-neutral-800">
-  //                         <td className="whitespace-nowrap px-6 py-4 font-medium">
-  //                           Info
-  //                         </td>
-  //                         <td className="whitespace-nowrap px-6 py-4">Cell</td>
-  //                         <td className="whitespace-nowrap px-6 py-4">Cell</td>
-  //                       </tr>
-  //                       <tr className="border-b border-neutral-100 bg-neutral-50 text-neutral-800 dark:bg-neutral-50">
-  //                         <td className="whitespace-nowrap px-6 py-4 font-medium">
-  //                           Light
-  //                         </td>
-  //                         <td className="whitespace-nowrap px-6 py-4">Cell</td>
-  //                         <td className="whitespace-nowrap px-6 py-4">Cell</td>
-  //                       </tr>
-  //                       <tr className="border-b border-neutral-700 bg-neutral-800 text-neutral-50 dark:border-neutral-600 dark:bg-neutral-700">
-  //                         <td className="whitespace-nowrap px-6 py-4 font-medium">
-  //                           Dark
-  //                         </td>
-  //                         <td className="whitespace-nowrap px-6 py-4">Cell</td>
-  //                         <td className="whitespace-nowrap px-6 py-4">Cell</td>
-  //                       </tr>
-  //                     </tbody>
-  //                   </table>
-  //                 </div>
-  //               </div>
-  //             </div>
-  //           </div>
-  //         </div>
-  //       </div>
-  //     </div>
-  //   </div>
-  // );
 }
 
 function descendingComparator(
   a: {
     fullName: any;
-    campus_name: any;
+    role: any;
+    // status: any;
     // birthDate: string | null;
     // birthday: string | number | Date;
   },
   b: {
     fullName: any;
-    campus_name: any;
+    role: any;
+    // status: any;
     // birthDate: string | null;
     // birthday: string | number | Date;
   },
@@ -609,9 +409,12 @@ function descendingComparator(
   if (orderBy === "name") {
     return compareStrings(a.fullName, b.fullName);
   }
-  if (orderBy === "campus") {
-    return compareStrings(a.campus_name, b.campus_name);
+  if (orderBy === "role") {
+    return compareStrings(a.role, b.role);
   }
+  // if (orderBy === "status") {
+  //   return compareStrings(a.status, b.status);
+  // }
   // if (orderBy === "birthday") {
   //   if (a.birthDate === null) {
   //     a.birthDate = "20/3/2001";
@@ -701,13 +504,18 @@ const headCells = [
   // },
   {
     id: "role",
-    numeric: true,
+    numeric: false,
     label: "Role",
   },
   {
     id: "status",
     numeric: true,
     label: "Activity",
+  },
+  {
+    id: "action",
+    numeric: true,
+    label: "Action",
   },
 ];
 
@@ -735,17 +543,16 @@ function EnhancedTableHead(props: {
       <TableRow>
         {headCells.map((headCell) =>
           headCell.label === "Phone" ||
-          headCell.label === "Address" ||
+          headCell.label === "Activity" ||
           headCell.label === "Role" ||
+          headCell.label === "Action" ||
           headCell.label === "Email Contact" ? (
             <TableCell
               key={headCell.id}
-              align={headCell.numeric ? "right" : "left"}
+              align={headCell.numeric ? "center" : "left"}
               padding="normal"
             >
-              <Table>
-                <Typography variant="h6">{headCell.label}</Typography>
-              </Table>
+              <Typography variant="inherit">{headCell.label}</Typography>
             </TableCell>
           ) : (
             <TableCell
@@ -755,14 +562,14 @@ function EnhancedTableHead(props: {
               sortDirection={orderBy === headCell.id ? order : false}
             >
               {headCell.id === "no" ? (
-                <Typography variant="h6">{headCell.label}</Typography>
+                <Typography variant="inherit">{headCell.label}</Typography>
               ) : (
                 <TableSortLabel
                   active={orderBy === headCell.id}
                   direction={orderBy === headCell.id ? order : "asc"}
                   onClick={createSortHandler(headCell.id)}
                 >
-                  <Typography variant="h6">{headCell.label}</Typography>
+                  <Typography variant="inherit">{headCell.label}</Typography>
                 </TableSortLabel>
               )}
             </TableCell>

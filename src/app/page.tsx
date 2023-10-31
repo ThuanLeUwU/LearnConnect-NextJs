@@ -21,7 +21,7 @@ export default function Home() {
           <div className="text-center text-5xl">loading...</div>
         ) : (
           <div>
-            <div className="grid cols-2 lg:grid-cols-3 pt-[30px] gap-5">
+            <div className="grid cols-2 lg:grid-cols-3 py-[30px] gap-5">
               {courses.map((item, index) => {
                 return (
                   <div key={index}>

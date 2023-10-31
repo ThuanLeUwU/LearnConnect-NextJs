@@ -46,11 +46,6 @@ const CourseItem = ({
   const handleClick = () => {
     router.push(`/my-course/${id}`);
   };
-  // courses.forEach((course, index) => {
-  //   console.log(
-  //     `Course ${index + 1} - Percent Complete: ${course.percentComplete}%`
-  //   );
-  // });
   return (
     <div className="lg:col-span-4 border border-solid border-[#acd6bc] p-[20px] rounded-lg my-[10px] hover:border-[#309255] mx-[15px]">
       <div className="single-courses">
@@ -99,23 +94,10 @@ const CourseItem = ({
                   completed={percentComplete}
                   bgColor="#309255"
                   height="15px"
-                  customLabel=""
+                  labelAlignment="outside"
+                  labelSize="14px"
                 />
               </div>
-              {/* <div className="rating-meta">
-                <span className="rating-star">
-                  <span className="rating-bar"></span>
-                </span>
-                <div className="flex justify-between">
-                  <Button
-                    onClick={handleClick}
-                    className="text-[#52565b] text-[14px] text-right pt-2"
-                  >
-                    Continue
-                  </Button>
-                  <button> Report </button>
-                </div>
-              </div> */}
             </div>
           </div>
         </div>

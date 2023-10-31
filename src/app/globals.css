@@ -18,6 +18,7 @@
   padding-left: calc(var(--bs-gutter-x) * 0.5);
   margin-right: auto;
   margin-left: auto;
+  /* padding-bottom: 40px;     */
 }
 
 .overlay {

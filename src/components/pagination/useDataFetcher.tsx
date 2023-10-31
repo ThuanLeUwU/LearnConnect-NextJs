@@ -30,6 +30,7 @@ export type User = {
 };
 const useDataFetcher = () => {
   const [courses, setCourses] = useState<CourseItem[]>([]);
+  console.log("tau nì", courses);
   const API_URL =
     "https://learnconnectapitest.azurewebsites.net/api/course/get-courses-paging";
   const pagesize = 6;

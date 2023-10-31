@@ -183,9 +183,9 @@ const Courses = ({
                 <a className="font-bold" onClick={handleClick}>
                   {name}
                 </a>
-                <a className="font-bold" onClick={handleClick}>
+                {/* <a className="font-bold" onClick={handleClick}>
                   {favoriteId}
-                </a>
+                </a> */}
               </div>
             </div>
           </div>
