@@ -1,87 +1,131 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ".././globals.css";
+import axios from "axios";
 
-interface Question {
-  id: number;
-  question: string;
-  options: string[];
-}
-
-const Quiz = () => {
-  const questions: Question[] = [
+export type Test = {
+  test: {
+    id: number;
+    title: string;
+    description: string;
+    totalQuestion: number;
+    status: number;
+    courseId: number;
+    questions: null;
+  };
+  questions: [
     {
-      id: 1,
-      question: "What is the capital of France?",
-      options: ["London", "Berlin", "Paris", "Madrid"],
-    },
-    {
-      id: 2,
-      question: "What is the largest mammal?",
-      options: ["Elephant", "Blue Whale", "Giraffe", "Lion"],
-    },
+      question: {
+        id: number;
+        questionTest: string;
+        questionType: number;
+        status: number;
+        testId: number;
+      };
+      answers: [
+        {
+          id: number;
+          answerTest: string;
+          isCorrect: boolean;
+          questionId: number;
+        }
+      ];
+    }
   ];
+};
 
+const Quiz = ({
+  id,
+  title,
+  description,
+  totalQuestion,
+  status,
+  courseId,
+  questions,
+}: Test["test"]) => {
+  const [questionsTest, setQuestionsTest] = useState<Test[]>([]);
   const [selectedAnswers, setSelectedAnswers] = useState<{
     [key: number]: string | null;
   }>({});
+  const [correctAnswers, setCorrectAnswers] = useState<number>(0);
 
-  const handleCheckboxChange = (questionId: number, option: string) => {
-    const newSelectedAnswers = { ...selectedAnswers };
-
-    // If another option was selected for the same question, clear the previous selection
-    for (const id in newSelectedAnswers) {
-      if (id !== questionId.toString() && newSelectedAnswers[id] === option) {
-        newSelectedAnswers[id] = null;
+  useEffect(() => {
+    const fetchQuestions = async () => {
+      try {
+        const response = await axios.get(
+          `https://learnconnectapitest.azurewebsites.net/api/test/get-tests-by-course?courseId=1`
+        );
+        setQuestionsTest(response.data);
+        console.log("question:", response.data.questions);
+      } catch (error) {
+        console.error("Error fetching questions:", error);
       }
+    };
+    fetchQuestions();
+  }, []);
+
+  const handleAnswerSelect = (
+    questionId: number,
+    answer: string,
+    isCorrect: boolean
+  ) => {
+    setSelectedAnswers((prevAnswers) => ({
+      ...prevAnswers,
+      [questionId]: answer,
+    }));
+    if (isCorrect) {
+      setCorrectAnswers((prevCount) => prevCount + 1);
     }
-
-    // Set the new selection for the current question
-    newSelectedAnswers[questionId] =
-      selectedAnswers[questionId] === option ? null : option;
-
-    setSelectedAnswers(newSelectedAnswers);
   };
+
   const handleSubmit = () => {
-    // Implement your submit logic here
-    console.log(selectedAnswers);
+    console.log("Selected Answers: ", selectedAnswers);
+    console.log("Correct Answers: ", correctAnswers);
   };
 
   return (
-    <div className="container">
+    <div className="container mx-auto px-4">
       <div className="p-4">
         <h2 className="text-2xl font-bold mb-4">Multiple Choice Quiz</h2>
-        {questions.map((question) => (
-          <div key={question.id} className="mb-4">
-            <h3 className="text-lg font-semibold mb-2">{question.question}</h3>
-            {question.options.map((option, index) => (
-              <div key={index} className="flex items-center mb-2">
-                <label className="flex items-center cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={selectedAnswers[question.id] === option}
-                    onChange={() => handleCheckboxChange(question.id, option)}
-                    className="hidden"
-                  />
-                  <div className="w-6 h-6 border-2 border-gray-400 rounded-full mr-2 flex items-center justify-center">
-                    {selectedAnswers[question.id] === option && (
-                      <div className="w-3 h-3 bg-[#309255] rounded-full"></div>
-                    )}
-                  </div>
-                  <span>{option}</span>
-                </label>
+        {questionsTest.map((item) => (
+          <div key={item.test.id} className="mb-4">
+            <h3 className="text-lg font-semibold mb-2">{item.test.title}</h3>
+            {item.questions.map((q) => (
+              <div key={q.question.id} className="mb-2">
+                <p className="mb-1">{q.question.questionTest}</p>
+                <ul className="pl-4">
+                  {q.answers.map((answer) => (
+                    <li key={answer.id} className="mt-1">
+                      <label className="flex items-center">
+                        <input
+                          type="radio"
+                          name={`question${q.question.id}`}
+                          className="form-radio h-5 w-5 text-blue-500"
+                          onChange={() =>
+                            handleAnswerSelect(
+                              q.question.id,
+                              answer.answerTest,
+                              answer.isCorrect
+                            )
+                          }
+                        />
+                        <span className="ml-2 text-gray-700">
+                          {answer.answerTest}
+                        </span>
+                      </label>
+                    </li>
+                  ))}
+                </ul>
               </div>
             ))}
           </div>
         ))}
-        <div className="flex justify-end">
-          <button
-            onClick={handleSubmit}
-            className="bg-[#309255] hover:bg-black text-white font-bold py-2 px-4 rounded-lg"
-          >
-            Submit
-          </button>
-        </div>
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mt-4 rounded"
+          onClick={handleSubmit}
+        >
+          Submit
+        </button>
       </div>
     </div>
   );
