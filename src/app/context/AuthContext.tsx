@@ -71,11 +71,21 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
   const googleSignIn = async () => {
     const provider = new GoogleAuthProvider();
     await signInWithPopup(auth, provider);
-    // if (role === 3) {
-    //   console.log("course log", role);
+    if (role === 3) {
+      console.log("course log", role);
+      router.push("/courses");
+    } else {
+      console.log("user log", role);
+      router.push("/user-manage");
+    }
+    // if (userRole === "3") {
+    //   // console.log("course log", userRole);
     //   router.push("/courses");
-    // } else {
-    //   console.log("user log", role);
+    // } else if (userRole === "2") {
+    //   // console.log("user log", userRole);
+    //   router.push("/instructorcourses");
+    // } else if (userRole === "1") {
+    //   console.log("user log", userRole);
     //   router.push("/user-manage");
     // }
 
@@ -123,13 +133,16 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
             const userId = decoded.Id;
             const userRole = decoded.role;
 
-            if (userRole === "3") {
-              console.log("course log", userRole);
-              router.push("/courses");
-            } else if (userRole === "2") {
-              console.log("user log", userRole);
-              router.push("/instructorcourses");
-            }
+            // if (userRole === "3") {
+            //   // console.log("course log", userRole);
+            //   router.push("/courses");
+            // } else if (userRole === "2") {
+            //   // console.log("user log", userRole);
+            //   router.push("/instructorcourses");
+            // } else if (userRole === "1") {
+            //   console.log("user log", userRole);
+            //   router.push("/user-manage");
+            // }
 
             setId(userId);
             setRole(parseInt(userRole));
@@ -141,7 +154,18 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
               setUserData(responseUser?.data);
             };
             fetchUser(userId);
+            // if (userRole === "3") {
+            //   // console.log("course log", userRole);
+            //   router.push("/courses");
+            // } else if (userRole === "2") {
+            //   // console.log("user log", userRole);
+            //   router.push("/instructorcourses");
+            // } else if (userRole === "1") {
+            //   console.log("user log", userRole);
+            //   router.push("/user-manage");
+            // }
           };
+
           fetchData();
         });
       }
