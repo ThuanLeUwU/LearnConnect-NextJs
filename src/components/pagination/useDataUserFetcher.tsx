@@ -32,29 +32,42 @@ export type User = {
 };
 const useDataUserFetcher = () => {
   const { id } = UserAuth();
-  console.log("id của tau nè: ", id);
-  const [courses, setCourses] = useState<CourseItem[]>([]);
-  console.log("my course", courses);
+  if (!id) {
+    return {
+      loading: false,
+      courses: [],
+      totalPages: 0,
+      currentPage: 0,
+      setCurrentPage: () => {},
+    };
+  }
 
+  const [courses, setCourses] = useState<CourseItem[]>([]);
   const API_URL = `https://learnconnectapitest.azurewebsites.net/api/course/get-courses-by-userid?userId=`;
   const pagesize = 6;
   const [totalPages, setTotalPages] = useState(10);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
+
   useEffect(() => {
     const fetchData = async () => {
-      const page = Math.min(currentPage + 1, totalPages);
-      const result = await axios.get(
-        `${API_URL}${id}&currentPage=${page}&pageSize=${pagesize}`
-        // `${API_URL}`
-      );
-      // setCourses(result?.data.listCourse);
-      setCourses(result?.data.listCourse);
-      setTotalPages(result?.data.paginationData.totalPages);
-      setLoading(false);
+      try {
+        const page = Math.min(currentPage + 1, totalPages);
+        const result = await axios.get(
+          `${API_URL}${id}&currentPage=${page}&pageSize=${pagesize}`
+        );
+        setCourses(result?.data.listCourse);
+        setTotalPages(result?.data.paginationData.totalPages);
+        setLoading(false);
+      } catch (error) {
+        // Handle errors here
+        console.error("Error fetching data:", error);
+        setLoading(false);
+      }
     };
     fetchData();
-  }, [currentPage]);
+  }, [currentPage, id, totalPages]);
+
   return {
     loading,
     courses,

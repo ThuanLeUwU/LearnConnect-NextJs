@@ -50,45 +50,30 @@ const useDataFavoritesFetcher = () => {
   const [currentPage, setCurrentPage] = useState(0);
   useEffect(() => {
     const fetchData = async () => {
-      const page = Math.min(currentPage + 1, totalPages);
-      const result = await axios.get(
-        `${API_URL}${id}&currentPage=${page}&pageSize=${pagesize}`
-        // `${API_URL}`
-      );
-      // setCourses(result?.data.listCourse);
-      setCourses(result?.data.listFavoriteCourses);
-      setTotalPages(result?.data.paginationData.totalPages);
-      // setFavorite(
-      //   result?.data.listFavoriteCourses.map((item: any) => item.favorite)
-      // );
-      setLoading(false);
-      // console.log("Favorite Courses Data:", result?.data.listFavoriteCourses);
+      try {
+        if (!id) {
+          // User ID is not available, set loading to false
+          setLoading(false);
+          return;
+        }
 
-      // result?.data.listFavoriteCourses.forEach(
-      //   (
-      //     item: {
-      //       course: { id: any; name: any };
-      //       favorite: { id: any; courseId: any; userId: any };
-      //     },
-      //     index: number
-      //   ) => {
-      //     // console.log(`Course ${index + 1} - ID: ${item.course.id}`);
-      //     // console.log(`Course ${index + 1} - Name: ${item.course.name}`);
-      //     console.log(`Favorite ${index + 1} - ID: ${item.favorite.id}`);
-      //     console.log(
-      //       `Favorite ${index + 1} - Course ID: ${item.favorite.courseId}`
-      //     );
-      //     console.log(
-      //       `Favorite ${index + 1} - User ID: ${item.favorite.userId}`
-      //     );
-      //     console.log("favorite are: ", item.favorite);
-      //     setFavorite(item.favorite);
-      //     // console.log("favorite is: ", favorite);
-      //   }
-      // );
+        const page = Math.min(currentPage + 1, totalPages);
+        const result = await axios.get(
+          `${API_URL}${id}&currentPage=${page}&pageSize=${pagesize}`
+        );
+
+        setCourses(result?.data.listFavoriteCourses);
+        setTotalPages(result?.data.paginationData.totalPages);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setLoading(false);
+      }
     };
+
     fetchData();
-  }, [currentPage]);
+  }, [currentPage, id, totalPages]);
+
   return {
     loading,
     courses,
