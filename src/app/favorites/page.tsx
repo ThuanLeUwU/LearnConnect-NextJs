@@ -15,34 +15,20 @@ const MyCourse = () => {
         <div className="text-center text-5xl">loading...</div>
       ) : (
         <div>
-          <div className="grid cols-2 lg:grid-cols-3 py-[30px] gap-5">
-            {courses.map((item) => {
-              courses.forEach((courses) => {
-                console.log("course favorite is : ", courses.favorite.id);
-              });
-              return (
-                <>
-                  <Courses
-                    favoriteId={item.favorite.id}
-                    // imageUrl={""}
-                    // name={""}
-                    // description={""}
-                    // id={""}
-                    // price={""}
-                    // totalEnrollment={""}
-                    // contentLength={""}
-                    // averageRating={0}
-                    mentorId={0}
-                    mentorProfilePictureUrl={""}
-                    totalRatingCount={0}
-                    lectureCount={""}
-                    categoryName={""}
-                    key={item.course.id}
-                    {...item.course}
-                  />
-                </>
-              );
-            })}
+          <div className="grid cols-2 lg:grid-cols-3 pt-[30px] gap-5">
+            {courses.map((item) => (
+              <Courses
+                enrolled={false}
+                favoriteId={item.favorite.id}
+                mentorId={0}
+                mentorProfilePictureUrl={""}
+                totalRatingCount={0}
+                lectureCount={""}
+                categoryName={""}
+                key={item.course.id.toString()} // Ensure item.course.id is unique and convert to string if needed
+                {...item.course}
+              />
+            ))}
           </div>
         </div>
       )}

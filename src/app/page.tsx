@@ -26,6 +26,7 @@ export default function Home() {
                 return (
                   <div key={index}>
                     <Courses
+                      enrolled={false}
                       favoriteId={""}
                       totalRatingCount={0}
                       mentorProfilePictureUrl={""}

@@ -32,15 +32,23 @@ export type User = {
 };
 const useDataUserFetcher = () => {
   const { id } = UserAuth();
-  console.log("id của tau nè: ", id);
-  const [courses, setCourses] = useState<CourseItem[]>([]);
-  console.log("my course", courses);
+  // if (!id) {
+  //   return {
+  //     loading: false,
+  //     courses: [],
+  //     totalPages: 0,
+  //     currentPage: 0,
+  //     setCurrentPage: () => {},
+  //   };
+  // }
 
+  const [courses, setCourses] = useState<CourseItem[]>([]);
   const API_URL = `https://learnconnectapitest.azurewebsites.net/api/course/get-courses-by-userid?userId=`;
   const pagesize = 6;
   const [totalPages, setTotalPages] = useState(10);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
+
   useEffect(() => {
     const fetchData = async () => {
       const page = Math.min(currentPage + 1, totalPages);

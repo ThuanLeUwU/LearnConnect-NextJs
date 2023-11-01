@@ -67,29 +67,6 @@ const useDataFavoritesFetcher = () => {
         console.log(err);
       }
       // console.log("Favorite Courses Data:", result?.data.listFavoriteCourses);
-
-      // result?.data.listFavoriteCourses.forEach(
-      //   (
-      //     item: {
-      //       course: { id: any; name: any };
-      //       favorite: { id: any; courseId: any; userId: any };
-      //     },
-      //     index: number
-      //   ) => {
-      //     // console.log(`Course ${index + 1} - ID: ${item.course.id}`);
-      //     // console.log(`Course ${index + 1} - Name: ${item.course.name}`);
-      //     console.log(`Favorite ${index + 1} - ID: ${item.favorite.id}`);
-      //     console.log(
-      //       `Favorite ${index + 1} - Course ID: ${item.favorite.courseId}`
-      //     );
-      //     console.log(
-      //       `Favorite ${index + 1} - User ID: ${item.favorite.userId}`
-      //     );
-      //     console.log("favorite are: ", item.favorite);
-      //     setFavorite(item.favorite);
-      //     // console.log("favorite is: ", favorite);
-      //   }
-      // );
     };
     fetchData();
   }, [currentPage, id]);

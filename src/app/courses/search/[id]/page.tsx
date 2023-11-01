@@ -52,22 +52,19 @@ const SearchCourse = () => {
       ) : (
         <div>
           <div className="grid cols-2 lg:grid-cols-3 py-[30px] gap-5">
-            {courses.map((item) => {
-              return (
-                <>
-                  <Courses
-                    favoriteId={""}
-                    totalRatingCount={0}
-                    mentorProfilePictureUrl={""}
-                    mentorId={0}
-                    lectureCount={""}
-                    categoryName={""}
-                    key={item.id}
-                    {...item}
-                  />
-                </>
-              );
-            })}
+            {courses.map((item) => (
+              <Courses
+                enrolled={false}
+                favoriteId={""}
+                totalRatingCount={0}
+                mentorProfilePictureUrl={""}
+                mentorId={0}
+                lectureCount={""}
+                categoryName={""}
+                key={item.id}
+                {...item}
+              />
+            ))}
           </div>
         </div>
       )}
