@@ -6,6 +6,7 @@ import React from "react";
 import Footer from "@/pages/Footer";
 import { AuthContextProvider } from "./context/AuthContext";
 import { ToastContainer } from "react-toastify";
+import { Toaster, toast } from "sonner";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,6 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="main_wrapper">
+        <Toaster position="top-right" richColors />
         <AuthContextProvider>
           <Header />
           {children}

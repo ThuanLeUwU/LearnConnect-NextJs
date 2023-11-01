@@ -343,7 +343,7 @@ const Header = () => {
                       <Image
                         width={60}
                         height={60}
-                        src="/images/nhoam.gif"
+                        src="/images/logo (2).png"
                         alt="logo"
                       />
                     </Link>

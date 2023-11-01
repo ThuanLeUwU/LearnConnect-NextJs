@@ -17,6 +17,7 @@ import { auth } from "../firebase";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { message } from "antd";
+import { toast } from "sonner";
 
 interface AuthContextProps {
   children: ReactNode;
@@ -63,23 +64,23 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [token, setToken] = useState("");
   const [id, setId] = useState("");
-  const [role, setRole] = useState(3);
+  const [role, setRole] = useState(0);
   // console.log("info", id)
   const [userData, setUserData] = useState<User | null>(null);
   const router = useRouter();
   const googleSignIn = async () => {
     const provider = new GoogleAuthProvider();
     await signInWithPopup(auth, provider);
-    if (role === 3) {
-      console.log("course log", role);
-      router.push("/courses");
-    } else {
-      console.log("user log", role);
-      router.push("/user-manage");
-    }
+    // if (role === 3) {
+    //   console.log("course log", role);
+    //   router.push("/courses");
+    // } else {
+    //   console.log("user log", role);
+    //   router.push("/user-manage");
+    // }
 
     setTimeout(() => {
-      message.success("Login successful");
+      toast.success("Login successful");
     });
   };
 
@@ -121,6 +122,15 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
             setToken(api_token);
             const userId = decoded.Id;
             const userRole = decoded.role;
+
+            if (userRole === "3") {
+              console.log("course log", userRole);
+              router.push("/courses");
+            } else if (userRole === "2") {
+              console.log("user log", userRole);
+              router.push("/instructorcourses");
+            }
+
             setId(userId);
             setRole(parseInt(userRole));
             console.log("user role", parseInt(userRole));

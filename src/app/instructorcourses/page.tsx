@@ -23,6 +23,7 @@ import { Rating } from "@mui/material";
 import { useRouter } from "next/navigation";
 import useDataCoursesInstructor from "@/components/pagination/useDataCoursesInstructor";
 import Paginate from "@/components/pagination/pagination";
+import { toast } from "sonner";
 
 export type Category = {
   id: number;
@@ -121,11 +122,11 @@ const InstructorCourse = () => {
       handleCancel();
       refetchList();
       setTimeout(() => {
-        message.success("Create Course successful");
+        toast.success("Create Course successful");
       });
     } catch (err) {
       setTimeout(() => {
-        message.error("Create Course fail");
+        toast.error("Create Course fail");
       });
     }
     form.resetFields();
@@ -157,11 +158,11 @@ const InstructorCourse = () => {
   const beforeUpload = (file: any) => {
     const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
     if (!isJpgOrPng) {
-      message.error("You can only upload JPG/PNG file!");
+      toast.error("You can only upload JPG/PNG file!");
     }
     const isLt2M = file.size / 1024 / 1024 < 2;
     if (!isLt2M) {
-      message.error("Image must smaller than 2MB!");
+      toast.error("Image must smaller than 2MB!");
     }
     return isJpgOrPng && isLt2M;
   };
