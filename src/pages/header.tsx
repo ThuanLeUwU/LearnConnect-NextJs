@@ -151,7 +151,12 @@ const Header = () => {
           <div className={`${headerStyles.header_navbar}`}>
             <div className={`${headerStyles.header_login_left}`}>
               <Link href="/">
-                <img src="/" alt="Logo" />
+                <Image
+                  width={60}
+                  height={40}
+                  src="/images/logo (2).png"
+                  alt="Logo"
+                />
               </Link>
             </div>
             <ul className={`${headerStyles.header_login_right}`}>
@@ -232,9 +237,9 @@ const Header = () => {
               <div className={`${headerStyles.header_logo}`}>
                 <Link href="/">
                   <Image
-                    width={60}
-                    height={60}
-                    src="/images/nhoam.gif"
+                    width={120}
+                    height={100}
+                    src="/images/logo (2).png"
                     alt="logo"
                   />
                 </Link>

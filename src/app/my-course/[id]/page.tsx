@@ -192,6 +192,13 @@ export default function AfterEnroll({ params }: any) {
 
   const videoRef = useRef(null);
 
+  //rating
+  const [modalRating, setModalRatingOpen] = useState(false);
+
+  const showModalRating = () => {
+    setModalRatingOpen(true);
+  };
+
   const handleSeek = (e: any) => {
     // const video = videoRef.current;
     // if (video) {
@@ -230,15 +237,27 @@ export default function AfterEnroll({ params }: any) {
                 <h2 className="text-[25px] leading-normal text-[#212832] font-medium ">
                   {courses?.name}
                 </h2>
-                <Button danger type="primary" onClick={showModal}>
-                  {/* <Image
+                <div>
+                  <Button type="primary" onClick={showModalRating}>
+                    {/* <Image
                     width={40}
                     height={40}
                     src="/menu-icon/flag-icon.jpg"
                     alt="flag"
                   /> */}
-                  Report
-                </Button>
+                    Rating
+                  </Button>
+
+                  <Button danger type="primary" onClick={showModal}>
+                    {/* <Image
+                    width={40}
+                    height={40}
+                    src="/menu-icon/flag-icon.jpg"
+                    alt="flag"
+                  /> */}
+                    Report
+                  </Button>
+                </div>
                 <Modal
                   destroyOnClose={true}
                   title={`Report ${courses?.name} by ${user?.displayName}`}

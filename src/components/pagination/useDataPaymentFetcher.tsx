@@ -29,19 +29,23 @@ const useDataPaymentFetcher = () => {
   useEffect(() => {
     const fetchData = async () => {
       const page = Math.min(currentPage + 1, totalPages);
-      const result = await axios.get(
-        `${API_URL}${id}?currentPage=${page}&pageSize=${pagesize}`
-        // `${API_URL}`
-      );
-      // setCourses(result?.data.listCourse);
-      setTransaction(result?.data.paymentTransactions);
-      setTotalPages(result?.data.paginationData.totalPages);
-      console.log("total page", totalPages);
+      try {
+        const result = await axios.get(
+          `${API_URL}${id}?currentPage=${page}&pageSize=${pagesize}`
+          // `${API_URL}`
+        );
+        // setCourses(result?.data.listCourse);
+        setTransaction(result?.data.paymentTransactions);
+        setTotalPages(result?.data.paginationData.totalPages);
+        console.log("total page", totalPages);
 
-      setLoading(false);
+        setLoading(false);
+      } catch (err) {
+        console.log(err);
+      }
     };
     fetchData();
-  }, [currentPage]);
+  }, [currentPage, id]);
   return {
     loading,
     transaction,

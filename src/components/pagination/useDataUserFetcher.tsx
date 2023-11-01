@@ -44,17 +44,21 @@ const useDataUserFetcher = () => {
   useEffect(() => {
     const fetchData = async () => {
       const page = Math.min(currentPage + 1, totalPages);
-      const result = await axios.get(
-        `${API_URL}${id}&currentPage=${page}&pageSize=${pagesize}`
-        // `${API_URL}`
-      );
-      // setCourses(result?.data.listCourse);
-      setCourses(result?.data.listCourse);
-      setTotalPages(result?.data.paginationData.totalPages);
-      setLoading(false);
+      try {
+        const result = await axios.get(
+          `${API_URL}${id}&currentPage=${page}&pageSize=${pagesize}`
+          // `${API_URL}`
+        );
+        // setCourses(result?.data.listCourse);
+        setCourses(result?.data.listCourse);
+        setTotalPages(result?.data.paginationData.totalPages);
+        setLoading(false);
+      } catch (err) {
+        console.log(err);
+      }
     };
     fetchData();
-  }, [currentPage]);
+  }, [currentPage, id]);
   return {
     loading,
     courses,

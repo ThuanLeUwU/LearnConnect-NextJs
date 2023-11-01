@@ -51,17 +51,21 @@ const useDataFavoritesFetcher = () => {
   useEffect(() => {
     const fetchData = async () => {
       const page = Math.min(currentPage + 1, totalPages);
-      const result = await axios.get(
-        `${API_URL}${id}&currentPage=${page}&pageSize=${pagesize}`
-        // `${API_URL}`
-      );
-      // setCourses(result?.data.listCourse);
-      setCourses(result?.data.listFavoriteCourses);
-      setTotalPages(result?.data.paginationData.totalPages);
-      // setFavorite(
-      //   result?.data.listFavoriteCourses.map((item: any) => item.favorite)
-      // );
-      setLoading(false);
+      try {
+        const result = await axios.get(
+          `${API_URL}${id}&currentPage=${page}&pageSize=${pagesize}`
+          // `${API_URL}`
+        );
+        // setCourses(result?.data.listCourse);
+        setCourses(result?.data.listFavoriteCourses);
+        setTotalPages(result?.data.paginationData.totalPages);
+        // setFavorite(
+        //   result?.data.listFavoriteCourses.map((item: any) => item.favorite)
+        // );
+        setLoading(false);
+      } catch (err) {
+        console.log(err);
+      }
       // console.log("Favorite Courses Data:", result?.data.listFavoriteCourses);
 
       // result?.data.listFavoriteCourses.forEach(
@@ -88,7 +92,7 @@ const useDataFavoritesFetcher = () => {
       // );
     };
     fetchData();
-  }, [currentPage]);
+  }, [currentPage, id]);
   return {
     loading,
     courses,

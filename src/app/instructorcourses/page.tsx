@@ -3,54 +3,49 @@ import React, { useEffect, useState } from "react";
 import InstructorCourseStyle from "./styles/style.module.scss";
 import Link from "next/link";
 import { CreateCourse } from "@/components/createCourse";
-import { Button } from "react-bootstrap";
-import { Modal, Space } from "antd";
+// import { Button } from "react-bootstrap";
+import {
+  Button,
+  Form,
+  Image,
+  Input,
+  InputNumber,
+  Modal,
+  Select,
+  Space,
+  Upload,
+  message,
+} from "antd";
 import ReactStars from "react-stars";
 import { UserAuth } from "../context/AuthContext";
 import axios from "axios";
 import { Rating } from "@mui/material";
+import { useRouter } from "next/navigation";
+import useDataCoursesInstructor from "@/components/pagination/useDataCoursesInstructor";
+import Paginate from "@/components/pagination/pagination";
 
-export type ListCourse = {
+export type Category = {
   id: number;
   name: string;
   description: string;
-  shortDescription: string;
-  imageUrl: string;
-  price: string;
-  totalEnrollment: number;
-  lectureCount: number;
-  contentLength: number;
-  averageRating: number;
-  createDate: string;
-  status: number;
-  categoryId: number;
-  mentorId: number;
-  categoryName: string;
-  totalRatingCount: number;
+  isActive: boolean;
 };
 
 const InstructorCourse = () => {
   const { id, user } = UserAuth();
-  // console.log("id", id);
+  console.log("id", id);
   // console.log("id", user);
   const [visible, setVisible] = useState(false);
 
-  const [listCourseInstructor, setListCourseInstructor] = useState<
-    ListCourse[]
-  >([]);
-  console.log("set", listCourseInstructor);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const responseData = await axios.get(
-        `https://learnconnectapitest.azurewebsites.net/api/course/get-courses-by-mentor?userId=8&currentPage=1&pageSize=6
-        `
-      );
-      setListCourseInstructor(responseData?.data.courses);
-      // console.log("má", responseData?.data.courses);
-    };
-    fetchData();
-  }, []);
+  // console.log("set", listCourseInstructor);
+  const {
+    loading,
+    listCourseInstructor,
+    currentPage,
+    totalPages,
+    setCurrentPage,
+    refetchList,
+  } = useDataCoursesInstructor();
 
   const menuItem = [
     {
@@ -71,6 +66,130 @@ const InstructorCourse = () => {
     },
   ];
 
+  const [dashboardCourse, setDashboardCourse] = useState("");
+
+  const router = useRouter();
+  const handleClick = (idcourse) => {
+    setDashboardCourse(idcourse);
+    router.push(`/instructorcourses/${idcourse.id}`);
+  };
+
+  // if(listCourseInstructor?.status)
+  const displayActive = (status: number) => {
+    if (status === 0) {
+      return <p style={{ color: "green" }}>Active</p>;
+    } else if (status === 1) {
+      return <p style={{ color: "red" }}>Inactive</p>;
+    }
+  };
+
+  //Modal
+  const [isModal, setIsModal] = useState(false);
+  const [form] = Form.useForm();
+
+  const showModal = () => {
+    setIsModal(true);
+  };
+
+  const handleCancel = () => {
+    setIsModal(false);
+    form.resetFields();
+  };
+
+  const handleSubmit = async (data: any) => {
+    setIsModal(false);
+    const formData = new FormData();
+    formData.append("courseName", data.name);
+    formData.append("description", data.description);
+    formData.append("shortDescription", data.shortDes);
+    formData.append("price", data.price);
+    formData.append("lectureCount", data.lecture);
+    formData.append("categoryId", selected || "1");
+    if (formDataImage !== undefined) {
+      formData.append("courseImage", formDataImage);
+    }
+    try {
+      await axios.post(
+        `https://learnconnectapitest.azurewebsites.net/api/course/create-new-course?userId=${id}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      handleCancel();
+      refetchList();
+      setTimeout(() => {
+        message.success("Create Course successful");
+      });
+    } catch (err) {
+      setTimeout(() => {
+        message.error("Create Course fail");
+      });
+    }
+    form.resetFields();
+  };
+
+  //upload image course
+  const [formDataImage, setFormDataImage] = useState();
+  const [image, setImage] = useState<string>();
+  const handleChange = (info: any) => {
+    if (info.file.status === "uploading") {
+      return;
+    }
+    if (info.file.status === "done") {
+      // Get this url from response in real world.
+
+      setFormDataImage(info.file.originFileObj);
+      getBase64(info.file.originFileObj, (url) => {
+        setImage(url);
+      });
+    }
+  };
+
+  const getBase64 = (img: any, callback: (url: string) => void) => {
+    const reader = new FileReader();
+    reader.addEventListener("load", () => callback(reader.result as string));
+    reader.readAsDataURL(img);
+  };
+
+  const beforeUpload = (file: any) => {
+    const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
+    if (!isJpgOrPng) {
+      message.error("You can only upload JPG/PNG file!");
+    }
+    const isLt2M = file.size / 1024 / 1024 < 2;
+    if (!isLt2M) {
+      message.error("Image must smaller than 2MB!");
+    }
+    return isJpgOrPng && isLt2M;
+  };
+
+  //List category
+  const [selected, setSelected] = useState(null);
+  const { Option } = Select;
+  const [listCategory, setListCategory] = useState<Category[]>([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const responseData = await axios.get(
+          "https://learnconnectapitest.azurewebsites.net/api/category"
+        );
+        setListCategory(responseData.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const handleChangeCate = (value: React.SetStateAction<null>) => {
+    setSelected(value);
+  };
+
+  if (!id) return <p>Loading</p>;
+
   return (
     <div className={`${InstructorCourseStyle.content_wrapper}`}>
       <div className={`${InstructorCourseStyle.sidebar_wrapper}`}>
@@ -89,7 +208,7 @@ const InstructorCourse = () => {
         </div>
       </div>
       <div className={`${InstructorCourseStyle.body_wrapper}`}>
-        <div className={`${InstructorCourseStyle.body_container}`}>
+        {/* <div className={`${InstructorCourseStyle.body_container}`}>
           <div className={`${InstructorCourseStyle.body_message}`}>
             <div className={`${InstructorCourseStyle.message_icon}`}>
               <img src="/menu-icon/icon-6.png" alt="image" />
@@ -105,13 +224,13 @@ const InstructorCourse = () => {
               </p>
             </div>
           </div>
-        </div>
+        </div> */}
         <div className={`${InstructorCourseStyle.course_tab}`}>
           <h3 className={`${InstructorCourseStyle.course_tab_title}`}>
             Course
           </h3>
           <div className={`${InstructorCourseStyle.course_tab_btn}`}>
-            <Button
+            {/* <Button
               onClick={() => {
                 Modal.confirm({
                   title: "Create New Course",
@@ -130,76 +249,220 @@ const InstructorCourse = () => {
               className={`${InstructorCourseStyle.create_btn}`}
             >
               <span className=""> New Course</span>
+            </Button> */}
+            <Button
+              type="primary"
+              className={`${InstructorCourseStyle.create_btn}`}
+              onClick={showModal}
+            >
+              New Course
             </Button>
           </div>
         </div>
-        <div className={`${InstructorCourseStyle.course_list_wrapper}`}>
-          {listCourseInstructor.map((item, index) => {
-            return (
-              <div key={index}>
-                <div className={`${InstructorCourseStyle.course_item}`}>
-                  <div className="flex">
-                    <div>
-                      <Link href="#">
-                        <img src="/images/admin-courses-01.jpg" alt="Image" />
-                      </Link>
-                    </div>
-                    <div
-                      className={`${InstructorCourseStyle.course_item_title}`}
-                    >
-                      <h2>
-                        <Link href="#">{item.name}</Link>
-                      </h2>
-                    </div>
-                  </div>
-                  <div className={`${InstructorCourseStyle.course_tracker}`}>
-                    <div
-                      className={`${InstructorCourseStyle.course_tracker_1}`}
-                    >
-                      <p>Earned</p>
-                      <span
-                        className={`${InstructorCourseStyle.course_tracker_count}`}
+        {loading ? (
+          <div className="text-center text-5xl">loading...</div>
+        ) : (
+          <div className={`${InstructorCourseStyle.course_list_wrapper}`}>
+            {listCourseInstructor.map((item, index) => {
+              return (
+                <div key={index}>
+                  <div className={`${InstructorCourseStyle.course_item}`}>
+                    <div className="flex">
+                      <div>
+                        <Link href="#">
+                          <img src={item.imageUrl} alt="Image" />
+                        </Link>
+                      </div>
+                      <div
+                        className={`${InstructorCourseStyle.course_item_title}`}
                       >
-                        $5,68.00
-                      </span>
+                        <h2>
+                          <a
+                            onClick={() => {
+                              handleClick(item);
+                            }}
+                          >
+                            {item.name}
+                          </a>
+                        </h2>
+                      </div>
                     </div>
-                    <div
-                      className={`${InstructorCourseStyle.course_tracker_2}`}
-                    >
-                      <p>Enrollments</p>
-                      <span
-                        className={`${InstructorCourseStyle.course_tracker_count}`}
+                    <div className={`${InstructorCourseStyle.course_tracker}`}>
+                      <div
+                        className={`${InstructorCourseStyle.course_tracker_1}`}
                       >
-                        {item.totalEnrollment}
-                      </span>
-                    </div>
-                    <div
-                      className={`${InstructorCourseStyle.course_tracker_3}`}
-                    >
-                      <p>Course Rating</p>
-                      <span
-                        className={`${InstructorCourseStyle.course_tracker_count}`}
-                      >
-                        {item.averageRating}
-                        {/* <ReactStars count={1} color2={"#ffd700"}></ReactStars> */}
-                        <span>
-                          <Rating
-                            size="small"
-                            name="half-rating-read"
-                            defaultValue={item.averageRating}
-                            precision={0.1}
-                            readOnly
-                          />
+                        <p>Status</p>
+                        <span
+                          className={`${InstructorCourseStyle.course_tracker_count}`}
+                        >
+                          <span>{displayActive(item.status)}</span>
                         </span>
-                      </span>
+                      </div>
+                      <div
+                        className={`${InstructorCourseStyle.course_tracker_2}`}
+                      >
+                        <p>Enrollments</p>
+                        <span
+                          className={`${InstructorCourseStyle.course_tracker_count}`}
+                        >
+                          {item.totalEnrollment}
+                        </span>
+                      </div>
+                      <div
+                        className={`${InstructorCourseStyle.course_tracker_3}`}
+                      >
+                        <p>Course Rating</p>
+                        <span
+                          className={`${InstructorCourseStyle.course_tracker_count}`}
+                        >
+                          {item.averageRating}
+                          {/* <ReactStars count={1} color2={"#ffd700"}></ReactStars> */}
+                          <span>
+                            <Rating
+                              size="small"
+                              name="half-rating-read"
+                              defaultValue={item.averageRating}
+                              precision={0.1}
+                              readOnly
+                            />
+                          </span>
+                        </span>
+                      </div>
+                      {/* <div>
+                      <p>Status</p>
+                      <span>{displayActive(item.status)}</span>
+                    </div> */}
                     </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+            <Paginate
+              totalPages={totalPages}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+            />
+          </div>
+        )}
       </div>
+      <Modal
+        destroyOnClose={true}
+        title="Create New Course Form"
+        open={isModal}
+        // onOk={handleOk}
+        onCancel={handleCancel}
+        footer={false}
+      >
+        <Form
+          autoComplete="off"
+          form={form}
+          labelCol={{ span: 4 }}
+          wrapperCol={{ span: 14 }}
+          layout="horizontal"
+          className="mt-5"
+          style={{ width: 600 }}
+          onFinish={handleSubmit}
+        >
+          <div style={{ display: "flex" }} className="flex px-[130px]">
+            <Image width={200} height={200} src={image} />
+          </div>
+          <div
+            className="flex px-[190px] pt-2 pb-2"
+            style={{ display: "flex" }}
+          >
+            <Upload
+              accept="image/png, image/jpeg"
+              onChange={handleChange}
+              beforeUpload={beforeUpload}
+              // headers={{ Authorization: authorization }}
+              action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
+            >
+              <Button>Upload</Button>
+            </Upload>
+          </div>
+          <Form.Item
+            rules={[{ required: true, message: "Please input Name!" }]}
+            label="Name Course"
+            name="name"
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item label="Category">
+            <Select onChange={handleChangeCate}>
+              {listCategory.map((option) => {
+                return (
+                  <Option key={option.id} value={option.id}>
+                    {option.name}
+                  </Option>
+                );
+              })}
+            </Select>
+          </Form.Item>
+          <Form.Item label="Mentor" name="mentor">
+            {`${user?.displayName}`}
+          </Form.Item>
+          <Form.Item
+            rules={[{ required: true, message: "Please estimate the time!" }]}
+            label="Length (mins)"
+            name="length"
+          >
+            <InputNumber min={0} controls={false} />
+          </Form.Item>
+          <Form.Item
+            rules={[
+              {
+                required: true,
+                message: "Please estimate number of lectures!",
+              },
+            ]}
+            label="Lectures"
+            name="lecture"
+          >
+            <InputNumber min={0} controls={false} />
+          </Form.Item>
+          <Form.Item
+            rules={[
+              {
+                required: true,
+                message: "Please Input Price",
+              },
+            ]}
+            label="Price"
+            name="price"
+          >
+            <InputNumber min={0} controls={false} />
+          </Form.Item>
+          <Form.Item
+            rules={[
+              {
+                required: true,
+                message: "Please Type Short Description",
+              },
+            ]}
+            label="Intro"
+            name="shortDes"
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item label="Description" name="description">
+            <Input.TextArea rows={4} />
+          </Form.Item>
+          <Space className="justify-end w-full pr-[150px]">
+            <Form.Item className="mb-0">
+              <Space>
+                <Button onClick={handleCancel}>Cancel</Button>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  style={{ color: "black" }}
+                >
+                  Create
+                </Button>
+              </Space>
+            </Form.Item>
+          </Space>
+        </Form>
+      </Modal>
     </div>
   );
 };
