@@ -30,9 +30,9 @@ export default function CourseDetailPage({ params }: any) {
 
   useEffect(() => {
     const fetchData = async () => {
+      const userIdToUse = idUser || 0;
       const responseData = await axios.get(
-        // `https://learnconnectapitest.azurewebsites.net/api/course/${idCourse}`
-        `https://learnconnectapitest.azurewebsites.net/api/course/user/${idUser}/course/${idCourse}`
+        `https://learnconnectapitest.azurewebsites.net/api/course/user/${userIdToUse}/course/${idCourse}`
       );
       setCourses(responseData?.data);
       setAverageRating(responseData?.data.averageRating);
@@ -397,8 +397,8 @@ export default function CourseDetailPage({ params }: any) {
                           payment(
                             idUser,
                             idCourse,
-                            "https://learn-connect-next-js-git-thuan-thuanleuwu.vercel.app/after-payment"
-                            // "http://localhost:3000/after-payment"
+                            // "https://learn-connect-next-js-git-thuan-thuanleuwu.vercel.app/after-payment"
+                            "http://localhost:3000/after-payment"
                           );
                           console.log("Enrollment confirmed");
                           setIsModalVisible(false);

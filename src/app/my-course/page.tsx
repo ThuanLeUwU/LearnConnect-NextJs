@@ -1,6 +1,6 @@
 "use client";
 import ".././globals.css";
-import CourseItem from "@/components/course-item/course"; // Make sure the import path is correct
+import CourseItem from "@/components/course-item/course";
 import Paginate from "@/components/pagination/pagination";
 import useDataUserFetcher from "@/components/pagination/useDataUserFetcher";
 
@@ -10,7 +10,6 @@ const MyCourse = () => {
 
   return (
     <div className="container">
-      {/* <Search /> */}
       {loading ? (
         <div className="text-center text-5xl">loading...</div>
       ) : (
