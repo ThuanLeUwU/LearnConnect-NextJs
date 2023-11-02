@@ -11,6 +11,7 @@ import { UserAuth } from "../context/AuthContext";
 import axios from "axios";
 import { Modal, message } from "antd";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export type User = {
   id: string | number;
@@ -95,7 +96,7 @@ export default function EditProfile() {
       .then((response) => {
         refetchUser();
         setTimeout(() => {
-          message.success("Edit successful");
+          toast.success("Edit successful");
         });
 
         router.push("/profile");

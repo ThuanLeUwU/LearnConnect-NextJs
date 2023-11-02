@@ -1,9 +1,19 @@
 "use client";
 import { UserAuth } from "@/app/context/AuthContext";
-import { Modal, Form, Input, Space, Button, InputNumber, Upload, message } from "antd";
+import {
+  Modal,
+  Form,
+  Input,
+  Space,
+  Button,
+  InputNumber,
+  Upload,
+  message,
+} from "antd";
 import { useForm } from "antd/es/form/Form";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export type User = {
   id: string | number;
@@ -35,7 +45,7 @@ export const RegisterForm = ({ onCancel, visible, isEdit }: IProps) => {
   const [currentInfo, setCurrentInfo] = useState<User>();
   // console.log(currentInfo)
   const [identifyImage, setIdentifyImage] = useState<string>();
-  const [ identifyData, setIdentifyData] = useState();
+  const [identifyData, setIdentifyData] = useState();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -78,11 +88,11 @@ export const RegisterForm = ({ onCancel, visible, isEdit }: IProps) => {
   const beforeUpload = (file: any) => {
     const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
     if (!isJpgOrPng) {
-      message.error("You can only upload JPG/PNG file!");
+      toast.error("You can only upload JPG/PNG file!");
     }
     const isLt2M = file.size / 1024 / 1024 < 2;
     if (!isLt2M) {
-      message.error("Image must smaller than 2MB!");
+      toast.error("Image must smaller than 2MB!");
     }
     return isJpgOrPng && isLt2M;
   };
@@ -119,19 +129,19 @@ export const RegisterForm = ({ onCancel, visible, isEdit }: IProps) => {
           label="Identify Card"
           name="identify"
         >
-          <Input/>
+          <Input />
         </Form.Item>
         <Form.Item label="ID Card (Image)">
-        <Upload
-                        accept="image/png, image/jpeg"
-                        onChange={handleChange}
-                        beforeUpload={beforeUpload}
-                        // headers={{ Authorization: authorization }}
-                        action="https://learnconnectapitest.azurewebsites.net/api/image"
-                        listType="picture-card"
-                      >
-                        Upload
-                      </Upload>
+          <Upload
+            accept="image/png, image/jpeg"
+            onChange={handleChange}
+            beforeUpload={beforeUpload}
+            // headers={{ Authorization: authorization }}
+            action="https://learnconnectapitest.azurewebsites.net/api/image"
+            listType="picture-card"
+          >
+            Upload
+          </Upload>
         </Form.Item>
         <Space className="justify-end w-full">
           <Form.Item className="mb-0">

@@ -21,8 +21,8 @@ export const CreateCourse = ({ onCancel, visible, isEdit }: IProps) => {
   const handleShow = () => setShow(true);
 
   const handleSubmit = () => {
-        handleClose();
-  }
+    handleClose();
+  };
 
   return (
     <Modal
@@ -42,7 +42,7 @@ export const CreateCourse = ({ onCancel, visible, isEdit }: IProps) => {
         className="mt-5"
         onFinish={handleSubmit}
       >
-
+        <Form.Item>Name</Form.Item>
       </Form>
     </Modal>
   );

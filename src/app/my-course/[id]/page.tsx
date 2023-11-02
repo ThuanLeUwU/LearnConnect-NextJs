@@ -13,6 +13,7 @@ import {
   Form,
   Input,
   Modal,
+  Rate,
   Select,
   Space,
   Upload,
@@ -20,6 +21,7 @@ import {
 } from "antd";
 // import { Option } from "antd/es/mentions";
 import { UserAuth } from "@/app/context/AuthContext";
+import { toast } from "sonner";
 
 export type Lecture = {
   id: string | number;
@@ -77,11 +79,11 @@ export default function AfterEnroll({ params }: any) {
       handleCancel();
 
       setTimeout(() => {
-        message.success("Report successful");
+        toast.success("Report successful");
       });
     } catch (err) {
       setTimeout(() => {
-        message.error("Report fail");
+        toast.error("Report fail");
       });
     }
 
@@ -90,6 +92,7 @@ export default function AfterEnroll({ params }: any) {
 
   const handleCancel = () => {
     setIsModalOpen(false);
+    setModalRatingOpen(false);
     // data.target.reset();
     // event.preventDefault();
     // event.target.reset();
@@ -117,11 +120,11 @@ export default function AfterEnroll({ params }: any) {
   const beforeUpload = (file: any) => {
     const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
     if (!isJpgOrPng) {
-      message.error("You can only upload JPG/PNG file!");
+      toast.error("You can only upload JPG/PNG file!");
     }
     const isLt2M = file.size / 1024 / 1024 < 2;
     if (!isLt2M) {
-      message.error("Image must smaller than 2MB!");
+      toast.error("Image must smaller than 2MB!");
     }
     return isJpgOrPng && isLt2M;
   };
@@ -197,6 +200,26 @@ export default function AfterEnroll({ params }: any) {
   };
   const videoRef = useRef(null);
 
+  //rating
+  const [modalRating, setModalRatingOpen] = useState(false);
+  const [value, setValue] = useState(0);
+  const desc = ["terrible", "bad", "normal", "good", "wonderful"];
+
+  const showModalRating = () => {
+    setModalRatingOpen(true);
+  };
+
+  const handleSubmit = async (data: any) => {
+    const formdata = new FormData();
+    formdata.append("reportReason", value.toString());
+    formdata.append("reportComment", data.description);
+
+    console.log("value", parseInt(value.toString()));
+    console.log("value", data.description);
+
+    setModalRatingOpen(false);
+  };
+
   const handleSeek = (e: any) => {
     // const video = videoRef.current;
     // if (video) {
@@ -235,15 +258,71 @@ export default function AfterEnroll({ params }: any) {
                 <h2 className="text-[25px] leading-normal text-[#212832] font-medium ">
                   {courses?.name}
                 </h2>
-                <Button danger type="primary" onClick={showModal}>
-                  {/* <Image
+                <div className=" flex gap-[10px]">
+                  <Button
+                    style={{ color: "black", background: "lightgreen" }}
+                    type="primary"
+                    onClick={showModalRating}
+                  >
+                    {/* <Image
                     width={40}
                     height={40}
                     src="/menu-icon/flag-icon.jpg"
                     alt="flag"
                   /> */}
-                  Report
-                </Button>
+                    Rating
+                  </Button>
+
+                  <Button danger type="primary" onClick={showModal}>
+                    {/* <Image
+                    width={40}
+                    height={40}
+                    src="/menu-icon/flag-icon.jpg"
+                    alt="flag"
+                  /> */}
+                    Report
+                  </Button>
+                </div>
+                <Modal
+                  destroyOnClose={true}
+                  title={`Rating ${courses?.name} by ${user?.displayName}`}
+                  open={modalRating}
+                  // onOk={handleOk}
+                  onCancel={handleCancel}
+                  footer={false}
+                >
+                  <Form
+                    autoComplete="off"
+                    form={form}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 14 }}
+                    layout="horizontal"
+                    className="mt-5"
+                    style={{ width: 600 }}
+                    onFinish={handleSubmit}
+                  >
+                    <span className="flex pl-[140px] pb-5">
+                      <Rate tooltips={desc} onChange={setValue} value={value} />
+                    </span>
+                    <Form.Item label="Description" name="description">
+                      <Input.TextArea rows={3} />
+                    </Form.Item>
+                    <Space className="justify-end w-full pr-[150px]">
+                      <Form.Item className="mb-0">
+                        <Space>
+                          <Button onClick={handleCancel}>Cancel</Button>
+                          <Button
+                            type="primary"
+                            htmlType="submit"
+                            style={{ color: "black" }}
+                          >
+                            Rating
+                          </Button>
+                        </Space>
+                      </Form.Item>
+                    </Space>
+                  </Form>
+                </Modal>
                 <Modal
                   destroyOnClose={true}
                   title={`Report ${courses?.name} by ${user?.displayName}`}
