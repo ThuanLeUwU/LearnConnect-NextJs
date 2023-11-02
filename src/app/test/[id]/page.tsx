@@ -2,6 +2,9 @@
 import { useEffect, useState } from "react";
 import "../../globals.css";
 import axios from "axios";
+import { UserAuth } from "@/app/context/AuthContext";
+import { Modal } from "antd";
+import { useRouter } from "next/navigation";
 
 export type Test = {
   test: {
@@ -52,7 +55,13 @@ const Quiz = (
   }>({});
   const idCourse = params.id;
   const [correctAnswers, setCorrectAnswers] = useState<number>(0);
+  const { userData } = UserAuth();
+  const router = useRouter();
 
+  console.log("id user:", userData?.id);
+  const handleClickGotoCourse = () => {
+    router.push(`/my-course/${idCourse}`);
+  };
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
@@ -60,7 +69,11 @@ const Quiz = (
           `https://learnconnectapitest.azurewebsites.net/api/test/get-tests-by-course?courseId=${idCourse}`
         );
         setQuestionsTest(response.data);
-        console.log("question:", response.data.questions);
+        console.log("Total Questions:", response.data);
+        questionsTest.forEach((item) => {
+          const totalQuestion = item.test.totalQuestion;
+          console.log("Total Questions:", totalQuestion);
+        });
       } catch (error) {
         console.error("Error fetching questions:", error);
       }
@@ -82,9 +95,11 @@ const Quiz = (
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     let count = 0;
+    let totalQuestions = 0;
     questionsTest.forEach((item) => {
+      totalQuestions += item.test.totalQuestion;
       item.questions.forEach((q) => {
         const selectedAnswer = selectedAnswers[q.question.id];
         const correctAnswer = q.answers.find((answer) => answer.isCorrect);
@@ -93,7 +108,40 @@ const Quiz = (
         }
       });
     });
+
+    let averageScore = 0;
+    if (count > 0) {
+      averageScore = (10 / totalQuestions) * count;
+    }
+
     console.log("Correct Answers: ", count);
+    console.log("Total Questions: ", totalQuestions);
+    console.log("Average Score: ", averageScore);
+
+    const userId = userData?.id;
+    const url = `https://learnconnectapitest.azurewebsites.net/api/learning-performance/user/${userId}/course/${idCourse}`;
+    try {
+      const response = await axios.put(url, {
+        score: averageScore,
+        userId: userId,
+        courseId: idCourse,
+      });
+      console.log("PUT request successful. Response:", response.data);
+      Modal.info({
+        title: "Quiz Results",
+        content: (
+          <div>
+            <p>Correct Answers: {count}</p>
+            <p>Total Questions: {totalQuestions}</p>
+            <p>Average Score: {averageScore}</p>
+          </div>
+        ),
+        okButtonProps: { style: { backgroundColor: "#309255", color: "#fff" } },
+        onOk: handleClickGotoCourse,
+      });
+    } catch (error) {
+      console.error("Error in PUT request:", error);
+    }
   };
 
   return (
@@ -147,15 +195,3 @@ const Quiz = (
 };
 
 export default Quiz;
-
-// "use client";
-// // import Transaction from "@/components/transaction/transaction";
-// import ".././globals.css";
-// import useDataPaymentFetcher from "@/components/pagination/useDataPaymentFetcher";
-// import Paginate from "@/components/pagination/pagination";
-
-// const Test = () => {
-//   return <></>;
-// };
-
-// export default Test;

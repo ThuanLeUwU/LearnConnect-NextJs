@@ -33,6 +33,7 @@ const Search = () => {
           onChange={handleSearchChange}
           onKeyPress={handleKeyPress}
           className="border-none outline-none w-full p-2"
+          required
         />
         <button
           onClick={handleClickSearch}
