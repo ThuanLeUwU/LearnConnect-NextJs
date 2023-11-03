@@ -58,7 +58,7 @@ export default function UserManagePage() {
   //Table
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("name");
-  const [selected, setSelected] = useState([]);
+
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -83,6 +83,10 @@ export default function UserManagePage() {
     page > 0
       ? Math.max(0, (1 + page) * rowsPerPage - allUser.length + 0.11)
       : 0;
+
+  //update Role
+
+  const [selected, setSelected] = useState();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -384,7 +388,9 @@ export default function UserManagePage() {
         // onOk={handleOk}
         onCancel={handleCancel}
         footer={false}
-      ></Modal>
+      >
+        <Form.Item></Form.Item>
+      </Modal>
     </>
   );
 }

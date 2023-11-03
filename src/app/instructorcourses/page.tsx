@@ -252,7 +252,6 @@ const InstructorCourse = () => {
               <span className=""> New Course</span>
             </Button> */}
             <Button
-              type="primary"
               className={`${InstructorCourseStyle.create_btn}`}
               onClick={showModal}
             >
@@ -383,10 +382,10 @@ const InstructorCourse = () => {
           </div>
           <Form.Item
             rules={[{ required: true, message: "Please input Name!" }]}
-            label="Name Course"
+            label="Name"
             name="name"
           >
-            <Input />
+            <Input placeholder="Name Course" />
           </Form.Item>
           <Form.Item label="Category">
             <Select onChange={handleChangeCate}>
@@ -404,10 +403,19 @@ const InstructorCourse = () => {
           </Form.Item>
           <Form.Item
             rules={[{ required: true, message: "Please estimate the time!" }]}
-            label="Length (mins)"
+            label="Length(mins)"
             name="length"
           >
-            <InputNumber min={0} controls={false} />
+            <InputNumber
+              type="number"
+              placeholder="Input estimate the time!"
+              min={0}
+              className="w-[290px]"
+              controls={false}
+              // formatter={(value) => `${value} mins`}
+              // parser={(value) => value!.replace("mins", "")}
+            />{" "}
+            minutes
           </Form.Item>
           <Form.Item
             rules={[
@@ -419,7 +427,7 @@ const InstructorCourse = () => {
             label="Lectures"
             name="lecture"
           >
-            <InputNumber min={0} controls={false} />
+            <InputNumber className="w-[200px]" min={0} controls={false} />
           </Form.Item>
           <Form.Item
             rules={[
@@ -431,7 +439,7 @@ const InstructorCourse = () => {
             label="Price"
             name="price"
           >
-            <InputNumber min={0} controls={false} />
+            <InputNumber style={{ width: 200 }} min={0} controls={false} />
           </Form.Item>
           <Form.Item
             rules={[

@@ -4,6 +4,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import ".././globals.css";
 import { useRouter } from "next/navigation";
+import { UserAuth } from "../context/AuthContext";
 
 export type Payment = {
   id: string | number;
@@ -18,6 +19,7 @@ export type Payment = {
 };
 
 const AfterPayment = () => {
+  const { id } = UserAuth();
   const [urlParams, setUrlParams] = useState<URLSearchParams | null>(null);
   const [payment, setPayment] = useState<Payment>();
   const [courseId, setCourseId] = useState("");
@@ -42,8 +44,9 @@ const AfterPayment = () => {
           const responseData = await axios.get(
             `https://learnconnectapitest.azurewebsites.net/api/payment-transaction/query-vnpay-transaction?vnp_TxnRef=${vnp_TxnRef}&vnp_PayDate=${vnp_PayDate}`
           );
-          setPayment(responseData.data.paymentTransaction);
+          setPayment(responseData?.data.paymentTransaction);
           setCourseId(responseData.data.courseId);
+          console.log("payment", payment);
         } catch (error) {
           // Handle error here
           console.error("Error fetching data:", error);
@@ -52,7 +55,6 @@ const AfterPayment = () => {
       fetchData();
     }
   }, [urlParams]);
-  payment;
   const handleClickGotoCourse = () => {
     router.push(`/my-course/${courseId}`);
   };
@@ -60,7 +62,6 @@ const AfterPayment = () => {
   const handleClickBacktoCourse = () => {
     router.push(`/`);
   };
-  console.log("payment", payment);
   console.log("courseID", courseId);
   return (
     <div className="container mx-auto mt-20 text-center min-h-[60vh]">

@@ -115,6 +115,10 @@
   color: #309255;
   width: 150px;
   background-color: #eefbf3;
+  &:hover {
+    color: black;
+    background-color: #309255;
+  }
 }
 
 .course_list_wrapper {

@@ -24,7 +24,7 @@ const Header = () => {
     setIsOpen(false);
   };
 
-  const { role, user, googleSignIn, logOut } = UserAuth();
+  const { role, user, googleSignIn, logOut, userData } = UserAuth();
 
   console.log("user", role);
 
@@ -176,7 +176,7 @@ const Header = () => {
                 >
                   <img
                     className={`${headerStyles.header_info_src}`}
-                    src={user?.photoURL || "www.default.imageurl"}
+                    src={userData?.profilePictureUrl || "www.default.imageurl"}
                     alt="author"
                   ></img>
                 </button>
