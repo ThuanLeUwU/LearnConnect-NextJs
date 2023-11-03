@@ -9,27 +9,37 @@ import { Button } from "react-bootstrap";
 import { RegisterForm } from "@/components/registerForm";
 import { Modal } from "antd";
 import { useRouter } from "next/navigation";
+import { AiFillBell } from "react-icons/ai";
 
 const Header = () => {
   const [click, setClick] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [notification, setNotification] = useState(false);
   const [visible, setVisible] = useState(false);
   const router = useRouter();
+  const { userData } = UserAuth();
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
+    setNotification(false);
   };
 
   const closeDropdown = () => {
     setIsOpen(false);
   };
 
+  const toggleDropdownNotification = () => {
+    setNotification(!notification);
+    setIsOpen(false);
+  };
+
+  const closeDropdownNotification = () => {
+    setNotification(false);
+  };
+
   const { role, user, googleSignIn, logOut } = UserAuth();
 
   console.log("user", role);
-
-  // console.log("tui ne", user?.photoURL);
-
   const handleSignIn = async () => {
     try {
       await googleSignIn();
@@ -47,26 +57,6 @@ const Header = () => {
       console.log(error);
     }
   };
-  // console.log(user);
-
-  // const onMouseEnter = () => {
-  //   if (window.innerWidth < 960) {
-  //     setDropdown(false);
-  //   } else {
-  //     setDropdown(true);
-  //   }
-  // };
-
-  // const onMouseLeave = () => {
-  //   if (window.innerWidth < 960) {
-  //     setDropdown(false);
-  //   } else {
-  //     setDropdown(false);
-  //   }
-  // };
-  const handleClickTransaction = () => {
-    router.push("/transaction");
-  };
 
   const handleClick = () => setClick(!click);
 
@@ -82,24 +72,17 @@ const Header = () => {
   ];
 
   return (
-    // <!-- Header Section Start -->
     <div className={`${headerStyles.header_section}`}>
-      {/* <!-- Header Top Start --> */}
       {!user ? (
         <div className={`${headerStyles.header_top}`}>
           <div className="container">
-            {/* <!-- Header Top Wrapper Start --> */}
             <div className={`${headerStyles.header_top_wrapper}`}>
-              {/* <!-- Header Top Left Start --> */}
               <div className={`${headerStyles.header_top_left}`}>
                 <p>
                   All course 28% off for{" "}
                   <Link href="#">Liberian people’s.</Link>
                 </p>
               </div>
-              {/* <!-- Header Top Left End --> */}
-
-              {/* <!-- Header Top Medal Start --> */}
               <div className={`${headerStyles.header_top_medal}`}>
                 <div className={`${headerStyles.top_info}`}>
                   <p>
@@ -114,9 +97,6 @@ const Header = () => {
                   </p>
                 </div>
               </div>
-              {/* <!-- Header Top Medal End --> */}
-
-              {/* <!-- Header Top Right Start --> */}
               <div className={`${headerStyles.header_top_right}`}>
                 <ul className={`${headerStyles.header_top_right_social}`}>
                   <li>
@@ -141,9 +121,7 @@ const Header = () => {
                   </li>
                 </ul>
               </div>
-              {/* <!-- Header Top Right End --> */}
             </div>
-            {/* <!-- Header Top Wrapper End --> */}
           </div>
         </div>
       ) : (
@@ -161,12 +139,69 @@ const Header = () => {
             </div>
             <ul className={`${headerStyles.header_login_right}`}>
               <li className={`${headerStyles.header_notification}`}>
-                <Image
-                  width={32}
-                  height={32}
-                  src="/images/notification.png"
-                  alt={"Logo"}
-                />
+                <button onClick={toggleDropdownNotification}>
+                  <AiFillBell />
+                </button>
+                {notification && (
+                  <div className="origin-top-right absolute right-0 mt-2 w-[360px] rounded-lg shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-20">
+                    <ul className="divide-y divide-gray-200 rounded-lg">
+                      <li className="flex items-center py-4 px-[25px] hover:bg-[#e7f8ee] hover:rounded-tl-lg hover:rounded-tr-lg">
+                        <span className="text-white">
+                          <i className="bg-gray-400 rounded-full h-2 w-2 block"></i>
+                        </span>
+                        <div className="ml-3 text-sm">
+                          <a href="#" className="text-gray-900">
+                            <p className="truncate max-w-[200px]">
+                              <strong>Martin</strong> has added a new
+                              <strong>customer</strong> successfully
+                            </p>
+                          </a>
+                        </div>
+                        <span className="text-gray-500 ml-auto text-sm">
+                          3:20 am
+                        </span>
+                      </li>
+                      <li className="flex items-center py-4 px-[25px] hover:bg-[#e7f8ee]">
+                        <span className="text-white">
+                          <i className="bg-gray-400 rounded-full h-2 w-2 block"></i>
+                        </span>
+                        <div className="ml-3 text-sm">
+                          <a href="#" className="text-gray-900">
+                            <p className="truncate max-w-[200px]">
+                              <strong>Martin</strong> has added a new
+                              <strong>customer</strong> successfully
+                            </p>
+                          </a>
+                        </div>
+                        <span className="text-gray-500 ml-auto text-sm">
+                          3:20 am
+                        </span>
+                      </li>
+                      <li className="flex items-center py-4 px-[25px] hover:bg-[#e7f8ee]">
+                        <span className="text-white">
+                          <i className="bg-gray-400 rounded-full h-2 w-2 block"></i>
+                        </span>
+                        <div className="ml-3 text-sm">
+                          <a href="#" className="text-gray-900">
+                            <p className="truncate max-w-[200px]">
+                              <strong>Martin</strong> has added a new
+                              <strong>customer</strong> successfully
+                            </p>
+                          </a>
+                        </div>
+                        <span className="text-gray-500 ml-auto text-sm">
+                          3:20 am
+                        </span>
+                      </li>
+                    </ul>
+                    <a
+                      href="#"
+                      className="block text-center text-sm text-gray-700 py-2 bg-[#e7f8ee] hover:rounded-bl-lg hover:rounded-br-lg"
+                    >
+                      See all notifications
+                    </a>
+                  </div>
+                )}
               </li>
               <li className={`${headerStyles.header_info_img}`}></li>
               <li>
@@ -176,7 +211,7 @@ const Header = () => {
                 >
                   <img
                     className={`${headerStyles.header_info_src}`}
-                    src={user?.photoURL || "www.default.imageurl"}
+                    src={userData?.profilePictureUrl || "www.default.imageurl"}
                     alt="author"
                   ></img>
                 </button>
@@ -197,15 +232,13 @@ const Header = () => {
                         </Link>
                       </li>
                       <li>
-                        <a
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-bl-lg rounded-br-lg hover:rounded-tl-lg hover:rounded-tr-lg"
-                          onClick={() => {
-                            closeDropdown();
-                            handleClickTransaction();
-                          }}
+                        <Link
+                          href="/transaction"
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-tl-lg rounded-tr-lg hover:rounded-bl-lg hover:rounded-br-lg"
+                          onClick={closeDropdown}
                         >
                           Transaction
-                        </a>
+                        </Link>
                       </li>
                       <li>
                         <a
@@ -224,16 +257,10 @@ const Header = () => {
           </div>
         </div>
       )}
-
-      {/* <!-- Header Top End --> */}
-
-      {/* <!-- Header Main Start --> */}
       <div className="header-main ">
         <div className="container">
-          {/* <!-- Header Main Start --> */}
           {!user ? (
             <div className={`${headerStyles.header_main_wrapper}`}>
-              {/* <!-- Header Logo Start --> */}
               <div className={`${headerStyles.header_logo}`}>
                 <Link href="/">
                   <Image
@@ -244,9 +271,6 @@ const Header = () => {
                   />
                 </Link>
               </div>
-              {/* <!-- Header Logo End --> */}
-
-              {/* <!-- Header Menu Start --> */}
               <div className={`${headerStyles.header_menu}`}>
                 <ul className={`${headerStyles.nav_menu}`}>
                   <li>
@@ -260,41 +284,6 @@ const Header = () => {
                   </li>
                   <li>
                     <Link href="/faq">FAQ</Link>
-                    {/* <ul className={`${headerStyles.sub_menu}`}>
-                    <li>
-                      <Link href="#">Blog</Link>
-                      <ul className={`${headerStyles.sub_menu}`}>
-                        <li>
-                          <Link href="blog-grid.html">Blog</Link>
-                        </li>
-                        <li>
-                          <Link href="blog-left-sidebar.html">
-                            Blog Left Sidebar
-                          </Link>
-                        </li>
-                        <li>
-                            <Link href="blog-right-sidebar.html">
-                              Blog Right Sidebar
-                            </Link>
-                        </li>
-                      </ul>
-                    </li>
-                    <li>
-                      <Link href="#">Blog Details</Link>
-                      <ul className={`${headerStyles.sub_menu}`}>
-                        <li>
-                            <Link href="blog-details-left-sidebar.html">
-                              Blog Details Left Sidebar
-                            </Link>
-                        </li>
-                        <li>
-                            <Link href="blog-details-right-sidebar.html">
-                              Blog Details Right Sidebar
-                            </Link>
-                        </li>
-                      </ul>
-                    </li>
-                  </ul> */}
                   </li>
                   <li>
                     <Link href="/contact">Contact</Link>
@@ -318,26 +307,11 @@ const Header = () => {
                   </li>
                 </ul>
               </div>
-              {/* <!-- Header Menu End --> */}
-              {/* <!-- Header Sing In & Up Start --> */}
-
-              {/* <!-- Header Sing In & Up End --> */}
-
-              {/* <!-- Header Mobile Toggle Start --> */}
-              {/* <div className="header-toggle d-lg-none">
-              <Link className="menu-toggle" href="javascript:void(0)">
-                <span></span>
-                <span></span>
-                <span></span>
-              </Link>
-            </div> */}
-              {/* <!-- Header Mobile Toggle End --> */}
             </div>
           ) : (
             <>
               {role == 3 ? (
                 <div className={`${headerStyles.header_main_wrapper}`}>
-                  {/* <!-- Header Logo Start --> */}
                   <div className={`${headerStyles.header_logo}`}>
                     <Link href="/">
                       <Image
@@ -348,9 +322,6 @@ const Header = () => {
                       />
                     </Link>
                   </div>
-                  {/* <!-- Header Logo End --> */}
-
-                  {/* <!-- Header Menu Start --> */}
                   <div className={`${headerStyles.header_menu}`}>
                     <ul className={`${headerStyles.nav_menu}`}>
                       <li>
@@ -358,94 +329,20 @@ const Header = () => {
                       </li>
                       <li>
                         <Link href="/courses">Courses</Link>
-                        {/* <ul className={`${headerStyles.sub_menu}`}>
-                      {course.map((item, index) => (
-                        <li key={index}>
-                          <Link href={item.href}>{item.title}</Link>
-                        </li>
-                      ))}
-                    </ul> */}
                       </li>
                       <li>
                         <Link href="/my-course">My Courses </Link>
                       </li>
                       <li>
                         <Link href="/favorites">Favorites</Link>
-                        {/* <ul className={`${headerStyles.sub_menu}`}>
-                      <li>
-                        <Link href="#">Contact</Link>
-                        <ul className={`${headerStyles.sub_menu}`}>
-                          <li>
-                            <Link href="blog-grid.html">Blog</Link>
-                          </li>
-                          <li>
-                            <Link href="blog-left-sidebar.html">
-                              Blog Left Sidebar
-                            </Link>
-                          </li>
-                          <li>
-                            <Link href="blog-right-sidebar.html">
-                              Blog Right Sidebar
-                            </Link>
-                          </li>
-                        </ul>
-                      </li>
-                      <li>
-                        <Link href="#">Blog Details</Link>
-                        <ul className={`${headerStyles.sub_menu}`}>
-                          <li>
-                            <Link href="blog-details-left-sidebar.html">
-                              Blog Details Left Sidebar
-                            </Link>
-                          </li>
-                          <li>
-                            <Link href="blog-details-right-sidebar.html">
-                              Blog Details Right Sidebar
-                            </Link>
-                          </li>
-                        </ul>
-                      </li>
-                    </ul> */}
                       </li>
                       <li>
                         <Link href="/contact">Contact</Link>
                       </li>
                     </ul>
                   </div>
-                  {/* <!-- Header Menu End --> */}
-                  {/* <!-- Header Sing In & Up Start --> */}
-
                   <div className={`${headerStyles.regis_btn}`}>
-                    {/* <Button
-                  onClick={() => {
-                    Modal.confirm({
-                      title: "Register Mentor Form",
-                      content: (
-                        <RegisterForm
-                          visible={visible}
-                          setVisible={setVisible}
-                          onCancel={() => {
-                            setVisible(false);
-                          }}
-                          isEdit={true}
-                        />
-                      ),
-                    });
-                  }}
-                >
-                  Become a Mentor
-                </Button> */}
-                    <Button
-                      // danger
-                      // type="primary"
-                      onClick={() => setVisible(true)}
-                    >
-                      {/* <Image
-                    width={40}
-                    height={40}
-                    src="/menu-icon/flag-icon.jpg"
-                    alt="flag"
-                  /> */}
+                    <Button onClick={() => setVisible(true)}>
                       Become a Mentor
                     </Button>
                     <RegisterForm
@@ -457,30 +354,14 @@ const Header = () => {
                       isEdit={true}
                     />
                   </div>
-                  {/* <!-- Header Sing In & Up End --> */}
-
-                  {/* <!-- Header Mobile Toggle Start --> */}
-                  {/* <div className="header-toggle d-lg-none">
-                <Link className="menu-toggle" href="javascript:void(0)">
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                </Link>
-              </div> */}
-                  {/* <!-- Header Mobile Toggle End --> */}
                 </div>
               ) : (
                 <></>
               )}
             </>
           )}
-          {/* <!-- Header Main End --> */}
         </div>
       </div>
-      {/* <!-- Header Main End --> */}
-      {/* <!-- Overlay Start --> */}
-      {/* <div className="overlay"></div> */}
-      {/* <!-- Overlay End --> */}
     </div>
   );
 };

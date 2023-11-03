@@ -55,10 +55,11 @@ const Quiz = (
   }>({});
   const idCourse = params.id;
   const [correctAnswers, setCorrectAnswers] = useState<number>(0);
-  const { userData } = UserAuth();
+  const { userData, token } = UserAuth();
   const router = useRouter();
-
+  console.log("token is:");
   console.log("id user:", userData?.id);
+  console.log("token is:", token);
   const handleClickGotoCourse = () => {
     router.push(`/my-course/${idCourse}`);
   };

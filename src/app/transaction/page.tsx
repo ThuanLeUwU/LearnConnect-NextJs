@@ -10,58 +10,92 @@ const Transaction = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h2 className="text-2xl font-semibold text-gray-800 mb-6">
-        Transaction Data
+      <h2 className="text-2xl font-semibold text-gray-800">
+        Transaction History
       </h2>
+      <p className="mb-6 text-gray-600">View your Transaction History</p>
       {loading ? (
         <div className="text-center text-2xl text-gray-600">Loading...</div>
       ) : (
         <div className="w-full overflow-x-auto">
           <table className="w-full table-auto">
             <thead>
-              <tr className="bg-gray-100">
-                <th className="px-4 py-2">Transaction ID</th>
+              <tr>
                 <th className="px-4 py-2">CourseName</th>
                 <th className="px-4 py-2">Total</th>
                 <th className="px-4 py-2">Status</th>
-                <th className="px-4 py-2">successDate</th>
+                <th className="px-4 py-2">Transaction ID</th>
+                <th className="px-4 py-2">CreateDate</th>
+                <th className="px-4 py-2">SuccessDate</th>
               </tr>
             </thead>
             <tbody className="text-gray-700">
               {transaction.map((item, index) => (
                 <tr
                   key={index}
-                  className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}
+                  className={index % 2 === 0 ? "bg-[#e7f8ee]" : ""}
                 >
-                  <td className="border px-4 py-2 text-center">
-                    {item.paymentTransaction.transactionId}
-                  </td>
-                  <td className="border px-4 py-2">
+                  <td className="border px-4 py-3 font-bold">
                     {item.paymentTransaction.courseName}
                   </td>
-                  <td className="border px-4 py-2 relative">
+                  <td className="border px-4 py-3 relative font-bold w-[175px]">
                     {item.paymentTransaction.total &&
                       item.paymentTransaction.total.toLocaleString()}{" "}
-                    <span className="absolute right-4 text-gray-500">VND</span>
+                    <span className="absolute right-4 text-gray-500 font-bold">
+                      VND
+                    </span>
                   </td>
-
-                  <td className="border px-4 py-2 text-center">
-                    {item.paymentTransaction.status === 0
-                      ? "Success"
-                      : item.paymentTransaction.status === 1
-                      ? "Error"
-                      : item.paymentTransaction.status === 2
-                      ? "Pending"
-                      : "Unknown Status"}
+                  <td className={`border px-4 py-3 text-center font-bold`}>
+                    {item.paymentTransaction.status === 0 ? (
+                      <div className="border border-[#309255] p-1 rounded-lg text-[#309255]">
+                        Success
+                      </div>
+                    ) : item.paymentTransaction.status === 1 ? (
+                      <div className="border border-red-400 p-1 rounded-lg text-red-400">
+                        Error
+                      </div>
+                    ) : item.paymentTransaction.status === 2 ? (
+                      <div className="border border-yellow-400 p-1 rounded-lg text-yellow-400">
+                        Pending
+                      </div>
+                    ) : (
+                      <div className="border p-1">Unknown Status</div>
+                    )}
                   </td>
-                  <td className="border px-4 py-2 text-center">
-                    {new Date(
-                      item.paymentTransaction.successDate
-                    ).toLocaleDateString("en-GB")}{" "}
-                    at{" "}
-                    {new Date(
-                      item.paymentTransaction.successDate
-                    ).toLocaleTimeString("en-US")}
+                  <td className="border px-4 py-3 text-center font-bold">
+                    {item.paymentTransaction.transactionId}
+                  </td>
+                  <td className="border px-4 py-3 text-center font-bold">
+                    <div>
+                      {item.paymentTransaction.createDate
+                        ? new Date(
+                            item.paymentTransaction.createDate
+                          ).toLocaleDateString("en-GB")
+                        : ""}
+                    </div>
+                    <div>
+                      {item.paymentTransaction.createDate
+                        ? new Date(
+                            item.paymentTransaction.createDate
+                          ).toLocaleTimeString("en-US")
+                        : ""}
+                    </div>
+                  </td>
+                  <td className="border px-4 py-3 text-center font-bold">
+                    <div>
+                      {item.paymentTransaction.successDate
+                        ? new Date(
+                            item.paymentTransaction.successDate
+                          ).toLocaleDateString("en-GB")
+                        : ""}
+                    </div>
+                    <div>
+                      {item.paymentTransaction.successDate
+                        ? new Date(
+                            item.paymentTransaction.successDate
+                          ).toLocaleTimeString("en-US")
+                        : ""}
+                    </div>
                   </td>
                 </tr>
               ))}

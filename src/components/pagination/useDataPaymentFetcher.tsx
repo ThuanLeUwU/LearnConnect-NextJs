@@ -7,6 +7,7 @@ export type Transaction = {
     total: number;
     transactionId: number;
     transactionError: string;
+    createDate: string;
     successDate: string;
     paymentUrl: string;
     status: number;

@@ -253,6 +253,7 @@ export default function AfterEnroll({ params }: any) {
     //   }
     // }
   };
+
   return (
     <div className="container">
       <div className="grid cols-2 lg:grid-cols-12 mt-[40px]">

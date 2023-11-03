@@ -26,7 +26,6 @@ export default function ProfileUser() {
   const [DataUser, SetDataUser] = useState<User>();
 
   useEffect(() => {
-    // Fetch updated user data upon component mount
     const fetchUserData = async () => {
       try {
         const response = await axios.get(
@@ -34,7 +33,6 @@ export default function ProfileUser() {
         );
         SetDataUser(response.data);
       } catch (error) {
-        // Handle error
         console.error("Error fetching user data:", error);
       }
     };
