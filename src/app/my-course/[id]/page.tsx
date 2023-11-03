@@ -30,6 +30,14 @@ export type Lecture = {
   contentUrl: string;
 };
 
+export type Performance = {
+  id: string | number;
+  score: number;
+  timeSpent: number;
+  userId: number;
+  courseId: number;
+};
+
 export default function AfterEnroll({ params }: any) {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("tab1");
@@ -219,6 +227,21 @@ export default function AfterEnroll({ params }: any) {
 
     setModalRatingOpen(false);
   };
+
+  const [performance, setPerformance] = useState<Performance>();
+  useEffect(() => {
+    const fetchData = async () => {
+      const responseData = await axios.get(
+        `https://learnconnectapitest.azurewebsites.net/api/learning-performance/user/${id}/course/${idCourse}
+`
+      );
+      setPerformance(responseData?.data);
+      console.log("performance", performance);
+    };
+
+    fetchData();
+  }, []);
+  console.log("performance", performance?.score);
 
   const handleSeek = (e: any) => {
     // const video = videoRef.current;
@@ -569,6 +592,7 @@ export default function AfterEnroll({ params }: any) {
                 })}
                 <div className="pl-10 py-2 pr-[30px] bg-[#dff0e6]">
                   <button onClick={handleClick}>Test</button>
+                  <p>Score: {performance?.score}</p>
                 </div>
               </nav>
             </div>

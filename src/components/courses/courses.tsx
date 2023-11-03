@@ -162,7 +162,7 @@ const Courses = ({
           </a>
           <div
             onClick={handleLike}
-            className="absolute top-2 right-2 cursor-pointer z-50"
+            className="absolute top-2 right-2 cursor-pointer"
           >
             {isLiked ? (
               <FaHeart className={`text-2xl text-red-500`} />

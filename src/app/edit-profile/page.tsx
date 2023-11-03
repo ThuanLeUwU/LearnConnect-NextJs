@@ -75,6 +75,10 @@ export default function EditProfile() {
   };
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
+    if (!fullName || !phoneNumber || !bioDescription) {
+      toast.error("Please fill in all required fields.");
+      return;
+    }
     const updatedUserData = {
       id: id,
       password: password,
