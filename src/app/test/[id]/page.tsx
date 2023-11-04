@@ -37,31 +37,19 @@ export type Test = {
   ];
 };
 
-const Quiz = (
-  { params }: any,
-  {
-    id,
-    title,
-    description,
-    totalQuestion,
-    status,
-    courseId,
-    questions,
-  }: Test["test"]
-) => {
+const Quiz = ({ params }: any) => {
   const [questionsTest, setQuestionsTest] = useState<Test[]>([]);
   const [selectedAnswers, setSelectedAnswers] = useState<{
-    [key: number]: string | any;
+    [key: number]: { answer: string; isCorrect: boolean };
   }>({});
   const idCourse = params.id;
   const [correctAnswers, setCorrectAnswers] = useState<number>(0);
   const { userData, token } = UserAuth();
   const router = useRouter();
-  console.log("token is:");
-  console.log("id user:", userData?.id);
-  console.log("token is:", token);
-  const handleClickGotoCourse = () => {
-    router.push(`/my-course/${idCourse}`);
+  const [submitted, setSubmitted] = useState(false); // Track whether the quiz has been submitted
+
+  const handleCancel = () => {
+    console.log("Modal has been canceled.");
   };
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -87,22 +75,24 @@ const Quiz = (
     answer: string,
     isCorrect: boolean
   ) => {
-    setSelectedAnswers((prevAnswers) => ({
-      ...prevAnswers,
-      [questionId]: answer,
-    }));
-    if (isCorrect) {
-      setCorrectAnswers((prevCount) => prevCount + 1);
+    if (!submitted) {
+      setSelectedAnswers((prevAnswers) => ({
+        ...prevAnswers,
+        [questionId]: { answer, isCorrect },
+      }));
     }
   };
 
   const handleSubmit = async () => {
+    setSubmitted(true);
     let count = 0;
     let totalQuestions = 0;
+    const updatedSelectedAnswers = { ...selectedAnswers };
+
     questionsTest.forEach((item) => {
       totalQuestions += item.test.totalQuestion;
       item.questions.forEach((q) => {
-        const selectedAnswer = selectedAnswers[q.question.id];
+        const selectedAnswer = selectedAnswers[q.question.id]?.answer;
         const correctAnswer = q.answers.find((answer) => answer.isCorrect);
         if (correctAnswer && selectedAnswer === correctAnswer.answerTest) {
           count++;
@@ -118,7 +108,6 @@ const Quiz = (
     console.log("Correct Answers: ", count);
     console.log("Total Questions: ", totalQuestions);
     console.log("Average Score: ", averageScore);
-
     const userId = userData?.id;
     const url = `https://learnconnectapitest.azurewebsites.net/api/learning-performance/user/${userId}/course/${idCourse}`;
     try {
@@ -137,13 +126,26 @@ const Quiz = (
             <p>Average Score: {averageScore}</p>
           </div>
         ),
+        okText: "Go to Course",
         okButtonProps: { style: { backgroundColor: "#309255", color: "#fff" } },
         onOk: handleClickGotoCourse,
+        cancelText: "Cancel",
+        cancelButtonProps: {
+          style: { backgroundColor: "#309255", color: "#fff" },
+        },
+        onCancel: handleCancel,
       });
     } catch (error) {
       console.error("Error in PUT request:", error);
     }
   };
+
+  const handleClickGotoCourse = () => {
+    router.push(`/my-course/${idCourse}`);
+    setIsModalVisible(false);
+  };
+
+  const answerOptions = ["A.", "B.", "C.", "D."];
 
   return (
     <div className="container mx-auto px-4">
@@ -154,15 +156,23 @@ const Quiz = (
         {questionsTest.map((item) => (
           <div key={item.test.id} className="mb-4 mt-6">
             <h3 className="text-lg font-semibold mb-2">{item.test.title}</h3>
-            {item.questions.map((q) => (
+            {item.questions.map((q, index) => (
               <div key={q.question.id} className="mb-2">
                 <p className="mb-1">{q.question.questionTest}</p>
-                <div className="pl-4">
-                  {q.answers.map((answer) => (
+                <div className="pl-4 grid grid-cols-2 gap-4">
+                  {q.answers.map((answer, ansIndex) => (
                     <button
                       key={answer.id}
-                      className={`mt-1 border-2 p-2 w-full text-left rounded-lg ${
-                        selectedAnswers[q.question.id] === answer.answerTest
+                      className={`mt-1 border-2 p-2 text-left rounded-lg ${
+                        submitted
+                          ? selectedAnswers[q.question.id]?.answer ===
+                            answer.answerTest
+                            ? selectedAnswers[q.question.id]?.isCorrect
+                              ? "border-green-500 bg-green-100"
+                              : "border-red-500 bg-red-100"
+                            : "border-gray-300"
+                          : selectedAnswers[q.question.id]?.answer ===
+                            answer.answerTest
                           ? "border-blue-500 bg-blue-100"
                           : "border-gray-300"
                       }`}
@@ -174,6 +184,7 @@ const Quiz = (
                         )
                       }
                     >
+                      <span className="mr-2">{answerOptions[ansIndex]}</span>
                       {answer.answerTest}
                     </button>
                   ))}
@@ -196,3 +207,6 @@ const Quiz = (
 };
 
 export default Quiz;
+function setIsModalVisible(arg0: boolean) {
+  throw new Error("Function not implemented.");
+}
