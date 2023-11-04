@@ -47,7 +47,7 @@ const Quiz = ({ params }: any) => {
   const { userData, token } = UserAuth();
   const router = useRouter();
   const [submitted, setSubmitted] = useState(false); // Track whether the quiz has been submitted
-
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const handleCancel = () => {
     console.log("Modal has been canceled.");
   };
@@ -102,7 +102,7 @@ const Quiz = ({ params }: any) => {
 
     let averageScore = 0;
     if (count > 0) {
-      averageScore = (10 / totalQuestions) * count;
+      averageScore = (100 / totalQuestions) * count;
     }
 
     console.log("Correct Answers: ", count);
@@ -150,20 +150,23 @@ const Quiz = ({ params }: any) => {
   return (
     <div className="container mx-auto px-4">
       <div className="p-4">
-        <h2 className="text-2xl font-bold mb-4 text-center">
+        {/* <h2 className="text-2xl font-bold mb-4 text-center">
           Multiple Choice Quiz
-        </h2>
+        </h2> */}
         {questionsTest.map((item) => (
           <div key={item.test.id} className="mb-4 mt-6">
             <h3 className="text-lg font-semibold mb-2">{item.test.title}</h3>
             {item.questions.map((q, index) => (
-              <div key={q.question.id} className="mb-2">
-                <p className="mb-1">{q.question.questionTest}</p>
+              <div
+                key={q.question.id}
+                className="mb-2 mt-6 p-6 border-2 rounded-lg border-[#309255]"
+              >
+                <p className="mb-1 font-bold">{q.question.questionTest}</p>
                 <div className="pl-4 grid grid-cols-2 gap-4">
                   {q.answers.map((answer, ansIndex) => (
                     <button
                       key={answer.id}
-                      className={`mt-1 border-2 p-2 text-left rounded-lg ${
+                      className={`mt-3 border-2 p-2 text-left rounded-lg ${
                         submitted
                           ? selectedAnswers[q.question.id]?.answer ===
                             answer.answerTest
@@ -174,7 +177,7 @@ const Quiz = ({ params }: any) => {
                           : selectedAnswers[q.question.id]?.answer ===
                             answer.answerTest
                           ? "border-blue-500 bg-blue-100"
-                          : "border-gray-300"
+                          : "border-[#e7f8ee]"
                       }`}
                       onClick={() =>
                         handleAnswerSelect(
@@ -194,12 +197,21 @@ const Quiz = ({ params }: any) => {
           </div>
         ))}
         <div className="flex justify-end">
-          <button
-            className="bg-[#309255] text-white font-bold py-2 px-4 mt-4 rounded"
-            onClick={handleSubmit}
-          >
-            Submit
-          </button>
+          {submitted ? (
+            <button
+              className="bg-[#309255] text-white font-bold py-2 px-4 mt-4 rounded"
+              onClick={handleClickGotoCourse}
+            >
+              Go to Course
+            </button>
+          ) : (
+            <button
+              className="bg-[#309255] text-white font-bold py-2 px-4 mt-4 rounded"
+              onClick={handleSubmit}
+            >
+              Submit
+            </button>
+          )}
         </div>
       </div>
     </div>
@@ -207,6 +219,3 @@ const Quiz = ({ params }: any) => {
 };
 
 export default Quiz;
-function setIsModalVisible(arg0: boolean) {
-  throw new Error("Function not implemented.");
-}
