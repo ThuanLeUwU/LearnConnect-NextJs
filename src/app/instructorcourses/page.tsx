@@ -19,11 +19,22 @@ import {
 import ReactStars from "react-stars";
 import { UserAuth } from "../context/AuthContext";
 import axios from "axios";
-import { Rating } from "@mui/material";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Rating,
+  Typography,
+} from "@mui/material";
 import { useRouter } from "next/navigation";
-import useDataCoursesInstructor from "@/components/pagination/useDataCoursesInstructor";
+import useDataCoursesInstructor, {
+  ListCourse,
+} from "@/components/pagination/useDataCoursesInstructor";
 import Paginate from "@/components/pagination/pagination";
 import { toast } from "sonner";
+import { Course } from "@/components/courses/courses";
 
 export type Category = {
   id: number;
@@ -84,7 +95,7 @@ const InstructorCourse = () => {
     }
   };
 
-  //Modal
+  //Modal Create
   const [isModal, setIsModal] = useState(false);
   const [form] = Form.useForm();
 
@@ -93,8 +104,11 @@ const InstructorCourse = () => {
   };
 
   const handleCancel = () => {
+    setUpdateModal(false);
     setIsModal(false);
     form.resetFields();
+    setImage(undefined);
+    setUpdateImage(course?.imageUrl);
   };
 
   const handleSubmit = async (data: any) => {
@@ -145,6 +159,7 @@ const InstructorCourse = () => {
       setFormDataImage(info.file.originFileObj);
       getBase64(info.file.originFileObj, (url) => {
         setImage(url);
+        setUpdateImage(url);
       });
     }
   };
@@ -187,6 +202,96 @@ const InstructorCourse = () => {
 
   const handleChangeCate = (value: React.SetStateAction<null>) => {
     setSelected(value);
+  };
+
+  //Update information of course
+  const [updateModal, setUpdateModal] = useState(false);
+  const [course, setCourse] = useState<Course>();
+
+  console.log("course,", course);
+  // const [previousCate, setPreviousCate] = useState(course?.categoryId);
+  const [updateCate, setUpdateCate] = useState(course?.categoryId);
+  const [updateImage, setUpdateImage] = useState(course?.imageUrl);
+  // const {preivousImage} = useState(course?.imageUrl);
+
+  const showUpdateModal = (data: any) => {
+    setUpdateModal(true);
+    setCourse(data);
+    setUpdateImage(data.imageUrl);
+  };
+
+  const handleUpdateCate = (
+    value: React.SetStateAction<string | number | undefined>
+  ) => {
+    setUpdateCate(value);
+  };
+
+  const handleUpdate = async (data: any) => {
+    const formData = new FormData();
+    formData.append("courseName", data.name);
+    formData.append("description", data.description);
+    formData.append("shortDescription", data.shortDes);
+    formData.append("price", data.price);
+    formData.append("lectureCount", data.lecture);
+    formData.append("categoryId", selected || "1");
+    if (formDataImage !== undefined) {
+      formData.append("courseImage", formDataImage);
+    }
+    try {
+      await axios.put(
+        `https://learnconnectapitest.azurewebsites.net/api/course/update/${course?.id}/${id}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      handleCancel();
+      refetchList();
+      setTimeout(() => {
+        toast.success("Create Course successful");
+      });
+    } catch (err) {
+      setTimeout(() => {
+        toast.error("Create Course fail");
+      });
+    }
+  };
+
+  //Delete Course
+  const [open, setOpen] = useState(false);
+
+  const handleDelete = async (data: any) => {
+    try {
+      await axios.put(
+        `https://learnconnectapitest.azurewebsites.net/api/course/update-course-status?courseId=${data.id}&status=1`,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      handleClose();
+      refetchList();
+      setTimeout(() => {
+        toast.success("Delete Course successful");
+      });
+    } catch (err) {
+      setTimeout(() => {
+        toast.error("Delete Course fail");
+      });
+    }
+    handleClose();
+  };
+
+  const handleClickOpen = (data: any) => {
+    setCourse(data);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
   };
 
   if (!id) return <p>Loading</p>;
@@ -252,6 +357,7 @@ const InstructorCourse = () => {
               <span className=""> New Course</span>
             </Button> */}
             <Button
+              type="default"
               className={`${InstructorCourseStyle.create_btn}`}
               onClick={showModal}
             >
@@ -326,6 +432,31 @@ const InstructorCourse = () => {
                               readOnly
                             />
                           </span>
+                        </span>
+                      </div>
+                      <div
+                        className={`${InstructorCourseStyle.course_tracker_4}`}
+                      >
+                        <p className="flex justify-center">Action </p>
+                        <span className="flex  gap-2">
+                          <Button
+                            // type="primary"
+                            style={{ color: "black", backgroundColor: "" }}
+                            onClick={() => {
+                              showUpdateModal(item);
+                              // console.log("t nè", user);
+                            }}
+                          >
+                            Update
+                          </Button>
+                          <Button
+                            danger
+                            type="primary"
+                            style={{ color: "black" }}
+                            onClick={() => handleClickOpen(item)}
+                          >
+                            Delete
+                          </Button>
                         </span>
                       </div>
                       {/* <div>
@@ -407,15 +538,13 @@ const InstructorCourse = () => {
             name="length"
           >
             <InputNumber
-              type="number"
               placeholder="Input estimate the time!"
               min={0}
               className="w-[290px]"
               controls={false}
               // formatter={(value) => `${value} mins`}
               // parser={(value) => value!.replace("mins", "")}
-            />{" "}
-            minutes
+            />
           </Form.Item>
           <Form.Item
             rules={[
@@ -472,6 +601,188 @@ const InstructorCourse = () => {
           </Space>
         </Form>
       </Modal>
+      {/* Modal update */}
+      <Modal
+        destroyOnClose={true}
+        title={`Update Course Form ${user?.displayName}`}
+        open={updateModal}
+        // onOk={handleOk}
+        onCancel={handleCancel}
+        footer={false}
+      >
+        <Form
+          autoComplete="off"
+          form={form}
+          labelCol={{ span: 4 }}
+          wrapperCol={{ span: 14 }}
+          layout="horizontal"
+          className="mt-5"
+          style={{ width: 600 }}
+          onFinish={handleUpdate}
+        >
+          <div style={{ display: "flex" }} className="flex px-[130px]">
+            <Image
+              width={200}
+              height={200}
+              src={updateImage}
+              // defaultValue={course?.imageUrl}
+            />
+          </div>
+          <div
+            className="flex px-[190px] pt-2 pb-2"
+            style={{ display: "flex" }}
+          >
+            <Upload
+              accept="image/png, image/jpeg"
+              onChange={handleChange}
+              beforeUpload={beforeUpload}
+              // headers={{ Authorization: authorization }}
+              action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
+            >
+              <Button>Upload</Button>
+            </Upload>
+          </div>
+          <Form.Item
+            rules={[{ required: true, message: "Please input Name!" }]}
+            label="Name"
+            name="name"
+          >
+            <Input placeholder="Name Course" defaultValue={course?.name} />
+          </Form.Item>
+          <Form.Item label="Category">
+            <Select onChange={handleUpdateCate} defaultValue={updateCate}>
+              {listCategory.map((option) => {
+                return (
+                  <Option key={option.id} value={option.id}>
+                    {option.name}
+                  </Option>
+                );
+              })}
+            </Select>
+          </Form.Item>
+          {/* <Form.Item label="Mentor" name="mentor">
+            {`${user?.displayName}`}
+          </Form.Item> */}
+          <Form.Item
+            rules={[{ required: true, message: "Please estimate the time!" }]}
+            label="Length(mins)"
+            name="length"
+          >
+            <InputNumber
+              defaultValue={course?.contentLength}
+              type="number"
+              placeholder="Input estimate the time!"
+              min={0}
+              className="w-[290px]"
+              controls={false}
+              // formatter={(value) => `${value} mins`}
+              // parser={(value) => value!.replace("mins", "")}
+            />
+          </Form.Item>
+          <Form.Item
+            rules={[
+              {
+                required: true,
+                message: "Please estimate number of lectures!",
+              },
+            ]}
+            label="Lectures"
+            name="lecture"
+          >
+            <InputNumber
+              className="w-[200px]"
+              min={0}
+              controls={false}
+              defaultValue={course?.lectureCount}
+            />
+          </Form.Item>
+          <Form.Item
+            rules={[
+              {
+                required: true,
+                message: "Please Input Price",
+              },
+            ]}
+            label="Price"
+            name="price"
+          >
+            <InputNumber
+              style={{ width: 200 }}
+              min={0}
+              controls={false}
+              defaultValue={course?.price}
+            />
+          </Form.Item>
+          <Form.Item
+            rules={[
+              {
+                required: true,
+                message: "Please Type Short Description",
+              },
+            ]}
+            label="Intro"
+            name="shortDes"
+          >
+            <Input defaultValue={course?.shortDescription} />
+          </Form.Item>
+          <Form.Item label="Description" name="description">
+            <Input.TextArea rows={4} defaultValue={course?.description} />
+          </Form.Item>
+          <Space className="justify-end w-full pr-[150px]">
+            <Form.Item className="mb-0">
+              <Space>
+                <Button onClick={handleCancel}>Cancel</Button>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  style={{ color: "black" }}
+                >
+                  Update
+                </Button>
+              </Space>
+            </Form.Item>
+          </Space>
+        </Form>
+      </Modal>
+
+      {/* Dialog */}
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle
+          sx={{ backgroundColor: "#ff0000", fontSize: "20px", color: "white" }}
+        >
+          {" "}
+          WARNING!!!{" "}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            <Typography>
+              Do you want to Delete {`${course?.name}`} course?
+            </Typography>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Typography
+            onClick={handleClose}
+            sx={{
+              marginRight: "12px",
+              cursor: "pointer",
+              ":hover": {
+                textDecoration: "underline",
+              },
+            }}
+          >
+            cancel
+          </Typography>
+
+          <Button danger onClick={() => handleDelete(course)} type="primary">
+            Remove
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

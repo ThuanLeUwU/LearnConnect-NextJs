@@ -116,8 +116,9 @@
   width: 150px;
   background-color: #eefbf3;
   &:hover {
-    color: black;
+    color: #e5ecff !important;
     background-color: #309255;
+    border-color: #309255 !important;
   }
 }
 
@@ -164,7 +165,7 @@
   // flex: 1;
   &_1 {
     background-color: #e5ecff;
-    width: 150px;
+    width: 100px;
     padding: 15px;
     border-radius: 10px;
     margin: 15px 7px 0;
@@ -181,6 +182,14 @@
   &_3 {
     background-color: #ffe8df;
     width: 150px;
+    padding: 15px;
+    border-radius: 10px;
+    margin: 15px 7px 0;
+  }
+
+  &_4 {
+    background-color: cornsilk;
+    width: min-content;
     padding: 15px;
     border-radius: 10px;
     margin: 15px 7px 0;
