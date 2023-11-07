@@ -44,7 +44,7 @@ const Quiz = ({ params }: any) => {
   }>({});
   const idCourse = params.id;
   const [correctAnswers, setCorrectAnswers] = useState<number>(0);
-  const { userData, token } = UserAuth();
+  const { userData, jwtToken } = UserAuth();
   const router = useRouter();
   const [submitted, setSubmitted] = useState(false); // Track whether the quiz has been submitted
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -121,8 +121,8 @@ const Quiz = ({ params }: any) => {
         title: "Quiz Results",
         content: (
           <div>
-            <p>Correct Answers: {count}</p>
             <p>Total Questions: {totalQuestions}</p>
+            <p>Correct Answers: {count}</p>
             <p>Average Score: {averageScore}</p>
           </div>
         ),
@@ -155,13 +155,15 @@ const Quiz = ({ params }: any) => {
         </h2> */}
         {questionsTest.map((item) => (
           <div key={item.test.id} className="mb-4 mt-6">
-            <h3 className="text-lg font-semibold mb-2">{item.test.title}</h3>
+            <h3 className="text-xl font-semibold mb-2">{item.test.title}</h3>
             {item.questions.map((q, index) => (
               <div
                 key={q.question.id}
-                className="mb-2 mt-6 p-6 border-2 rounded-lg border-[#309255]"
+                className="mb-2 mt-6 p-6 border-2 rounded-lg border-gray-200"
               >
-                <p className="mb-1 font-bold">{q.question.questionTest}</p>
+                <p className="mb-1 font-medium text-[18px]">
+                  {index + 1}. {q.question.questionTest}
+                </p>
                 <div className="pl-4 grid grid-cols-2 gap-4">
                   {q.answers.map((answer, ansIndex) => (
                     <button
@@ -177,7 +179,7 @@ const Quiz = ({ params }: any) => {
                           : selectedAnswers[q.question.id]?.answer ===
                             answer.answerTest
                           ? "border-blue-500 bg-blue-100"
-                          : "border-[#e7f8ee]"
+                          : "border-gray-100"
                       }`}
                       onClick={() =>
                         handleAnswerSelect(

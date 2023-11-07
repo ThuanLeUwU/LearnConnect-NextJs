@@ -865,7 +865,7 @@
   overflow: hidden;
   display: grid;
   justify-content: center;
-  grid-template-columns: repeat(3, minmax(1px, 1fr));
+  grid-template-columns: repeat(2, minmax(1px, 1fr));
   grid-auto-rows: minmax(0, 1fr);
   grid-template-rows: repeat(1, minmax(0, 1fr));
   padding: 0px 0px 0px 0px;
@@ -893,16 +893,12 @@
 // Header After Login
 .header_login {
   background-color: #212832;
+  padding: 20px;
 }
 
 .header_navbar {
   display: flex;
   justify-content: space-between;
-}
-
-.header_login_left {
-  padding: 25px 25px;
-  background-color: #28313d;
 }
 
 .header_login_left a + a {

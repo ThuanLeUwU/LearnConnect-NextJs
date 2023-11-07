@@ -39,29 +39,27 @@ const Footer = () => {
 
                 <div className={`${headerStyles.footer_widget_address}`}>
                   <h4 className={`${headerStyles.footer_widget_title}`}>
-                    Caribbean Ct
+                    FPT University HCMC
                   </h4>
-                  <p>Haymarket, Virginia (VA).</p>
+                  <p>
+                    Lô E2a-7, Đường D1, Đ. D1, Long Thạnh Mỹ, Thành Phố Thủ Đức,
+                    Thành phố Hồ Chí Minh
+                  </p>
+                </div>
+                <div>
+                  <p>
+                    <i className="flaticon-email"></i>{" "}
+                    <a href="mailto:learnconnect@gmail.com">
+                      learnconnect@gmail.com
+                    </a>
+                  </p>
+                  <p>
+                    <i className="flaticon-phone-call"></i>{" "}
+                    <a href="tel:02873005588">028 7300 5588</a>{" "}
+                  </p>
                 </div>
 
-                <ul className={`${headerStyles.footer_widget_info}`}>
-                  <li>
-                    <p>
-                      {" "}
-                      <i className="flaticon-email"></i>{" "}
-                      <a href="mailto:address@gmail.com">address@gmail.com</a>{" "}
-                    </p>
-                  </li>
-                  <li>
-                    <p>
-                      {" "}
-                      <i className="flaticon-phone-call"></i>{" "}
-                      <a href="tel:9702621413">(970) 262-1413</a>{" "}
-                    </p>
-                  </li>
-                </ul>
-
-                <ul className={`${headerStyles.footer_widget_social}`}>
+                {/* <ul className={`${headerStyles.footer_widget_social}`}>
                   <li>
                     <a href="#">
                       <i className="flaticon-facebook"></i>
@@ -82,36 +80,18 @@ const Footer = () => {
                       <i className="flaticon-instagram"></i>
                     </a>
                   </li>
-                </ul>
+                </ul> */}
               </div>
               {/* <!-- Footer Widget End --> */}
             </div>
             <div className="">
-              <div className="">
-                {/* <!-- Footer Widget Start --> */}
-                <div className={`${headerStyles.footer_widget}`}>
-                  <h4 className={`${headerStyles.footer_widget_title}`}>
-                    Quick Links
-                  </h4>
-
-                  <ul className={`${headerStyles.footer_widget_link}`}>
-                    <li>
-                      <a href="/about">About Us</a>
-                    </li>
-                    <li>
-                      <a href="/contact">Contact Us</a>
-                    </li>
-                    <li>
-                      <a href="/faq">Course FAQ’s</a>
-                    </li>
-                  </ul>
-                </div>
-                {/* <!-- Footer Widget End --> */}
-              </div>
-              {/* <!-- Footer Widget Link End --> */}
+              <img
+                src="/images/logo-1.png"
+                className={`${headerStyles.footer_widget} w-[300px] float-right mt-0`}
+                alt="logo"
+              />
             </div>
-            <div className="">
-              {/* <!-- Footer Widget Start --> */}
+            {/* <div className="">
               <div className={`${headerStyles.footer_widget}`}>
                 <h4 className={`${headerStyles.footer_widget_title}`}>
                   Subscribe
@@ -137,8 +117,7 @@ const Footer = () => {
                   </div>
                 </div>
               </div>
-              {/* <!-- Footer Widget End --> */}
-            </div>
+            </div> */}
           </div>
         </div>
 
@@ -147,9 +126,8 @@ const Footer = () => {
       {/* <!-- Footer Widget Section End --> */}
 
       {/* <!-- Footer Copyright Start --> */}
-      <div className={`${headerStyles.footer_copyright}`}>
+      {/* <div className={`${headerStyles.footer_copyright}`}>
         <div className="container">
-          {/* <!-- Footer Copyright Start --> */}
           <div className={`${headerStyles.copyright_wrapper}`}>
             <div className={`${headerStyles.copyright_link}`}>
               <Link href="#">Terms of Service</Link>
@@ -160,15 +138,12 @@ const Footer = () => {
             <div className={`${headerStyles.copyright_text}`}>
               <p>
                 &copy; 2021 <span> LearnConnect </span> Made with{" "}
-                {/* <i className="icofont-heart-alt"></i> by{" "} */}
                 <Link href="#">Codecarnival</Link>
               </p>
             </div>
           </div>
-          {/* <!-- Footer Copyright End --> */}
         </div>
-      </div>
-      {/* <!-- Footer Copyright End --> */}
+      </div> */}
     </div>
   );
 };

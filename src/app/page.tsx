@@ -13,6 +13,7 @@ import Search from "@/components/search/search";
 export default function Home() {
   const { loading, courses, totalPages, currentPage, setCurrentPage } =
     useDataHomeFetcher();
+
   return (
     <>
       <div className="container">
@@ -51,7 +52,7 @@ export default function Home() {
 
       <RegisInstructor />
       <HowItWork />
-      <BrandSupport />
+      {/* <BrandSupport /> */}
     </>
   );
 }
