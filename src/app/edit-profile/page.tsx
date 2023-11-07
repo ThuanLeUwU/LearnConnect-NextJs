@@ -58,9 +58,9 @@ export default function EditProfile() {
     router.prefetch("/profile");
     router.push("/profile");
   };
-  const handleFullNameChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setFullName(e.target.value);
-  };
+  // const handleFullNameChange = (e: ChangeEvent<HTMLInputElement>) => {
+  //   setFullName(e.target.value);
+  // };
 
   const handleGenderChange = (e: ChangeEvent<HTMLSelectElement>) => {
     setGender(parseInt(e.target.value));
@@ -73,6 +73,47 @@ export default function EditProfile() {
   const handleBioDescriptionChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setBioDescription(e.target.value);
   };
+  useEffect(() => {
+    const savedData = localStorage.getItem("editProfileData");
+    if (savedData) {
+      const parsedData = JSON.parse(savedData);
+      setEmail(parsedData.email);
+      setPassword(parsedData.password);
+      setProfilePictureUrl(parsedData.profilePictureUrl);
+      setFullName(parsedData.fullName);
+      setGender(parsedData.gender);
+      setPhoneNumber(parsedData.phoneNumber);
+      setBioDescription(parsedData.bioDescription);
+    }
+  }, []);
+
+  useEffect(() => {
+    const dataToSave = {
+      email,
+      password,
+      profilePictureUrl,
+      fullName,
+      gender,
+      phoneNumber,
+      bioDescription,
+    };
+    localStorage.setItem("editProfileData", JSON.stringify(dataToSave));
+  }, [
+    email,
+    password,
+    profilePictureUrl,
+    fullName,
+    gender,
+    phoneNumber,
+    bioDescription,
+  ]);
+
+  useEffect(() => {
+    return () => {
+      localStorage.removeItem("editProfileData");
+    };
+  }, []);
+
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (!fullName || !phoneNumber || !bioDescription) {
@@ -95,7 +136,7 @@ export default function EditProfile() {
       profilePictureUrl: profilePictureUrl,
       status: status,
     };
-
+    console.log("usder data:", updatedUserData);
     axios
       .put(
         `https://learnconnectapitest.azurewebsites.net/api/user/${id}`,
@@ -106,12 +147,13 @@ export default function EditProfile() {
         setTimeout(() => {
           toast.success("Edit successful");
         });
-
         router.push("/profile");
       })
       .catch((error) => {
-        showErrorModal();
-
+        setTimeout(() => {
+          toast.error("Edit not successful");
+        });
+        router.push("/profile");
         if (error.response) {
           console.error("Server responded with an error:", error.response.data);
           console.error("Status code:", error.response.status);
@@ -127,6 +169,7 @@ export default function EditProfile() {
         console.error("Error updating profile:", error);
       });
   };
+
   return (
     <div className="container">
       <div className="bg-[#fff]">
@@ -211,7 +254,7 @@ export default function EditProfile() {
               </button>
             </form>
           </div>
-          <Modal
+          {/* <Modal
             title="Success"
             visible={isSuccessModalVisible}
             onOk={handleOk}
@@ -226,7 +269,7 @@ export default function EditProfile() {
             onCancel={handleOk}
           >
             <p>Failed to update profile. Please try again.</p>
-          </Modal>
+          </Modal> */}
         </div>
       </div>
     </div>

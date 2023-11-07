@@ -3,31 +3,40 @@ import Image from "next/image";
 import headerStyles from "./styles/styles.module.scss";
 import "../app/./globals.css";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { UserAuth } from "@/app/context/AuthContext";
 import { Button } from "react-bootstrap";
 import { RegisterForm } from "@/components/registerForm";
 import { Modal } from "antd";
 import { useRouter } from "next/navigation";
 import { AiFillBell } from "react-icons/ai";
+import axios from "axios";
 
+export type Notification = {
+  id: string | number;
+  title: string;
+  description: string;
+  isRead: boolean;
+  timeStamp: string;
+  userId: number;
+};
 const Header = () => {
   const [click, setClick] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [notification, setNotification] = useState(false);
   const [visible, setVisible] = useState(false);
-  const { userData } = UserAuth();
+  const { userData, id } = UserAuth();
+  const [notificationContent, setNotificationContent] = useState<
+    Notification[]
+  >([]);
   const router = useRouter();
-
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
     setNotification(false);
   };
-
   const closeDropdown = () => {
     setIsOpen(false);
   };
-
   const toggleDropdownNotification = () => {
     setNotification(!notification);
     setIsOpen(false);
@@ -58,18 +67,27 @@ const Header = () => {
     }
   };
 
-  const handleClick = () => setClick(!click);
+  const handleClickSeeAll = () => {
+    router.push(`/notifications`);
+  };
 
-  const course = [
-    {
-      href: "/",
-      title: "All Course",
-    },
-    {
-      href: "/course-detail",
-      title: "Course Details",
-    },
-  ];
+  useEffect(() => {
+    const fetchNotificationData = async () => {
+      try {
+        const response = await axios.get(
+          `https://learnconnectapitest.azurewebsites.net/api/notification/byUserId/${id}`
+        );
+        setNotificationContent(response.data);
+      } catch (error) {
+        console.error("Error fetching Notification Data:", error);
+      }
+    };
+    if (id) {
+      fetchNotificationData();
+    }
+  }, [id]);
+  console.log("id", id);
+  console.log("notification data: ", notificationContent);
 
   return (
     <div className={`${headerStyles.header_section}`}>
@@ -145,57 +163,53 @@ const Header = () => {
                 {notification && (
                   <div className="origin-top-right absolute right-0 mt-2 w-[360px] rounded-lg shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-20">
                     <ul className="divide-y divide-gray-200 rounded-lg">
-                      <li className="flex items-center py-4 px-[25px] hover:bg-[#e7f8ee] hover:rounded-tl-lg hover:rounded-tr-lg">
-                        <span className="text-white">
-                          <i className="bg-gray-400 rounded-full h-2 w-2 block"></i>
-                        </span>
-                        <div className="ml-3 text-sm">
-                          <a href="#" className="text-gray-900">
-                            <p className="truncate max-w-[200px]">
-                              <strong>Martin</strong> has added a new
-                              <strong>customer</strong> successfully
-                            </p>
-                          </a>
-                        </div>
-                        <span className="text-gray-500 ml-auto text-sm">
-                          3:20 am
-                        </span>
-                      </li>
-                      <li className="flex items-center py-4 px-[25px] hover:bg-[#e7f8ee]">
-                        <span className="text-white">
-                          <i className="bg-gray-400 rounded-full h-2 w-2 block"></i>
-                        </span>
-                        <div className="ml-3 text-sm">
-                          <a href="#" className="text-gray-900">
-                            <p className="truncate max-w-[200px]">
-                              <strong>Martin</strong> has added a new
-                              <strong>customer</strong> successfully
-                            </p>
-                          </a>
-                        </div>
-                        <span className="text-gray-500 ml-auto text-sm">
-                          3:20 am
-                        </span>
-                      </li>
-                      <li className="flex items-center py-4 px-[25px] hover:bg-[#e7f8ee]">
-                        <span className="text-white">
-                          <i className="bg-gray-400 rounded-full h-2 w-2 block"></i>
-                        </span>
-                        <div className="ml-3 text-sm">
-                          <a href="#" className="text-gray-900">
-                            <p className="truncate max-w-[200px]">
-                              <strong>Martin</strong> has added a new
-                              <strong>customer</strong> successfully
-                            </p>
-                          </a>
-                        </div>
-                        <span className="text-gray-500 ml-auto text-sm">
-                          3:20 am
-                        </span>
-                      </li>
+                      {notificationContent &&
+                        notificationContent.length > 0 && (
+                          <div>
+                            {notificationContent
+                              .slice(-5)
+                              .map((notification) => {
+                                const date = new Date(notification.timeStamp);
+                                const hours = String(date.getHours()).padStart(
+                                  2,
+                                  "0"
+                                );
+                                const minutes = String(
+                                  date.getMinutes()
+                                ).padStart(2, "0");
+                                const timeString = `${hours}:${minutes}`;
+
+                                return (
+                                  <li
+                                    key={notification.id}
+                                    className="flex items-center py-4 px-[25px] hover:bg-[#e7f8ee] hover:rounded-tl-lg hover:rounded-tr-lg"
+                                  >
+                                    <span className="text-white">
+                                      <i className="bg-gray-400 rounded-full h-2 w-2 block"></i>
+                                    </span>
+                                    <div className="ml-3 text-sm">
+                                      <a href="#" className="text-gray-900">
+                                        <p className="truncate max-w-[250px]">
+                                          <strong>{notification.title}</strong>{" "}
+                                          {notification.description}
+                                        </p>
+                                      </a>
+                                    </div>
+                                    <span className="text-gray-500 ml-auto text-sm">
+                                      {timeString}
+                                    </span>
+                                  </li>
+                                );
+                              })}
+                          </div>
+                        )}
                     </ul>
                     <a
                       href="#"
+                      onClick={() => {
+                        handleClickSeeAll();
+                        closeDropdownNotification();
+                      }}
                       className="block text-center text-sm text-gray-700 py-2 bg-[#e7f8ee] hover:rounded-bl-lg hover:rounded-br-lg"
                     >
                       See all notifications
