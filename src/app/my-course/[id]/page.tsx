@@ -28,6 +28,10 @@ export type Lecture = {
   title: string;
   content: string;
   contentUrl: string;
+  contentType: number;
+  rejectReason: string;
+  status: number;
+  courseId: number;
 };
 
 export type Performance = {

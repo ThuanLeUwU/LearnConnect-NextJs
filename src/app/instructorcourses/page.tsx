@@ -44,7 +44,11 @@ export type Category = {
 };
 
 const InstructorCourse = () => {
-  const { id, user } = UserAuth();
+  const { id, user, jwtToken } = UserAuth();
+
+  //authorize
+  axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
+
   console.log("id", id);
   // console.log("id", user);
   const [visible, setVisible] = useState(false);
@@ -250,11 +254,11 @@ const InstructorCourse = () => {
       handleCancel();
       refetchList();
       setTimeout(() => {
-        toast.success("Create Course successful");
+        toast.success("Update Course successful");
       });
     } catch (err) {
       setTimeout(() => {
-        toast.error("Create Course fail");
+        toast.error("Update Course fail");
       });
     }
   };
