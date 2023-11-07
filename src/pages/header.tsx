@@ -16,8 +16,8 @@ const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [notification, setNotification] = useState(false);
   const [visible, setVisible] = useState(false);
-  const router = useRouter();
   const { userData } = UserAuth();
+  const router = useRouter();
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -50,7 +50,7 @@ const Header = () => {
 
   const handleSignOut = async () => {
     try {
-      await logOut();
+      logOut();
       closeDropdown();
       router.push("/");
     } catch (error) {
@@ -130,9 +130,9 @@ const Header = () => {
             <div className={`${headerStyles.header_login_left}`}>
               <Link href="/">
                 <Image
-                  width={60}
+                  width={100}
                   height={40}
-                  src="/images/logo (2).png"
+                  src="/images/LogoRemoveBG.png"
                   alt="Logo"
                 />
               </Link>
@@ -266,7 +266,7 @@ const Header = () => {
                   <Image
                     width={120}
                     height={100}
-                    src="/images/logo (2).png"
+                    src="/images/LogoRemoveBG.png"
                     alt="logo"
                   />
                 </Link>
@@ -315,9 +315,9 @@ const Header = () => {
                   <div className={`${headerStyles.header_logo}`}>
                     <Link href="/">
                       <Image
-                        width={60}
+                        width={100}
                         height={60}
-                        src="/images/logo (2).png"
+                        src="/images/LogoRemoveBG.png"
                         alt="logo"
                       />
                     </Link>

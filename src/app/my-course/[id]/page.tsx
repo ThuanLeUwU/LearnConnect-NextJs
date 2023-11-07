@@ -41,8 +41,8 @@ export type Performance = {
 export default function AfterEnroll({ params }: any) {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("tab1");
-  const { id, user } = UserAuth();
-  console.log("usser", user);
+  const { id, user, jwtToken } = UserAuth();
+  axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
   const [form] = Form.useForm();
   const [formDataImage, setFormDataImage] = useState();
   const [selected, setSelected] = useState(null);
@@ -591,9 +591,14 @@ export default function AfterEnroll({ params }: any) {
                     </a>
                   );
                 })}
-                <div className="pl-10 py-2 pr-[30px] bg-[#dff0e6]">
-                  <button onClick={handleClick}>Test</button>
-                  <p>Score: {performance?.score}</p>
+                <div className="pl-10 py-2 pr-[30px] bg-[#dff0e6] flex">
+                  <button
+                    className="border-2 border-[#309255] px-5 py-1 rounded-lg hover:bg-[#309255] active:bg-[#75c989] hover:text-white"
+                    onClick={handleClick}
+                  >
+                    Test
+                  </button>
+                  <p className="ml-auto my-auto">Score: {performance?.score}</p>
                 </div>
               </nav>
             </div>

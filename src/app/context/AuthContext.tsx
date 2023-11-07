@@ -38,7 +38,7 @@ export type User = {
 
 interface AuthContextValue {
   user: FirebaseUser | null;
-  token: string;
+  jwtToken: string;
   id: string;
   role: number;
   userData: User | null;
@@ -49,7 +49,7 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue>({
   user: null,
-  token: "",
+  jwtToken: "",
   id: "",
   role: 0,
   userData: null,
@@ -62,7 +62,7 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
   children,
 }) => {
   const [user, setUser] = useState<FirebaseUser | null>(null);
-  const [token, setToken] = useState("");
+  const [jwtToken, setJwtToken] = useState("");
   const [id, setId] = useState("");
   const [role, setRole] = useState(0);
   // console.log("info", id)
@@ -96,7 +96,11 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
 
   const logOut = () => {
     signOut(auth);
-    // setRole(0);
+    setUser(null);
+    setJwtToken("");
+    setId("");
+    setUserData(null);
+    setRole(0);
   };
 
   const refetchUser = async () => {
@@ -125,11 +129,11 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
                 },
               }
             );
-            setToken(responseData?.data);
+            setJwtToken(responseData?.data);
             const api_token = responseData?.data.data;
             var jwt = require("jsonwebtoken");
             var decoded = jwt.decode(api_token);
-            setToken(api_token);
+            setJwtToken(api_token);
             const userId = decoded.Id;
             const userRole = decoded.role;
 
@@ -178,7 +182,7 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
     <AuthContext.Provider
       value={{
         user,
-        token,
+        jwtToken,
         id,
         role,
         userData,

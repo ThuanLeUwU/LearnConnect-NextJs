@@ -27,6 +27,14 @@ export type CourseItem = {
   };
 };
 
+export type Performance = {
+  id: string | number;
+  score: number;
+  timeSpent: number;
+  userId: number;
+  courseId: number;
+};
+
 const CourseItem = ({
   imageUrl,
   name,

@@ -79,6 +79,10 @@ export default function EditProfile() {
       toast.error("Please fill in all required fields.");
       return;
     }
+    if (phoneNumber.length !== 10) {
+      toast.error("Phone number must be 10 digits.");
+      return;
+    }
     const updatedUserData = {
       id: id,
       password: password,

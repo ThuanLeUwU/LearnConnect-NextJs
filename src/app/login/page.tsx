@@ -9,7 +9,7 @@ import axios from "axios";
 import { User } from "firebase/auth";
 
 export default function LoginPage() {
-  const { user, token, googleSignIn, logOut } = UserAuth();
+  const { user, jwtToken, googleSignIn, logOut } = UserAuth();
   // console.log("token is :" , token);
 
   const router = useRouter();

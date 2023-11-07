@@ -30,10 +30,11 @@ export default function CourseDetailPage({ params }: any) {
 
   useEffect(() => {
     const fetchData = async () => {
-      const userIdToUse = idUser || 0;
-      const responseData = await axios.get(
-        `https://learnconnectapitest.azurewebsites.net/api/course/user/${userIdToUse}/course/${idCourse}`
-      );
+      let url = `https://learnconnectapitest.azurewebsites.net/api/course/user/${idUser}/course/${idCourse}`;
+      if (!idUser) {
+        url = `https://learnconnectapitest.azurewebsites.net/api/course/${idCourse}`;
+      }
+      const responseData = await axios.get(url);
       setCourses(responseData?.data);
       setAverageRating(responseData?.data.averageRating);
     };
@@ -376,7 +377,7 @@ export default function CourseDetailPage({ params }: any) {
                       {courses?.enrolled ? (
                         <Button
                           disabled
-                          className="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded-2xl py-4 px-3 leading-normal no-underline bg-[#309255] text-white btn-outline w-44 border-[#a9f9c8] hover:text-white transition-all duration-300 ease-in-out delay-0 my-2"
+                          className="inline-block align-middle text-center select-none font-normal whitespace-no-wrap rounded-2xl py-4 px-3 leading-normal no-underline bg-gray-300 text-[#309255] btn-outline w-44 border-[#309255] border transition-all duration-300 ease-in-out delay-0 my-2"
                         >
                           Enrolled
                         </Button>

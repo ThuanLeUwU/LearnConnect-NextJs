@@ -82,12 +82,14 @@ const Courses = ({
 }) => {
   const router = useRouter();
   const [isLiked, setIsLiked] = useState(false);
-  const { userData } = UserAuth();
+  const { userData, jwtToken } = UserAuth();
   const [courses, setCourses] = useState<CourseItem[]>([]);
   const handleClick = () => {
     router.push(`/course-detail/${id}`);
   };
+
   useEffect(() => {
+    axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
     if (userData) {
       const fetchFavoriteCourses = async () => {
         try {
@@ -153,13 +155,13 @@ const Courses = ({
     <div className={`${CourseStyle.single_courses}`}>
       <div className={`${CourseStyle.single_courses_image}`}>
         <div className="relative">
-          <a onClick={handleClick}>
+          <button className="w-full" onClick={handleClick}>
             <img
               className="rounded-lg w-full h-[180px] object-cover"
               src={imageUrl}
               alt="Courses"
             />
-          </a>
+          </button>
           <div
             onClick={handleLike}
             className="absolute top-2 right-2 cursor-pointer"
