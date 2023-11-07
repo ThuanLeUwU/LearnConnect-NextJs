@@ -11,6 +11,7 @@ const MyCourse = () => {
     useDataUserFetcher();
   const { jwtToken } = UserAuth();
   axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
+  console.log("jwtToken", jwtToken);
   return (
     <div className="container">
       {loading ? (

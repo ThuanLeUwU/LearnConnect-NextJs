@@ -20,7 +20,6 @@ export type User = {
 };
 export default function ProfileUser() {
   const { userData, id } = UserAuth();
-
   console.log("data:", userData?.fullName);
   console.log("picture :", userData?.profilePictureUrl);
   const [DataUser, SetDataUser] = useState<User>();
