@@ -45,6 +45,7 @@ const Quiz = ({ params }: any) => {
   const idCourse = params.id;
   const [correctAnswers, setCorrectAnswers] = useState<number>(0);
   const { userData, jwtToken } = UserAuth();
+  axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
   const router = useRouter();
   const [submitted, setSubmitted] = useState(false); // Track whether the quiz has been submitted
   const [isModalVisible, setIsModalVisible] = useState(false);

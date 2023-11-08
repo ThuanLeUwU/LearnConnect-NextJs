@@ -27,7 +27,8 @@ export type User = {
 };
 export default function EditProfile() {
   const router = useRouter();
-  const { id, userData, refetchUser } = UserAuth();
+  const { id, userData, refetchUser, jwtToken } = UserAuth();
+  axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
   const [fullName, setFullName] = useState(userData?.fullName);
   const [gender, setGender] = useState(userData?.gender || 0);
   const [phoneNumber, setPhoneNumber] = useState(userData?.phoneNumber || "");

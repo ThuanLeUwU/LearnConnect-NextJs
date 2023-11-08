@@ -19,7 +19,9 @@ export type User = {
   status: number;
 };
 export default function ProfileUser() {
-  const { userData, id } = UserAuth();
+  const { userData, id, jwtToken } = UserAuth();
+  axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
+
   console.log("data:", userData?.fullName);
   console.log("picture :", userData?.profilePictureUrl);
   const [DataUser, SetDataUser] = useState<User>();
