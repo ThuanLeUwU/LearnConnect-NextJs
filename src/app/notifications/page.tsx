@@ -4,6 +4,7 @@ import ".././globals.css";
 import { UserAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { http } from "@/api/http";
 // import { User } from "firebase/auth";
 
 export type Notification = {
@@ -23,9 +24,7 @@ export default function ProfileUser() {
   useEffect(() => {
     const fetchNotificationData = async () => {
       try {
-        const response = await axios.get(
-          `https://learnconnectapitest.azurewebsites.net/api/notification/byUserId/${id}`
-        );
+        const response = await http.get(`/notification/byUserId/${id}`);
         setNotificationContent(response.data);
       } catch (error) {
         console.error("Error fetching Notification Data:", error);

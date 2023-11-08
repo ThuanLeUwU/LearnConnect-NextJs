@@ -1,3 +1,4 @@
+import { http } from "@/api/http";
 import { UserAuth } from "@/app/context/AuthContext";
 import axios from "axios";
 import { useState, useEffect } from "react";
@@ -25,8 +26,8 @@ const useDataCoursesInstructor = () => {
   const refetchList = async () => {
     const page = Math.min(currentPage + 1, totalPages);
     if (id) {
-      const responseUser = await axios.get(
-        `https://learnconnectapitest.azurewebsites.net/api/course/get-courses-by-mentor?userId=${id}&currentPage=${page}&pageSize=${pagesize}`
+      const responseUser = await http.get(
+        `/course/get-courses-by-mentor?userId=${id}&currentPage=${page}&pageSize=${pagesize}`
       );
       setListCourseInstructor(responseUser?.data.courses);
     }
@@ -45,8 +46,8 @@ const useDataCoursesInstructor = () => {
     const fetchData = async () => {
       const page = Math.min(currentPage + 1, totalPages);
       try {
-        const responseData = await axios.get(
-          `https://learnconnectapitest.azurewebsites.net/api/course/get-courses-by-mentor?userId=${id}&currentPage=${page}&pageSize=${pagesize}
+        const responseData = await http.get(
+          `/course/get-courses-by-mentor?userId=${id}&currentPage=${page}&pageSize=${pagesize}
             `
         );
         setListCourseInstructor(responseData?.data.courses);

@@ -39,8 +39,8 @@ const AfterPayment = () => {
     if (urlParams) {
       const vnp_TxnRef = urlParams.get("vnp_TxnRef");
       const vnp_PayDate = urlParams.get("vnp_PayDate");
-      console.log("vnp_TxnRef", vnp_TxnRef);
-      console.log("vnp_PayDate", vnp_PayDate);
+      // console.log("vnp_TxnRef", vnp_TxnRef);
+      // console.log("vnp_PayDate", vnp_PayDate);
 
       const fetchData = async () => {
         try {
@@ -65,9 +65,9 @@ const AfterPayment = () => {
   const handleClickBacktoCourse = () => {
     router.push(`/`);
   };
-  console.log("courseName", courseName);
-  console.log("payment", payment);
-  console.log("courseID", courseId);
+  // console.log("courseName", courseName);
+  // console.log("payment", payment);
+  // console.log("courseID", courseId);
   return (
     <div className="flex items-center justify-center min-h-[60vh]">
       {payment?.status === 0 ? (

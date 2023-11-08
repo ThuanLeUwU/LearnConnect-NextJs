@@ -27,14 +27,21 @@ export type User = {
   id: string | number;
   password: string;
   email: string;
-  role: 0;
+  role: UserRole;
   fullName: string;
   phoneNumber: string;
-  gender: 0;
+  gender: number;
   bioDescription: string;
   profilePictureUrl: string;
   status: number;
 };
+
+export enum UserRole {
+  Admin = 0,
+  Staff = 1,
+  Mentor = 2,
+  Student = 3,
+}
 
 interface AuthContextValue {
   user: FirebaseUser | null;
@@ -51,7 +58,7 @@ const AuthContext = createContext<AuthContextValue>({
   user: null,
   jwtToken: "",
   id: "",
-  role: 0,
+  role: -1,
   userData: null,
   googleSignIn: () => {},
   logOut: () => {},
@@ -63,22 +70,25 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
 }) => {
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [jwtToken, setJwtToken] = useState("");
-  console.log("jwttoken", jwtToken);
+
   const [id, setId] = useState("");
-  const [role, setRole] = useState(0);
+  const [role, setRole] = useState(-1);
   // console.log("info", id)
   const [userData, setUserData] = useState<User | null>(null);
   const router = useRouter();
   const googleSignIn = async () => {
     const provider = new GoogleAuthProvider();
     await signInWithPopup(auth, provider);
-    if (role === 3) {
-      console.log("course log", role);
-      router.push("/courses");
-    } else {
-      console.log("user log", role);
-      router.push("/user-manage");
-    }
+
+    setTimeout(() => {
+      toast.success("Login successful");
+    });
+
+    // if (role === 3) {
+    //   console.log("course log", role);
+    //   if (role === 3) console.log("user log", role);
+    //   router.push("/user-manage");
+    // }
     // if (userRole === "3") {
     //   // console.log("course log", userRole);
     //   router.push("/courses");
@@ -89,19 +99,39 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
     //   console.log("user log", userRole);
     //   router.push("/user-manage");
     // }
-
-    setTimeout(() => {
-      toast.success("Login successful");
-    });
   };
+  React.useEffect(() => {
+    if (role === -1) {
+      return;
+    }
+
+    switch (role) {
+      case UserRole.Student:
+        router.push("/courses");
+        break;
+      case UserRole.Mentor:
+        router.push("/instructorcourses");
+        break;
+      case UserRole.Staff:
+        router.push("/user-manage");
+        break;
+      case UserRole.Admin:
+        router.push("/user-manage");
+        break;
+      default:
+        router.push("/");
+        break;
+    }
+  }, [role]);
 
   const logOut = () => {
     signOut(auth);
     setUser(null);
+    localStorage.removeItem("token");
     setJwtToken("");
     setId("");
     setUserData(null);
-    setRole(0);
+    setRole(-1);
   };
 
   const refetchUser = async () => {
@@ -131,6 +161,8 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
               }
             );
             setJwtToken(responseData?.data);
+            // console.log(responseData.data.data);
+            localStorage.setItem("token", responseData?.data.data);
             const api_token = responseData?.data.data;
             var jwt = require("jsonwebtoken");
             var decoded = jwt.decode(api_token);

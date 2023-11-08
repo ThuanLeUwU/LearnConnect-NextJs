@@ -35,6 +35,7 @@ import useDataCoursesInstructor, {
 import Paginate from "@/components/pagination/pagination";
 import { toast } from "sonner";
 import { Course } from "@/components/courses/courses";
+import { http } from "@/api/http";
 
 export type Category = {
   id: number;
@@ -44,10 +45,7 @@ export type Category = {
 };
 
 const InstructorCourse = () => {
-  const { id, user, jwtToken } = UserAuth();
-
-  //authorize
-  axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
+  const { id, user } = UserAuth();
 
   console.log("id", id);
   // console.log("id", user);
@@ -193,9 +191,7 @@ const InstructorCourse = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const responseData = await axios.get(
-          "https://learnconnectapitest.azurewebsites.net/api/category"
-        );
+        const responseData = await http.get("/category");
         setListCategory(responseData.data);
       } catch (err) {
         console.log(err);
@@ -212,7 +208,7 @@ const InstructorCourse = () => {
   const [updateModal, setUpdateModal] = useState(false);
   const [course, setCourse] = useState<Course>();
 
-  console.log("course,", course);
+  // console.log("course,", course);
   // const [previousCate, setPreviousCate] = useState(course?.categoryId);
   const [updateCate, setUpdateCate] = useState(course?.categoryId);
   const [updateImage, setUpdateImage] = useState(course?.imageUrl);

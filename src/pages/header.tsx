@@ -11,6 +11,7 @@ import { Modal } from "antd";
 import { useRouter } from "next/navigation";
 import { AiFillBell } from "react-icons/ai";
 import axios from "axios";
+import { http } from "@/api/http";
 
 export type Notification = {
   id: string | number;
@@ -48,7 +49,7 @@ const Header = () => {
 
   const { role, user, googleSignIn, logOut } = UserAuth();
 
-  console.log("user", role);
+  // console.log("user", role);
   const handleSignIn = async () => {
     try {
       await googleSignIn();
@@ -74,9 +75,7 @@ const Header = () => {
   useEffect(() => {
     const fetchNotificationData = async () => {
       try {
-        const response = await axios.get(
-          `https://learnconnectapitest.azurewebsites.net/api/notification/byUserId/${id}`
-        );
+        const response = await http.get(`/notification/byUserId/${id}`);
         setNotificationContent(response.data);
       } catch (error) {
         console.error("Error fetching Notification Data:", error);
@@ -86,8 +85,8 @@ const Header = () => {
       fetchNotificationData();
     }
   }, [id]);
-  console.log("id", id);
-  console.log("notification data: ", notificationContent);
+  // console.log("id", id);
+  // console.log("notification data: ", notificationContent);
 
   return (
     <div className={`${headerStyles.header_section}`}>
