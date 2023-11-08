@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import useDataNotificationsFetcher from "@/components/pagination/useDataNotificationsFetcher";
 import Paginate from "@/components/pagination/pagination";
+import { http } from "@/api/http";
+// import { User } from "firebase/auth";
 
 export default function ProfileUser() {
   const {
@@ -17,6 +19,7 @@ export default function ProfileUser() {
   const { id, jwtToken } = UserAuth();
   axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
   console.log("notificationContent", notificationContent);
+
   return (
     <div className="container">
       {loading ? (

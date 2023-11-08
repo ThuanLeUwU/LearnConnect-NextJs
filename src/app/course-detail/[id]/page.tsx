@@ -25,8 +25,8 @@ export default function CourseDetailPage({ params }: any) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const router = useRouter();
   const idUser = id;
-  console.log("id user is", idUser);
-  console.log("id course is", idCourse);
+  // console.log("id user is", idUser);
+  // console.log("id course is", idCourse);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,7 +40,7 @@ export default function CourseDetailPage({ params }: any) {
     };
     fetchData();
   }, []);
-  console.log("is enrolled", courses?.enrolled);
+  // console.log("is enrolled", courses?.enrolled);
   useEffect(() => {
     const fetchData = async () => {
       const responseData = await axios.get(
@@ -63,8 +63,8 @@ export default function CourseDetailPage({ params }: any) {
 
     try {
       const response = await axios.post(url);
-      console.log("Response from API:", response.data);
-      console.log("url", url);
+      // console.log("Response from API:", response.data);
+      // console.log("url", url);
       // const responseDataPayment = await axios.get(response.data);
       // console.log("responseDataPayment", responseDataPayment.data);
 
@@ -82,7 +82,7 @@ export default function CourseDetailPage({ params }: any) {
       console.error("Error occurred:", error);
     }
   };
-  console.log("course is :", courses?.averageRating);
+  // console.log("course is :", courses?.averageRating);
   // setAverageRating(courses?.averageRating);
   // console.log("averageRating 1:", averageRating);
   // console.log("averageRating 2:", courses?.averageRating);
