@@ -18,6 +18,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { message } from "antd";
 import { toast } from "sonner";
+import { http } from "@/api/http";
 
 interface AuthContextProps {
   children: ReactNode;
@@ -136,9 +137,7 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
 
   const refetchUser = async () => {
     if (id) {
-      const responseUser = await axios.get(
-        `https://learnconnectapitest.azurewebsites.net/api/user/${id}`
-      );
+      const responseUser = await http.get(`/user/${id}`);
       setUserData(responseUser?.data);
     }
   };
@@ -185,9 +184,7 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
             setRole(parseInt(userRole));
             console.log("user role", parseInt(userRole));
             const fetchUser = async (userId: string) => {
-              const responseUser = await axios.get(
-                `https://learnconnectapitest.azurewebsites.net/api/user/${userId}`
-              );
+              const responseUser = await http.get(`/user/${userId}`);
               setUserData(responseUser?.data);
             };
             fetchUser(userId);
