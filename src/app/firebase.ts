@@ -1,5 +1,5 @@
 // Import the functions you need from the SDKs you need
-"use client"
+"use client";
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 // TODO: Add SDKs for Firebase products that you want to use
@@ -13,7 +13,7 @@ const firebaseConfig = {
   projectId: "learnconnect-6f324",
   storageBucket: "learnconnect-6f324.appspot.com",
   messagingSenderId: "915054679433",
-  appId: "1:915054679433:web:0a7daa005ff6b176eabd58"
+  appId: "1:915054679433:web:0a7daa005ff6b176eabd58",
 };
 
 // Initialize Firebase

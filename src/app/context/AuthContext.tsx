@@ -51,6 +51,7 @@ interface AuthContextValue {
   userData: User | null;
   googleSignIn: () => void;
   logOut: () => void;
+  setUserLogin: (user, token) => void;
   refetchUser: () => void;
 }
 
@@ -62,6 +63,7 @@ const AuthContext = createContext<AuthContextValue>({
   userData: null,
   googleSignIn: () => {},
   logOut: () => {},
+  setUserLogin: (user, token) => {},
   refetchUser: () => {},
 });
 
@@ -83,22 +85,6 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
     setTimeout(() => {
       toast.success("Login successful");
     });
-
-    // if (role === 3) {
-    //   console.log("course log", role);
-    //   if (role === 3) console.log("user log", role);
-    //   router.push("/user-manage");
-    // }
-    // if (userRole === "3") {
-    //   // console.log("course log", userRole);
-    //   router.push("/courses");
-    // } else if (userRole === "2") {
-    //   // console.log("user log", userRole);
-    //   router.push("/instructorcourses");
-    // } else if (userRole === "1") {
-    //   console.log("user log", userRole);
-    //   router.push("/user-manage");
-    // }
   };
   React.useEffect(() => {
     if (role === -1) {
@@ -133,11 +119,23 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
     setUserData(null);
     setRole(-1);
   };
-
+  const setUserLogin = (user, token) => {
+    setUser(null);
+    localStorage.setItem("token", token);
+    setJwtToken(token);
+    setId(user?.id);
+    setUserData(user);
+    setRole(user?.role);
+  };
   const refetchUser = async () => {
     if (id) {
       const responseUser = await axios.get(
-        `https://learnconnectapitest.azurewebsites.net/api/user/${id}`
+        `https://learnconnectapitest.azurewebsites.net/api/user/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        }
       );
       setUserData(responseUser?.data);
     }
@@ -161,7 +159,6 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
               }
             );
             setJwtToken(responseData?.data);
-            // console.log(responseData.data.data);
             localStorage.setItem("token", responseData?.data.data);
             const api_token = responseData?.data.data;
             var jwt = require("jsonwebtoken");
@@ -169,45 +166,26 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
             setJwtToken(api_token);
             const userId = decoded.Id;
             const userRole = decoded.role;
-
-            // if (userRole === "3") {
-            //   // console.log("course log", userRole);
-            //   router.push("/courses");
-            // } else if (userRole === "2") {
-            //   // console.log("user log", userRole);
-            //   router.push("/instructorcourses");
-            // } else if (userRole === "1") {
-            //   console.log("user log", userRole);
-            //   router.push("/user-manage");
-            // }
-
             setId(userId);
             setRole(parseInt(userRole));
             console.log("user role", parseInt(userRole));
             const fetchUser = async (userId: string) => {
               const responseUser = await axios.get(
-                `https://learnconnectapitest.azurewebsites.net/api/user/${userId}`
+                `https://learnconnectapitest.azurewebsites.net/api/user/${userId}`,
+                {
+                  headers: {
+                    Authorization: `Bearer ${api_token}`,
+                  },
+                }
               );
               setUserData(responseUser?.data);
             };
             fetchUser(userId);
-            // if (userRole === "3") {
-            //   // console.log("course log", userRole);
-            //   router.push("/courses");
-            // } else if (userRole === "2") {
-            //   // console.log("user log", userRole);
-            //   router.push("/instructorcourses");
-            // } else if (userRole === "1") {
-            //   console.log("user log", userRole);
-            //   router.push("/user-manage");
-            // }
           };
-
           fetchData();
         });
       }
     });
-
     return () => unsubscribe();
   }, [router]);
 
@@ -221,6 +199,7 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
         userData,
         googleSignIn,
         logOut,
+        setUserLogin,
         refetchUser,
       }}
     >

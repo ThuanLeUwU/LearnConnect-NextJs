@@ -91,7 +91,7 @@ const Header = () => {
 
   return (
     <div className={`${headerStyles.header_section}`}>
-      {!user ? (
+      {!userData ? (
         <div className={`${headerStyles.header_top}`}>
           <div className="container">
             <div className={`${headerStyles.header_top_wrapper}`}>
@@ -273,7 +273,7 @@ const Header = () => {
       )}
       <div className="header-main ">
         <div className="container">
-          {!user ? (
+          {!userData ? (
             <div className={`${headerStyles.header_main_wrapper}`}>
               <div className={`${headerStyles.header_logo}`}>
                 <Link href="/">

@@ -31,41 +31,46 @@ export default function ProfileUser() {
               You don&apos;t have any courses.
             </div>
           ) : (
-            <div className="container mx-auto p-4">
-              {notificationContent
-                .sort((a, b) => Number(b.id) - Number(a.id))
-                .map((notification) => (
-                  <div
-                    className="notification-container mt-10 border-2 border-green-600 p-4 rounded-lg hover:bg-[#e7f8ee]"
-                    key={notification.id}
-                  >
-                    <h3 className="text-lg font-bold">{notification.title}</h3>
-                    <p className="text-gray-800">{notification.description}</p>
-                    <p className="text-gray-500 text-sm">
-                      {new Date(notification.timeStamp).toLocaleString(
-                        "en-GB",
-                        {
-                          day: "2-digit",
-                          month: "2-digit",
-                          year: "numeric",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                          second: "2-digit",
-                        }
-                      )}
-                    </p>
-                    <p
-                      className={`text-sm ${
-                        notification.isRead ? "text-green-600" : "text-red-600"
-                      }`}
+            <div className="flex justify-center items-center container">
+              <div className="w-4/5 bg-[#f1f6f3] mt-10 rounded-lg">
+                {notificationContent
+                  .sort((a, b) => Number(b.id) - Number(a.id))
+                  .map((notification) => (
+                    <div
+                      className="notification-container my-5 border-2 border-green-600 p-4 rounded-lg hover:bg-[#e7f8ee] mx-10"
+                      key={notification.id}
                     >
-                      {notification.isRead ? "Read" : "Unread"}
-                    </p>
-                    <p className="text-gray-500 text-sm">
-                      User ID: {notification.userId}
-                    </p>
-                  </div>
-                ))}
+                      <h3 className="text-lg font-bold">
+                        {notification.title}
+                      </h3>
+                      <p className="text-gray-800">
+                        {notification.description}
+                      </p>
+                      <p className="text-gray-500 text-sm">
+                        {new Date(notification.timeStamp).toLocaleString(
+                          "en-GB",
+                          {
+                            day: "2-digit",
+                            month: "2-digit",
+                            year: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            second: "2-digit",
+                          }
+                        )}
+                      </p>
+                      <p
+                        className={`text-sm ${
+                          notification.isRead
+                            ? "text-green-600"
+                            : "text-red-600"
+                        }`}
+                      >
+                        {notification.isRead ? "Read" : "Unread"}
+                      </p>
+                    </div>
+                  ))}
+              </div>
             </div>
           )}
         </div>
