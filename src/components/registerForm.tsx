@@ -161,16 +161,14 @@ export const RegisterForm = ({ onCancel, visible, isEdit }: IProps) => {
     formData.append(
       "identityCardBackDescription",
       "Description for identity card back"
-    ); // Add this line
+    );
     formData.append(
       "identityCardFrontDescription",
       "Description for identity card front"
-    ); // Add this line
+    );
 
     if (identifyData !== undefined) {
       formData.append("FontCardImage", identifyData);
-      console.log("values.identifyData12", identifyData);
-      console.log("values.BackData12", BackData);
     }
     if (BackData !== undefined) {
       formData.append("BackCardImage", BackData);
@@ -180,14 +178,6 @@ export const RegisterForm = ({ onCancel, visible, isEdit }: IProps) => {
     }
     try {
       const url = `https://learnconnectapitest.azurewebsites.net/api/user/become-a-mentor?userId=${id}&categoryId=${category}&description=${description}&accountNumber=${BankNumber}&bankName=${BankName}`;
-      console.log("values.category", values.category);
-      console.log("values.description", values.description);
-      console.log("values.BankNumber", values.BankNumber);
-      console.log("values.BankName", values.BankName);
-      console.log("values.CardFront", values.CardFront);
-      console.log("values.CardBack", values.CardBack);
-      console.log("values.identifyData1", identifyData);
-      console.log("values.BackData1", BackData);
       await axios.post(url, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -207,10 +197,6 @@ export const RegisterForm = ({ onCancel, visible, isEdit }: IProps) => {
       handleClose();
     }
   };
-  console.log("identifyImage", identifyImage);
-  console.log("identifyData", identifyData);
-  console.log("backImage", backImage);
-  console.log("BackData", BackData);
   return (
     <Modal
       className="w-2/3 min-h-[300px]"
