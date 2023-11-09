@@ -12,6 +12,7 @@ import {
 } from "antd";
 import { useForm } from "antd/es/form/Form";
 import axios from "axios";
+import { Select } from "antd";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -41,11 +42,18 @@ interface IProps {
 export const RegisterForm = ({ onCancel, visible, isEdit }: IProps) => {
   const [show, setShow] = useState(false);
   const { id, user } = UserAuth();
-  // console.log("id", id)
   const [currentInfo, setCurrentInfo] = useState<User>();
-  // console.log(currentInfo)
+
   const [identifyImage, setIdentifyImage] = useState<string>();
   const [identifyData, setIdentifyData] = useState();
+
+  const [backImage, setBackImage] = useState<string>();
+  const [BackData, setBackData] = useState();
+
+  const [documentImage, setDocumentImage] = useState<string>();
+  const [DocumentData, setDocumentData] = useState();
+
+  const { Option } = Select;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -58,10 +66,6 @@ export const RegisterForm = ({ onCancel, visible, isEdit }: IProps) => {
   }, []);
 
   const [form] = Form.useForm();
-  // const handleCancel = () => {
-  //   setIsModalOpen(false);
-  // };
-
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
@@ -70,11 +74,32 @@ export const RegisterForm = ({ onCancel, visible, isEdit }: IProps) => {
       return;
     }
     if (info.file.status === "done") {
-      // Get this url from response in real world.
-
       setIdentifyData(info.file.originFileObj);
       getBase64(info.file.originFileObj, (url) => {
         setIdentifyImage(url);
+      });
+    }
+  };
+  const handleChangeBackImg = (info: any) => {
+    if (info.file.status === "uploading") {
+      return;
+    }
+    if (info.file.status === "done") {
+      setDocumentData(info.file.originFileObj);
+      getBase64(info.file.originFileObj, (url) => {
+        setDocumentImage(url);
+      });
+    }
+  };
+
+  const handleChangeDocumentData = (info: any) => {
+    if (info.file.status === "uploading") {
+      return;
+    }
+    if (info.file.status === "done") {
+      setBackData(info.file.originFileObj);
+      getBase64(info.file.originFileObj, (url) => {
+        setBackImage(url);
       });
     }
   };
@@ -97,10 +122,95 @@ export const RegisterForm = ({ onCancel, visible, isEdit }: IProps) => {
     return isJpgOrPng && isLt2M;
   };
 
-  const handleSubmit = () => {
-    handleClose();
+  const normFile = (e: any) => {
+    if (Array.isArray(e)) {
+      return e;
+    }
+    return e?.fileList;
   };
 
+  const handleSubmit = async (values: any) => {
+    const formData = new FormData();
+    const {
+      category,
+      description,
+      BankNumber,
+      BankName,
+      CardFront,
+      CardBack,
+      DescriptionDocument,
+    } = values;
+    formData.append("Category", values.category || "1");
+    formData.append("description", values.description);
+    formData.append("BankNumber", values.BankNumber);
+    formData.append("BankName", values.BankName);
+    formData.append("CardFront", CardFront);
+    formData.append("CardBack", CardBack);
+    formData.append("DescriptionDocument", DescriptionDocument);
+    if (BackData) {
+      formData.append("identityCardBackUrl", BackData);
+    }
+
+    if (identifyData) {
+      formData.append("identityCardFrontUrl", identifyData);
+    }
+
+    if (DocumentData) {
+      formData.append("verificationDocument", DocumentData);
+    }
+    formData.append(
+      "identityCardBackDescription",
+      "Description for identity card back"
+    ); // Add this line
+    formData.append(
+      "identityCardFrontDescription",
+      "Description for identity card front"
+    ); // Add this line
+
+    if (identifyData !== undefined) {
+      formData.append("FontCardImage", identifyData);
+      console.log("values.identifyData12", identifyData);
+      console.log("values.BackData12", BackData);
+    }
+    if (BackData !== undefined) {
+      formData.append("BackCardImage", BackData);
+    }
+    if (DocumentData !== undefined) {
+      formData.append("BackCardImage", DocumentData);
+    }
+    try {
+      const url = `https://learnconnectapitest.azurewebsites.net/api/user/become-a-mentor?userId=${id}&categoryId=${category}&description=${description}&accountNumber=${BankNumber}&bankName=${BankName}`;
+      console.log("values.category", values.category);
+      console.log("values.description", values.description);
+      console.log("values.BankNumber", values.BankNumber);
+      console.log("values.BankName", values.BankName);
+      console.log("values.CardFront", values.CardFront);
+      console.log("values.CardBack", values.CardBack);
+      console.log("values.identifyData1", identifyData);
+      console.log("values.BackData1", BackData);
+      await axios.post(url, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      setTimeout(() => {
+        toast.success("Form submitted successful");
+      }, 0);
+      console.log("url", url);
+    } catch (error) {
+      setTimeout(() => {
+        toast.error("Failed to submit the form. Please try again later.");
+      }, 0);
+      console.log("error", error);
+    } finally {
+      handleClose();
+    }
+  };
+  console.log("identifyImage", identifyImage);
+  console.log("identifyData", identifyData);
+  console.log("backImage", backImage);
+  console.log("BackData", BackData);
   return (
     <Modal
       className="w-2/3 min-h-[300px]"
@@ -123,21 +233,112 @@ export const RegisterForm = ({ onCancel, visible, isEdit }: IProps) => {
           {user?.displayName}
         </Form.Item>
         <Form.Item label="Email">{user?.email}</Form.Item>
-        {/* <Form.Item label="Phone">{currentInfo?.phoneNumber}</Form.Item> */}
         <Form.Item
-          rules={[{ required: true, message: "Please input Identify Card!" }]}
-          label="Identify Card"
-          name="identify"
+          label="Category"
+          name="category"
+          rules={[{ required: true, message: "Please select a category!" }]}
+        >
+          <Select>
+            <Option value="1">SE</Option>
+            <Option value="2">AI</Option>
+            <Option value="3">IA</Option>
+          </Select>
+        </Form.Item>
+        <Form.Item
+          rules={[{ required: true, message: "Please input Description" }]}
+          label="Description"
+          name="description"
         >
           <Input />
         </Form.Item>
-        <Form.Item label="ID Card (Image)">
+        <Form.Item
+          rules={[{ required: true, message: "Please input BankNumber" }]}
+          label="BankNumber"
+          name="BankNumber"
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          rules={[{ required: true, message: "Please input BankName" }]}
+          label="BankName"
+          name="BankName"
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          rules={[{ required: true, message: "Please input CardFront" }]}
+          label="CardFront"
+          name="CardFront"
+        >
+          <Input />
+        </Form.Item>
+        {/* <Form.Item label="ID Card Font">
           <Upload
             accept="image/png, image/jpeg"
             onChange={handleChange}
             beforeUpload={beforeUpload}
-            // headers={{ Authorization: authorization }}
             action="https://learnconnectapitest.azurewebsites.net/api/image"
+            listType="picture-card"
+          >
+            Upload
+          </Upload>
+        </Form.Item> */}
+        <Form.Item
+          rules={[{ required: true, message: "Please input CardFront" }]}
+          label="ID Card Font"
+          getValueFromEvent={normFile}
+        >
+          <Upload
+            accept="image/png, image/jpeg"
+            onChange={handleChange}
+            beforeUpload={beforeUpload}
+            action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
+            listType="picture-card"
+          >
+            Upload
+          </Upload>
+        </Form.Item>
+        <Form.Item
+          rules={[{ required: true, message: "Please input CardBack" }]}
+          label="CardBack"
+          name="CardBack"
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label="ID Card Back"
+          getValueFromEvent={normFile}
+          rules={[{ required: true, message: "Please input CardFront" }]}
+        >
+          <Upload
+            accept="image/png, image/jpeg"
+            onChange={handleChangeBackImg}
+            beforeUpload={beforeUpload}
+            action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
+            listType="picture-card"
+          >
+            Upload
+          </Upload>
+        </Form.Item>
+        <Form.Item
+          rules={[
+            { required: true, message: "Please input Description Document" },
+          ]}
+          label="DescriptionDocument"
+          name="DescriptionDocument"
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label="ID Card Back"
+          getValueFromEvent={normFile}
+          rules={[{ required: true, message: "Please input CardFront" }]}
+        >
+          <Upload
+            accept="image/png, image/jpeg"
+            onChange={handleChangeDocumentData}
+            beforeUpload={beforeUpload}
+            action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
             listType="picture-card"
           >
             Upload

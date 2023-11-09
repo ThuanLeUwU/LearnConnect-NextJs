@@ -48,9 +48,11 @@ export default function AfterEnroll({ params }: any) {
   const { id, user, jwtToken } = UserAuth();
   axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
   const [form] = Form.useForm();
-  const [formDataImage, setFormDataImage] = useState();
-  const [selected, setSelected] = useState(null);
+
   const [image, setImage] = useState<string>();
+  const [formDataImage, setFormDataImage] = useState();
+
+  const [selected, setSelected] = useState(null);
   const [activeVideoIndex, setActiveVideoIndex] = useState<number>(0);
   const { Option } = Select;
   const { TextArea } = Input;
@@ -79,6 +81,8 @@ export default function AfterEnroll({ params }: any) {
       formdata.append("reportImage", formDataImage);
     }
     try {
+      console.log("formDataImage1", formDataImage);
+      console.log("image1", image);
       await axios.post(
         `https://learnconnectapitest.azurewebsites.net/api/report/report-course?userId=${id}&courseId=${idCourse}`,
         formdata,
@@ -105,9 +109,6 @@ export default function AfterEnroll({ params }: any) {
   const handleCancel = () => {
     setIsModalOpen(false);
     setModalRatingOpen(false);
-    // data.target.reset();
-    // event.preventDefault();
-    // event.target.reset();
     form.resetFields();
   };
 
@@ -236,8 +237,7 @@ export default function AfterEnroll({ params }: any) {
   useEffect(() => {
     const fetchData = async () => {
       const responseData = await axios.get(
-        `https://learnconnectapitest.azurewebsites.net/api/learning-performance/user/${id}/course/${idCourse}
-`
+        `https://learnconnectapitest.azurewebsites.net/api/learning-performance/user/${id}/course/${idCourse}`
       );
       setPerformance(responseData?.data);
       console.log("performance", performance);
@@ -246,7 +246,6 @@ export default function AfterEnroll({ params }: any) {
     fetchData();
   }, []);
   console.log("performance", performance?.score);
-
   const handleSeek = (e: any) => {
     // const video = videoRef.current;
     // if (video) {
@@ -257,6 +256,9 @@ export default function AfterEnroll({ params }: any) {
     //   }
     // }
   };
+
+  console.log("formDataImage", formDataImage);
+  console.log("image", image);
 
   return (
     <div className="container">

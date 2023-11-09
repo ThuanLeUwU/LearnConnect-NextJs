@@ -148,24 +148,24 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
     }
   };
 
-  useEffect(() => {
-    const inactivityTimeout = setTimeout(() => {
-      resetUserData();
-    }, 30 * 60 * 100);
+  // useEffect(() => {
+  //   const inactivityTimeout = setTimeout(() => {
+  //     resetUserData();
+  //   }, 30 * 60 * 100);
 
-    const resetTimeout = () => {
-      clearTimeout(inactivityTimeout);
-    };
+  //   const resetTimeout = () => {
+  //     clearTimeout(inactivityTimeout);
+  //   };
 
-    window.addEventListener("mousemove", resetTimeout);
-    window.addEventListener("keydown", resetTimeout);
+  //   window.addEventListener("mousemove", resetTimeout);
+  //   window.addEventListener("keydown", resetTimeout);
 
-    return () => {
-      window.removeEventListener("mousemove", resetTimeout);
-      window.removeEventListener("keydown", resetTimeout);
-      clearTimeout(inactivityTimeout);
-    };
-  }, [user, jwtToken, id, role, userData]);
+  //   return () => {
+  //     window.removeEventListener("mousemove", resetTimeout);
+  //     window.removeEventListener("keydown", resetTimeout);
+  //     clearTimeout(inactivityTimeout);
+  //   };
+  // }, [user, jwtToken, id, role, userData]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
