@@ -3,7 +3,7 @@ import "../../app/./globals.css";
 import { CourseItem } from "../pagination/useDataFetcher";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-
+import { AiOutlineSearch } from "react-icons/ai";
 const Search = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
@@ -25,7 +25,8 @@ const Search = () => {
 
   return (
     <>
-      <div className="p-4 border-2 border-[#e7f8ee] rounded-lg flex mt-[30px]">
+      <div className="border-2 border-[#309255] rounded-2xl flex mt-[30px]">
+        <AiOutlineSearch className={`text-2xl my-auto ml-2 text-[#309255]`} />
         <input
           type="text"
           placeholder="Search courses..."
@@ -37,9 +38,9 @@ const Search = () => {
         />
         <button
           onClick={handleClickSearch}
-          className="bg-[#309255] text-white font-bold py-2 px-4 rounded-lg"
+          className="text-white font-bold py-2 px-8 bg-[#309255] rounded-tr-xl rounded-br-xl my-auto"
         >
-          Search
+          <AiOutlineSearch className={`text-2xl my-auto`} />
         </button>
       </div>
     </>

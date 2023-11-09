@@ -72,12 +72,19 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
 }) => {
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [jwtToken, setJwtToken] = useState("");
-
   const [id, setId] = useState("");
   const [role, setRole] = useState(-1);
-  // console.log("info", id)
   const [userData, setUserData] = useState<User | null>(null);
   const router = useRouter();
+
+  const resetUserData = () => {
+    setUser(null);
+    setJwtToken("");
+    setId("");
+    setUserData(null);
+    setRole(-1);
+  };
+
   const googleSignIn = async () => {
     const provider = new GoogleAuthProvider();
     await signInWithPopup(auth, provider);
@@ -140,6 +147,25 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
       setUserData(responseUser?.data);
     }
   };
+
+  useEffect(() => {
+    const inactivityTimeout = setTimeout(() => {
+      resetUserData();
+    }, 30 * 60 * 100);
+
+    const resetTimeout = () => {
+      clearTimeout(inactivityTimeout);
+    };
+
+    window.addEventListener("mousemove", resetTimeout);
+    window.addEventListener("keydown", resetTimeout);
+
+    return () => {
+      window.removeEventListener("mousemove", resetTimeout);
+      window.removeEventListener("keydown", resetTimeout);
+      clearTimeout(inactivityTimeout);
+    };
+  }, [user, jwtToken, id, role, userData]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
