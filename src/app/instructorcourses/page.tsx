@@ -126,7 +126,7 @@ const InstructorCourse = () => {
       formData.append("courseImage", formDataImage);
     }
     try {
-      await axios.post(
+      await http.post(
         `https://learnconnectapitest.azurewebsites.net/api/course/create-new-course?userId=${id}`,
         formData,
         {
@@ -211,12 +211,15 @@ const InstructorCourse = () => {
   // console.log("course,", course);
   // const [previousCate, setPreviousCate] = useState(course?.categoryId);
   const [updateCate, setUpdateCate] = useState(course?.categoryId);
+  // console.log("catebefore", course?.categoryId);
+  // console.log("update", updateCate);
   const [updateImage, setUpdateImage] = useState(course?.imageUrl);
   // const {preivousImage} = useState(course?.imageUrl);
 
   const showUpdateModal = (data: any) => {
     setUpdateModal(true);
     setCourse(data);
+    setUpdateCate(data.categoryId);
     setUpdateImage(data.imageUrl);
   };
 
@@ -496,6 +499,8 @@ const InstructorCourse = () => {
         >
           <div style={{ display: "flex" }} className="flex px-[130px]">
             <Image width={200} height={200} src={image} />
+
+            {/* <video width={300} height={200} src={image} controls /> */}
           </div>
           <div
             className="flex px-[190px] pt-2 pb-2"
@@ -503,10 +508,12 @@ const InstructorCourse = () => {
           >
             <Upload
               accept="image/png, image/jpeg"
+              // accept=".mov,.mp4"
               onChange={handleChange}
-              beforeUpload={beforeUpload}
+              // beforeUpload={beforeUpload}
               // headers={{ Authorization: authorization }}
               action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
+              // action="https://learnconnectapitest.azurewebsites.net/api/Upload/video"
             >
               <Button>Upload</Button>
             </Upload>

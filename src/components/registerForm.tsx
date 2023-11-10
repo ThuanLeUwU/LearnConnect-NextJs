@@ -1,4 +1,5 @@
 "use client";
+import { http } from "@/api/http";
 import { UserAuth } from "@/app/context/AuthContext";
 import {
   Modal,
@@ -57,9 +58,7 @@ export const RegisterForm = ({ onCancel, visible, isEdit }: IProps) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const responseData = await axios.get(
-        `https://learnconnectapitest.azurewebsites.net/api/user/${id}`
-      );
+      const responseData = await http.get(`/user/${id}`);
       setCurrentInfo(responseData?.data);
     };
     fetchData();

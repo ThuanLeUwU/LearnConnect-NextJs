@@ -22,6 +22,7 @@ import {
 // import { Option } from "antd/es/mentions";
 import { UserAuth } from "@/app/context/AuthContext";
 import { toast } from "sonner";
+import { http } from "@/api/http";
 
 export type Lecture = {
   id: string | number;
@@ -197,7 +198,7 @@ export default function AfterEnroll({ params }: any) {
   };
   useEffect(() => {
     const fetchData = async () => {
-      const responseData = await axios.get(
+      const responseData = await http.get(
         `https://learnconnectapitest.azurewebsites.net/api/course/${idCourse}`
       );
       setCourses(responseData?.data);
