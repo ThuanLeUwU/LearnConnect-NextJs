@@ -15,10 +15,10 @@ import {
 } from "firebase/auth";
 import { auth } from "../firebase";
 import { useRouter } from "next/navigation";
-import axios from "axios";
 import { message } from "antd";
 import { toast } from "sonner";
 import { http } from "@/api/http";
+import axios from "axios";
 
 interface AuthContextProps {
   children: ReactNode;
@@ -107,7 +107,7 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
         router.push("/instructorcourses");
         break;
       case UserRole.Staff:
-        router.push("/user-manage");
+        router.push("/staff-page");
         break;
       case UserRole.Admin:
         router.push("/user-manage");

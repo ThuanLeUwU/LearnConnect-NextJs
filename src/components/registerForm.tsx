@@ -31,6 +31,13 @@ export type User = {
   bioDescription: string;
   profilePictureUrl: string;
 };
+
+interface Category {
+  id: number;
+  name: string;
+  description: string;
+  isActive: boolean;
+}
 interface IProps {
   onCancel: () => void;
   visible: boolean;
@@ -55,6 +62,8 @@ export const RegisterForm = ({ onCancel, visible, isEdit }: IProps) => {
   const [DocumentData, setDocumentData] = useState();
 
   const { Option } = Select;
+
+  const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -196,6 +205,22 @@ export const RegisterForm = ({ onCancel, visible, isEdit }: IProps) => {
       handleClose();
     }
   };
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get(
+          "https://learnconnectapitest.azurewebsites.net/api/category"
+        );
+        setCategories(response.data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
   return (
     <Modal
       className="w-2/3 min-h-[300px]"
@@ -224,9 +249,11 @@ export const RegisterForm = ({ onCancel, visible, isEdit }: IProps) => {
           rules={[{ required: true, message: "Please select a category!" }]}
         >
           <Select>
-            <Option value="1">SE</Option>
-            <Option value="2">AI</Option>
-            <Option value="3">IA</Option>
+            {categories.map((category) => (
+              <Option key={category.id} value={category.id}>
+                {category.name}
+              </Option>
+            ))}
           </Select>
         </Form.Item>
         <Form.Item
