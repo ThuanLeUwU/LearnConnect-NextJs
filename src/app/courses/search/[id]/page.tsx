@@ -16,7 +16,6 @@ const SearchCourse = () => {
   useEffect(() => {
     const url = window.location.href;
     const segments = url.split("/");
-
     const lastSegment = segments[segments.length - 1];
     if (lastSegment) {
       setSearchQuery(lastSegment);
@@ -33,6 +32,13 @@ const SearchCourse = () => {
         const response = await axios.get(
           `${API_URL}${searchQuery}&currentPage=${page}&pageSize=${pagesize}`
         );
+        if (response.status === 404) {
+          setCourses([]);
+          setTotalPages(0);
+          setLoading(false);
+          return;
+        }
+
         setCourses(response?.data.listCourse);
         setTotalPages(response?.data.paginationData.totalPages);
         setLoading(false);
@@ -40,17 +46,20 @@ const SearchCourse = () => {
         console.error("Error fetching data: ", error);
       }
     };
+
     if (searchQuery) {
       fetchData();
     }
   }, [searchQuery, currentPage]);
   return (
     <div className="container">
-      <Search />
-      {loading ? (
-        <div className="text-center text-5xl">loading...</div>
-      ) : (
-        <div>
+      <Search searchQueryData={searchQuery} />
+      <div>
+        {courses.length === 0 ? (
+          <div className="text-center text-4xl min-h-[500px] mt-4">
+            No courses found for '{searchQuery}'
+          </div>
+        ) : (
           <div className="grid cols-2 lg:grid-cols-3 py-[30px] gap-5">
             {courses.map((item) => (
               <Courses
@@ -66,13 +75,15 @@ const SearchCourse = () => {
               />
             ))}
           </div>
-        </div>
+        )}
+      </div>
+      {courses.length > 0 && (
+        <Paginate
+          totalPages={totalPages}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+        />
       )}
-      <Paginate
-        totalPages={totalPages}
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
-      />
     </div>
   );
 };

@@ -93,7 +93,7 @@ const Header = () => {
     <div className={`${headerStyles.header_section}`}>
       {!userData ? (
         <div className={`${headerStyles.header_top}`}>
-          <div className="container">
+          {/* <div className="container">
             <div className={`${headerStyles.header_top_wrapper}`}>
               <div className={`${headerStyles.header_top_left}`}>
                 <p>
@@ -140,7 +140,7 @@ const Header = () => {
                 </ul>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       ) : (
         <div className={`${headerStyles.header_login}`}>
@@ -294,6 +294,9 @@ const Header = () => {
                     <Link href="/courses">Courses</Link>
                   </li>
                   <li>
+                    <Link href="/">List Mentor</Link>
+                  </li>
+                  {/* <li>
                     <Link href="/about">About </Link>
                   </li>
                   <li>
@@ -301,23 +304,23 @@ const Header = () => {
                   </li>
                   <li>
                     <Link href="/contact">Contact</Link>
-                  </li>
+                  </li> */}
                 </ul>
               </div>
               <div className={`${headerStyles.header_sign_in_up}`}>
                 <ul>
                   <li>
-                    <Link className={`${headerStyles.sign_in}`} href="/login">
+                    <Link className={`${headerStyles.sign_up}`} href="/login">
                       Sign In
                     </Link>
                   </li>
                   <li>
-                    <Link
+                    {/* <Link
                       className={`${headerStyles.sign_up}`}
                       href="register.html"
                     >
                       Sign Up
-                    </Link>
+                    </Link> */}
                   </li>
                 </ul>
               </div>

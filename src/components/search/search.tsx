@@ -4,21 +4,35 @@ import { CourseItem } from "../pagination/useDataFetcher";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { AiOutlineSearch } from "react-icons/ai";
-const Search = () => {
+interface SearchProps {
+  searchQueryData: string | number | readonly string[] | undefined;
+}
+
+const Search: React.FC<SearchProps> = ({ searchQueryData }: SearchProps) => {
   const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    setSearchQuery(String(searchQueryData || ""));
+  }, [searchQueryData]);
+
   const router = useRouter();
 
   const handleClickSearch = () => {
-    router.push(`/courses/search/${searchQuery}`);
+    const destination = searchQuery
+      ? `/courses/search/${searchQuery}`
+      : "/courses";
+    router.push(destination);
   };
+
   const handleSearchChange = (e: {
     target: { value: SetStateAction<string> };
   }) => {
-    setSearchQuery(e.target.value);
+    setSearchQuery(String(e.target.value));
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
+      e.preventDefault();
       handleClickSearch();
     }
   };

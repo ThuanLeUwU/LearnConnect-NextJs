@@ -9,7 +9,7 @@ const ListCourse = () => {
     useDataFetcher();
   return (
     <div className="container">
-      <Search />
+      <Search searchQueryData={""} />
       {loading ? (
         <div className="text-center text-5xl">loading...</div>
       ) : (

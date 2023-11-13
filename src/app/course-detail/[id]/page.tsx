@@ -377,7 +377,7 @@ export default function CourseDetailPage({ params }: any) {
                       {courses?.enrolled ? (
                         <Button
                           disabled
-                          className="inline-block align-middle text-center select-none font-normal whitespace-no-wrap rounded-2xl py-4 px-3 leading-normal no-underline bg-gray-300 text-[#309255] btn-outline w-44 border-[#309255] border transition-all duration-300 ease-in-out delay-0 my-2"
+                          className="inline-block align-middle text-center select-none font-normal whitespace-no-wrap rounded-2xl py-4 px-3 leading-normal no-underline bg-[#e7f8ee] text-[#309255] btn-outline w-44 border-[#309255] border transition-all duration-300 ease-in-out delay-0 my-2"
                         >
                           Enrolled
                         </Button>
