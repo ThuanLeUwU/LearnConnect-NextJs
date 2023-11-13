@@ -13,6 +13,7 @@ import useDataFavoritesFetcher, {
   CourseItem,
 } from "../pagination/useDataFavoritesFetcher";
 import { message } from "antd";
+import { toast } from "sonner";
 
 export type Course = {
   id: string | number;
@@ -123,7 +124,7 @@ const Courses = ({
         )
         .then((response) => {
           setTimeout(() => {
-            message.success("Removed successful");
+            toast.success("Removed successful");
           });
           console.log("Delete request success: ", response.data);
         })
@@ -142,7 +143,7 @@ const Courses = ({
         )
         .then((response) => {
           setTimeout(() => {
-            message.success("Added to favorites successful");
+            toast.success("Added to favorites successful");
           });
           console.log("Post request success: ", response.data);
         })

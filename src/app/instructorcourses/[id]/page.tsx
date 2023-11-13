@@ -90,8 +90,8 @@ const Dashboard = ({ params }: any) => {
 
   const handleUpdate = async (data: any) => {
     const formData = new FormData();
-    formData.append("title", data.title);
-    formData.append("content", data.content);
+    formData.append("title", data.title || oneLecture?.title);
+    formData.append("content", data.content || oneLecture?.content);
     formData.append("contentType", type || "1");
     if (formDataSource !== undefined) {
       formData.append("contentUrl", formDataSource);
