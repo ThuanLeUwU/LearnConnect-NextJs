@@ -459,7 +459,7 @@ export default function AfterEnroll({ params }: any) {
                     }`}
                   >
                     <button className="w-28 h-14 px-[15px] text-center text-sm font-medium  border-opacity-20 rounded-md hover:border-[#309255] hover:text-[#fff] hover:bg-[#309255]">
-                      Share
+                      Reviews
                     </button>
                   </li>
                 </ul>

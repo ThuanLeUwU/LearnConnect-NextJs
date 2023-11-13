@@ -22,11 +22,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="main_wrapper">
+      <body className="flex flex-col justify-between min-h-screen main_wrapper">
         <Toaster position="top-right" richColors />
         <AuthContextProvider>
-          <Header />
-          {children}
+          <div className="">
+            <Header />
+            {children}
+          </div>
           <Footer />
         </AuthContextProvider>
       </body>

@@ -5,6 +5,7 @@ import Paginate from "@/components/pagination/pagination";
 import useDataUserFetcher from "@/components/pagination/useDataUserFetcher";
 import { UserAuth } from "../context/AuthContext";
 import axios from "axios";
+import { Empty, Spin } from "antd";
 
 const MyCourse = () => {
   const { loading, courses, totalPages, currentPage, setCurrentPage } =
@@ -16,11 +17,14 @@ const MyCourse = () => {
   return (
     <div className="container">
       {loading ? (
-        <div className="text-center text-5xl">loading...</div>
+        <div className="text-center text-5xl mt-5">
+          <Spin size="large" />
+        </div>
       ) : (
         <div className="min-h-[60vh]">
           {courses.length === 0 ? (
             <div className="text-center text-2xl mt-8 items-center justify-center">
+              <Empty description={false} />
               You don&apos;t have any courses.
             </div>
           ) : (

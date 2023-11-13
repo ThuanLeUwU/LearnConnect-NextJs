@@ -11,6 +11,17 @@ import Rating from "@mui/material/Rating";
 import { AiFillStar } from "react-icons/ai";
 import { useRouter } from "next/navigation";
 
+export type Rating = {
+  id: number;
+  rating1: number;
+  comment: string;
+  timeStamp: string;
+  status: number;
+  userId: number;
+  courseId: number;
+  mentorId: number;
+};
+
 export default function CourseDetailPage({ params }: any) {
   const [visible, setVisible] = useState(false);
   const idCourse = params.id;
@@ -52,6 +63,19 @@ export default function CourseDetailPage({ params }: any) {
     fetchData();
   }, []);
 
+  const [rating, setRating] = useState<Rating[]>([]);
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const responseData = await axios.get(
+  //       `https://learnconnectapitest.azurewebsites.net/api/lecture/by-course/${idCourse}`
+  //     );
+  //     setLectures(responseData?.data);
+  //   };
+
+  //   fetchData();
+  // }, []);
+
   const payment = async (
     userId: any,
     courseId: any,
@@ -86,6 +110,11 @@ export default function CourseDetailPage({ params }: any) {
   // setAverageRating(courses?.averageRating);
   // console.log("averageRating 1:", averageRating);
   // console.log("averageRating 2:", courses?.averageRating);
+  const handleClickGotoCourse = () => {
+    router.push(`/my-course/${idCourse}`);
+    // setIsModalVisible(false);
+  };
+
   return (
     <div className="contain-wrapper">
       <div className="bg-[#fff]">
@@ -160,7 +189,7 @@ export default function CourseDetailPage({ params }: any) {
                       onClick={() => handleTabClick("tab2")}
                     >
                       <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#309255]">
-                        Lecture
+                        Lectures
                       </button>
                     </li>
                     <li
@@ -181,13 +210,68 @@ export default function CourseDetailPage({ params }: any) {
                 <div className="tab-content">
                   {activeTab === "tab1" && (
                     <div className="tab-description">
-                      <div className="">
-                        <h3 className="text-[#212832] text-2xl font-medium mt-6 px-2">
-                          Description:
-                        </h3>
-                        <p className="mt-3.5 text-[#52565b] text-base font-extralight px-4">
-                          {courses?.description}
-                        </p>
+                      <div className="grid cols-2 lg:grid-cols-12 border-[#dff0e6] border border-solid rounded-lg px-[70px] pb-[35px] mt-5">
+                        <div className="lg:col-span-4 px-[15px]">
+                          <div className="">
+                            <h4 className="text-[25px] px-[15px] pt-5 text-[#212832]">
+                              Details
+                            </h4>
+                          </div>
+                        </div>
+                        <div className="lg:col-span-8">
+                          <div className="text-[15px] font-extralight mt-[25px] px-[15px]">
+                            <p className="mb-4 leading-loose">
+                              {courses?.description}{" "}
+                            </p>
+                            <div className="flex flex-col">
+                              <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
+                                <div className="inline-block min-w-full sm:px-6 lg:px-8">
+                                  <div className="overflow-hidden">
+                                    <table className="min-w-full text-left text-sm font-light">
+                                      <tbody>
+                                        <tr className="border-b border-b-[#e7f8ee]">
+                                          <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-medium">
+                                            Instructor
+                                          </td>
+                                          <td className="whitespace-nowrap px-6 py-4">
+                                            :
+                                          </td>
+                                          <td className="whitespace-nowrap px-6 py-4 text-[#52565b] text-[15px] font-normal">
+                                            {/* {courses.} */}
+                                            {courses?.mentorName}
+                                          </td>
+                                        </tr>
+                                        <tr className="border-b border-b-[#e7f8ee]">
+                                          <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-medium">
+                                            Duration
+                                          </td>
+                                          <td className="whitespace-nowrap px-6 py-4">
+                                            :
+                                          </td>
+                                          <td className="whitespace-nowrap px-6 py-4 text-[#52565b] text-[15px] font-normal">
+                                            {courses?.contentLength}{" "}
+                                            <span>min</span>
+                                          </td>
+                                        </tr>
+                                        <tr className="border-b border-b-[#e7f8ee]">
+                                          <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-medium">
+                                            Lectures
+                                          </td>
+                                          <td className="whitespace-nowrap px-6 py-4">
+                                            :
+                                          </td>
+                                          <td className="whitespace-nowrap px-6 py-4 text-[#52565b] text-[15px] font-normal">
+                                            {courses?.lectureCount}
+                                          </td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   )}
@@ -196,14 +280,14 @@ export default function CourseDetailPage({ params }: any) {
                       <div className="faq-wrapper">
                         <div className="single-faq-item">
                           <div className="grid cols-2 lg:grid-cols-12 border-[#dff0e6] border border-solid rounded-lg px-[70px] pb-[35px] mt-5">
-                            <div className="lg:col-span-4 px-[15px]">
+                            {/* <div className="lg:col-span-4 px-[15px]">
                               <div className="">
                                 <h4 className="text-[#212832] text-2xl font-medium mt-6 px-2">
                                   Lectures
                                 </h4>
                               </div>
-                            </div>
-                            <div className="lg:col-span-8">
+                            </div> */}
+                            <div className="lg:col-span-12">
                               {lectures &&
                                 lectures.map((item, index) => (
                                   <div key={index}>
@@ -375,12 +459,23 @@ export default function CourseDetailPage({ params }: any) {
                     </div>
                     <div className="text-center mt-10">
                       {courses?.enrolled ? (
-                        <Button
-                          disabled
-                          className="inline-block align-middle text-center select-none font-normal whitespace-no-wrap rounded-2xl py-4 px-3 leading-normal no-underline bg-[#e7f8ee] text-[#309255] btn-outline w-44 border-[#309255] border transition-all duration-300 ease-in-out delay-0 my-2"
-                        >
-                          Enrolled
-                        </Button>
+                        <div className="flex flex-col justify-center items-center">
+                          <Button
+                            disabled
+                            className="inline-block align-middle text-center select-none font-normal whitespace-no-wrap rounded-2xl py-4 px-3 leading-normal no-underline bg-gray-300 text-[#309255] btn-outline w-44 border-[#309255] border transition-all duration-300 ease-in-out delay-0 my-2"
+                          >
+                            Enrolled
+                          </Button>
+                          <div className="text-lg">
+                            <span>Go to </span>
+                            <Button
+                              className="text-[#309255] underline"
+                              onClick={handleClickGotoCourse}
+                            >
+                              Course
+                            </Button>
+                          </div>
+                        </div>
                       ) : (
                         <Button
                           onClick={() => {

@@ -18,9 +18,9 @@ export type Transaction = {
 };
 const useDataPaymentFetcher = () => {
   const { id } = UserAuth();
-  console.log("id của tau nè: ", id);
+  // console.log("id của tau nè: ", id);
   const [transaction, setTransaction] = useState<Transaction[]>([]);
-  console.log("my transaction", transaction);
+  // console.log("my transaction", transaction);
 
   const API_URL = `https://learnconnectapitest.azurewebsites.net/api/payment-transaction/by-user/`;
   const pagesize = 6;
@@ -38,7 +38,7 @@ const useDataPaymentFetcher = () => {
         // setCourses(result?.data.listCourse);
         setTransaction(result?.data.paymentTransactions);
         setTotalPages(result?.data.paginationData.totalPages);
-        console.log("total page", totalPages);
+        // console.log("total page", totalPages);
 
         setLoading(false);
       } catch (err) {

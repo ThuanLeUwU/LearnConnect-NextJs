@@ -8,6 +8,7 @@ import Search from "@/components/search/search";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Paginate from "@/components/pagination/pagination";
+import { Empty } from "antd";
 const SearchCourse = () => {
   const [courses, setCourses] = useState<CourseItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -54,12 +55,13 @@ const SearchCourse = () => {
   return (
     <div className="container">
       <Search searchQueryData={searchQuery} />
-      <div>
-        {courses.length === 0 ? (
-          <div className="text-center text-4xl min-h-[500px] mt-4">
-            No courses found for '{searchQuery}'
-          </div>
-        ) : (
+      {loading ? (
+        <div className="text-center text-5xl mt-5">
+          <Empty description={false} className="text-6xl" />
+          There are no courses matching your search!!!
+        </div>
+      ) : (
+        <div>
           <div className="grid cols-2 lg:grid-cols-3 py-[30px] gap-5">
             {courses.map((item) => (
               <Courses
@@ -75,14 +77,12 @@ const SearchCourse = () => {
               />
             ))}
           </div>
-        )}
-      </div>
-      {courses.length > 0 && (
-        <Paginate
-          totalPages={totalPages}
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-        />
+          <Paginate
+            totalPages={totalPages}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+          />
+        </div>
       )}
     </div>
   );

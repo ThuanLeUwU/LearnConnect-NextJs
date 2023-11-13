@@ -32,7 +32,7 @@ https://learnconnectapitest.azurewebsites.net/api/notification/byUserId-paginati
         // setCourses(result?.data.listCourse);
         setNotificationContent(result?.data.notifications);
         setTotalPages(result?.data.paginationData.totalPages);
-        console.log("total page", totalPages);
+        // console.log("total page", totalPages);
 
         setLoading(false);
       } catch (err) {

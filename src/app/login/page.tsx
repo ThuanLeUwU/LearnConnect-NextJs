@@ -11,6 +11,7 @@ export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   // axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
 
   const handleSignIn = async () => {
@@ -44,31 +45,38 @@ export default function LoginPage() {
       const token = response.data.data;
       return token;
     } catch (error) {
+      setErrorMessage("Email or Password is not correct!!!");
       console.error("An error occurred while logging in:", error);
       throw error;
     }
   };
 
   const handleSignInEmailPassword = async () => {
-    try {
-      const response = await loginByEmail(email, password);
-      const decodedToken = jwt.decode(response);
-      let userData;
-      const fetchUser = async (userId: string) => {
-        const responseUser = await axios.get(
-          `https://learnconnectapitest.azurewebsites.net/api/user/${userId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${response}`,
-            },
-          }
-        );
-        userData = responseUser?.data;
-      };
-      await fetchUser(decodedToken?.Id);
-      setUserLogin(userData, response);
-    } catch (error) {
-      console.error("An error occurred while logging in:", error);
+    if (!email) {
+      setErrorMessage("Please Input Email");
+    } else if (!password) {
+      setErrorMessage("Please Input Password");
+    } else {
+      try {
+        const response = await loginByEmail(email, password);
+        const decodedToken = jwt.decode(response);
+        let userData;
+        const fetchUser = async (userId: string) => {
+          const responseUser = await axios.get(
+            `https://learnconnectapitest.azurewebsites.net/api/user/${userId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${response}`,
+              },
+            }
+          );
+          userData = responseUser?.data;
+        };
+        await fetchUser(decodedToken?.Id);
+        setUserLogin(userData, response);
+      } catch (error) {
+        console.error("An error occurred while logging in:", error);
+      }
     }
   };
   return (
@@ -88,6 +96,7 @@ export default function LoginPage() {
                   <form>
                     <div className={styles["single-form"]}>
                       <input
+                        required
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
@@ -101,6 +110,9 @@ export default function LoginPage() {
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="Password"
                       />{" "}
+                    </div>
+                    <div className="mt-5 text-red-500 text-lg">
+                      {errorMessage}
                     </div>
                     <div className={styles["single-form"]}>
                       <a

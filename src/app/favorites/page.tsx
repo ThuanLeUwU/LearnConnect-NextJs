@@ -6,6 +6,7 @@ import Paginate from "@/components/pagination/pagination";
 import useDataFavoritesFetcher from "@/components/pagination/useDataFavoritesFetcher";
 import { UserAuth } from "../context/AuthContext";
 import axios from "axios";
+import { Empty } from "antd";
 
 const MyCourse = () => {
   const { loading, courses, totalPages, currentPage, setCurrentPage } =
@@ -20,6 +21,7 @@ const MyCourse = () => {
         <div className="min-h-[60vh]">
           {courses.length === 0 ? (
             <div className="text-center text-2xl mt-8 items-center justify-center">
+              <Empty description={false} />
               You don&apos;t have any favorite courses.
             </div>
           ) : (
