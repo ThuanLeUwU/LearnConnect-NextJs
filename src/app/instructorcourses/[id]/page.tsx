@@ -26,6 +26,7 @@ import {
   DialogTitle,
 } from "@mui/material";
 import { toast } from "sonner";
+import { Course } from "@/components/courses/courses";
 
 const Dashboard = ({ params }: any) => {
   const idCourse = params.id;
@@ -47,6 +48,7 @@ const Dashboard = ({ params }: any) => {
 
   const handleCancel = () => {
     setIsModal(false);
+    form.resetFields();
   };
 
   //update
@@ -67,7 +69,59 @@ const Dashboard = ({ params }: any) => {
     setDeleteVisible(true);
   };
 
-  const handleUpdate = () => {
+  //Get This Course
+  const [course, setCourse] = useState<Course>();
+
+  useEffect(() => {
+    // Gọi API để lấy danh sách người dùng
+    http
+      .get(
+        `https://learnconnectapitest.azurewebsites.net/api/course/user/${id}/course/${idCourse}`
+      )
+      .then((response) => {
+        setCourse(response.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching user data:", error);
+        setLoading(false);
+      });
+  }, []);
+
+  const handleUpdate = async (data: any) => {
+    const formData = new FormData();
+    formData.append("title", data.title);
+    formData.append("content", data.content);
+    formData.append("contentType", type || "1");
+    if (formDataSource !== undefined) {
+      formData.append("contentUrl", formDataSource);
+    }
+
+    try {
+      await http
+        .put(
+          `/lecture/update/${idCourse}/${id}?lectureId=${oneLecture?.id}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        )
+        .then(() => {
+          handleCancel();
+          toast.success("update Lecture Successfully");
+          http.get(`/lecture/by-course/${idCourse}`).then((response) => {
+            setLectures(response.data);
+            setLoading(false);
+            form.resetFields();
+          });
+        });
+    } catch (err) {
+      setTimeout(() => {
+        toast.error("Update Lecture fail");
+      });
+    }
     // Implement your update logic here
     // You can use selectedItem to identify the item to update
     setUpdateVisible(false);
@@ -255,6 +309,18 @@ const Dashboard = ({ params }: any) => {
         </Space>
       ),
     },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (text: number, record: any) => {
+        return text === 1 ? (
+          <div className="text-red-500 text-lg">Inactive</div>
+        ) : (
+          <div className="text-green-500 text-lg">Active</div>
+        );
+      },
+    },
   ];
 
   const menuItem = [
@@ -274,14 +340,6 @@ const Dashboard = ({ params }: any) => {
       image: "/menu-icon/icon-4.png",
       href: "/instructorcourses",
     },
-  ];
-  const data = [
-    { name: "January", Total: 1200 },
-    { name: "February", Total: 2100 },
-    { name: "March", Total: 800 },
-    { name: "April", Total: 1600 },
-    { name: "May", Total: 900 },
-    { name: "June", Total: 1700 },
   ];
 
   return (
@@ -542,16 +600,16 @@ const Dashboard = ({ params }: any) => {
             // </Form.Item>
             <Form.Item label="Document"></Form.Item>
           )}
-          <Space className="justify-end w-full">
+          <Space className="justify-end w-full pr-[90px]">
             <Form.Item className="mb-0">
               <Space>
-                <Button onClick={handleCancel}>Cancel</Button>
+                <Button onClick={handleUpdateCancel}>Cancel</Button>
                 <Button
                   type="primary"
                   htmlType="submit"
                   style={{ color: "black" }}
                 >
-                  Create
+                  Update
                 </Button>
               </Space>
             </Form.Item>

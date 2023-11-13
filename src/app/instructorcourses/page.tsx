@@ -36,6 +36,7 @@ import Paginate from "@/components/pagination/pagination";
 import { toast } from "sonner";
 import { Course } from "@/components/courses/courses";
 import { http } from "@/api/http";
+// import { getMessageToken } from "../firebase";
 
 export type Category = {
   id: number;
@@ -46,8 +47,8 @@ export type Category = {
 
 const InstructorCourse = () => {
   const { id, user } = UserAuth();
-
-  console.log("id", id);
+  // getMessageToken();
+  // console.log("id", id);
   // console.log("id", user);
   const [visible, setVisible] = useState(false);
 
@@ -126,15 +127,11 @@ const InstructorCourse = () => {
       formData.append("courseImage", formDataImage);
     }
     try {
-      await http.post(
-        `https://learnconnectapitest.azurewebsites.net/api/course/create-new-course?userId=${id}`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      await http.post(`/course/create-new-course?userId=${id}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       handleCancel();
       refetchList();
       setTimeout(() => {
@@ -235,21 +232,18 @@ const InstructorCourse = () => {
     formData.append("description", data.description);
     formData.append("shortDescription", data.shortDes);
     formData.append("price", data.price);
+    console.log("price", data.price);
     formData.append("lectureCount", data.lecture);
     formData.append("categoryId", selected || "1");
     if (formDataImage !== undefined) {
       formData.append("courseImage", formDataImage);
     }
     try {
-      await axios.put(
-        `https://learnconnectapitest.azurewebsites.net/api/course/update/${course?.id}/${id}`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      await http.put(`/course/update/${course?.id}/${id}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       handleCancel();
       refetchList();
       setTimeout(() => {
@@ -649,12 +643,12 @@ const InstructorCourse = () => {
               <Button>Upload</Button>
             </Upload>
           </div>
-          <Form.Item
-            rules={[{ required: true, message: "Please input Name!" }]}
-            label="Name"
-            name="name"
-          >
-            <Input placeholder="Name Course" defaultValue={course?.name} />
+          <Form.Item label="Name" name="name">
+            <Input
+              placeholder="Name Course"
+              value={course?.name}
+              defaultValue={course?.name}
+            />
           </Form.Item>
           <Form.Item label="Category">
             <Select onChange={handleUpdateCate} defaultValue={updateCate}>
@@ -670,11 +664,7 @@ const InstructorCourse = () => {
           {/* <Form.Item label="Mentor" name="mentor">
             {`${user?.displayName}`}
           </Form.Item> */}
-          <Form.Item
-            rules={[{ required: true, message: "Please estimate the time!" }]}
-            label="Length(mins)"
-            name="length"
-          >
+          <Form.Item label="Length(mins)" name="length">
             <InputNumber
               defaultValue={course?.contentLength}
               type="number"
@@ -686,16 +676,7 @@ const InstructorCourse = () => {
               // parser={(value) => value!.replace("mins", "")}
             />
           </Form.Item>
-          <Form.Item
-            rules={[
-              {
-                required: true,
-                message: "Please estimate number of lectures!",
-              },
-            ]}
-            label="Lectures"
-            name="lecture"
-          >
+          <Form.Item label="Lectures" name="lecture">
             <InputNumber
               className="w-[200px]"
               min={0}
@@ -703,16 +684,7 @@ const InstructorCourse = () => {
               defaultValue={course?.lectureCount}
             />
           </Form.Item>
-          <Form.Item
-            rules={[
-              {
-                required: true,
-                message: "Please Input Price",
-              },
-            ]}
-            label="Price"
-            name="price"
-          >
+          <Form.Item label="Price" name="price">
             <InputNumber
               style={{ width: 200 }}
               min={0}
@@ -720,16 +692,7 @@ const InstructorCourse = () => {
               defaultValue={course?.price}
             />
           </Form.Item>
-          <Form.Item
-            rules={[
-              {
-                required: true,
-                message: "Please Type Short Description",
-              },
-            ]}
-            label="Intro"
-            name="shortDes"
-          >
+          <Form.Item label="Intro" name="shortDes">
             <Input defaultValue={course?.shortDescription} />
           </Form.Item>
           <Form.Item label="Description" name="description">

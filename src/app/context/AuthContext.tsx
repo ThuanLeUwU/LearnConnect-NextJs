@@ -71,7 +71,7 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
 }) => {
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [jwtToken, setJwtToken] = useState("");
-
+  // getMessageToken();
   const [id, setId] = useState("");
   const [role, setRole] = useState(-1);
   // console.log("info", id)

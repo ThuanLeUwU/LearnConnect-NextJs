@@ -29,7 +29,6 @@ export default function RootLayout({
           {children}
           <Footer />
         </AuthContextProvider>
-        {/* <ToastContainer/> */}
       </body>
     </html>
   );

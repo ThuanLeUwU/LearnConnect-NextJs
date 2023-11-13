@@ -12,6 +12,14 @@ module.exports = nextConfig;
 
 module.exports = {
   images: {
-    domains: ['media.wired.com','www.simplilearn.com'], // Thêm tên miền hoặc hostname vào đây
+    domains: ["media.wired.com", "www.simplilearn.com"], // Thêm tên miền hoặc hostname vào đây
   },
-}
+};
+
+// const { withServiceWorker } = require("@microsoft/next-service-worker");
+
+// module.exports = withServiceWorker({
+//   serviceWorker: {
+//     src: "./public/firebase-messaging-sw.js", // Đường dẫn tới tệp firebase-messaging-sw.js
+//   },
+// });
