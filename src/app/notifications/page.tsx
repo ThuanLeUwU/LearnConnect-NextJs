@@ -6,6 +6,7 @@ import axios from "axios";
 import useDataNotificationsFetcher from "@/components/pagination/useDataNotificationsFetcher";
 import Paginate from "@/components/pagination/pagination";
 import { http } from "@/api/http";
+import { Spin } from "antd";
 // import { User } from "firebase/auth";
 
 export default function ProfileUser() {
@@ -18,12 +19,14 @@ export default function ProfileUser() {
   } = useDataNotificationsFetcher();
   const { id, jwtToken } = UserAuth();
   axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
-  console.log("notificationContent", notificationContent);
+  // console.log("notificationContent", notificationContent);
 
   return (
     <div className="container">
       {loading ? (
-        <div className="text-center text-5xl">loading...</div>
+        <div className="text-center text-5xl mt-5">
+          <Spin size="large" />
+        </div>
       ) : (
         <div className="min-h-[60vh]">
           {notificationContent.length === 0 ? (

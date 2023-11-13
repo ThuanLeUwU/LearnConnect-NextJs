@@ -82,8 +82,8 @@ export default function AfterEnroll({ params }: any) {
       formdata.append("reportImage", formDataImage);
     }
     try {
-      console.log("formDataImage1", formDataImage);
-      console.log("image1", image);
+      // console.log("formDataImage1", formDataImage);
+      // console.log("image1", image);
       await axios.post(
         `https://learnconnectapitest.azurewebsites.net/api/report/report-course?userId=${id}&courseId=${idCourse}`,
         formdata,
@@ -104,7 +104,7 @@ export default function AfterEnroll({ params }: any) {
       });
     }
 
-    console.log("fomdata", selected);
+    // console.log("fomdata", selected);
   };
 
   const handleCancel = () => {
@@ -170,7 +170,7 @@ export default function AfterEnroll({ params }: any) {
   //   const id = router.query.id;
   //   console.log("id", id);
   const [testVideo, setTestVideo] = useState<Lecture[]>([]);
-  console.log("test", testVideo);
+  // console.log("test", testVideo);
   useEffect(() => {
     const fetchData = async () => {
       const responseData = await axios.get(
@@ -207,7 +207,7 @@ export default function AfterEnroll({ params }: any) {
     fetchData();
   }, []);
 
-  console.log("course123", courses?.id);
+  // console.log("course123", courses?.id);
 
   const handleClick = () => {
     router.push(`/test/${courses?.id}`);
@@ -228,8 +228,8 @@ export default function AfterEnroll({ params }: any) {
     formdata.append("reportReason", value.toString());
     formdata.append("reportComment", data.description);
 
-    console.log("value", parseInt(value.toString()));
-    console.log("value", data.description);
+    // console.log("value", parseInt(value.toString()));
+    // console.log("value", data.description);
 
     setModalRatingOpen(false);
   };
@@ -241,12 +241,12 @@ export default function AfterEnroll({ params }: any) {
         `https://learnconnectapitest.azurewebsites.net/api/learning-performance/user/${id}/course/${idCourse}`
       );
       setPerformance(responseData?.data);
-      console.log("performance", performance);
+      // console.log("performance", performance);
     };
 
     fetchData();
   }, []);
-  console.log("performance", performance?.score);
+  // console.log("performance", performance?.score);
   const handleSeek = (e: any) => {
     // const video = videoRef.current;
     // if (video) {
@@ -258,8 +258,8 @@ export default function AfterEnroll({ params }: any) {
     // }
   };
 
-  console.log("formDataImage", formDataImage);
-  console.log("image", image);
+  // console.log("formDataImage", formDataImage);
+  // console.log("image", image);
 
   return (
     <div className="container">
@@ -448,7 +448,7 @@ export default function AfterEnroll({ params }: any) {
                     onClick={() => handleTabClick("tab2")}
                   >
                     <button className="w-28 h-14 px-[15px] text-center text-sm font-medium  border-opacity-20 rounded-md hover:border-[#309255] hover:text-[#fff] hover:bg-[#309255]">
-                      Lecture
+                      Lectures
                     </button>
                   </li>
                   <li
@@ -540,14 +540,14 @@ export default function AfterEnroll({ params }: any) {
                   <div className="faq-wrapper">
                     <div className="single-faq-item">
                       <div className="grid cols-2 lg:grid-cols-12 border-[#dff0e6] border border-solid rounded-lg px-[70px] pb-[35px] mt-5">
-                        <div className="lg:col-span-4 px-[15px]">
+                        {/* <div className="lg:col-span-4 px-[15px]">
                           <div className="">
                             <h4 className="text-[25px] px-[15px] pt-5 text-[#212832]">
                               Lectures
                             </h4>
                           </div>
-                        </div>
-                        <div className="lg:col-span-8">
+                        </div> */}
+                        <div className="lg:col-span-12">
                           {testVideo &&
                             testVideo.map((item, index) => (
                               <div key={index}>

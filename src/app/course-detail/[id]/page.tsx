@@ -1,6 +1,6 @@
 "use client";
 import { Payment } from "@/components/payment";
-import { Modal } from "antd";
+import { Menu, Modal } from "antd";
 import Link from "next/link";
 import React, { useState, useEffect, ReactNode } from "react";
 import axios from "axios";
@@ -106,6 +106,18 @@ export default function CourseDetailPage({ params }: any) {
       console.error("Error occurred:", error);
     }
   };
+
+  // const createMenuLectures = (lectures) => {
+  //   return (
+  //     <Menu mode="horizontal" defaultSelectedKeys={["defaultKey"]}>
+  //       {lectures.map((item) => (
+  //         <Menu.Item key={item.title}>
+  //           {item.title}
+  //         </Menu.Item>
+  //       ))}
+  //     </Menu>
+  //   );
+  // };
   // console.log("course is :", courses?.averageRating);
   // setAverageRating(courses?.averageRating);
   // console.log("averageRating 1:", averageRating);
@@ -115,6 +127,11 @@ export default function CourseDetailPage({ params }: any) {
     // setIsModalVisible(false);
   };
 
+  // const items: MenuProps
+
+  const onShow = (e) => {
+    console.log("click ", e);
+  };
   return (
     <div className="contain-wrapper">
       <div className="bg-[#fff]">
@@ -288,17 +305,35 @@ export default function CourseDetailPage({ params }: any) {
                               </div>
                             </div> */}
                             <div className="lg:col-span-12">
-                              {lectures &&
+                              <div className="  ">
+                                <Menu
+                                  mode="inline"
+                                  // onClick={onShow}
+                                  triggerSubMenuAction="click"
+                                >
+                                  {lectures &&
+                                    lectures.map((item, index) => (
+                                      <Menu.SubMenu
+                                        key={item.id}
+                                        title={item.title}
+                                      >
+                                        {" "}
+                                        <Menu.Item>{item.content}</Menu.Item>
+                                      </Menu.SubMenu>
+                                    ))}
+                                </Menu>
+                              </div>
+                              {/* {lectures &&
                                 lectures.map((item, index) => (
                                   <div key={index}>
                                     <p className="mt-5 font-bold">
-                                      Lecture-{index + 1} : {item.title}
+                                      Lecture {index + 1} : {item.title}
                                     </p>
                                     <p className="mt-3.5 text-[#52565b] text-base font-extralight">
                                       {item?.content}
                                     </p>
                                   </div>
-                                ))}
+                                ))} */}
                             </div>
                           </div>
                         </div>
@@ -496,11 +531,11 @@ export default function CourseDetailPage({ params }: any) {
                             "https://learn-connect-next-js-git-thuan-thuanleuwu.vercel.app/after-payment"
                             // "http://localhost:3000/after-payment"
                           );
-                          console.log("Enrollment confirmed");
+                          // console.log("Enrollment confirmed");
                           setIsModalVisible(false);
                         }}
                         onCancel={() => {
-                          console.log("Enrollment canceled");
+                          // console.log("Enrollment canceled");
                           setIsModalVisible(false);
                         }}
                         okButtonProps={{

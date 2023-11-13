@@ -13,7 +13,7 @@ const Paginate: React.FC<PaginateProps> = ({
   setCurrentPage,
 }) => {
   const handlePageClick = ({ selected }: { selected: number }) => {
-    console.log(selected + 1);
+    // console.log(selected + 1);
     setCurrentPage(selected);
   };
   const paginationVariants = {

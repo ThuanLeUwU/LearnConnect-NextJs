@@ -21,8 +21,8 @@ export type User = {
 export default function ProfileUser() {
   const { userData, id, jwtToken } = UserAuth();
   axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
-  console.log("data:", userData?.fullName);
-  console.log("picture :", userData?.profilePictureUrl);
+  // console.log("data:", userData?.fullName);
+  // console.log("picture :", userData?.profilePictureUrl);
   const [DataUser, SetDataUser] = useState<User>();
 
   useEffect(() => {
@@ -60,7 +60,7 @@ export default function ProfileUser() {
   //   };
   //   fetchUserData();
   // }, [id]);
-  console.log("Gender", DataUser?.gender);
+  // console.log("Gender", DataUser?.gender);
 
   const displayGender = (gender: number | undefined) => {
     if (gender === 1) {

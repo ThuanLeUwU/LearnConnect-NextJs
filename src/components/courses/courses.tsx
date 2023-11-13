@@ -114,8 +114,8 @@ const Courses = ({
   }, [courses, id]);
   const handleLike = () => {
     setIsLiked(!isLiked);
-    console.log("Liked Course ID:", id);
-    console.log("user, id: ", userData?.id);
+    // console.log("Liked Course ID:", id);
+    // console.log("user, id: ", userData?.id);
 
     if (isLiked) {
       axios
@@ -126,7 +126,7 @@ const Courses = ({
           setTimeout(() => {
             toast.success("Removed successful");
           });
-          console.log("Delete request success: ", response.data);
+          // console.log("Delete request success: ", response.data);
         })
         .catch((error) => {
           console.error("Error making DELETE request: ", error);
@@ -145,7 +145,7 @@ const Courses = ({
           setTimeout(() => {
             toast.success("Added to favorites successful");
           });
-          console.log("Post request success: ", response.data);
+          // console.log("Post request success: ", response.data);
         })
         .catch((error) => {
           console.error("Error making POST request: ", error);
@@ -153,7 +153,7 @@ const Courses = ({
     }
   };
   return (
-    <div className={`${CourseStyle.single_courses}`} onClick={handleClick}>
+    <div className={`${CourseStyle.single_courses}`}>
       <div className={`${CourseStyle.single_courses_image}`}>
         <div className="relative">
           <button className="w-full" onClick={handleClick}>
@@ -165,7 +165,7 @@ const Courses = ({
           </button>
           <div
             onClick={handleLike}
-            className="absolute top-2 right-2 cursor-pointer"
+            className="absolute top-2 right-2 cursor-pointer z-10"
           >
             {isLiked ? (
               <FaHeart className={`text-2xl text-red-500`} />
@@ -175,7 +175,10 @@ const Courses = ({
           </div>
         </div>
       </div>
-      <div className={`${CourseStyle.single_courses_content}`}>
+      <div
+        className={`${CourseStyle.single_courses_content}`}
+        onClick={handleClick}
+      >
         <div className={`${CourseStyle.single_courses_author}`}>
           <div className="author">
             <div className="author-thumb">

@@ -6,7 +6,7 @@ import Paginate from "@/components/pagination/pagination";
 import useDataFavoritesFetcher from "@/components/pagination/useDataFavoritesFetcher";
 import { UserAuth } from "../context/AuthContext";
 import axios from "axios";
-import { Empty } from "antd";
+import { Empty, Spin } from "antd";
 
 const MyCourse = () => {
   const { loading, courses, totalPages, currentPage, setCurrentPage } =
@@ -16,7 +16,9 @@ const MyCourse = () => {
   return (
     <div className="container">
       {loading ? (
-        <div className="text-center text-5xl">loading...</div>
+        <div className="text-center text-5xl mt-5">
+          <Spin size="large" />
+        </div>
       ) : (
         <div className="min-h-[60vh]">
           {courses.length === 0 ? (
