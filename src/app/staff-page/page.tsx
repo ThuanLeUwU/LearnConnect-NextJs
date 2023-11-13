@@ -20,6 +20,7 @@ import Modal from "@mui/material/Modal";
 import Button from "@mui/material/Button";
 import InstructorCourseStyle from "./styles.module.scss";
 import { toast } from "sonner";
+import { Spin } from "antd";
 
 export type CourseCategory = {
   id: number;
@@ -274,7 +275,9 @@ const Transaction = () => {
                 </Box>
                 <Paper sx={{ width: "100%" }}>
                   {isLoading ? (
-                    <p>Loading...</p>
+                    <div className="text-center text-5xl mt-5">
+                      <Spin size="large" />
+                    </div>
                   ) : (
                     <TableContainer>
                       <Table
@@ -389,9 +392,11 @@ const Transaction = () => {
                                   <TableCell>
                                     {data.courseCategoryOfMentor.status !==
                                       0 && (
-                                      <>
+                                      <div className="flex flex-col gap-[10px]">
                                         <Button
                                           className="w-full my-1 bg-green-500 text-white"
+                                          color="success"
+                                          variant="contained"
                                           onClick={() =>
                                             handleApprove(data.mentor.userId)
                                           }
@@ -399,6 +404,8 @@ const Transaction = () => {
                                           Approve
                                         </Button>
                                         <Button
+                                          variant="contained"
+                                          color="error"
                                           className="w-full my-1 bg-red-500 text-white"
                                           onClick={() =>
                                             handleReject(data.mentor.userId)
@@ -406,7 +413,7 @@ const Transaction = () => {
                                         >
                                           Reject
                                         </Button>
-                                      </>
+                                      </div>
                                     )}
                                   </TableCell>
                                 </TableRow>

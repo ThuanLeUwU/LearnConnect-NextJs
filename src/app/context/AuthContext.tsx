@@ -165,7 +165,7 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
-      console.log("token", currentUser?.getIdToken());
+      // console.log("token", currentUser?.getIdToken());
 
       if (currentUser) {
         currentUser.getIdToken().then((token) => {
@@ -189,7 +189,7 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
             const userRole = decoded.role;
             setId(userId);
             setRole(parseInt(userRole));
-            console.log("user role", parseInt(userRole));
+            // console.log("user role", parseInt(userRole));
             const fetchUser = async (userId: string) => {
               const responseUser = await http.get(`/user/${userId}`);
               setUserData(responseUser?.data);

@@ -153,7 +153,7 @@ const Courses = ({
     }
   };
   return (
-    <div className={`${CourseStyle.single_courses}`}>
+    <div className={`${CourseStyle.single_courses}`} onClick={handleClick}>
       <div className={`${CourseStyle.single_courses_image}`}>
         <div className="relative">
           <button className="w-full" onClick={handleClick}>
@@ -183,9 +183,9 @@ const Courses = ({
             </div>
             <div className="author-name">
               <div className="min-h-[60px]">
-                <a className="font-bold" onClick={handleClick}>
+                <button className="font-bold" onClick={handleClick}>
                   {name}
-                </a>
+                </button>
                 {/* <a className="font-bold" onClick={handleClick}>
                   {favoriteId}
                 </a> */}

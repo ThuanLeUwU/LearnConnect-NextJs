@@ -4,6 +4,7 @@ import ".././globals.css";
 import useDataFetcher from "@/components/pagination/useDataFetcher";
 import Paginate from "@/components/pagination/pagination";
 import Search from "@/components/search/search";
+import { Spin } from "antd";
 const ListCourse = () => {
   const { loading, courses, totalPages, currentPage, setCurrentPage } =
     useDataFetcher();
@@ -11,7 +12,9 @@ const ListCourse = () => {
     <div className="container">
       <Search />
       {loading ? (
-        <div className="text-center text-5xl">loading...</div>
+        <div className="text-center text-5xl mt-5">
+          <Spin size="large" />
+        </div>
       ) : (
         <div className="min-h-[60vh]">
           {courses.length === 0 ? (

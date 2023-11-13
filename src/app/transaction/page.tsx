@@ -5,6 +5,7 @@ import useDataPaymentFetcher from "@/components/pagination/useDataPaymentFetcher
 import Paginate from "@/components/pagination/pagination";
 import axios from "axios";
 import { UserAuth } from "../context/AuthContext";
+import { Spin } from "antd";
 
 const Transaction = () => {
   const { loading, transaction, totalPages, currentPage, setCurrentPage } =
@@ -14,12 +15,14 @@ const Transaction = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h2 className="text-2xl font-semibold text-gray-800">
+      <h2 className="text-2xl font-semibold text-gray-800 mb-5">
         Transaction History
       </h2>
-      <p className="mb-6 text-gray-600">View your Transaction History</p>
+      {/* <p className="mb-6 text-gray-600">View your Transaction History</p> */}
       {loading ? (
-        <div className="text-center text-2xl text-gray-600">Loading...</div>
+        <div className="text-center text-2xl text-gray-600">
+          <Spin size="large" />
+        </div>
       ) : (
         <div className="w-full overflow-x-auto">
           <table className="w-full table-auto">

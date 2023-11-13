@@ -1,22 +1,20 @@
 import { UserAuth } from "@/app/context/AuthContext";
 import axios from "axios";
 
-export const http = axios.create(
-    {
-        baseURL: "https://learnconnectapitest.azurewebsites.net/api",
-        withCredentials:false,
-    }
-);
+export const http = axios.create({
+  baseURL: "https://learnconnectapitest.azurewebsites.net/api",
+  withCredentials: false,
+});
 
-http.interceptors.request.use(function(req) {
-    // const { jwtToken } = UserAuth();
-    
-    const token = localStorage.getItem("token")
-    console.log("WTF",token)
+http.interceptors.request.use(function (req) {
+  // const { jwtToken } = UserAuth();
 
-    if (token) {   
-        req.headers["Authorization"] = `Bearer ${token}`
-    }
+  const token = localStorage.getItem("token");
+  // console.log("WTF",token)
 
-    return req;
-})
+  if (token) {
+    req.headers["Authorization"] = `Bearer ${token}`;
+  }
+
+  return req;
+});

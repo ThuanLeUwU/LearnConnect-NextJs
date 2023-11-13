@@ -56,7 +56,7 @@ const CourseItem = ({
   };
   return (
     <div className="lg:col-span-4 border border-solid border-[#acd6bc] p-[20px] rounded-lg my-[10px] hover:border-[#309255] mx-[15px]">
-      <div className="single-courses">
+      <div className="single-courses" onClick={handleClick}>
         <div>
           <div className="courses-images">
             <a onClick={handleClick}>
@@ -88,7 +88,7 @@ const CourseItem = ({
             </div>
             <div className="min-h-[60px]">
               <h4 className="mt-[13px] mb-2 text-[#52565b] text-[16px] hover:text-[#309255] font-bold">
-                <a onClick={handleClick}>{name}</a>
+                <button onClick={handleClick}>{name}</button>
               </h4>
             </div>
 
