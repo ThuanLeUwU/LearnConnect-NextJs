@@ -19,6 +19,7 @@ import {
 import Modal from "@mui/material/Modal";
 import Button from "@mui/material/Button";
 import InstructorCourseStyle from "./styles.module.scss";
+import { toast } from "sonner";
 
 export type CourseCategory = {
   id: number;
@@ -27,6 +28,12 @@ export type CourseCategory = {
   status: number;
   categoryId: number;
   mentorId: number;
+};
+
+export type User = {
+  id: string | number;
+  email: string;
+  fullName: string;
 };
 
 export type Mentor = {
@@ -55,6 +62,7 @@ export type VerificationDocument = {
 
 export type ApiData = {
   courseCategoryOfMentor: CourseCategory;
+  user: User;
   mentor: Mentor;
   category: Category;
   verificationDocuments: VerificationDocument[];
@@ -68,13 +76,15 @@ const Transaction = () => {
   const [order, setOrder] = useState<"asc" | "desc">("asc");
   const [orderBy, setOrderBy] = useState<string>("verificationDate");
   const { jwtToken }: { jwtToken: string } = UserAuth();
+  const { userData } = UserAuth();
+  const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+
   const [selectedDocuments, setSelectedDocuments] = useState<
     VerificationDocument[]
   >([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
-
+  console.log("id Staff:", userData?.id);
   const handleViewMoreClick = (documents: VerificationDocument[]) => {
     setSelectedDocuments(documents);
     setIsModalOpen(true);
@@ -84,28 +94,54 @@ const Transaction = () => {
     setIsModalOpen(false);
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          "https://learnconnectapitest.azurewebsites.net/api/user/all-course-category-of-mentor-details",
-          {
-            params: {
-              page: page + 1, // Assuming API uses 1-based indexing
-              rowsPerPage,
-            },
-          }
-        );
-        setRequestData(response.data);
-      } catch (error) {
-        console.error("Error fetching data:", error.message || error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        "https://learnconnectapitest.azurewebsites.net/api/user/all-course-category-of-mentor-details",
+        {
+          params: {
+            page: page + 1,
+            rowsPerPage,
+          },
+        }
+      );
+      setRequestData(response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error.message || error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchData();
   }, [page, rowsPerPage]);
+
+  const handleApprove = async (mentorUserId: number) => {
+    try {
+      await axios.post(
+        `https://learnconnectapitest.azurewebsites.net/api/mentor/process-mentor-request?staffUserId=${userData?.id}&mentorUserId=${mentorUserId}&acceptRequest=true`
+      );
+      fetchData();
+      toast.success("Mentor request approved successfully");
+    } catch (error) {
+      toast.error("Failed to approve mentor request");
+      console.error("Error approving mentor request:", error.message || error);
+    }
+  };
+
+  const handleReject = async (mentorUserId: number) => {
+    try {
+      await axios.post(
+        `https://learnconnectapitest.azurewebsites.net/api/mentor/process-mentor-request?staffUserId=${userData?.id}&mentorUserId=${mentorUserId}&acceptRequest=false`
+      );
+      fetchData();
+      toast.success("Mentor request rejected successfully");
+    } catch (error) {
+      toast.error("Failed to rejected mentor request");
+      console.error("Error rejecting mentor request:", error.message || error);
+    }
+  };
 
   const renderVerificationDocuments = (documents: VerificationDocument[]) => {
     return documents.map((doc) => (
@@ -178,6 +214,32 @@ const Transaction = () => {
     };
   }
 
+  function getStatusColor(status) {
+    switch (status) {
+      case 0:
+        return "green";
+      case 1:
+        return "black";
+      case 2:
+        return "red";
+      default:
+        return "black";
+    }
+  }
+
+  function getStatusText(status) {
+    switch (status) {
+      case 0:
+        return "Approved";
+      case 1:
+        return "Pending";
+      case 2:
+        return "Reject";
+      default:
+        return "Unknown Status";
+    }
+  }
+
   return (
     <>
       <div className={`${InstructorCourseStyle.content_wrapper}`}>
@@ -207,7 +269,7 @@ const Transaction = () => {
               <Card>
                 <Box display="flex" justifyContent="center">
                   <Typography textTransform="uppercase" variant="h3">
-                    Table Of all Request Become Mentor
+                    Request Become Mentor
                   </Typography>
                 </Box>
                 <Paper sx={{ width: "100%" }}>
@@ -232,10 +294,13 @@ const Transaction = () => {
                                   handleRequestSort("verificationDate")
                                 }
                               >
-                                Verification Date
+                                CreateDate
                               </TableSortLabel>
                             </TableCell>
-                            <TableCell>Reject Reason</TableCell>
+                            <TableCell>UserName</TableCell>
+                            <TableCell>Email</TableCell>
+                            <TableCell>Status</TableCell>
+                            <TableCell>Process Note</TableCell>
                             <TableCell>
                               <TableSortLabel
                                 active={orderBy === "mentor.description"}
@@ -248,7 +313,7 @@ const Transaction = () => {
                                   handleRequestSort("mentor.description")
                                 }
                               >
-                                Mentor Description
+                                Description
                               </TableSortLabel>
                             </TableCell>
                             <TableCell>
@@ -265,6 +330,7 @@ const Transaction = () => {
                               </TableSortLabel>
                             </TableCell>
                             <TableCell>View More</TableCell>
+                            <TableCell>Action</TableCell>
                           </TableRow>
                           {requestData &&
                             stableSort(
@@ -278,10 +344,29 @@ const Transaction = () => {
                               .map((data) => (
                                 <TableRow key={data.courseCategoryOfMentor.id}>
                                   <TableCell>
-                                    {
-                                      data.courseCategoryOfMentor
-                                        .verificationDate
-                                    }
+                                    <div>
+                                      {new Date(
+                                        data.courseCategoryOfMentor.verificationDate
+                                      ).toLocaleDateString()}
+                                    </div>
+                                    <div>
+                                      {new Date(
+                                        data.courseCategoryOfMentor.verificationDate
+                                      ).toLocaleTimeString()}
+                                    </div>
+                                  </TableCell>
+                                  <TableCell>{data.user.fullName}</TableCell>
+                                  <TableCell>{data.user.email}</TableCell>
+                                  <TableCell
+                                    style={{
+                                      color: getStatusColor(
+                                        data.courseCategoryOfMentor.status
+                                      ),
+                                    }}
+                                  >
+                                    {getStatusText(
+                                      data.courseCategoryOfMentor.status
+                                    )}
                                   </TableCell>
                                   <TableCell>
                                     {data.courseCategoryOfMentor.rejectReason}
@@ -300,6 +385,29 @@ const Transaction = () => {
                                     >
                                       View More
                                     </Button>
+                                  </TableCell>
+                                  <TableCell>
+                                    {data.courseCategoryOfMentor.status !==
+                                      0 && (
+                                      <>
+                                        <Button
+                                          className="w-full my-1 bg-green-500 text-white"
+                                          onClick={() =>
+                                            handleApprove(data.mentor.userId)
+                                          }
+                                        >
+                                          Approve
+                                        </Button>
+                                        <Button
+                                          className="w-full my-1 bg-red-500 text-white"
+                                          onClick={() =>
+                                            handleReject(data.mentor.userId)
+                                          }
+                                        >
+                                          Reject
+                                        </Button>
+                                      </>
+                                    )}
                                   </TableCell>
                                 </TableRow>
                               ))}
@@ -339,12 +447,12 @@ const Transaction = () => {
                   transform: "translate(-50%, -50%)",
                   display: "flex",
                   flexDirection: "row",
-                  flexWrap: "wrap", // Allow items to wrap to the next line
-                  gap: 2, // Adjust the gap as needed
-                  alignItems: "center", // Center items vertically
-                  justifyContent: "center", // Center items horizontally
-                  width: "70vw", // Adjust the width as needed
-                  minHeight: 380, // Set the minimum height to 380px
+                  flexWrap: "wrap",
+                  gap: 2,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "70vw",
+                  minHeight: 380,
                   p: 4,
                   bgcolor: "white",
                   borderRadius: 8,
@@ -365,8 +473,8 @@ const Transaction = () => {
                           src={doc.documentUrl}
                           alt={doc.description}
                           style={{
-                            width: "100%", // Adjust based on your design
-                            height: "200px", // Maintain aspect ratio
+                            width: "100%",
+                            height: "200px",
                             objectFit: "contain",
                           }}
                         />

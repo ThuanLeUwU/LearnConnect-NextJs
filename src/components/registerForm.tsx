@@ -120,6 +120,10 @@ export const RegisterForm = ({ onCancel, visible, isEdit }: IProps) => {
 
   const beforeUpload = (file: any) => {
     const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
+    if (!file) {
+      message.warning("Please upload an image!");
+      return false;
+    }
     if (!isJpgOrPng) {
       toast.error("You can only upload JPG/PNG file!");
     }
@@ -191,7 +195,6 @@ export const RegisterForm = ({ onCancel, visible, isEdit }: IProps) => {
           "Content-Type": "multipart/form-data",
         },
       });
-
       setTimeout(() => {
         toast.success("Form submitted successful");
       }, 0);
@@ -284,17 +287,6 @@ export const RegisterForm = ({ onCancel, visible, isEdit }: IProps) => {
         >
           <Input />
         </Form.Item>
-        {/* <Form.Item label="ID Card Font">
-          <Upload
-            accept="image/png, image/jpeg"
-            onChange={handleChange}
-            beforeUpload={beforeUpload}
-            action="https://learnconnectapitest.azurewebsites.net/api/image"
-            listType="picture-card"
-          >
-            Upload
-          </Upload>
-        </Form.Item> */}
         <Form.Item
           rules={[{ required: true, message: "Please input CardFront" }]}
           label="ID Card Font"
@@ -343,6 +335,7 @@ export const RegisterForm = ({ onCancel, visible, isEdit }: IProps) => {
         </Form.Item>
         <Form.Item
           label="ID Card Back"
+          name="CardBack"
           getValueFromEvent={normFile}
           rules={[{ required: true, message: "Please input CardFront" }]}
         >
