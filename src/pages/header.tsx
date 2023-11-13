@@ -26,7 +26,8 @@ const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [notification, setNotification] = useState(false);
   const [visible, setVisible] = useState(false);
-  const { userData, id } = UserAuth();
+  const { userData, id, jwtToken } = UserAuth();
+  axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
   const [notificationContent, setNotificationContent] = useState<
     Notification[]
   >([]);
@@ -90,7 +91,7 @@ const Header = () => {
 
   return (
     <div className={`${headerStyles.header_section}`}>
-      {!user ? (
+      {!userData ? (
         <div className={`${headerStyles.header_top}`}>
           <div className="container">
             <div className={`${headerStyles.header_top_wrapper}`}>
@@ -161,55 +162,55 @@ const Header = () => {
                 </button>
                 {notification && (
                   <div className="origin-top-right absolute right-0 mt-2 w-[360px] rounded-lg shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-20">
-                    <ul className="divide-y divide-gray-200 rounded-lg">
-                      {notificationContent &&
-                        notificationContent.length > 0 && (
-                          <div>
-                            {notificationContent
-                              .slice(-5)
-                              .map((notification) => {
-                                const date = new Date(notification.timeStamp);
-                                const hours = String(date.getHours()).padStart(
-                                  2,
-                                  "0"
-                                );
-                                const minutes = String(
-                                  date.getMinutes()
-                                ).padStart(2, "0");
-                                const timeString = `${hours}:${minutes}`;
-
-                                return (
-                                  <li
-                                    key={notification.id}
-                                    className="flex items-center py-4 px-[25px] hover:bg-[#e7f8ee] hover:rounded-tl-lg hover:rounded-tr-lg"
-                                  >
-                                    <span className="text-white">
-                                      <i className="bg-gray-400 rounded-full h-2 w-2 block"></i>
-                                    </span>
-                                    <div className="ml-3 text-sm">
-                                      <a href="#" className="text-gray-900">
-                                        <p className="truncate max-w-[250px]">
-                                          <strong>{notification.title}</strong>{" "}
-                                          {notification.description}
-                                        </p>
-                                      </a>
-                                    </div>
-                                    <span className="text-gray-500 ml-auto text-sm">
-                                      {timeString}
-                                    </span>
-                                  </li>
-                                );
-                              })}
-                          </div>
-                        )}
-                    </ul>
+                    {notificationContent && notificationContent.length > 0 && (
+                      <ul className="divide-y divide-gray-200 rounded-lg">
+                        {notificationContent.slice(0, 7).map((item) => {
+                          const date = new Date(item.timeStamp);
+                          const hours = String(date.getHours()).padStart(
+                            2,
+                            "0"
+                          );
+                          const minutes = String(date.getMinutes()).padStart(
+                            2,
+                            "0"
+                          );
+                          const timeString = `${hours}:${minutes}`;
+                          return (
+                            <li
+                              key={item.id}
+                              className="flex items-center py-4 px-[25px] hover:bg-[#e7f8ee] hover:rounded-tl-lg hover:rounded-tr-lg"
+                            >
+                              {/* <span>{item.id}</span> */}
+                              <span className="text-white">
+                                {item.isRead ? (
+                                  <i className="bg-gray-400 rounded-full h-2 w-2 block"></i>
+                                ) : (
+                                  <i className="bg-[#309255] rounded-full h-2 w-2 block"></i>
+                                )}
+                              </span>
+                              <div className="ml-3 text-sm">
+                                <a href="#" className="text-gray-900">
+                                  <p className="truncate max-w-[250px]">
+                                    <strong>{item.title}</strong>{" "}
+                                    {item.description}
+                                  </p>
+                                </a>
+                              </div>
+                              <span className="text-gray-500 ml-auto text-sm">
+                                {timeString}
+                              </span>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    )}
                     <a
                       href="#"
                       onClick={() => {
                         handleClickSeeAll();
                         closeDropdownNotification();
                       }}
-                      className="block text-center text-sm text-gray-700 py-2 bg-[#e7f8ee] hover:rounded-bl-lg hover:rounded-br-lg"
+                      className="block text-center text-sm text-gray-700 py-2  bg-[#e7f8ee] rounded-br-lg rounded-bl-lg hover:rounded-bl-lg hover:rounded-br-lg"
                     >
                       See all notifications
                     </a>
@@ -272,7 +273,7 @@ const Header = () => {
       )}
       <div className="header-main ">
         <div className="container">
-          {!user ? (
+          {!userData ? (
             <div className={`${headerStyles.header_main_wrapper}`}>
               <div className={`${headerStyles.header_logo}`}>
                 <Link href="/">

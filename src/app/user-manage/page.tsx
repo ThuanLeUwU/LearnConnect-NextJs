@@ -51,7 +51,7 @@ export type User = {
 };
 
 export default function UserManagePage() {
-  const { user } = UserAuth();
+  const { user, jwtToken } = UserAuth();
   const [allUser, setAllUser] = useState<User[]>([]);
   // console.log("all user", allUser);
 
@@ -161,8 +161,9 @@ export default function UserManagePage() {
       return "Inactive";
     }
   };
-
   // if (!mounted)
+
+  console.log("JWT Token staff: ", jwtToken);
   return (
     <>
       <Head>

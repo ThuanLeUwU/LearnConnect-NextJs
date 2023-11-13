@@ -3,10 +3,14 @@
 import ".././globals.css";
 import useDataPaymentFetcher from "@/components/pagination/useDataPaymentFetcher";
 import Paginate from "@/components/pagination/pagination";
+import axios from "axios";
+import { UserAuth } from "../context/AuthContext";
 
 const Transaction = () => {
   const { loading, transaction, totalPages, currentPage, setCurrentPage } =
     useDataPaymentFetcher();
+  const { jwtToken } = UserAuth();
+  axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
 
   return (
     <div className="container mx-auto px-4 py-8">

@@ -9,9 +9,10 @@ import axios from "axios";
 const MyCourse = () => {
   const { loading, courses, totalPages, currentPage, setCurrentPage } =
     useDataUserFetcher();
-  const { jwtToken } = UserAuth();
+  const { jwtToken, id } = UserAuth();
   axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
   console.log("jwtToken", jwtToken);
+  console.log("user id: ", id);
   return (
     <div className="container">
       {loading ? (

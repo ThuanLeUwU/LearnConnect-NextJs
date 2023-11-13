@@ -21,7 +21,9 @@ export type Payment = {
 };
 
 const AfterPayment = () => {
-  const { id } = UserAuth();
+  const { id, jwtToken } = UserAuth();
+  axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
+
   const [urlParams, setUrlParams] = useState<URLSearchParams | null>(null);
   const [payment, setPayment] = useState<Payment>();
   const [courseId, setCourseId] = useState("");

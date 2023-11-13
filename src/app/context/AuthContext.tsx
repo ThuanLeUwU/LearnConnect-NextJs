@@ -15,10 +15,10 @@ import {
 } from "firebase/auth";
 import { auth } from "../firebase";
 import { useRouter } from "next/navigation";
-import axios from "axios";
 import { message } from "antd";
 import { toast } from "sonner";
 import { http } from "@/api/http";
+import axios from "axios";
 
 interface AuthContextProps {
   children: ReactNode;
@@ -52,6 +52,7 @@ interface AuthContextValue {
   userData: User | null;
   googleSignIn: () => void;
   logOut: () => void;
+  setUserLogin: (user, token) => void;
   refetchUser: () => void;
 }
 
@@ -63,6 +64,7 @@ const AuthContext = createContext<AuthContextValue>({
   userData: null,
   googleSignIn: () => {},
   logOut: () => {},
+  setUserLogin: (user, token) => {},
   refetchUser: () => {},
 });
 
@@ -74,9 +76,17 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
   // getMessageToken();
   const [id, setId] = useState("");
   const [role, setRole] = useState(-1);
-  // console.log("info", id)
   const [userData, setUserData] = useState<User | null>(null);
   const router = useRouter();
+
+  const resetUserData = () => {
+    setUser(null);
+    setJwtToken("");
+    setId("");
+    setUserData(null);
+    setRole(-1);
+  };
+
   const googleSignIn = async () => {
     const provider = new GoogleAuthProvider();
     await signInWithPopup(auth, provider);
@@ -84,22 +94,6 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
     setTimeout(() => {
       toast.success("Login successful");
     });
-
-    // if (role === 3) {
-    //   console.log("course log", role);
-    //   if (role === 3) console.log("user log", role);
-    //   router.push("/user-manage");
-    // }
-    // if (userRole === "3") {
-    //   // console.log("course log", userRole);
-    //   router.push("/courses");
-    // } else if (userRole === "2") {
-    //   // console.log("user log", userRole);
-    //   router.push("/instructorcourses");
-    // } else if (userRole === "1") {
-    //   console.log("user log", userRole);
-    //   router.push("/user-manage");
-    // }
   };
   React.useEffect(() => {
     if (role === -1) {
@@ -114,7 +108,7 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
         router.push("/instructorcourses");
         break;
       case UserRole.Staff:
-        router.push("/user-manage");
+        router.push("/staff-page");
         break;
       case UserRole.Admin:
         router.push("/user-manage");
@@ -134,13 +128,39 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
     setUserData(null);
     setRole(-1);
   };
-
+  const setUserLogin = (user, token) => {
+    setUser(null);
+    localStorage.setItem("token", token);
+    setJwtToken(token);
+    setId(user?.id);
+    setUserData(user);
+    setRole(user?.role);
+  };
   const refetchUser = async () => {
     if (id) {
       const responseUser = await http.get(`/user/${id}`);
       setUserData(responseUser?.data);
     }
   };
+
+  // useEffect(() => {
+  //   const inactivityTimeout = setTimeout(() => {
+  //     resetUserData();
+  //   }, 30 * 60 * 100);
+
+  //   const resetTimeout = () => {
+  //     clearTimeout(inactivityTimeout);
+  //   };
+
+  //   window.addEventListener("mousemove", resetTimeout);
+  //   window.addEventListener("keydown", resetTimeout);
+
+  //   return () => {
+  //     window.removeEventListener("mousemove", resetTimeout);
+  //     window.removeEventListener("keydown", resetTimeout);
+  //     clearTimeout(inactivityTimeout);
+  //   };
+  // }, [user, jwtToken, id, role, userData]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -160,7 +180,6 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
               }
             );
             setJwtToken(responseData?.data);
-            // console.log(responseData.data.data);
             localStorage.setItem("token", responseData?.data.data);
             const api_token = responseData?.data.data;
             var jwt = require("jsonwebtoken");
@@ -168,18 +187,6 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
             setJwtToken(api_token);
             const userId = decoded.Id;
             const userRole = decoded.role;
-
-            // if (userRole === "3") {
-            //   // console.log("course log", userRole);
-            //   router.push("/courses");
-            // } else if (userRole === "2") {
-            //   // console.log("user log", userRole);
-            //   router.push("/instructorcourses");
-            // } else if (userRole === "1") {
-            //   console.log("user log", userRole);
-            //   router.push("/user-manage");
-            // }
-
             setId(userId);
             setRole(parseInt(userRole));
             console.log("user role", parseInt(userRole));
@@ -188,23 +195,11 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
               setUserData(responseUser?.data);
             };
             fetchUser(userId);
-            // if (userRole === "3") {
-            //   // console.log("course log", userRole);
-            //   router.push("/courses");
-            // } else if (userRole === "2") {
-            //   // console.log("user log", userRole);
-            //   router.push("/instructorcourses");
-            // } else if (userRole === "1") {
-            //   console.log("user log", userRole);
-            //   router.push("/user-manage");
-            // }
           };
-
           fetchData();
         });
       }
     });
-
     return () => unsubscribe();
   }, [router]);
 
@@ -218,6 +213,7 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
         userData,
         googleSignIn,
         logOut,
+        setUserLogin,
         refetchUser,
       }}
     >

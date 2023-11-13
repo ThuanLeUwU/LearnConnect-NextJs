@@ -108,7 +108,7 @@ const About = () => {
             </div>
           </div>
         </div>
-        <RegisInstructor/>
+        <RegisInstructor />
         {/* <div className="mt-20 mb-20 pt-5 px-20 pb-[50px] bg-[#E7F8EE]">
         <div className="container">
           <div className="grid cols-2 lg:grid-cols-12">
