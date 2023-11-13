@@ -27,6 +27,51 @@ import {
 } from "@mui/material";
 import { toast } from "sonner";
 import { Course } from "@/components/courses/courses";
+import { Test } from "@/app/test/[id]/page";
+
+// export type Test = {
+//   test: {
+//     id: number;
+//     title: string;
+//     description: string;
+//     totalQuestion: number;
+//     createDate: string;
+//     status: number;
+//     courseId: number;
+//     questions: null;
+//   };
+//   questions: {
+//     question: {
+//       id: number;
+//       questionTest: string;
+//       questionType: number;
+//       status: number;
+//       testId: number;
+//     };
+//     answers: {
+//       id: number;
+//       answerTest: string;
+//       isCorrect: boolean;
+//       questionId: number;
+//     };
+//   };
+// };
+
+// export type Question = {
+//   id: number;
+//   questionTest: string;
+//   questionType: number;
+//   status: number;
+//   testId: number;
+// };
+
+// export type Answers = {
+//   id: number;
+//   questionTest: string;
+//   questionType: number;
+//   status: number;
+//   testId: number;
+// };
 
 const Dashboard = ({ params }: any) => {
   const idCourse = params.id;
@@ -73,7 +118,6 @@ const Dashboard = ({ params }: any) => {
   const [course, setCourse] = useState<Course>();
 
   useEffect(() => {
-    // Gọi API để lấy danh sách người dùng
     http
       .get(
         `https://learnconnectapitest.azurewebsites.net/api/course/user/${id}/course/${idCourse}`
@@ -259,6 +303,34 @@ const Dashboard = ({ params }: any) => {
   //   inputRef.current.click();
   // };
 
+  //List Of Question
+  // const [infoTest, setInfoTest] = useState<Test>();
+  // console.log("test", infoTest);
+  const [listQuestion, setListQuestion] = useState<Test[]>([]);
+  const [submitted, setSubmitted] = useState(false);
+  const [selectedAnswers, setSelectedAnswers] = useState<{
+    [key: number]: { answer: string; isCorrect: boolean };
+  }>({});
+  console.log("Questions", listQuestion);
+  useEffect(() => {
+    // Gọi API để lấy danh sách người dùng
+    http
+      .get(`/test/get-tests-by-course?courseId=${idCourse}`)
+      .then((response) => {
+        // setInfoTest(response.data.questions);
+        setListQuestion(response.data);
+        listQuestion.forEach((item) => {
+          const totalQuestion = item.test.totalQuestion;
+          console.log("Total Questions:", totalQuestion);
+        });
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching user data:", error);
+        setLoading(false);
+      });
+  }, []);
+
   //table lecture
   const columns = [
     {
@@ -435,7 +507,61 @@ const Dashboard = ({ params }: any) => {
             <Table dataSource={lectures} columns={columns} />
           )}
         </div>
+        <div className={`${InstructorCourseStyle.lecture}`}>
+          <div className="flex justify-between mb-5">
+            <span className="text-lg">List of Questions</span>
+            <Button onClick={showModal}> New Question</Button>
+          </div>
+          {loading ? (
+            <Spin size="large" />
+          ) : (
+            <>
+              {listQuestion.map((item) => (
+                <div key={item.test.id} className="mb-4 mt-6">
+                  <h3 className="text-xl font-semibold mb-2">
+                    {item.test.title}
+                  </h3>
+                  {item.questions.map((q, index) => (
+                    <div
+                      key={q.question.id}
+                      className="mb-2 mt-6 p-6 border-2 rounded-lg border-gray-200"
+                    >
+                      <p className="mb-1 font-medium text-[18px]">
+                        {index + 1}. {q.question.questionTest}
+                      </p>
+                      <div className="pl-4 grid grid-cols-2 gap-4">
+                        {q.answers.map((answer, ansIndex) => (
+                          <div
+                            key={answer.id}
+                            className={`mt-3 border-2 p-2 text-left rounded-lg ${
+                              answer.isCorrect === true
+                                ? "border-green-500 bg-green-100"
+                                : "border-blue-500 bg-blue-100"
+                            }`}
+                            // onClick={() =>
+                            //   handleAnswerSelect(
+                            //     q.question.id,
+                            //     answer.answerTest,
+                            //     answer.isCorrect
+                            //   )
+                            // }
+                          >
+                            {/* <span className="mr-2">
+                              {answerOptions[ansIndex]}
+                            </span> */}
+                            {answer.answerTest}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </>
+          )}
+        </div>
       </div>
+      {/* create Lecture */}
       <Modal
         destroyOnClose={true}
         title={`Create Lecture for Course by ${userData?.fullName}`}
