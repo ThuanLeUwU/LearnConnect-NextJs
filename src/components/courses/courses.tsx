@@ -157,7 +157,9 @@ const Courses = ({
     }
   };
   return (
-    <div className={`${CourseStyle.single_courses}`}>
+    <div
+      className={`${CourseStyle.single_courses} shadow-lg rounded-lg hover:border-[#309255]`}
+    >
       <div className={`${CourseStyle.single_courses_image}`}>
         <div className="relative">
           <button className="w-full" onClick={handleClick}>
