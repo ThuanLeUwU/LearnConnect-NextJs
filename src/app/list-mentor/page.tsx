@@ -17,7 +17,7 @@ export default function ListMentor() {
           {mentor &&
             mentor.length > 0 &&
             mentor.map((mentorItem, index) => (
-              <div className="tab-reviews">
+              <div className="tab-reviews" key={mentorItem.id}>
                 <h3 className="text-[#212832] text-2xl font-medium my-3"></h3>
                 <div className="reviews-wrapper reviews-active">
                   <div className="swiper-container">

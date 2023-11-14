@@ -94,17 +94,6 @@ const Transaction = () => {
     setIsModalOpen(false);
   };
 
-  useEffect(() => {
-    // Retrieve token from localStorage on component mount
-    const storedToken = localStorage.getItem("jwtToken");
-    if (storedToken) {
-      // Set authentication state or dispatch an action to set user as authenticated
-      setJwtToken(storedToken);
-    }
-
-    fetchData();
-  }, []);
-
   const fetchData = async () => {
     try {
       const response = await axios.get(
