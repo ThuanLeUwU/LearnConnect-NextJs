@@ -135,6 +135,7 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
     setUserData(user);
     setRole(user?.role);
   };
+
   const refetchUser = async () => {
     if (id) {
       const responseUser = await http.get(`/user/${id}`);

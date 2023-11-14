@@ -122,7 +122,7 @@ const Courses = ({
     if (isLiked) {
       axios
         .delete(
-          `https://learnconnectapitest.azurewebsites.net/api/favorite-course/${favoriteId}`
+          `https://learnconnectapitest.azurewebsites.net/api/favorite-course/un-set-favorite?userId=${userData?.id}&courseId=${id}`
         )
         .then((response) => {
           setTimeout(() => {

@@ -32,6 +32,7 @@ const Header = () => {
     Notification[]
   >([]);
   const router = useRouter();
+
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
     setNotification(false);
@@ -86,8 +87,6 @@ const Header = () => {
       fetchNotificationData();
     }
   }, [id]);
-  // console.log("id", id);
-  // console.log("notification data: ", notificationContent);
 
   return (
     <div className={`${headerStyles.header_section}`}>
@@ -150,7 +149,7 @@ const Header = () => {
                 <Image
                   width={100}
                   height={40}
-                  src="/images/LogoRemoveBG.png"
+                  src="/images/LogoTextWhite.png"
                   alt="Logo"
                 />
               </Link>
@@ -294,7 +293,7 @@ const Header = () => {
                     <Link href="/courses">Courses</Link>
                   </li>
                   <li>
-                    <Link href="/">List Mentor</Link>
+                    <Link href="/list-mentor">List Mentor</Link>
                   </li>
                   {/* <li>
                     <Link href="/about">About </Link>
@@ -353,8 +352,11 @@ const Header = () => {
                       <li>
                         <Link href="/favorites">Favorites</Link>
                       </li>
-                      <li>
+                      {/* <li>
                         <Link href="/contact">Contact</Link>
+                      </li> */}
+                      <li>
+                        <Link href="/list-mentor">List Mentor</Link>
                       </li>
                     </ul>
                   </div>
