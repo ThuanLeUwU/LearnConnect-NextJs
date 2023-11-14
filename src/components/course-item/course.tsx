@@ -55,7 +55,7 @@ const CourseItem = ({
     router.push(`/my-course/${id}`);
   };
   return (
-    <div className="lg:col-span-4 border border-solid border-[#acd6bc] p-[20px] rounded-lg my-[10px] hover:border-[#309255] mx-[15px]">
+    <div className="lg:col-span-4 border border-solid border-[#acd6bc] p-[20px] my-[10px] hover:border-[#309255] mx-[15px] shadow-lg rounded-lg">
       <div className="single-courses" onClick={handleClick}>
         <div>
           <div className="courses-images">

@@ -76,10 +76,8 @@ const Transaction = () => {
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState<"asc" | "desc">("asc");
   const [orderBy, setOrderBy] = useState<string>("verificationDate");
-  const { jwtToken }: { jwtToken: string } = UserAuth();
-  const { userData } = UserAuth();
+  const { userData, jwtToken } = UserAuth();
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
-
   const [selectedDocuments, setSelectedDocuments] = useState<
     VerificationDocument[]
   >([]);
@@ -116,7 +114,7 @@ const Transaction = () => {
 
   useEffect(() => {
     fetchData();
-  }, [page, rowsPerPage]);
+  }, []);
 
   const handleApprove = async (mentorUserId: number) => {
     try {
@@ -393,26 +391,32 @@ const Transaction = () => {
                                     {data.courseCategoryOfMentor.status !==
                                       0 && (
                                       <div className="flex flex-col gap-[10px]">
-                                        <Button
-                                          className="w-full my-1 bg-green-500 text-white"
-                                          color="success"
-                                          variant="contained"
-                                          onClick={() =>
-                                            handleApprove(data.mentor.userId)
-                                          }
-                                        >
-                                          Approve
-                                        </Button>
-                                        <Button
-                                          variant="contained"
-                                          color="error"
-                                          className="w-full my-1 bg-red-500 text-white"
-                                          onClick={() =>
-                                            handleReject(data.mentor.userId)
-                                          }
-                                        >
-                                          Reject
-                                        </Button>
+                                        {data.courseCategoryOfMentor.status !==
+                                          2 && (
+                                          <Button
+                                            className="w-full my-1 bg-green-500 text-white"
+                                            color="success"
+                                            variant="contained"
+                                            onClick={() =>
+                                              handleApprove(data.mentor.userId)
+                                            }
+                                          >
+                                            Approve
+                                          </Button>
+                                        )}
+                                        {data.courseCategoryOfMentor.status !==
+                                          2 && (
+                                          <Button
+                                            variant="contained"
+                                            color="error"
+                                            className="w-full my-1 bg-red-500 text-white"
+                                            onClick={() =>
+                                              handleReject(data.mentor.userId)
+                                            }
+                                          >
+                                            Reject
+                                          </Button>
+                                        )}
                                       </div>
                                     )}
                                   </TableCell>

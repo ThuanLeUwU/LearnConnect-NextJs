@@ -90,7 +90,7 @@ const Courses = ({
   const handleClick = () => {
     router.push(`/course-detail/${id}`);
   };
-
+  console.log("JWT Token Home:", jwtToken);
   useEffect(() => {
     axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
     if (userData) {
@@ -115,14 +115,16 @@ const Courses = ({
     setIsLiked(isCourseLiked);
   }, [courses, id]);
   const handleLike = () => {
+    if (!jwtToken) {
+      toast.error("You Must Login To add Favorites");
+      router.push("/login");
+      return;
+    }
     setIsLiked(!isLiked);
-    // console.log("Liked Course ID:", id);
-    // console.log("user, id: ", userData?.id);
-
     if (isLiked) {
       axios
         .delete(
-          `https://learnconnectapitest.azurewebsites.net/api/favorite-course/${favoriteId}`
+          `https://learnconnectapitest.azurewebsites.net/api/favorite-course/un-set-favorite?userId=${userData?.id}&courseId=${id}`
         )
         .then((response) => {
           setTimeout(() => {

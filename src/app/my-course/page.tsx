@@ -28,7 +28,7 @@ const MyCourse = () => {
               You don&apos;t have any courses.
             </div>
           ) : (
-            <div className="grid cols-2 lg:grid-cols-12 pt-[30px]">
+            <div className="grid cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-12 pt-[30px]">
               {courses.map((item) => (
                 <CourseItem
                   percentComplete={item.percentComplete}

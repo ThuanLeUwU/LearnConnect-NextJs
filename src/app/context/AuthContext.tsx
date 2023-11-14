@@ -73,7 +73,6 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
 }) => {
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [jwtToken, setJwtToken] = useState("");
-  // getMessageToken();
   const [id, setId] = useState("");
   const [role, setRole] = useState(-1);
   const [userData, setUserData] = useState<User | null>(null);
@@ -113,6 +112,7 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
     setUserData(user);
     setRole(user?.role);
   };
+
   const refetchUser = async () => {
     if (id) {
       const responseUser = await http.get(`/user/${id}`);
@@ -142,7 +142,7 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
-      // console.log("token", currentUser?.getIdToken());
+      console.log("token", currentUser?.getIdToken());
 
       if (currentUser) {
         currentUser.getIdToken().then((token) => {
@@ -166,7 +166,7 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
             const userRole = decoded.role;
             setId(userId);
             setRole(parseInt(userRole));
-            // console.log("user role", parseInt(userRole));
+            console.log("user role", parseInt(userRole));
             const fetchUser = async (userId: string) => {
               const responseUser = await http.get(`/user/${userId}`);
               setUserData(responseUser?.data);

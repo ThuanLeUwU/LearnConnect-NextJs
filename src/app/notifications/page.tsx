@@ -7,6 +7,7 @@ import useDataNotificationsFetcher from "@/components/pagination/useDataNotifica
 import Paginate from "@/components/pagination/pagination";
 import { http } from "@/api/http";
 import { Spin } from "antd";
+import { Empty } from "antd";
 // import { User } from "firebase/auth";
 
 export default function ProfileUser() {
@@ -31,7 +32,8 @@ export default function ProfileUser() {
         <div className="min-h-[60vh]">
           {notificationContent.length === 0 ? (
             <div className="text-center text-2xl mt-8 items-center justify-center">
-              You don&apos;t have any courses.
+              <Empty description={false} />
+              You don&apos;t have any Notification.
             </div>
           ) : (
             <div className="flex justify-center items-center container">

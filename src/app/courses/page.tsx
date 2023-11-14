@@ -10,7 +10,7 @@ const ListCourse = () => {
     useDataFetcher();
   return (
     <div className="container">
-      <Search />
+      <Search searchQueryData={""} />
       {loading ? (
         <div className="text-center text-5xl mt-5">
           <Spin size="large" />
@@ -22,7 +22,7 @@ const ListCourse = () => {
               You don&apos;t have any favorite courses.
             </div>
           ) : (
-            <div className="grid cols-2 lg:grid-cols-3 py-[30px] gap-5">
+            <div className="grid cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 py-[30px] gap-5">
               {courses.map((item) => {
                 return (
                   <Courses

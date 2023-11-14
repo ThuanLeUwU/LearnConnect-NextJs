@@ -17,7 +17,6 @@ const SearchCourse = () => {
   useEffect(() => {
     const url = window.location.href;
     const segments = url.split("/");
-
     const lastSegment = segments[segments.length - 1];
     if (lastSegment) {
       setSearchQuery(lastSegment);
@@ -34,6 +33,13 @@ const SearchCourse = () => {
         const response = await axios.get(
           `${API_URL}${searchQuery}&currentPage=${page}&pageSize=${pagesize}`
         );
+        if (response.status === 404) {
+          setCourses([]);
+          setTotalPages(0);
+          setLoading(false);
+          return;
+        }
+
         setCourses(response?.data.listCourse);
         setTotalPages(response?.data.paginationData.totalPages);
         setLoading(false);
@@ -41,21 +47,22 @@ const SearchCourse = () => {
         console.error("Error fetching data: ", error);
       }
     };
+
     if (searchQuery) {
       fetchData();
     }
   }, [searchQuery, currentPage]);
   return (
     <div className="container">
-      <Search />
+      <Search searchQueryData={searchQuery} />
       {loading ? (
-        <div className="text-center text-5xl mt-5">
+        <div className="text-center text-2xl mt-5 min-h-[60vh]">
           <Empty description={false} className="text-6xl" />
           There are no courses matching your search!!!
         </div>
       ) : (
         <div>
-          <div className="grid cols-2 lg:grid-cols-3 py-[30px] gap-5">
+          <div className="grid cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 py-[30px] gap-5">
             {courses.map((item) => (
               <Courses
                 enrolled={false}
