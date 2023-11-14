@@ -3,25 +3,34 @@ import React, { useState } from "react";
 import ".././globals.css";
 import useDataMentorFetcher from "@/components/pagination/useDataMentorFetcher";
 import Paginate from "@/components/pagination/pagination";
+import { useRouter } from "next/navigation";
 
 export default function ListMentor() {
+  const router = useRouter();
   const { loading, mentor, totalPages, currentPage, setCurrentPage } =
     useDataMentorFetcher();
-  console.log("mentor", mentor);
+  const handleSwiperWrapperClick = (mentorId) => {
+    console.log("Clicked on swiper-wrapper with mentor ID:", mentorId);
+    router.push(`/profile-mentor/${mentorId}`);
+  };
   return (
     <div className="container">
       {loading ? (
         <div className="text-center text-5xl">loading...</div>
       ) : (
         <div>
-          {mentor &&
-            mentor.length > 0 &&
-            mentor.map((mentorItem, index) => (
-              <div className="tab-reviews" key={mentorItem.id}>
-                <h3 className="text-[#212832] text-2xl font-medium my-3"></h3>
-                <div className="reviews-wrapper reviews-active">
-                  <div className="swiper-container">
-                    <div className="swiper-wrapper mb-3">
+          <div className="tab-reviews">
+            <h3 className="text-[#212832] text-2xl font-medium my-3"></h3>
+            <div className="reviews-wrapper reviews-active">
+              <div className="swiper-container">
+                {mentor &&
+                  mentor.length > 0 &&
+                  mentor.map((mentorItem, index) => (
+                    <div
+                      className="swiper-wrapper mb-3"
+                      key={mentorItem.id}
+                      onClick={() => handleSwiperWrapperClick(mentorItem.id)}
+                    >
                       <div className="single-review mt-3.5 border border-opacity-20 border-[#30925533] p-7 rounded-md">
                         <div className="review-author flex items-center ">
                           <div className="author-thumb border border-[#309255] rounded-full">
@@ -49,11 +58,11 @@ export default function ListMentor() {
                         </p>
                       </div>
                     </div>
-                    <div className="swiper-pagination"></div>
-                  </div>
-                </div>
+                  ))}
               </div>
-            ))}
+            </div>
+          </div>
+
           {mentor && mentor.length > 0 && (
             <Paginate
               totalPages={totalPages}
