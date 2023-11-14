@@ -146,7 +146,7 @@ export default function CourseDetailPage({ params }: any) {
                     <span className="text-sm font-normal text-[#309255]">
                       {courses?.totalEnrollment &&
                         courses?.totalEnrollment.toLocaleString()}{" "}
-                      Enrolled Students
+                      Enrolled Student
                     </span>
                   </div>
                 </div>
@@ -211,14 +211,14 @@ export default function CourseDetailPage({ params }: any) {
                   {activeTab === "tab1" && (
                     <div className="tab-description">
                       <div className="grid cols-2 lg:grid-cols-12 border-[#dff0e6] border border-solid rounded-lg px-[70px] pb-[35px] mt-5">
-                        <div className="lg:col-span-4 px-[15px]">
+                        {/* <div className="lg:col-span-4 px-[15px]">
                           <div className="">
                             <h4 className="text-[25px] px-[15px] pt-5 text-[#212832]">
                               Details
                             </h4>
                           </div>
-                        </div>
-                        <div className="lg:col-span-8">
+                        </div> */}
+                        <div className="lg:col-span-12">
                           <div className="text-[15px] font-extralight mt-[25px] px-[15px]">
                             <p className="mb-4 leading-loose">
                               {courses?.description}{" "}
@@ -255,7 +255,7 @@ export default function CourseDetailPage({ params }: any) {
                                         </tr>
                                         <tr className="border-b border-b-[#e7f8ee]">
                                           <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-medium">
-                                            Lectures
+                                            Lecture
                                           </td>
                                           <td className="whitespace-nowrap px-6 py-4">
                                             :
@@ -292,7 +292,7 @@ export default function CourseDetailPage({ params }: any) {
                                 lectures.map((item, index) => (
                                   <div key={index}>
                                     <p className="mt-5 font-bold">
-                                      Lecture-{index + 1} : {item.title}
+                                      Lecture {index + 1}: {item.title}
                                     </p>
                                     <p className="mt-3.5 text-[#52565b] text-base font-extralight">
                                       {item?.content}
@@ -307,9 +307,9 @@ export default function CourseDetailPage({ params }: any) {
                   )}
                   {activeTab === "tab3" && (
                     <div className="tab-reviews">
-                      <h3 className="text-[#212832] text-2xl font-medium mt-6">
+                      {/* <h3 className="text-[#212832] text-2xl font-medium mt-6">
                         Student Reviews:
-                      </h3>
+                      </h3> */}
                       <div className="reviews-wrapper reviews-active">
                         <div className="swiper-container">
                           <div className="swiper-wrapper">

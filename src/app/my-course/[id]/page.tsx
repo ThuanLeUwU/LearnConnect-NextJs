@@ -54,7 +54,7 @@ export default function AfterEnroll({ params }: any) {
   const [formDataImage, setFormDataImage] = useState();
 
   const [selected, setSelected] = useState(null);
-  const [activeVideoIndex, setActiveVideoIndex] = useState<number>(0);
+  const [activeVideoIndex, setActiveVideoIndex] = useState<number>(-1);
   const { Option } = Select;
   const { TextArea } = Input;
   const handleTabClick = (tabName: string) => {
@@ -170,7 +170,6 @@ export default function AfterEnroll({ params }: any) {
   //   const id = router.query.id;
   //   console.log("id", id);
   const [testVideo, setTestVideo] = useState<Lecture[]>([]);
-  console.log("test", testVideo);
   useEffect(() => {
     const fetchData = async () => {
       const responseData = await axios.get(
@@ -206,8 +205,6 @@ export default function AfterEnroll({ params }: any) {
 
     fetchData();
   }, []);
-
-  console.log("course123", courses?.id);
 
   const handleClick = () => {
     router.push(`/test/${courses?.id}`);
@@ -258,9 +255,6 @@ export default function AfterEnroll({ params }: any) {
     // }
   };
 
-  console.log("formDataImage", formDataImage);
-  console.log("image", image);
-
   return (
     <div className="container">
       <div className="grid cols-2 lg:grid-cols-12 mt-[40px]">
@@ -287,7 +281,9 @@ export default function AfterEnroll({ params }: any) {
             <div className="px-3">
               <div className="flex justify-between mt-2.5">
                 <h2 className="text-[25px] leading-normal text-[#212832] font-medium ">
-                  {courses?.name}
+                  {activeVideoIndex !== -1
+                    ? testVideo[activeVideoIndex].title
+                    : courses?.name}
                 </h2>
                 <div className=" flex gap-[10px]">
                   <Button
@@ -425,33 +421,58 @@ export default function AfterEnroll({ params }: any) {
                   </Form>
                 </Modal>
               </div>
-              <div className="flex justify-center bg-[#e7f8ee] p-3 rounded-lg mt-5">
-                <ul className="tabs flex space-x-5">
-                  <li
-                    className={`cursor-pointer rounded-md ${
-                      activeTab === "tab1"
-                        ? " text-[#fff] bg-[#309255]"
-                        : "bg-[#fff] "
-                    }`}
-                    onClick={() => handleTabClick("tab1")}
-                  >
-                    <button className="w-28 h-14 px-[15px] text-center text-sm font-medium  rounded-md hover:text-[#fff] hover:bg-[#309255]">
-                      Overview
-                    </button>
-                  </li>
-                  <li
-                    className={`cursor-pointer rounded-md ${
-                      activeTab === "tab2"
-                        ? " text-[#fff] bg-[#309255]"
-                        : "bg-[#fff] "
-                    }`}
-                    onClick={() => handleTabClick("tab2")}
-                  >
-                    <button className="w-28 h-14 px-[15px] text-center text-sm font-medium  border-opacity-20 rounded-md hover:border-[#309255] hover:text-[#fff] hover:bg-[#309255]">
-                      Lecture
-                    </button>
-                  </li>
-                  <li
+              {/* {activeVideoIndex !== -1
+                ? testVideo[activeVideoIndex].title
+                : courses?.name} */}
+              {activeVideoIndex !== -1 ? (
+                <div className="w-full mx-auto mb-3 shadow-lg rounded-lg">
+                  <div className="faq-wrapper">
+                    <div className="single-faq-item">
+                      <div className="grid cols-2 lg:grid-cols-12 border-[#dff0e6] border border-solid rounded-lg px-[70px] pb-[35px] mt-5">
+                        <div className="lg:col-span-12">
+                          <div key={activeVideoIndex}>
+                            <p className="mt-5 font-bold">
+                              Lecture {activeVideoIndex + 1}:{" "}
+                              {testVideo[activeVideoIndex].title}
+                            </p>
+                            <p className="mt-3.5 text-[#52565b] text-base font-extralight">
+                              {testVideo[activeVideoIndex]?.content}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <div className="flex justify-center bg-[#e7f8ee] p-3 rounded-lg mt-5">
+                    <ul className="tabs flex space-x-5">
+                      <li
+                        className={`cursor-pointer rounded-md ${
+                          activeTab === "tab1"
+                            ? " text-[#fff] bg-[#309255]"
+                            : "bg-[#fff] "
+                        }`}
+                        onClick={() => handleTabClick("tab1")}
+                      >
+                        <button className="w-28 h-14 px-[15px] text-center text-sm font-medium  rounded-md hover:text-[#fff] hover:bg-[#309255]">
+                          Overview
+                        </button>
+                      </li>
+                      <li
+                        className={`cursor-pointer rounded-md ${
+                          activeTab === "tab2"
+                            ? " text-[#fff] bg-[#309255]"
+                            : "bg-[#fff] "
+                        }`}
+                        onClick={() => handleTabClick("tab2")}
+                      >
+                        <button className="w-28 h-14 px-[15px] text-center text-sm font-medium  border-opacity-20 rounded-md hover:border-[#309255] hover:text-[#fff] hover:bg-[#309255]">
+                          Lectures
+                        </button>
+                      </li>
+                      {/* <li
                     className={`cursor-pointer rounded-md ${
                       activeTab === "#"
                         ? " text-[#fff] bg-[#309255]"
@@ -461,69 +482,71 @@ export default function AfterEnroll({ params }: any) {
                     <button className="w-28 h-14 px-[15px] text-center text-sm font-medium  border-opacity-20 rounded-md hover:border-[#309255] hover:text-[#fff] hover:bg-[#309255]">
                       Reviews
                     </button>
-                  </li>
-                </ul>
-              </div>
-              {activeTab === "tab1" && (
-                <div className="w-full mx-auto">
-                  <div className="faq-wrapper">
-                    <div className="single-faq-item">
-                      <div className="grid cols-2 lg:grid-cols-12 border-[#dff0e6] border border-solid rounded-lg px-[70px] pb-[35px] mt-5">
-                        <div className="lg:col-span-4 px-[15px]">
+                  </li> */}
+                    </ul>
+                  </div>
+                  {activeTab === "tab1" && (
+                    <div className="w-full mx-auto mb-3">
+                      <div className="faq-wrapper">
+                        <div className="single-faq-item">
+                          <div className="grid cols-2 lg:grid-cols-12 border-[#dff0e6] border border-solid rounded-lg px-[70px] pb-[35px] mt-5">
+                            {/* <div className="lg:col-span-4 px-[15px]">
                           <div className="">
                             <h4 className="text-[25px] px-[15px] pt-5 text-[#212832]">
                               Details
                             </h4>
                           </div>
-                        </div>
-                        <div className="lg:col-span-8">
-                          <div className="text-[15px] font-extralight mt-[25px] px-[15px]">
-                            <p className="mb-4 leading-loose">
-                              {courses?.description}{" "}
-                            </p>
-                            <div className="flex flex-col">
-                              <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
-                                <div className="inline-block min-w-full sm:px-6 lg:px-8">
-                                  <div className="overflow-hidden">
-                                    <table className="min-w-full text-left text-sm font-light">
-                                      <tbody>
-                                        <tr className="border-b border-b-[#e7f8ee]">
-                                          <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-medium">
-                                            Instructor
-                                          </td>
-                                          <td className="whitespace-nowrap px-6 py-4">
-                                            :
-                                          </td>
-                                          <td className="whitespace-nowrap px-6 py-4 text-[#52565b] text-[15px] font-normal">
-                                            {/* {courses.} */}
-                                            {courses?.mentorName}
-                                          </td>
-                                        </tr>
-                                        <tr className="border-b border-b-[#e7f8ee]">
-                                          <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-medium">
-                                            Duration
-                                          </td>
-                                          <td className="whitespace-nowrap px-6 py-4">
-                                            :
-                                          </td>
-                                          <td className="whitespace-nowrap px-6 py-4 text-[#52565b] text-[15px] font-normal">
-                                            {courses?.contentLength}{" "}
-                                            <span>min</span>
-                                          </td>
-                                        </tr>
-                                        <tr className="border-b border-b-[#e7f8ee]">
-                                          <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-medium">
-                                            Lectures
-                                          </td>
-                                          <td className="whitespace-nowrap px-6 py-4">
-                                            :
-                                          </td>
-                                          <td className="whitespace-nowrap px-6 py-4 text-[#52565b] text-[15px] font-normal">
-                                            {courses?.lectureCount}
-                                          </td>
-                                        </tr>
-                                      </tbody>
-                                    </table>
+                        </div> */}
+                            <div className="lg:col-span-12">
+                              <div className="text-[15px] font-extralight mt-[25px] px-[15px]">
+                                <p className="mb-4 leading-loose">
+                                  {courses?.description}{" "}
+                                </p>
+                                <div className="flex flex-col">
+                                  <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
+                                    <div className="inline-block min-w-full sm:px-6 lg:px-8">
+                                      <div className="overflow-hidden">
+                                        <table className="min-w-full text-left text-sm font-light">
+                                          <tbody>
+                                            <tr className="border-b border-b-[#e7f8ee]">
+                                              <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-medium">
+                                                Instructor
+                                              </td>
+                                              <td className="whitespace-nowrap px-6 py-4">
+                                                :
+                                              </td>
+                                              <td className="whitespace-nowrap px-6 py-4 text-[#52565b] text-[15px] font-normal">
+                                                {/* {courses.} */}
+                                                {courses?.mentorName}
+                                              </td>
+                                            </tr>
+                                            <tr className="border-b border-b-[#e7f8ee]">
+                                              <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-medium">
+                                                Duration
+                                              </td>
+                                              <td className="whitespace-nowrap px-6 py-4">
+                                                :
+                                              </td>
+                                              <td className="whitespace-nowrap px-6 py-4 text-[#52565b] text-[15px] font-normal">
+                                                {courses?.contentLength}{" "}
+                                                <span>min</span>
+                                              </td>
+                                            </tr>
+                                            <tr className="border-b border-b-[#e7f8ee]">
+                                              <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-medium">
+                                                Lectures
+                                              </td>
+                                              <td className="whitespace-nowrap px-6 py-4">
+                                                :
+                                              </td>
+                                              <td className="whitespace-nowrap px-6 py-4 text-[#52565b] text-[15px] font-normal">
+                                                {courses?.lectureCount}
+                                              </td>
+                                            </tr>
+                                          </tbody>
+                                        </table>
+                                      </div>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
@@ -532,37 +555,37 @@ export default function AfterEnroll({ params }: any) {
                         </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-              )}
-              {activeTab === "tab2" && (
-                <div className="w-full mx-auto">
-                  <div className="faq-wrapper">
-                    <div className="single-faq-item">
-                      <div className="grid cols-2 lg:grid-cols-12 border-[#dff0e6] border border-solid rounded-lg px-[70px] pb-[35px] mt-5">
-                        <div className="lg:col-span-4 px-[15px]">
+                  )}
+                  {activeTab === "tab2" && (
+                    <div className="w-full mx-auto mb-3">
+                      <div className="faq-wrapper">
+                        <div className="single-faq-item">
+                          <div className="grid cols-2 lg:grid-cols-12 border-[#dff0e6] border border-solid rounded-lg px-[70px] pb-[35px] mt-5">
+                            {/* <div className="lg:col-span-4 px-[15px]">
                           <div className="">
                             <h4 className="text-[25px] px-[15px] pt-5 text-[#212832]">
                               Lectures
                             </h4>
                           </div>
-                        </div>
-                        <div className="lg:col-span-8">
-                          {testVideo &&
-                            testVideo.map((item, index) => (
-                              <div key={index}>
-                                <p className="mt-5 font-bold">
-                                  Lecture-{index + 1} : {item.title}
-                                </p>
-                                <p className="mt-3.5 text-[#52565b] text-base font-extralight">
-                                  {item?.content}
-                                </p>
-                              </div>
-                            ))}
+                        </div> */}
+                            <div className="lg:col-span-12">
+                              {testVideo &&
+                                testVideo.map((item, index) => (
+                                  <div key={index}>
+                                    <p className="mt-5 font-bold">
+                                      Lecture {index + 1}: {item.title}
+                                    </p>
+                                    <p className="mt-3.5 text-[#52565b] text-base font-extralight">
+                                      {item?.content}
+                                    </p>
+                                  </div>
+                                ))}
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               )}
             </div>
@@ -610,9 +633,6 @@ export default function AfterEnroll({ params }: any) {
               </nav>
             </div>
           </div>
-          {/* <Button danger type="primary" onClick={handleClick}>
-            Test
-          </Button> */}
           <div className="video-playlist bg-[#eefbf3] text-black">
             <div className="accordion" id="videoPlaylist"></div>
           </div>

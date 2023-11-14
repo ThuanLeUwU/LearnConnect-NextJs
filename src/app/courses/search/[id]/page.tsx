@@ -56,13 +56,13 @@ const SearchCourse = () => {
     <div className="container">
       <Search searchQueryData={searchQuery} />
       {loading ? (
-        <div className="text-center text-5xl mt-5">
+        <div className="text-center text-2xl mt-5 min-h-[60vh]">
           <Empty description={false} className="text-6xl" />
           There are no courses matching your search!!!
         </div>
       ) : (
         <div>
-          <div className="grid cols-2 lg:grid-cols-3 py-[30px] gap-5">
+          <div className="grid cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 py-[30px] gap-5">
             {courses.map((item) => (
               <Courses
                 enrolled={false}
