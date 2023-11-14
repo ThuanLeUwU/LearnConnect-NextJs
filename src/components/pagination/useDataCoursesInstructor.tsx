@@ -27,7 +27,7 @@ const useDataCoursesInstructor = () => {
     const page = Math.min(currentPage + 1, totalPages);
     if (id) {
       const responseUser = await http.get(
-        `/course/get-courses-by-mentor?userId=${id}&currentPage=${page}&pageSize=${pagesize}`
+        `/course/get-courses-by-mentorUserId?userId=${id}&currentPage=${page}&pageSize=${pagesize}`
       );
       setListCourseInstructor(responseUser?.data.courses);
     }
@@ -47,8 +47,7 @@ const useDataCoursesInstructor = () => {
       const page = Math.min(currentPage + 1, totalPages);
       try {
         const responseData = await http.get(
-          `/course/get-courses-by-mentor?userId=${id}&currentPage=${page}&pageSize=${pagesize}
-            `
+          `/course/get-courses-by-mentorUserId?userId=${id}&currentPage=${page}&pageSize=${pagesize}`
         );
         setListCourseInstructor(responseData?.data.courses);
         setTotalPages(responseData?.data.paginationData.totalPages);

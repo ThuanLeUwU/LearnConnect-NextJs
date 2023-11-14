@@ -11,6 +11,7 @@ import {
   Space,
   Spin,
   Table,
+  Tag,
   Typography,
   Upload,
 } from "antd";
@@ -19,16 +20,31 @@ import { Lecture } from "@/app/my-course/[id]/page";
 import axios from "axios";
 import { http } from "@/api/http";
 import {
+  Box,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Grid,
+  Paper,
+  Rating,
 } from "@mui/material";
 import { toast } from "sonner";
 import { Course } from "@/components/courses/courses";
 import { Test } from "@/app/test/[id]/page";
+// import { Rating } from "@/app/course-detail/[id]/page";
 
+export type Rating = {
+  id: number;
+  rating1: number;
+  comment: string;
+  timeStamp: string;
+  status: number;
+  userId: number;
+  courseId: number;
+  mentorId: number;
+};
 // export type Test = {
 //   test: {
 //     id: number;
@@ -75,7 +91,7 @@ import { Test } from "@/app/test/[id]/page";
 
 const Dashboard = ({ params }: any) => {
   const idCourse = params.id;
-  console.log("param", params);
+  // console.log("param", params);
   const { id, userData, jwtToken } = UserAuth();
 
   //   console.log(" idcourse", idCourse);
@@ -130,7 +146,7 @@ const Dashboard = ({ params }: any) => {
         console.error("Error fetching user data:", error);
         setLoading(false);
       });
-  }, []);
+  }, [id]);
 
   const handleUpdate = async (data: any) => {
     const formData = new FormData();
@@ -228,7 +244,7 @@ const Dashboard = ({ params }: any) => {
 
   //get list lecture
   const [lectures, setLectures] = useState<Lecture[]>([]);
-  console.log("lecture", lectures);
+  // console.log("lecture", lectures);
   useEffect(() => {
     // Gọi API để lấy danh sách người dùng
     http
@@ -248,7 +264,7 @@ const Dashboard = ({ params }: any) => {
   //type
   const [type, setType] = useState(null);
   const { Option } = Select;
-  console.log("type", type);
+  // console.log("type", type);
 
   const Type = [
     { id: 1, title: "Video" },
@@ -311,7 +327,7 @@ const Dashboard = ({ params }: any) => {
   const [selectedAnswers, setSelectedAnswers] = useState<{
     [key: number]: { answer: string; isCorrect: boolean };
   }>({});
-  console.log("Questions", listQuestion);
+  // console.log("Questions", listQuestion);
   useEffect(() => {
     // Gọi API để lấy danh sách người dùng
     http
@@ -321,7 +337,7 @@ const Dashboard = ({ params }: any) => {
         setListQuestion(response.data);
         listQuestion.forEach((item) => {
           const totalQuestion = item.test.totalQuestion;
-          console.log("Total Questions:", totalQuestion);
+          // console.log("Total Questions:", totalQuestion);
         });
         setLoading(false);
       })
@@ -385,13 +401,74 @@ const Dashboard = ({ params }: any) => {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      render: (text: number, record: any) => {
-        return text === 1 ? (
-          <div className="text-red-500 text-lg">Inactive</div>
-        ) : (
-          <div className="text-green-500 text-lg">Active</div>
-        );
+      render: (status) => (
+        <Tag color={status === 1 ? "green" : "red"}>
+          {status === 1 ? "Inactive" : "Active"}
+        </Tag>
+      ),
+    },
+  ];
+
+  const [listRating, setListRating] = useState<Rating[]>([]);
+
+  useEffect(() => {
+    // Gọi API để lấy danh sách người dùng
+    http
+      .get(`/rating/listRatingOfCourse/${idCourse}`)
+      .then((response) => {
+        // setInfoTest(response.data.questions);
+        setListRating(response.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching user data:", error);
+        setLoading(false);
+      });
+  }, [idCourse]);
+
+  const rating = [
+    {
+      title: "Rating",
+      dataIndex: "rating1",
+      key: "rating1",
+      render: (rating1) => <Tag color="blue">{rating1}</Tag>,
+    },
+    {
+      title: "Comment",
+      dataIndex: "comment",
+      key: "comment",
+    },
+    {
+      title: "Time",
+      dataIndex: "timeStamp",
+      key: "timeStamp",
+      render: (timeStamp) => {
+        const formattedDate = new Intl.DateTimeFormat("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          hour: "numeric",
+          minute: "numeric",
+          second: "numeric",
+          timeZone: "Asia/Ho_Chi_Minh", // Chỉ định múi giờ nếu cần thiết
+        }).format(new Date(timeStamp));
+        return <span>{formattedDate}</span>;
       },
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (status) => (
+        <Tag color={status === 1 ? "green" : "red"}>
+          {status === 1 ? "Active" : "Inactive"}
+        </Tag>
+      ),
+    },
+    {
+      title: "User ID",
+      dataIndex: "userId",
+      key: "userId",
     },
   ];
 
@@ -435,64 +512,78 @@ const Dashboard = ({ params }: any) => {
         <div className={`${InstructorCourseStyle.featured}`}>
           <div className={`${InstructorCourseStyle.featured_top}`}>
             <h1 className={`${InstructorCourseStyle.featured_top_title}`}>
-              Total Revenue
+              About Course
             </h1>
-            {/* <MoreVertIcon fontSize="small" /> */}
           </div>
-          <div className={`${InstructorCourseStyle.featured_bottom}`}>
-            <div
-              className={`${InstructorCourseStyle.featured_bottom_featuredChart}`}
-            >
-              {/* <CircularProgressbar value={70} text={"70%"} strokeWidth={5} /> */}
+          {/* <div className={`${InstructorCourseStyle.featured_bottom}`}> */}
+          <div className="p-5 flex">
+            <div className="flex-1 w-32">
+              <img
+                width="400px"
+                height="300px"
+                src={`${course?.imageUrl}`}
+                alt=""
+              />
             </div>
-            <p className={`${InstructorCourseStyle.featured_bottom_title}`}>
-              Total sales made today
-            </p>
-            <p className={`${InstructorCourseStyle.featured_bottom_amount}`}>
-              $420
-            </p>
-            <p className={`${InstructorCourseStyle.featured_bottom_desc}`}>
-              Previous transactions processing. Last payments may not be
-              included.
-            </p>
-            <div className={`${InstructorCourseStyle.featured_bottom_summary}`}>
+            <div className="flex-auto">
+              <p className={`${InstructorCourseStyle.featured_bottom_title}`}>
+                {course?.name}
+              </p>
+              <p className={`${InstructorCourseStyle.featured_bottom_cate}`}>
+                {course?.categoryName}
+              </p>
+              <div className="flex flex-row justify-between">
+                <div>
+                  <p
+                    className={`${InstructorCourseStyle.featured_bottom_amount}`}
+                  >
+                    Price:
+                    {course?.price === 0 ? (
+                      <> Free</>
+                    ) : (
+                      <>{course?.price} VND</>
+                    )}
+                  </p>
+                  <p
+                    className={`${InstructorCourseStyle.featured_bottom_amount}`}
+                  >
+                    Enrollment: {course?.totalEnrollment}
+                  </p>
+                </div>
+                <div>
+                  <p
+                    className={`${InstructorCourseStyle.featured_bottom_amount}`}
+                  >
+                    Total Rating: {course?.totalRatingCount}
+                  </p>
+                  <p
+                    className={`${InstructorCourseStyle.featured_bottom_amount}`}
+                  >
+                    Average Rating: {course?.averageRating}{" "}
+                    <Rating
+                      size="medium"
+                      name="half-rating-read"
+                      max={1}
+                      readOnly
+                      value={1}
+                    />
+                  </p>
+                </div>
+              </div>
               <div
-                className={`${InstructorCourseStyle.featured_bottom_summary_item}`}
+                className={`${InstructorCourseStyle.featured_bottom_amount}`}
               >
-                <div
-                  className={`${InstructorCourseStyle.featured_bottom_summary_item_itemTitle}`}
-                >
-                  Target
-                </div>
-                <div
-                  className={`${InstructorCourseStyle.featured_bottom_summary_item_itemTitle}`}
-                >
-                  {/* <KeyboardArrowDownIcon fontSize="small"/> */}
-                  <div className="resultAmount">$12.4k</div>
-                </div>
+                <p>
+                  <span className="text-green-500">Create Date: </span>
+                  {course?.createDate
+                    ? new Date(course?.createDate).toLocaleTimeString("en-US")
+                    : ""}{" "}
+                  {course?.createDate
+                    ? new Date(course?.createDate).toLocaleDateString("en-GB")
+                    : ""}{" "}
+                </p>
               </div>
-              <div
-                className={`${InstructorCourseStyle.featured_bottom_summary_item}`}
-              >
-                <div
-                  className={`${InstructorCourseStyle.featured_bottom_summary_item_itemTitle}`}
-                >
-                  Last Week
-                </div>
-                <div
-                  className={`${InstructorCourseStyle.featured_bottom_summary_item_itemTitle}`}
-                >
-                  {/* <KeyboardArrowUpOutlinedIcon fontSize="small"/> */}
-                  <div className="resultAmount">$12.4k</div>
-                </div>
-              </div>
-              <div className="item">
-                <div className="itemTitle">Last Month</div>
-                <div className="itemResult positive">
-                  {/* <KeyboardArrowUpOutlinedIcon fontSize="small"/> */}
-                  <div className="resultAmount">$12.4k</div>
-                </div>
-              </div>
+              <div>{/* <span>Description: {course?.description}</span> */}</div>
             </div>
           </div>
         </div>
@@ -558,6 +649,16 @@ const Dashboard = ({ params }: any) => {
                 </div>
               ))}
             </>
+          )}
+        </div>
+        <div className={`${InstructorCourseStyle.lecture}`}>
+          <div className="flex justify-between mb-5">
+            <span className="text-lg">Rating of Course</span>
+          </div>
+          {loading ? (
+            <Spin size="large" />
+          ) : (
+            <Table dataSource={listRating} columns={rating} />
           )}
         </div>
       </div>

@@ -163,7 +163,7 @@ export default function UserManagePage() {
   };
   // if (!mounted)
 
-  console.log("JWT Token staff: ", jwtToken);
+  // console.log("JWT Token staff: ", jwtToken);
   return (
     <>
       <Head>
@@ -338,7 +338,7 @@ export default function UserManagePage() {
                                           style={{ color: "black" }}
                                           onClick={() => {
                                             showModal(user);
-                                            console.log("t nè", user);
+                                            // console.log("t nè", user);
                                           }}
                                         >
                                           Update

@@ -243,9 +243,8 @@ export default function AfterEnroll({ params }: any) {
       setPerformance(responseData?.data);
       // console.log("performance", performance);
     };
-
     fetchData();
-  }, []);
+  }, [id]);
   // console.log("performance", performance?.score);
   const handleSeek = (e: any) => {
     // const video = videoRef.current;

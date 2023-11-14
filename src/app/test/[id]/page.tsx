@@ -59,10 +59,10 @@ const Quiz = ({ params }: any) => {
           `https://learnconnectapitest.azurewebsites.net/api/test/get-tests-by-course?courseId=${idCourse}`
         );
         setQuestionsTest(response.data);
-        console.log("Total Questions:", response.data);
+        // console.log("Total Questions:", response.data);
         questionsTest.forEach((item) => {
           const totalQuestion = item.test.totalQuestion;
-          console.log("Total Questions:", totalQuestion);
+          // console.log("Total Questions:", totalQuestion);
         });
       } catch (error) {
         console.error("Error fetching questions:", error);
@@ -106,9 +106,9 @@ const Quiz = ({ params }: any) => {
       averageScore = (100 / totalQuestions) * count;
     }
 
-    console.log("Correct Answers: ", count);
-    console.log("Total Questions: ", totalQuestions);
-    console.log("Average Score: ", averageScore);
+    // console.log("Correct Answers: ", count);
+    // console.log("Total Questions: ", totalQuestions);
+    // console.log("Average Score: ", averageScore);
     const userId = userData?.id;
     const url = `https://learnconnectapitest.azurewebsites.net/api/learning-performance/user/${userId}/course/${idCourse}`;
     try {
@@ -117,7 +117,7 @@ const Quiz = ({ params }: any) => {
         userId: userId,
         courseId: idCourse,
       });
-      console.log("PUT request successful. Response:", response.data);
+      // console.log("PUT request successful. Response:", response.data);
       Modal.info({
         title: "Quiz Results",
         content: (

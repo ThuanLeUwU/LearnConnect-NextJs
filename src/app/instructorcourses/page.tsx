@@ -13,6 +13,7 @@ import {
   Modal,
   Select,
   Space,
+  Spin,
   Upload,
   message,
 } from "antd";
@@ -228,12 +229,16 @@ const InstructorCourse = () => {
 
   const handleUpdate = async (data: any) => {
     const formData = new FormData();
-    formData.append("courseName", data.name);
-    formData.append("description", data.description);
-    formData.append("shortDescription", data.shortDes);
-    formData.append("price", data.price);
-    console.log("price", data.price);
-    formData.append("lectureCount", data.lecture);
+    formData.append("courseName", data.name || course?.name);
+    formData.append("description", data.description || course?.description);
+    formData.append(
+      "shortDescription",
+      data.shortDes || course?.shortDescription
+    );
+    formData.append("contentLength", data.length || course?.contentLength);
+    formData.append("price", data.price || course?.price);
+    // console.log("price", data.price);
+    formData.append("lectureCount", data.lecture || course?.lectureCount);
     formData.append("categoryId", selected || "1");
     if (formDataImage !== undefined) {
       formData.append("courseImage", formDataImage);
@@ -291,7 +296,7 @@ const InstructorCourse = () => {
     setOpen(false);
   };
 
-  if (!id) return <p>Loading</p>;
+  if (!id) return <Spin size="large" className="flex justify-center" />;
 
   return (
     <div className={`${InstructorCourseStyle.content_wrapper}`}>
@@ -363,7 +368,9 @@ const InstructorCourse = () => {
           </div>
         </div>
         {loading ? (
-          <div className="text-center text-5xl">loading...</div>
+          <div className="text-center text-5xl mt-5">
+            <Spin size="large" />
+          </div>
         ) : (
           <div className={`${InstructorCourseStyle.course_list_wrapper}`}>
             {listCourseInstructor.map((item, index) => {
@@ -424,9 +431,9 @@ const InstructorCourse = () => {
                             <Rating
                               size="small"
                               name="half-rating-read"
-                              defaultValue={item.averageRating}
                               precision={0.1}
                               readOnly
+                              value={item.averageRating}
                             />
                           </span>
                         </span>

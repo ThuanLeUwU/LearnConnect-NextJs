@@ -305,7 +305,7 @@ export default function CourseDetailPage({ params }: any) {
                               </div>
                             </div> */}
                             <div className="lg:col-span-12">
-                              <div className="  ">
+                              {/* <div className="  ">
                                 <Menu
                                   mode="inline"
                                   // onClick={onShow}
@@ -322,8 +322,8 @@ export default function CourseDetailPage({ params }: any) {
                                       </Menu.SubMenu>
                                     ))}
                                 </Menu>
-                              </div>
-                              {/* {lectures &&
+                              </div> */}
+                              {lectures &&
                                 lectures.map((item, index) => (
                                   <div key={index}>
                                     <p className="mt-5 font-bold">
@@ -333,7 +333,7 @@ export default function CourseDetailPage({ params }: any) {
                                       {item?.content}
                                     </p>
                                   </div>
-                                ))} */}
+                                ))}
                             </div>
                           </div>
                         </div>

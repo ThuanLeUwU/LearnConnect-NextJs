@@ -85,7 +85,7 @@ const Transaction = () => {
   >([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
-  console.log("id Staff:", userData?.id);
+  // console.log("id Staff:", userData?.id);
   const handleViewMoreClick = (documents: VerificationDocument[]) => {
     setSelectedDocuments(documents);
     setIsModalOpen(true);

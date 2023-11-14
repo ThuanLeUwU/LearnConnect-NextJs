@@ -95,29 +95,6 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
       toast.success("Login successful");
     });
   };
-  React.useEffect(() => {
-    if (role === -1) {
-      return;
-    }
-
-    switch (role) {
-      case UserRole.Student:
-        router.push("/courses");
-        break;
-      case UserRole.Mentor:
-        router.push("/instructorcourses");
-        break;
-      case UserRole.Staff:
-        router.push("/staff-page");
-        break;
-      case UserRole.Admin:
-        router.push("/user-manage");
-        break;
-      default:
-        router.push("/");
-        break;
-    }
-  }, [role]);
 
   const logOut = () => {
     signOut(auth);

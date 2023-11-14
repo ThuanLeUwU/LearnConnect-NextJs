@@ -198,7 +198,7 @@ export const RegisterForm = ({ onCancel, visible, isEdit }: IProps) => {
       setTimeout(() => {
         toast.success("Form submitted successful");
       }, 0);
-      console.log("url", url);
+      // console.log("url", url);
     } catch (error) {
       setTimeout(() => {
         toast.error("Failed to submit the form. Please try again later.");

@@ -25,6 +25,7 @@ export type Course = {
   price: number;
   rating: number;
   categoryId: number | string;
+  categoryName: string;
   contentLength: number;
   lectureCount: number;
   averageRating: number;
@@ -34,6 +35,7 @@ export type Course = {
   totalRatingCount: number;
   favoriteId: number;
   enrolled: boolean;
+  createDate: string;
 };
 
 export type Lectures = {
