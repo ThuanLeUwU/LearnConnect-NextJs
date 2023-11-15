@@ -298,24 +298,10 @@ const Transaction = () => {
                                 CreateDate
                               </TableSortLabel>
                             </TableCell>
-                            <TableCell>UserName</TableCell>
+                            <TableCell>Name</TableCell>
                             <TableCell>Email</TableCell>
-                            <TableCell>Status</TableCell>
-                            <TableCell>Process Note</TableCell>
-                            <TableCell>
-                              <TableSortLabel
-                                active={orderBy === "mentor.description"}
-                                direction={
-                                  orderBy === "mentor.description"
-                                    ? order
-                                    : "asc"
-                                }
-                                onClick={() =>
-                                  handleRequestSort("mentor.description")
-                                }
-                              >
-                                Description
-                              </TableSortLabel>
+                            <TableCell className="w-[600px]">
+                              Description
                             </TableCell>
                             <TableCell>
                               <TableSortLabel
@@ -327,11 +313,13 @@ const Transaction = () => {
                                   handleRequestSort("category.name")
                                 }
                               >
-                                Category Name
+                                Specialization
                               </TableSortLabel>
                             </TableCell>
-                            <TableCell>View More</TableCell>
-                            <TableCell>Action</TableCell>
+                            <TableCell>Status</TableCell>
+                            <TableCell className="w-[400px]">Note</TableCell>
+                            <TableCell align="center">Verification</TableCell>
+                            <TableCell align="center">Action</TableCell>
                           </TableRow>
                           {requestData &&
                             stableSort(
@@ -358,6 +346,11 @@ const Transaction = () => {
                                   </TableCell>
                                   <TableCell>{data.user.fullName}</TableCell>
                                   <TableCell>{data.user.email}</TableCell>
+
+                                  <TableCell size="small">
+                                    {data.mentor.description}
+                                  </TableCell>
+                                  <TableCell>{data.category.name}</TableCell>
                                   <TableCell
                                     style={{
                                       color: getStatusColor(
@@ -373,10 +366,6 @@ const Transaction = () => {
                                     {data.courseCategoryOfMentor.rejectReason}
                                   </TableCell>
                                   <TableCell>
-                                    {data.mentor.description}
-                                  </TableCell>
-                                  <TableCell>{data.category.name}</TableCell>
-                                  <TableCell>
                                     <Button
                                       onClick={() =>
                                         handleViewMoreClick(
@@ -384,9 +373,10 @@ const Transaction = () => {
                                         )
                                       }
                                     >
-                                      View More
+                                      View
                                     </Button>
                                   </TableCell>
+
                                   <TableCell>
                                     {data.courseCategoryOfMentor.status !==
                                       0 && (
