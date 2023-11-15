@@ -6,6 +6,7 @@ import ".././globals.css";
 import { useRouter } from "next/navigation";
 import { AiOutlineCheckCircle, AiFillExclamationCircle } from "react-icons/ai";
 import { UserAuth } from "../context/AuthContext";
+import { http } from "@/api/http";
 
 export type Payment = {
   id: string | number;
@@ -23,7 +24,7 @@ export type Payment = {
 const AfterPayment = () => {
   const { id, jwtToken } = UserAuth();
   axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
-
+  console.log("jwtToken", jwtToken);
   const [urlParams, setUrlParams] = useState<URLSearchParams | null>(null);
   const [payment, setPayment] = useState<Payment>();
   const [courseId, setCourseId] = useState("");
@@ -46,7 +47,7 @@ const AfterPayment = () => {
 
       const fetchData = async () => {
         try {
-          const responseData = await axios.get(
+          const responseData = await http.get(
             `https://learnconnectapitest.azurewebsites.net/api/payment-transaction/query-vnpay-transaction?vnp_TxnRef=${vnp_TxnRef}&vnp_PayDate=${vnp_PayDate}`
           );
           setPayment(responseData?.data.paymentTransaction);

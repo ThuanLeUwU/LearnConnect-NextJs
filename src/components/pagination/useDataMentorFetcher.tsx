@@ -27,7 +27,8 @@ const useDataMentorFetcher = () => {
       const result = await axios.get(
         `${API_URL}?currentPage=${page}&pageSize=${pagesize}`
       );
-      setMentor(result?.data.listMentor);
+
+      setMentor(result?.data.listMentor.map((mentor) => mentor.mentorInfo));
       setTotalPages(result?.data.paginationData.totalPages);
       setLoading(false);
     };

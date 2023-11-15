@@ -14,6 +14,7 @@ import useDataFavoritesFetcher, {
 } from "../pagination/useDataFavoritesFetcher";
 import { message } from "antd";
 import { toast } from "sonner";
+import { http } from "@/api/http";
 
 export type Course = {
   id: string | number;
@@ -96,7 +97,7 @@ const Courses = ({
     if (userData) {
       const fetchFavoriteCourses = async () => {
         try {
-          const response = await axios.get(
+          const response = await http.get(
             `https://learnconnectapitest.azurewebsites.net/api/favorite-course/get-favorite-courses-by-user?userId=${userData?.id}&currentPage=1&pageSize=6`
           );
           setCourses(response.data.listFavoriteCourses);
@@ -122,7 +123,7 @@ const Courses = ({
     }
     setIsLiked(!isLiked);
     if (isLiked) {
-      axios
+      http
         .delete(
           `https://learnconnectapitest.azurewebsites.net/api/favorite-course/un-set-favorite?userId=${userData?.id}&courseId=${id}`
         )
@@ -136,7 +137,7 @@ const Courses = ({
           console.error("Error making DELETE request: ", error);
         });
     } else {
-      axios
+      http
         .post(
           "https://learnconnectapitest.azurewebsites.net/api/favorite-course",
           {

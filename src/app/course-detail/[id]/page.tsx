@@ -10,6 +10,7 @@ import { UserAuth } from "@/app/context/AuthContext";
 import Rating from "@mui/material/Rating";
 import { AiFillStar } from "react-icons/ai";
 import { useRouter } from "next/navigation";
+import { http } from "@/api/http";
 
 export type Rating = {
   id: number;
@@ -45,7 +46,7 @@ export default function CourseDetailPage({ params }: any) {
       if (!idUser) {
         url = `https://learnconnectapitest.azurewebsites.net/api/course/${idCourse}`;
       }
-      const responseData = await axios.get(url);
+      const responseData = await http.get(url);
       setCourses(responseData?.data);
       setAverageRating(responseData?.data.averageRating);
     };
@@ -54,7 +55,7 @@ export default function CourseDetailPage({ params }: any) {
   // console.log("is enrolled", courses?.enrolled);
   useEffect(() => {
     const fetchData = async () => {
-      const responseData = await axios.get(
+      const responseData = await http.get(
         `https://learnconnectapitest.azurewebsites.net/api/lecture/by-course/${idCourse}`
       );
       setLectures(responseData?.data);
@@ -86,7 +87,7 @@ export default function CourseDetailPage({ params }: any) {
     )}`;
 
     try {
-      const response = await axios.post(url);
+      const response = await http.post(url);
       // console.log("Response from API:", response.data);
       // console.log("url", url);
       // const responseDataPayment = await axios.get(response.data);
