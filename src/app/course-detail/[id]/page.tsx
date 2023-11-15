@@ -257,7 +257,7 @@ export default function CourseDetailPage({ params }: any) {
                           </div>
                         </div> */}
                         <div className="lg:col-span-12">
-                          <div className="text-[15px] font-extralight mt-[25px] px-[15px]">
+                          <div className="text-[15px] font-medium mt-[25px] px-[15px]">
                             <p className="mb-4 leading-loose">
                               {courses?.description}{" "}
                             </p>
@@ -274,7 +274,7 @@ export default function CourseDetailPage({ params }: any) {
                                           <td className="whitespace-nowrap px-6 py-4">
                                             :
                                           </td>
-                                          <td className="whitespace-nowrap px-6 py-4 text-[#52565b] text-[15px] font-normal">
+                                          <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-normal">
                                             {/* {courses.} */}
                                             {courses?.mentorName}
                                           </td>
@@ -286,7 +286,7 @@ export default function CourseDetailPage({ params }: any) {
                                           <td className="whitespace-nowrap px-6 py-4">
                                             :
                                           </td>
-                                          <td className="whitespace-nowrap px-6 py-4 text-[#52565b] text-[15px] font-normal">
+                                          <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-normal">
                                             {courses?.contentLength}{" "}
                                             <span>min</span>
                                           </td>
@@ -298,7 +298,7 @@ export default function CourseDetailPage({ params }: any) {
                                           <td className="whitespace-nowrap px-6 py-4">
                                             :
                                           </td>
-                                          <td className="whitespace-nowrap px-6 py-4 text-[#52565b] text-[15px] font-normal">
+                                          <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-normal">
                                             {courses?.lectureCount}
                                           </td>
                                         </tr>
@@ -350,7 +350,7 @@ export default function CourseDetailPage({ params }: any) {
                                     <p className="mt-5 font-bold">
                                       Lecture {index + 1}: {item.title}
                                     </p>
-                                    <p className="mt-3.5 text-[#52565b] text-base font-extralight">
+                                    <p className="mt-3.5 text-[#52565b] text-base font-normal">
                                       {item?.content}
                                     </p>
                                   </div>
@@ -379,15 +379,15 @@ export default function CourseDetailPage({ params }: any) {
                                           <img
                                             src={item.userRatingInfo.imageUser}
                                             alt="Author"
-                                            className="w-24 h-24 rounded-full"
+                                            className="w-16 h-16 rounded-full"
                                           />
                                           <i className="icofont-quote-left"></i>
                                         </div>
-                                        <div className="author-content pl-4">
-                                          <h4 className="text-2xl font-medium">
+                                        <div className="author-content pl-4 flex flex-col justify-center">
+                                          <div className=" font-bold text-xl">
                                             {item.userRatingInfo.fullName}
-                                          </h4>
-                                          <span className="text-lg text-[#309255] mt-1.5 font-light">
+                                          </div>
+                                          <span className=" text-[#309255] font-light">
                                             {item.ratingCourseInfo.timeStamp
                                               ? new Date(
                                                   item.ratingCourseInfo.timeStamp
@@ -403,9 +403,6 @@ export default function CourseDetailPage({ params }: any) {
                                                 })
                                               : ""}{" "}
                                           </span>
-                                          <span className="rating-star">
-                                            <span className="rating-bar"></span>
-                                          </span>
                                         </div>
                                       </div>
                                       <div className="">
@@ -419,7 +416,7 @@ export default function CourseDetailPage({ params }: any) {
                                         />
                                       </div>
                                     </div>
-                                    <p className="mt-3 font-medium text-[#52565b] text-lg">
+                                    <p className="mt-3 font-semibold text-[#52565b] ">
                                       {item.ratingCourseInfo.comment}
                                     </p>
                                   </div>

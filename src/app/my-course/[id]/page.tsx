@@ -482,7 +482,7 @@ export default function AfterEnroll({ params }: any) {
                               Lecture {activeVideoIndex + 1}:{" "}
                               {testVideo[activeVideoIndex].title}
                             </p>
-                            <p className="mt-3.5 text-[#52565b] text-base font-extralight">
+                            <p className="mt-3.5 text-[#52565b] text-base font-normal">
                               {testVideo[activeVideoIndex]?.content}
                             </p>
                           </div>
@@ -545,7 +545,7 @@ export default function AfterEnroll({ params }: any) {
                           </div>
                         </div> */}
                             <div className="lg:col-span-12">
-                              <div className="text-[15px] font-extralight mt-[25px] px-[15px]">
+                              <div className="text-[15px] font-medium mt-[25px] px-[15px]">
                                 <p className="mb-4 leading-loose">
                                   {courses?.description}{" "}
                                 </p>
@@ -562,7 +562,7 @@ export default function AfterEnroll({ params }: any) {
                                               <td className="whitespace-nowrap px-6 py-4">
                                                 :
                                               </td>
-                                              <td className="whitespace-nowrap px-6 py-4 text-[#52565b] text-[15px] font-normal">
+                                              <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-normal">
                                                 {/* {courses.} */}
                                                 {courses?.mentorName}
                                               </td>
@@ -574,7 +574,7 @@ export default function AfterEnroll({ params }: any) {
                                               <td className="whitespace-nowrap px-6 py-4">
                                                 :
                                               </td>
-                                              <td className="whitespace-nowrap px-6 py-4 text-[#52565b] text-[15px] font-normal">
+                                              <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-normal">
                                                 {courses?.contentLength}{" "}
                                                 <span>min</span>
                                               </td>
@@ -586,7 +586,7 @@ export default function AfterEnroll({ params }: any) {
                                               <td className="whitespace-nowrap px-6 py-4">
                                                 :
                                               </td>
-                                              <td className="whitespace-nowrap px-6 py-4 text-[#52565b] text-[15px] font-normal">
+                                              <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-normal">
                                                 {courses?.lectureCount}
                                               </td>
                                             </tr>
@@ -622,7 +622,7 @@ export default function AfterEnroll({ params }: any) {
                                     <p className="mt-5 font-bold">
                                       Lecture {index + 1}: {item.title}
                                     </p>
-                                    <p className="mt-3.5 text-[#52565b] text-base font-extralight">
+                                    <p className="mt-3.5 text-[#52565b] text-base font-medium">
                                       {item?.content}
                                     </p>
                                   </div>
@@ -651,21 +651,22 @@ export default function AfterEnroll({ params }: any) {
               <nav className="vids">
                 {testVideo.map((item, index) => {
                   return (
-                    <a
+                    <button
                       key={item.id}
-                      className={`link ${
+                      className={`hover:bg-[#dff0e6] w-full text-left link ${
                         activeVideoIndex === index
                           ? "active text-[#309255]"
                           : ""
                       }`}
                       onClick={() => changeVideoSource(item.contentUrl, index)}
                     >
-                      <div className="pl-20 py-2 pr-[30px]">
-                        <p>
-                          Lecture {index + 1} : {item.title}
+                      <div className="py-2 pl-[30px] flex flex-row gap-3">
+                        <p className="flex-none h-[50px]">
+                          Lecture {index + 1}:
                         </p>
+                        <p className="flex-auto"> {item.title}</p>
                       </div>
-                    </a>
+                    </button>
                   );
                 })}
                 <div className="pl-10 py-2 pr-[30px] bg-[#dff0e6] flex">

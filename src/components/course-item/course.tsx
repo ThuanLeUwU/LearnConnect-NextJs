@@ -42,6 +42,7 @@ const CourseItem = ({
   mentorName,
   mentorProfilePictureUrl,
   percentComplete,
+  mentorId,
 }: {
   imageUrl: string;
   name: string;
@@ -49,23 +50,29 @@ const CourseItem = ({
   mentorName: string;
   mentorProfilePictureUrl: string;
   percentComplete: number;
+  mentorId: number;
 }) => {
   const router = useRouter();
   const handleClick = () => {
     router.push(`/my-course/${id}`);
   };
+
+  const handlePushMentor = () => {
+    router.push(`/profile-mentor/${mentorId}`);
+  };
+
   return (
     <div className="lg:col-span-4 border border-solid border-[#acd6bc] p-[20px] my-[10px] hover:border-[#309255] mx-[15px] shadow-lg rounded-lg">
-      <div className="single-courses" onClick={handleClick}>
+      <div className="single-courses">
         <div>
           <div className="courses-images">
-            <a onClick={handleClick}>
+            <button onClick={handleClick} className="w-full">
               <img
                 className="rounded-lg w-full h-[180px] object-cover"
                 src={imageUrl}
                 alt="Courses"
               />
-            </a>
+            </button>
           </div>
           <div className="courses-content">
             <div className="courses-author">
@@ -80,9 +87,12 @@ const CourseItem = ({
                   </a>
                 </div>
                 <div className="pl-3">
-                  <a className="text-[#52565b] hover:text-[#309255]" href="#">
+                  <button
+                    className="text-[#52565b] hover:text-[#309255] font-medium z-10"
+                    onClick={handlePushMentor}
+                  >
                     {mentorName}
-                  </a>
+                  </button>
                 </div>
               </div>
             </div>
