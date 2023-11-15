@@ -99,12 +99,16 @@ export default function ProfileUser() {
                       </button>
                     </div>
                     <div className="mt-4 lg:mt-0 lg:ms-3">
-                      <h5 className="text-lg">
+                      <h5 className="text-lg my-1">
                         Full Name: {DataUser?.fullName}
                       </h5>
-                      <p>Email: {DataUser?.email}</p>
-                      <p>Gender: {displayGender(DataUser?.gender)}</p>
-                      <p>Phone: {DataUser?.phoneNumber}</p>
+                      <h5 className="text-lg my-1">Email: {DataUser?.email}</h5>
+                      <h5 className="text-lg my-1">
+                        Gender: {displayGender(DataUser?.gender)}
+                      </h5>
+                      <p className="text-lg my-1">
+                        Phone: {DataUser?.phoneNumber}
+                      </p>
                       {/* <p>Role: {userData?.role}</p> */}
                       {/* <p>Bio: {userData?.bioDescription}</p> */}
                       {/* <p>Phone: {userData?.status}</p>

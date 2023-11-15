@@ -101,7 +101,7 @@ export default function ProfileUser({ params }: any) {
             <div className="flex justify-center items-center">
               <div className="w-full">
                 <div className="bg-[#fff] rounded-lg shadow-lg">
-                  <div className="bg-[#309255] text-white flex flex-col lg:flex-row rounded-t p-4 lg:p-8">
+                  <div className="bg-[#309255] text-white flex items-center lg:flex-row rounded-t p-4 lg:p-8">
                     <div className="lg:mr-4 lg:mt-0 flex flex-col items-center w-full lg:w-36">
                       <img
                         src={
@@ -112,13 +112,19 @@ export default function ProfileUser({ params }: any) {
                         className="w-36 h-36 rounded-full mt-4 mb-2"
                       />
                     </div>
-                    <div className="mt-4 lg:mt-0 lg:ms-3">
-                      <h5 className="text-lg">
+                    <div className="author-content pl-4 flex items-center">
+                      <h5 className="text-lg my-1">
                         Full Name: {DataMentor?.fullName}
                       </h5>
-                      <p>Email: {DataMentor?.email}</p>
-                      <p>Gender: {displayGender(DataMentor?.gender)}</p>
-                      <p>Phone: {DataMentor?.phoneNumber}</p>
+                      <h5 className="text-lg my-1">
+                        Email: {DataMentor?.email}
+                      </h5>
+                      <h5 className="text-lg my-1">
+                        Gender: {displayGender(DataMentor?.gender)}
+                      </h5>
+                      <h5 className="text-lg my-1">
+                        Phone: {DataMentor?.phoneNumber}
+                      </h5>
                     </div>
                   </div>
                   <div className="card-body p-4 text-black">
@@ -141,7 +147,7 @@ export default function ProfileUser({ params }: any) {
                         {courses.length === 0 ? (
                           <div className="text-center text-2xl mt-8 items-center justify-center">
                             <Empty description={false} />
-                            You don&apos;t have any favorite courses.
+                            Mentor don&apos;t have any courses.
                           </div>
                         ) : (
                           <div className="min-h-[1000px]">
