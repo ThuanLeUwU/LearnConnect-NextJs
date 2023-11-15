@@ -148,7 +148,7 @@ export default function ProfileUser({ params }: any) {
                             {courses &&
                               courses.length > 0 &&
                               courses.map((item) => (
-                                <div className="swiper-container">
+                                <div className="swiper-container" key={item.id}>
                                   <div className="swiper-wrapper mb-3 shadow-lg rounded-lg hover:border-[#309255] hover:bg-[#e7f8ee]">
                                     <div className="single-review mt-3.5 border border-opacity-20 border-[#30925533] p-7 rounded-md">
                                       <div className="review-author flex ">
