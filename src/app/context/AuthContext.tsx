@@ -156,7 +156,7 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
                 },
               }
             );
-            setJwtToken(responseData?.data);
+            // setJwtToken(responseData?.data);
             localStorage.setItem("token", responseData?.data.data);
             const api_token = responseData?.data.data;
             var jwt = require("jsonwebtoken");
@@ -178,7 +178,7 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
       }
     });
     return () => unsubscribe();
-  }, [router]);
+  }, [user]);
 
   return (
     <AuthContext.Provider

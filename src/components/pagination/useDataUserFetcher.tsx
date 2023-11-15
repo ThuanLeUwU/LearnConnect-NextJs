@@ -1,5 +1,7 @@
 import { UserAuth } from "@/app/context/AuthContext";
 import axios from "axios";
+import { http } from "@/api/http";
+
 import { useState, useEffect } from "react";
 export type CourseItem = {
   percentComplete: any;
@@ -43,7 +45,7 @@ const useDataUserFetcher = () => {
     const fetchData = async () => {
       const page = Math.min(currentPage + 1, totalPages);
       try {
-        const result = await axios.get(
+        const result = await http.get(
           `${API_URL}${id}&currentPage=${page}&pageSize=${pagesize}`
           // `${API_URL}`
         );

@@ -23,6 +23,7 @@ import {
 import { UserAuth } from "@/app/context/AuthContext";
 import { toast } from "sonner";
 import { http } from "@/api/http";
+import { maxTime } from "date-fns";
 
 export type Lecture = {
   id: string | number;
@@ -144,9 +145,9 @@ export default function AfterEnroll({ params }: any) {
   };
 
   const Reasons = [
-    { id: "1", name: "Nội dung không phù hợp" },
-    { id: "2", name: "Vi phạm bản quyền" },
-    { id: "3", name: "Vi phạm tiêu chuẩn cộng đồng " },
+    { id: "1", name: "Inappropriate content" },
+    { id: "2", name: "Copyright violation" },
+    { id: "3", name: "Community standards violation" },
   ];
 
   const handleChangeReason = (value: React.SetStateAction<null>) => {
@@ -209,7 +210,6 @@ export default function AfterEnroll({ params }: any) {
   const handleClick = () => {
     router.push(`/test/${courses?.id}`);
   };
-  const videoRef = useRef(null);
 
   //rating
   const [modalRating, setModalRatingOpen] = useState(false);
@@ -274,16 +274,26 @@ export default function AfterEnroll({ params }: any) {
       console.error(err);
     }
   }, [id]);
-  // console.log("performance", performance?.score);
-  const handleSeek = (e: any) => {
-    // const video = videoRef.current;
-    // if (video) {
-    //   const currentTime = video.currentTime;
-    //   // Hạn chế tua nhanh bằng cách đặt thời gian hiện tại của video
-    //   if (currentTime < video.currentTime) {
-    //     video.currentTime = currentTime;
-    //   }
-    // }
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const [maxTime, setMaxTime] = useState<number>(0); //truyen maxTime tu API response
+
+  const handleOnTimeUpdate = (e) => {
+    if (videoRef.current && e.target.currentTime > maxTime) {
+      setMaxTime(videoRef.current.played.end(0));
+    }
+  };
+
+  const handleOnSeek = (e) => {
+    if (videoRef.current && e.target.currentTime > maxTime) {
+      videoRef.current.currentTime = maxTime;
+    }
+  };
+
+  const handleOnProgress = () => {
+    if (videoRef.current) {
+      videoRef.current.currentTime = maxTime; //truyen currentTime tu API response
+    }
   };
 
   return (
@@ -302,8 +312,10 @@ export default function AfterEnroll({ params }: any) {
               height="full"
               controls
               id="courseVideo"
-              onSeeking={handleSeek}
               ref={videoRef}
+              onSeeked={handleOnSeek}
+              onTimeUpdate={handleOnTimeUpdate}
+              onProgress={handleOnProgress}
             >
               <source src={videoSrc} type="video/mp4" />
             </video>

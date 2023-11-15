@@ -7,12 +7,13 @@ import { useRouter } from "next/navigation";
 
 export default function ListMentor() {
   const router = useRouter();
-  const { loading, mentor, totalPages, currentPage, setCurrentPage } =
+  const { loading, mentor, mentorID, totalPages, currentPage, setCurrentPage } =
     useDataMentorFetcher();
-  const handleSwiperWrapperClick = (mentorId) => {
-    console.log("Clicked on swiper-wrapper with mentor ID:", mentorId);
-    router.push(`/profile-mentor/${mentorId}`);
+  const handleSwiperWrapperClick = (IdMentor) => {
+    console.log("id mentor:", IdMentor);
+    router.push(`/profile-mentor/${IdMentor}`);
   };
+  console.log("mentor123:", mentor);
   return (
     <div className="container">
       {loading ? (
@@ -27,15 +28,17 @@ export default function ListMentor() {
                   mentor.length > 0 &&
                   mentor.map((mentorItem, index) => (
                     <div
-                      className="swiper-wrapper mb-3"
+                      className="swiper-wrapper mb-3 shadow-lg rounded-lg hover:border-[#309255] hover:bg-[#e7f8ee]"
                       key={mentorItem.id}
-                      onClick={() => handleSwiperWrapperClick(mentorItem.id)}
+                      onClick={() =>
+                        handleSwiperWrapperClick(mentorItem.mentorInfo.id)
+                      }
                     >
                       <div className="single-review mt-3.5 border border-opacity-20 border-[#30925533] p-7 rounded-md">
                         <div className="review-author flex items-center ">
                           <div className="author-thumb border border-[#309255] rounded-full">
                             <img
-                              src={mentorItem.profilePictureUrl}
+                              src={mentorItem.userInfo.profilePictureUrl}
                               alt="Author"
                               className="w-24 h-24 rounded-full"
                             />
@@ -43,10 +46,10 @@ export default function ListMentor() {
                           </div>
                           <div className="author-content pl-4">
                             <h4 className="text-2xl font-medium">
-                              {mentorItem.fullName}
+                              {mentorItem.userInfo.fullName}
                             </h4>
                             <span className="text-sm text-[#309255] mt-1.5 font-light">
-                              {mentorItem.email}
+                              {mentorItem.userInfo.email}
                             </span>
                             <span className="rating-star">
                               <span className="rating-bar"></span>
@@ -54,7 +57,7 @@ export default function ListMentor() {
                           </div>
                         </div>
                         <p className="mt-3 font-light text-[#52565b] text-sm">
-                          {mentorItem.bioDescription}
+                          {mentorItem.userInfo.bioDescription}
                         </p>
                       </div>
                     </div>

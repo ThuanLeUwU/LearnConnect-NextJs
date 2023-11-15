@@ -1,7 +1,10 @@
 import axios from "axios";
+import { type } from "os";
 import { useState, useEffect } from "react";
 
 export type Mentor = {
+  mentorInfo: any;
+  userInfo: any;
   id: string | number;
   password: string;
   email: string;
@@ -12,9 +15,15 @@ export type Mentor = {
   bioDescription: string;
   profilePictureUrl: string;
   status: number;
+  MentorProfile: {
+    id: string;
+    // other properties...
+  };
 };
+
 const useDataMentorFetcher = () => {
   const [mentor, setMentor] = useState<Mentor[]>([]);
+  const [mentorID, setMentorId] = useState<Mentor[]>([]);
   const API_URL =
     "https://learnconnectapitest.azurewebsites.net/api/mentor/get-mentors";
   const pagesize = 6;
@@ -27,7 +36,15 @@ const useDataMentorFetcher = () => {
       const result = await axios.get(
         `${API_URL}?currentPage=${page}&pageSize=${pagesize}`
       );
-      setMentor(result?.data.listMentor);
+
+      setMentor(
+        result?.data.listMentor
+          .filter((mentor) => mentor.userInfo.role === 2)
+          .map((mentor) => mentor)
+      );
+      setMentorId(
+        result?.data.listMentor.map((mentor) => mentor.mentorInfo.id)
+      );
       setTotalPages(result?.data.paginationData.totalPages);
       setLoading(false);
     };
@@ -36,6 +53,7 @@ const useDataMentorFetcher = () => {
   return {
     loading,
     mentor,
+    mentorID,
     totalPages,
     currentPage,
     setCurrentPage,
