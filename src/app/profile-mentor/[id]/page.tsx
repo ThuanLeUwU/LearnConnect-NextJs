@@ -101,7 +101,7 @@ export default function ProfileUser({ params }: any) {
             <div className="flex justify-center items-center">
               <div className="w-full">
                 <div className="bg-[#fff] rounded-lg shadow-lg">
-                  <div className="bg-[#309255] text-white flex items-center lg:flex-row rounded-t p-4 lg:p-8">
+                  <div className="bg-[#309255] text-white flex lg:flex-row rounded-t p-4 lg:p-8">
                     <div className="lg:mr-4 lg:mt-0 flex flex-col items-center w-full lg:w-36">
                       <img
                         src={
@@ -112,7 +112,7 @@ export default function ProfileUser({ params }: any) {
                         className="w-36 h-36 rounded-full mt-4 mb-2"
                       />
                     </div>
-                    <div className="author-content pl-4 flex items-center">
+                    <div className="author-content pl-4 my-auto">
                       <h5 className="text-lg my-1">
                         Full Name: {DataMentor?.fullName}
                       </h5>
