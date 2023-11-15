@@ -6,7 +6,6 @@ import useDataUserFetcher from "@/components/pagination/useDataUserFetcher";
 import { UserAuth } from "../context/AuthContext";
 import axios from "axios";
 import { Empty, Spin } from "antd";
-import { http } from "@/api/http";
 
 const MyCourse = () => {
   const { loading, courses, totalPages, currentPage, setCurrentPage } =

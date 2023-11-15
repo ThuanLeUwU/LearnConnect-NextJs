@@ -23,6 +23,7 @@ import {
 import { UserAuth } from "@/app/context/AuthContext";
 import { toast } from "sonner";
 import { http } from "@/api/http";
+import { maxTime } from "date-fns";
 
 export type Lecture = {
   id: string | number;
@@ -209,7 +210,6 @@ export default function AfterEnroll({ params }: any) {
   const handleClick = () => {
     router.push(`/test/${courses?.id}`);
   };
-  const videoRef = useRef(null);
 
   //rating
   const [modalRating, setModalRatingOpen] = useState(false);
@@ -257,6 +257,7 @@ export default function AfterEnroll({ params }: any) {
     //   }
     // }
   };
+  const videoRef = useRef(null);
 
   return (
     <div className="container">

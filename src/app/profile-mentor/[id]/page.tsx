@@ -26,9 +26,10 @@ export default function ProfileUser({ params }: any) {
     const fetchUserData = async () => {
       try {
         const response = await axios.get(
-          `https://learnconnectapitest.azurewebsites.net/api/user/${idMentor}`
+          `https://learnconnectapitest.azurewebsites.net/api/mentor/${idMentor}`
         );
         SetDataMentor(response?.data.user);
+        console.log("data mentor", response?.data);
       } catch (error) {
         console.error("Error fetching user data:", error);
       }

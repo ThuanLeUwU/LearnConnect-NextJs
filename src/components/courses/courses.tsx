@@ -91,8 +91,8 @@ const Courses = ({
   const handleClick = () => {
     router.push(`/course-detail/${id}`);
   };
-  console.log("JWT Token Home:", jwtToken);
   useEffect(() => {
+    console.log("JWT Token Home:", jwtToken);
     axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
     if (userData) {
       const fetchFavoriteCourses = async () => {
@@ -107,7 +107,7 @@ const Courses = ({
       };
       fetchFavoriteCourses();
     }
-  }, [userData]);
+  }, [router]);
 
   useEffect(() => {
     const isCourseLiked = courses.some(
