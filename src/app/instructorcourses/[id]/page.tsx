@@ -36,6 +36,8 @@ import { Test } from "@/app/test/[id]/page";
 // import { Rating } from "@/app/course-detail/[id]/page";
 
 export type Rating = {
+  userRatingInfo: any;
+  ratingCourseInfo: any;
   id: number;
   rating1: number;
   comment: string;
@@ -117,11 +119,20 @@ const Dashboard = ({ params }: any) => {
   const [deleteVisible, setDeleteVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [oneLecture, setOneLecture] = useState<Lecture>();
+  const [updateType, setUpdateType] = useState(oneLecture?.contentType);
+  const [updateSrc, setUpdateSrc] = useState(oneLecture?.contentUrl);
 
   const handleUpdateModal = (record: any) => {
     setSelectedItem(record);
     setOneLecture(record);
     setUpdateVisible(true);
+    setUpdateType(record.contentType);
+    setUpdateSrc(record.contentUrl);
+  };
+
+  const handleUpdateType = (data: number) => {
+    setUpdateType(data);
+    // setType(data);
   };
 
   const handleDeleteModal = (record: any) => {
@@ -148,11 +159,13 @@ const Dashboard = ({ params }: any) => {
       });
   }, [id]);
 
+  // const [updateType, setUpdateType] = useState(oneLecture?.contentType);
+
   const handleUpdate = async (data: any) => {
     const formData = new FormData();
     formData.append("title", data.title || oneLecture?.title);
     formData.append("content", data.content || oneLecture?.content);
-    formData.append("contentType", type || "1");
+    formData.append("contentType", type.toString());
     if (formDataSource !== undefined) {
       formData.append("contentUrl", formDataSource);
     }
@@ -174,7 +187,7 @@ const Dashboard = ({ params }: any) => {
           http.get(`/lecture/by-course/${idCourse}`).then((response) => {
             setLectures(response.data);
             setLoading(false);
-            form.resetFields();
+            // form.resetFields();
           });
         });
     } catch (err) {
@@ -194,6 +207,7 @@ const Dashboard = ({ params }: any) => {
   };
 
   const handleUpdateCancel = () => {
+    setSource(undefined);
     setUpdateVisible(false);
     form.resetFields();
   };
@@ -206,7 +220,7 @@ const Dashboard = ({ params }: any) => {
     const formData = new FormData();
     formData.append("title", data.title);
     formData.append("content", data.content);
-    formData.append("contentType", type || "1");
+    formData.append("contentType", type.toString());
     if (formDataSource !== undefined) {
       formData.append("contentUrl", formDataSource);
     }
@@ -232,7 +246,6 @@ const Dashboard = ({ params }: any) => {
             .then((response) => {
               setLectures(response.data);
               setLoading(false);
-              form.resetFields();
             });
         });
     } catch (err) {
@@ -262,7 +275,7 @@ const Dashboard = ({ params }: any) => {
   }, []);
 
   //type
-  const [type, setType] = useState(null);
+  const [type, setType] = useState<number>(1);
   const { Option } = Select;
   // console.log("type", type);
 
@@ -271,14 +284,14 @@ const Dashboard = ({ params }: any) => {
     { id: 2, title: "Document" },
   ];
 
-  const handleChangeType = (value: React.SetStateAction<null>) => {
+  const handleChangeType = (value: number) => {
     setType(value);
   };
 
   //video upload
   // const inputRef = React.useRef();
   const [formDataSource, setFormDataSource] = useState();
-  const [source, setSource] = React.useState<string>();
+  const [source, setSource] = useState<string>();
 
   const handleFileChange = (info: any) => {
     if (info.file.status === "uploading") {
@@ -290,7 +303,7 @@ const Dashboard = ({ params }: any) => {
       setFormDataSource(info.file.originFileObj);
       getBase64(info.file.originFileObj, (url) => {
         setSource(url);
-        // setUpdateImage(url);
+        setUpdateSrc(url);
       });
     }
   };
@@ -418,6 +431,7 @@ const Dashboard = ({ params }: any) => {
       .then((response) => {
         // setInfoTest(response.data.questions);
         setListRating(response.data);
+        console.log("rating", response.data);
         setLoading(false);
       })
       .catch((error) => {
@@ -517,15 +531,15 @@ const Dashboard = ({ params }: any) => {
           </div>
           {/* <div className={`${InstructorCourseStyle.featured_bottom}`}> */}
           <div className="p-5 flex">
-            <div className="flex-1 w-32">
+            <div className="flex-1">
               <img
                 width="400px"
-                height="300px"
+                className="h-[300px] w-[400px]"
                 src={`${course?.imageUrl}`}
                 alt=""
               />
             </div>
-            <div className="flex-auto">
+            <div className="flex-auto w-[36rem]">
               <p className={`${InstructorCourseStyle.featured_bottom_title}`}>
                 {course?.name}
               </p>
@@ -541,7 +555,7 @@ const Dashboard = ({ params }: any) => {
                     {course?.price === 0 ? (
                       <> Free</>
                     ) : (
-                      <>{course?.price} VND</>
+                      <> {course?.price} VND</>
                     )}
                   </p>
                   <p
@@ -579,9 +593,19 @@ const Dashboard = ({ params }: any) => {
                     ? new Date(course?.createDate).toLocaleTimeString("en-US")
                     : ""}{" "}
                   {course?.createDate
-                    ? new Date(course?.createDate).toLocaleDateString("en-GB")
+                    ? new Date(course?.createDate).toLocaleDateString("en-GB", {
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric",
+                      })
                     : ""}{" "}
                 </p>
+                --------------------------------------------------
+                <div>
+                  <span>Description:</span>
+                  <br />
+                  {course?.description}
+                </div>
               </div>
               <div>{/* <span>Description: {course?.description}</span> */}</div>
             </div>
@@ -670,7 +694,7 @@ const Dashboard = ({ params }: any) => {
                             <div className="flex flex-row">
                               <div className="author-thumb p-2">
                                 <img
-                                  src="./author/author-06.jpg"
+                                  src={item.userRatingInfo.imageUser}
                                   alt="Author"
                                   className="w-24 h-24 rounded-full"
                                 />
@@ -678,23 +702,27 @@ const Dashboard = ({ params }: any) => {
                               </div>
                               <div className="author-content pl-4">
                                 <h4 className="text-2xl font-medium">
-                                  {item.userId}
+                                  {item.userRatingInfo.fullName}
                                 </h4>
                                 <span className="text-lg text-[#309255] mt-1.5 font-light">
-                                  {item.timeStamp
+                                  {item.ratingCourseInfo.timeStamp
                                     ? new Date(
-                                        item.timeStamp
+                                        item.ratingCourseInfo.timeStamp
                                       ).toLocaleTimeString("en-US")
                                     : ""}{" "}
-                                  {item.timeStamp
+                                  {item.ratingCourseInfo.timeStamp
                                     ? new Date(
-                                        item.timeStamp
-                                      ).toLocaleDateString("en-GB")
+                                        item.ratingCourseInfo.timeStamp
+                                      ).toLocaleDateString("en-GB", {
+                                        day: "numeric",
+                                        month: "long",
+                                        year: "numeric",
+                                      })
                                     : ""}{" "}
                                 </span>
-                                <span className="rating-star">
-                                  <span className="rating-bar"></span>
-                                </span>
+                                <p className="mt-3 font-medium text-[#52565b] text-lg">
+                                  {item.ratingCourseInfo.comment}
+                                </p>
                               </div>
                             </div>
                             <div className="">
@@ -704,13 +732,10 @@ const Dashboard = ({ params }: any) => {
                                 max={5}
                                 precision={0.1}
                                 readOnly
-                                value={item.rating1}
+                                value={item.ratingCourseInfo.rating1}
                               />
                             </div>
                           </div>
-                          <p className="mt-3 font-medium text-[#52565b] text-lg">
-                            {item.comment}
-                          </p>
                         </div>
                       </>
                     );
@@ -794,7 +819,25 @@ const Dashboard = ({ params }: any) => {
             </div>
           ) : (
             // </Form.Item>
-            <Form.Item label="Document"></Form.Item>
+            <Form.Item label="Document">
+              <div
+                className="flex justify-center pt-2 pb-2"
+                style={{ display: "flex" }}
+              >
+                <Upload
+                  // accept="image/png, image/jpeg"
+                  // ref={inputRef}
+                  // accept=".mov,.mp4"
+                  accept=".docx"
+                  onChange={handleFileChange}
+                  // beforeUpload={beforeUpload}
+                  // headers={{ Authorization: authorization }}
+                  action="https://learnconnectapitest.azurewebsites.net/api/Upload/video"
+                >
+                  <Button>Upload</Button>
+                </Upload>
+              </div>
+            </Form.Item>
           )}
           <Space className="justify-end w-full pr-[90px]">
             <Form.Item className="mb-0">
@@ -848,7 +891,7 @@ const Dashboard = ({ params }: any) => {
             <Input.TextArea rows={4} defaultValue={oneLecture?.content} />
           </Form.Item>
           <Form.Item label="Category">
-            <Select onChange={handleChangeType} defaultValue={type}>
+            <Select onChange={handleUpdateType} defaultValue={updateType}>
               {Type.map((option) => {
                 return (
                   <Option key={option.id} value={option.id}>
@@ -858,12 +901,12 @@ const Dashboard = ({ params }: any) => {
               })}
             </Select>
           </Form.Item>
-          {type === 1 ? (
+          {updateType === 1 ? (
             // <Form.Item label="Video">
             <div>
               <div style={{ display: "flex" }} className="flex justify-center">
                 {/* <video width={200} height={200} src={source} /> */}
-                <video width={400} height={300} src={source} controls />
+                <video width={400} height={300} src={updateSrc} controls />
               </div>
               <div
                 className="flex justify-center pt-2 pb-2"
@@ -885,7 +928,25 @@ const Dashboard = ({ params }: any) => {
             </div>
           ) : (
             // </Form.Item>
-            <Form.Item label="Document"></Form.Item>
+            <Form.Item label="Document">
+              {/* <div
+                className="flex justify-center pt-2 pb-2"
+                style={{ display: "flex" }}
+              >
+                <Upload
+                  // accept="image/png, image/jpeg"
+                  // ref={inputRef}
+                  // accept=".mov,.mp4"
+                  accept=".docx"
+                  onChange={handleFileChange}
+                  // beforeUpload={beforeUpload}
+                  // headers={{ Authorization: authorization }}
+                  action="https://learnconnectapitest.azurewebsites.net/api/Upload/video"
+                >
+                  <Button>Upload</Button>
+                </Upload>
+              </div> */}
+            </Form.Item>
           )}
           <Space className="justify-end w-full pr-[90px]">
             <Form.Item className="mb-0">

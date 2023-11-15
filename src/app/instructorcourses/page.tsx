@@ -379,21 +379,25 @@ const InstructorCourse = () => {
                   <div className={`${InstructorCourseStyle.course_item}`}>
                     <div className="flex">
                       <div>
-                        <Link href="#">
+                        <button
+                          onClick={() => {
+                            handleClick(item);
+                          }}
+                        >
                           <img src={item.imageUrl} alt="Image" />
-                        </Link>
+                        </button>
                       </div>
                       <div
                         className={`${InstructorCourseStyle.course_item_title}`}
                       >
                         <h2>
-                          <a
+                          <button
                             onClick={() => {
                               handleClick(item);
                             }}
                           >
                             {item.name}
-                          </a>
+                          </button>
                         </h2>
                       </div>
                     </div>

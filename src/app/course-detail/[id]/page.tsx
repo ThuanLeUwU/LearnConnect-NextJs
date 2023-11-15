@@ -13,6 +13,8 @@ import { useRouter } from "next/navigation";
 import { http } from "@/api/http";
 
 export type Rating = {
+  ratingCourseInfo: any;
+  userRatingInfo: any;
   id: number;
   rating1: number;
   comment: string;
@@ -374,7 +376,7 @@ export default function CourseDetailPage({ params }: any) {
                                       <div className="flex flex-row">
                                         <div className="author-thumb p-2">
                                           <img
-                                            src="./author/author-06.jpg"
+                                            src={item.userRatingInfo.imageUser}
                                             alt="Author"
                                             className="w-24 h-24 rounded-full"
                                           />
@@ -382,18 +384,22 @@ export default function CourseDetailPage({ params }: any) {
                                         </div>
                                         <div className="author-content pl-4">
                                           <h4 className="text-2xl font-medium">
-                                            {item.userId}
+                                            {item.userRatingInfo.fullName}
                                           </h4>
                                           <span className="text-lg text-[#309255] mt-1.5 font-light">
-                                            {item.timeStamp
+                                            {item.ratingCourseInfo.timeStamp
                                               ? new Date(
-                                                  item.timeStamp
+                                                  item.ratingCourseInfo.timeStamp
                                                 ).toLocaleTimeString("en-US")
                                               : ""}{" "}
-                                            {item.timeStamp
+                                            {item.ratingCourseInfo.timeStamp
                                               ? new Date(
-                                                  item.timeStamp
-                                                ).toLocaleDateString("en-GB")
+                                                  item.ratingCourseInfo.timeStamp
+                                                ).toLocaleDateString("en-GB", {
+                                                  day: "numeric",
+                                                  month: "long",
+                                                  year: "numeric",
+                                                })
                                               : ""}{" "}
                                           </span>
                                           <span className="rating-star">
@@ -408,12 +414,12 @@ export default function CourseDetailPage({ params }: any) {
                                           max={5}
                                           precision={0.1}
                                           readOnly
-                                          value={item.rating1}
+                                          value={item.ratingCourseInfo.rating1}
                                         />
                                       </div>
                                     </div>
                                     <p className="mt-3 font-medium text-[#52565b] text-lg">
-                                      {item.comment}
+                                      {item.ratingCourseInfo.comment}
                                     </p>
                                   </div>
                                 </>

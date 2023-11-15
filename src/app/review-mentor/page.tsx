@@ -10,6 +10,8 @@ import { http } from "@/api/http";
 import { UserAuth } from "../context/AuthContext";
 
 export type Review = {
+  ratingMentorInfo: any;
+  userRatingInfo: any;
   id: number;
   rating1: number;
   comment: string;
@@ -86,7 +88,7 @@ const Reviews = () => {
           <div className={`${InstructorCourseStyle.featured}`}>
             <div className={`${InstructorCourseStyle.featured_top}`}>
               <h1 className={`${InstructorCourseStyle.featured_top_title}`}>
-                About Mentor
+                Reviews About Me
               </h1>
             </div>
             {reviews.map((item) => {
@@ -97,7 +99,7 @@ const Reviews = () => {
                       <div className="flex flex-row">
                         <div className="author-thumb p-2">
                           <img
-                            src="./author/author-06.jpg"
+                            src={item.userRatingInfo.imageUser}
                             alt="Author"
                             className="w-24 h-24 rounded-full"
                           />
@@ -105,28 +107,27 @@ const Reviews = () => {
                         </div>
                         <div className="author-content pl-4 flex flex-col">
                           <h4 className="text-2xl font-medium">
-                            {item.userId}
+                            {item.userRatingInfo.fullName}
                           </h4>
                           <span className="text-lg text-[#309255] mt-1.5 font-medium ">
-                            {item.timeStamp
-                              ? new Date(item.timeStamp).toLocaleTimeString(
-                                  "en-US"
-                                )
+                            {item.ratingMentorInfo.timeStamp
+                              ? new Date(
+                                  item.ratingMentorInfo.timeStamp
+                                ).toLocaleTimeString("en-US")
                               : ""}{" "}
-                            {item.timeStamp
-                              ? new Date(item.timeStamp).toLocaleDateString(
-                                  "en-GB",
-                                  {
-                                    day: "numeric",
-                                    month: "long",
-                                    year: "numeric",
-                                  }
-                                )
+                            {item.ratingMentorInfo.timeStamp
+                              ? new Date(
+                                  item.ratingMentorInfo.timeStamp
+                                ).toLocaleDateString("en-GB", {
+                                  day: "numeric",
+                                  month: "long",
+                                  year: "numeric",
+                                })
                               : ""}{" "}
                           </span>
-                          <span className="rating-star">
-                            <span className="rating-bar"></span>
-                          </span>
+                          <p className="mt-3 font-medium text-[#52565b] text-lg">
+                            {item.ratingMentorInfo.comment}
+                          </p>
                         </div>
                       </div>
                       <div className="">
@@ -136,13 +137,10 @@ const Reviews = () => {
                           max={5}
                           precision={0.1}
                           readOnly
-                          value={item.rating1}
+                          value={item.ratingMentorInfo.rating1}
                         />
                       </div>
                     </div>
-                    <p className="mt-3 font-medium text-[#52565b] text-lg">
-                      {item.comment}
-                    </p>
                   </div>
                 </>
               );
