@@ -74,11 +74,11 @@ const InstructorCourse = () => {
     },
     {
       image: "/menu-icon/icon-3.png",
-      href: "/instructorcourses",
+      href: "/review-mentor",
     },
     {
-      image: "/menu-icon/icon-4.png",
-      href: "/instructorcourses",
+      image: "/menu-icon/icon1.png",
+      href: "/revenue",
     },
   ];
 
@@ -123,7 +123,7 @@ const InstructorCourse = () => {
     formData.append("shortDescription", data.shortDes);
     formData.append("price", data.price);
     formData.append("lectureCount", data.lecture);
-    formData.append("categoryId", selected || "1");
+    formData.append("categoryId", selected.toString());
     if (formDataImage !== undefined) {
       formData.append("courseImage", formDataImage);
     }
@@ -183,7 +183,8 @@ const InstructorCourse = () => {
   };
 
   //List category
-  const [selected, setSelected] = useState(null);
+  // const [selected, setSelected] = useState(null);
+  const [selected, setSelected] = useState<number>(0);
   const { Option } = Select;
   const [listCategory, setListCategory] = useState<Category[]>([]);
   useEffect(() => {
@@ -198,7 +199,7 @@ const InstructorCourse = () => {
     fetchData();
   }, []);
 
-  const handleChangeCate = (value: React.SetStateAction<null>) => {
+  const handleChangeCate = (value: number) => {
     setSelected(value);
   };
 
@@ -221,10 +222,9 @@ const InstructorCourse = () => {
     setUpdateImage(data.imageUrl);
   };
 
-  const handleUpdateCate = (
-    value: React.SetStateAction<string | number | undefined>
-  ) => {
+  const handleUpdateCate = (value: number) => {
     setUpdateCate(value);
+    setSelected(value);
   };
 
   const handleUpdate = async (data: any) => {
@@ -239,7 +239,7 @@ const InstructorCourse = () => {
     formData.append("price", data.price || course?.price);
     // console.log("price", data.price);
     formData.append("lectureCount", data.lecture || course?.lectureCount);
-    formData.append("categoryId", selected || "1");
+    formData.append("categoryId", selected.toString());
     if (formDataImage !== undefined) {
       formData.append("courseImage", formDataImage);
     }

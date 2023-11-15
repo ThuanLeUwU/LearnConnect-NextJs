@@ -10,6 +10,7 @@ import { UserAuth } from "@/app/context/AuthContext";
 import Rating from "@mui/material/Rating";
 import { AiFillStar } from "react-icons/ai";
 import { useRouter } from "next/navigation";
+import { http } from "@/api/http";
 
 export type Rating = {
   id: number;
@@ -63,7 +64,24 @@ export default function CourseDetailPage({ params }: any) {
     fetchData();
   }, []);
 
-  const [rating, setRating] = useState<Rating[]>([]);
+  // const [rating, setRating] = useState<Rating[]>([]);
+
+  const [listRating, setListRating] = useState<Rating[]>([]);
+
+  useEffect(() => {
+    // Gọi API để lấy danh sách người dùng
+    http
+      .get(`/rating/listRatingOfCourse/${idCourse}`)
+      .then((response) => {
+        // setInfoTest(response.data.questions);
+        setListRating(response.data);
+        // setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching user data:", error);
+        // setLoading(false);
+      });
+  }, [idCourse]);
 
   // useEffect(() => {
   //   const fetchData = async () => {
@@ -348,101 +366,59 @@ export default function CourseDetailPage({ params }: any) {
                       <div className="reviews-wrapper reviews-active">
                         <div className="swiper-container">
                           <div className="swiper-wrapper">
-                            <div className="single-review mt-3.5 border border-opacity-20 border-[#30925533] p-7 rounded-md">
-                              <div className="review-author flex items-center ">
-                                <div className="author-thumb p-2">
-                                  <img
-                                    src="./author/author-06.jpg"
-                                    alt="Author"
-                                    className="w-24 h-24 rounded-full"
-                                  />
-                                  <i className="icofont-quote-left"></i>
-                                </div>
-                                <div className="author-content pl-4">
-                                  <h4 className="text-2xl font-medium">
-                                    Sara Alexander
-                                  </h4>
-                                  <span className="text-sm text-[#309255] mt-1.5 font-light">
-                                    Product Designer, USA
-                                  </span>
-                                  <span className="rating-star">
-                                    <span className="rating-bar"></span>
-                                  </span>
-                                </div>
-                              </div>
-                              <p className="mt-3 font-light text-[#52565b] text-sm">
-                                Lorem Ipsum has been the industry&apos;s
-                                standard dummy text since the 1500 when unknown
-                                printer took a galley of type and scrambled to
-                                make type specimen book has survived not five
-                                centuries but also the leap into electronic type
-                                and book.
-                              </p>
-                            </div>
-
-                            <div className="single-review mt-3.5 border border-opacity-20 border-[#30925533] p-7 rounded-md">
-                              <div className="review-author flex items-center">
-                                <div className="author-thumb p-2">
-                                  <img
-                                    src="./author/author-07.jpg"
-                                    alt="Author"
-                                    className="w-24 h-24 rounded-full"
-                                  />
-                                  <i className="icofont-quote-left"></i>
-                                </div>
-                                <div className="author-content pl-4">
-                                  <h4 className="text-2xl font-medium">
-                                    Karol Bachman
-                                  </h4>
-                                  <span className="text-sm text-[#309255] mt-1.5 font-light">
-                                    Product Designer, USA
-                                  </span>
-                                  <span className="rating-star">
-                                    <span className="rating-bar"></span>
-                                  </span>
-                                </div>
-                              </div>
-                              <p className="mt-3 font-light text-[#52565b] text-sm">
-                                Lorem Ipsum has been the industry&apos;s
-                                standard dummy text since the 1500 when unknown
-                                printer took a galley of type and scrambled to
-                                make type specimen book has survived not five
-                                centuries but also the leap into electronic type
-                                and book.
-                              </p>
-                            </div>
-
-                            <div className="single-review mt-3.5 border border-opacity-20 border-[#30925533] p-7 rounded-md">
-                              <div className="review-author flex items-center">
-                                <div className="author-thumb p-2">
-                                  <img
-                                    src="./author/author-03.jpg"
-                                    alt="Author"
-                                    className="w-24 h-24 rounded-full"
-                                  />
-                                  <i className="icofont-quote-left"></i>
-                                </div>
-                                <div className="author-content pl-4">
-                                  <h4 className="text-2xl font-medium">
-                                    Gertude Culbertson
-                                  </h4>
-                                  <span className="text-sm text-[#309255] mt-1.5 font-light">
-                                    Product Designer, USA
-                                  </span>
-                                  <span className="rating-star">
-                                    <span className="rating-bar"></span>
-                                  </span>
-                                </div>
-                              </div>
-                              <p className="mt-7 font-light text-[#52565b] text-sm">
-                                Lorem Ipsum has been the industry&apos;s
-                                standard dummy text since the 1500 when unknown
-                                printer took a galley of type and scrambled to
-                                make type specimen book has survived not five
-                                centuries but also the leap into electronic type
-                                and book.
-                              </p>
-                            </div>
+                            {listRating.map((item) => {
+                              return (
+                                <>
+                                  <div className="single-review mt-3.5 border border-opacity-20 border-[#30925533] p-7 rounded-md">
+                                    <div className="review-author flex justify-between">
+                                      <div className="flex flex-row">
+                                        <div className="author-thumb p-2">
+                                          <img
+                                            src="./author/author-06.jpg"
+                                            alt="Author"
+                                            className="w-24 h-24 rounded-full"
+                                          />
+                                          <i className="icofont-quote-left"></i>
+                                        </div>
+                                        <div className="author-content pl-4">
+                                          <h4 className="text-2xl font-medium">
+                                            {item.userId}
+                                          </h4>
+                                          <span className="text-lg text-[#309255] mt-1.5 font-light">
+                                            {item.timeStamp
+                                              ? new Date(
+                                                  item.timeStamp
+                                                ).toLocaleTimeString("en-US")
+                                              : ""}{" "}
+                                            {item.timeStamp
+                                              ? new Date(
+                                                  item.timeStamp
+                                                ).toLocaleDateString("en-GB")
+                                              : ""}{" "}
+                                          </span>
+                                          <span className="rating-star">
+                                            <span className="rating-bar"></span>
+                                          </span>
+                                        </div>
+                                      </div>
+                                      <div className="">
+                                        <Rating
+                                          size="large"
+                                          name="half-rating-read"
+                                          max={5}
+                                          precision={0.1}
+                                          readOnly
+                                          value={item.rating1}
+                                        />
+                                      </div>
+                                    </div>
+                                    <p className="mt-3 font-medium text-[#52565b] text-lg">
+                                      {item.comment}
+                                    </p>
+                                  </div>
+                                </>
+                              );
+                            })}
                           </div>
                           <div className="swiper-pagination"></div>
                         </div>

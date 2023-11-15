@@ -157,7 +157,9 @@ const Courses = ({
     }
   };
   return (
-    <div className={`${CourseStyle.single_courses}`}>
+    <div
+      className={`${CourseStyle.single_courses} shadow-lg rounded-lg hover:border-[#309255]`}
+    >
       <div className={`${CourseStyle.single_courses_image}`}>
         <div className="relative">
           <button className="w-full" onClick={handleClick}>
@@ -208,7 +210,7 @@ const Courses = ({
           </span>
           <span>
             {" "}
-            <i className="icofont-read-book"></i> {contentLength} Lectures{" "}
+            <i className="icofont-read-book"></i> {lectureCount} Lectures{" "}
           </span>
         </div>
         <div className={`${CourseStyle.single_courses_timeline}`}>

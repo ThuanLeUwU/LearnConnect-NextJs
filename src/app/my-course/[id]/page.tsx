@@ -213,18 +213,46 @@ export default function AfterEnroll({ params }: any) {
 
   //rating
   const [modalRating, setModalRatingOpen] = useState(false);
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState<number>(0);
   const desc = ["terrible", "bad", "normal", "good", "wonderful"];
 
   const showModalRating = () => {
     setModalRatingOpen(true);
   };
 
-  const handleSubmit = async (data: any) => {
-    const formdata = new FormData();
-    formdata.append("reportReason", value.toString());
-    formdata.append("reportComment", data.description);
+  const handleRateChange = (newValue: number) => {
+    setValue(newValue);
+  };
 
+  const handleSubmit = async (data: any) => {
+    // const numericValue = parseFloat(value);
+    const formdata = new FormData();
+    formdata.append("rating", value.toString());
+    console.log("rate");
+    formdata.append("comment", data.description);
+
+    try {
+      // console.log("formDataImage1", formDataImage);
+      // console.log("image1", image);
+      await http.post(
+        `/rating/rating-course?userId=${id}&courseId=${idCourse}`,
+        formdata,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      handleCancel();
+
+      setTimeout(() => {
+        toast.success("Rating successful");
+      });
+    } catch (err) {
+      setTimeout(() => {
+        toast.error("Rating fail");
+      });
+    }
     // console.log("value", parseInt(value.toString()));
     // console.log("value", data.description);
 
@@ -332,7 +360,11 @@ export default function AfterEnroll({ params }: any) {
                     onFinish={handleSubmit}
                   >
                     <span className="flex pl-[140px] pb-5">
-                      <Rate tooltips={desc} onChange={setValue} value={value} />
+                      <Rate
+                        tooltips={desc}
+                        onChange={handleRateChange}
+                        value={value}
+                      />
                     </span>
                     <Form.Item label="Description" name="description">
                       <Input.TextArea rows={3} />

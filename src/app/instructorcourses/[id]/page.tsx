@@ -402,7 +402,7 @@ const Dashboard = ({ params }: any) => {
       dataIndex: "status",
       key: "status",
       render: (status) => (
-        <Tag color={status === 1 ? "green" : "red"}>
+        <Tag color={status === 1 ? "red" : "green"}>
           {status === 1 ? "Inactive" : "Active"}
         </Tag>
       ),
@@ -460,7 +460,7 @@ const Dashboard = ({ params }: any) => {
       dataIndex: "status",
       key: "status",
       render: (status) => (
-        <Tag color={status === 1 ? "green" : "red"}>
+        <Tag color={status === 1 ? "red" : "green"}>
           {status === 1 ? "Active" : "Inactive"}
         </Tag>
       ),
@@ -483,11 +483,11 @@ const Dashboard = ({ params }: any) => {
     },
     {
       image: "/menu-icon/icon-3.png",
-      href: "/instructorcourses",
+      href: "/review-mentor",
     },
     {
-      image: "/menu-icon/icon-4.png",
-      href: "/instructorcourses",
+      image: "/menu-icon/icon1.png",
+      href: "/revenue",
     },
   ];
 
@@ -627,7 +627,7 @@ const Dashboard = ({ params }: any) => {
                             className={`mt-3 border-2 p-2 text-left rounded-lg ${
                               answer.isCorrect === true
                                 ? "border-green-500 bg-green-100"
-                                : "border-blue-500 bg-blue-100"
+                                : ""
                             }`}
                             // onClick={() =>
                             //   handleAnswerSelect(
@@ -658,7 +658,67 @@ const Dashboard = ({ params }: any) => {
           {loading ? (
             <Spin size="large" />
           ) : (
-            <Table dataSource={listRating} columns={rating} />
+            // <Table dataSource={listRating} columns={rating} />
+            <div className="reviews-wrapper reviews-active">
+              <div className="swiper-container">
+                <div className="swiper-wrapper">
+                  {listRating.map((item) => {
+                    return (
+                      <>
+                        <div className="single-review mt-3.5 border border-opacity-20 border-[#30925533] p-7 rounded-md">
+                          <div className="review-author flex justify-between">
+                            <div className="flex flex-row">
+                              <div className="author-thumb p-2">
+                                <img
+                                  src="./author/author-06.jpg"
+                                  alt="Author"
+                                  className="w-24 h-24 rounded-full"
+                                />
+                                <i className="icofont-quote-left"></i>
+                              </div>
+                              <div className="author-content pl-4">
+                                <h4 className="text-2xl font-medium">
+                                  {item.userId}
+                                </h4>
+                                <span className="text-lg text-[#309255] mt-1.5 font-light">
+                                  {item.timeStamp
+                                    ? new Date(
+                                        item.timeStamp
+                                      ).toLocaleTimeString("en-US")
+                                    : ""}{" "}
+                                  {item.timeStamp
+                                    ? new Date(
+                                        item.timeStamp
+                                      ).toLocaleDateString("en-GB")
+                                    : ""}{" "}
+                                </span>
+                                <span className="rating-star">
+                                  <span className="rating-bar"></span>
+                                </span>
+                              </div>
+                            </div>
+                            <div className="">
+                              <Rating
+                                size="large"
+                                name="half-rating-read"
+                                max={5}
+                                precision={0.1}
+                                readOnly
+                                value={item.rating1}
+                              />
+                            </div>
+                          </div>
+                          <p className="mt-3 font-medium text-[#52565b] text-lg">
+                            {item.comment}
+                          </p>
+                        </div>
+                      </>
+                    );
+                  })}
+                </div>
+                <div className="swiper-pagination"></div>
+              </div>
+            </div>
           )}
         </div>
       </div>
