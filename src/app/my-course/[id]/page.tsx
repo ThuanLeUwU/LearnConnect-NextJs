@@ -246,18 +246,27 @@ export default function AfterEnroll({ params }: any) {
       console.error(err);
     }
   }, [id]);
-  // console.log("performance", performance?.score);
-  const handleSeek = (e: any) => {
-    // const video = videoRef.current;
-    // if (video) {
-    //   const currentTime = video.currentTime;
-    //   // Hạn chế tua nhanh bằng cách đặt thời gian hiện tại của video
-    //   if (currentTime < video.currentTime) {
-    //     video.currentTime = currentTime;
-    //   }
-    // }
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const [maxTime, setMaxTime] = useState<number>(0); //truyen maxTime tu API response
+
+  const handleOnTimeUpdate = (e) => {
+    if (videoRef.current && e.target.currentTime > maxTime) {
+      setMaxTime(videoRef.current.played.end(0));
+    }
   };
-  const videoRef = useRef(null);
+
+  const handleOnSeek = (e) => {
+    if (videoRef.current && e.target.currentTime > maxTime) {
+      videoRef.current.currentTime = maxTime;
+    }
+  };
+
+  const handleOnProgress = () => {
+    if (videoRef.current) {
+      videoRef.current.currentTime = maxTime; //truyen currentTime tu API response
+    }
+  };
 
   return (
     <div className="container">
@@ -275,8 +284,10 @@ export default function AfterEnroll({ params }: any) {
               height="full"
               controls
               id="courseVideo"
-              onSeeking={handleSeek}
               ref={videoRef}
+              onSeeked={handleOnSeek}
+              onTimeUpdate={handleOnTimeUpdate}
+              onProgress={handleOnProgress}
             >
               <source src={videoSrc} type="video/mp4" />
             </video>

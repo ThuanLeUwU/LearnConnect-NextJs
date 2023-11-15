@@ -11,6 +11,7 @@ import Rating from "@mui/material/Rating";
 import { AiFillStar } from "react-icons/ai";
 import { useRouter } from "next/navigation";
 import { http } from "@/api/http";
+import { toast } from "sonner";
 
 export type Rating = {
   id: number;
@@ -32,7 +33,7 @@ export default function CourseDetailPage({ params }: any) {
   };
   const [courses, setCourses] = useState<Course>();
   const [lectures, setLectures] = useState<Lectures>();
-  const { id, userData } = UserAuth();
+  const { id, userData, jwtToken } = UserAuth();
   const [averageRating, setAverageRating] = useState(0);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const router = useRouter();
@@ -515,7 +516,13 @@ export default function CourseDetailPage({ params }: any) {
                       ) : (
                         <Button
                           onClick={() => {
-                            setIsModalVisible(true);
+                            if (!jwtToken) {
+                              toast.error("You Must Login To Buy Course");
+                              router.push("/login");
+                              return;
+                            } else {
+                              setIsModalVisible(true);
+                            }
                           }}
                           className="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded-2xl py-4 px-3 leading-normal no-underline bg-[#309255] text-white hover:bg-black btn-outline w-44 border-[#a9f9c8] hover:text-white transition-all duration-300 ease-in-out delay-0 my-2"
                         >
