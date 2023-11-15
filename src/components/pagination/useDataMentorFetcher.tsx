@@ -3,6 +3,7 @@ import { type } from "os";
 import { useState, useEffect } from "react";
 
 export type Mentor = {
+  mentorInfo: any;
   userInfo: any;
   id: string | number;
   password: string;
@@ -14,14 +15,15 @@ export type Mentor = {
   bioDescription: string;
   profilePictureUrl: string;
   status: number;
+  MentorProfile: {
+    id: string;
+    // other properties...
+  };
 };
 
-export type MentorProfile = {
-  id: string | number;
-};
 const useDataMentorFetcher = () => {
   const [mentor, setMentor] = useState<Mentor[]>([]);
-  const [mentorID, setMentorId] = useState<MentorProfile[]>([]);
+  const [mentorID, setMentorId] = useState<Mentor[]>([]);
   const API_URL =
     "https://learnconnectapitest.azurewebsites.net/api/mentor/get-mentors";
   const pagesize = 6;
