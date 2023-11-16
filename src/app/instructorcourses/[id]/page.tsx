@@ -20,6 +20,7 @@ import { Lecture } from "@/app/my-course/[id]/page";
 import axios from "axios";
 import { http } from "@/api/http";
 import {
+  Avatar,
   Box,
   Dialog,
   DialogActions,
@@ -530,11 +531,11 @@ const Dashboard = ({ params }: any) => {
             </h1>
           </div>
           {/* <div className={`${InstructorCourseStyle.featured_bottom}`}> */}
-          <div className="p-5 flex">
+          <div className="p-5 flex gap-5">
             <div className="flex-1">
               <img
                 width="400px"
-                className="h-[300px] w-[400px]"
+                className="h-[300px] w-[400px] rounded-lg"
                 src={`${course?.imageUrl}`}
                 alt=""
               />
@@ -571,7 +572,7 @@ const Dashboard = ({ params }: any) => {
                     Total Rating: {course?.totalRatingCount}
                   </p>
                   <p
-                    className={`${InstructorCourseStyle.featured_bottom_amount}`}
+                    className={`${InstructorCourseStyle.featured_bottom_amount} flex items-center`}
                   >
                     Average Rating: {course?.averageRating}{" "}
                     <Rating
@@ -600,7 +601,7 @@ const Dashboard = ({ params }: any) => {
                       })
                     : ""}{" "}
                 </p>
-                --------------------------------------------------
+                <div className="bg-[#e5f4eb] rounded-[10px] px-10 h-[5px]"></div>
                 <div>
                   <span>Description:</span>
                   <br />
@@ -693,10 +694,15 @@ const Dashboard = ({ params }: any) => {
                           <div className="review-author flex justify-between">
                             <div className="flex flex-row">
                               <div className="author-thumb p-2">
-                                <img
+                                <Avatar
+                                  sx={{
+                                    width: "100px",
+                                    height: "100px",
+                                    borderRadius: "100%",
+                                  }}
                                   src={item.userRatingInfo.imageUser}
                                   alt="Author"
-                                  className="w-24 h-24 rounded-full"
+                                  // className="w-24 h-24 rounded-full"
                                 />
                                 <i className="icofont-quote-left"></i>
                               </div>

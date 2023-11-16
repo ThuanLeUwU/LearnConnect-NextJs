@@ -372,10 +372,10 @@ export default function CourseDetailPage({ params }: any) {
                             {listRating.map((item) => {
                               return (
                                 <>
-                                  <div className="single-review mt-3.5 border border-opacity-20 border-[#30925533] p-7 rounded-md">
+                                  <div className="single-review mt-3.5 border border-opacity-20 border-[#309255] p-7 rounded-md">
                                     <div className="review-author flex justify-between">
                                       <div className="flex flex-row">
-                                        <div className="author-thumb p-2">
+                                        <div className="author-thumb p-2 border border-[#309255] rounded-full">
                                           <img
                                             src={item.userRatingInfo.imageUser}
                                             alt="Author"
