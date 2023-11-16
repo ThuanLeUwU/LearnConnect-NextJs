@@ -14,18 +14,6 @@ export type CourseItem = {
   status: number;
   categoryId: number;
 };
-export type User = {
-  id: string | number;
-  password: string;
-  email: string;
-  role: 0;
-  fullName: string;
-  phoneNumber: string;
-  gender: 0;
-  bioDescription: string;
-  profilePictureUrl: string;
-  status: number;
-};
 const useDataCourseProfileMentor = () => {
   const [courses, setCourses] = useState<CourseItem[]>([]);
   const API_URL =
