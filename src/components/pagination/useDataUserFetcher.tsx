@@ -4,6 +4,7 @@ import { http } from "@/api/http";
 
 import { useState, useEffect } from "react";
 export type CourseItem = {
+  mentorId: number;
   percentComplete: any;
   course: {
     id: string | number;

@@ -77,7 +77,11 @@ const Transaction = () => {
                       {item.paymentTransaction.createDate
                         ? new Date(
                             item.paymentTransaction.createDate
-                          ).toLocaleDateString("en-GB")
+                          ).toLocaleDateString("en-GB", {
+                            day: "numeric",
+                            month: "long",
+                            year: "numeric",
+                          })
                         : ""}
                     </div>
                     <div>
@@ -93,7 +97,11 @@ const Transaction = () => {
                       {item.paymentTransaction.successDate
                         ? new Date(
                             item.paymentTransaction.successDate
-                          ).toLocaleDateString("en-GB")
+                          ).toLocaleDateString("en-GB", {
+                            day: "numeric",
+                            month: "long",
+                            year: "numeric",
+                          })
                         : ""}
                     </div>
                     <div>

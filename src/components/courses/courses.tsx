@@ -211,7 +211,7 @@ const Courses = ({
           </span>
           <span>
             {" "}
-            <i className="icofont-read-book"></i> {contentLength} Lectures{" "}
+            <i className="icofont-read-book"></i> {lectureCount} Lectures{" "}
           </span>
         </div>
         <div className={`${CourseStyle.single_courses_timeline}`}>
@@ -239,7 +239,11 @@ const Courses = ({
               <span className={`${CourseStyle.single_courses_price_sale}`}>
                 {price && price.toLocaleString()}
               </span>
-              {price !== 0 && <div className="ml-auto">VND</div>}
+              {price !== 0 && (
+                <div className="ml-auto flex items-center font-medium text-lg">
+                  VND
+                </div>
+              )}
             </div>
           )}
         </div>

@@ -4,6 +4,7 @@ import ".././globals.css";
 import useDataMentorFetcher from "@/components/pagination/useDataMentorFetcher";
 import Paginate from "@/components/pagination/pagination";
 import { useRouter } from "next/navigation";
+import { Spin } from "antd";
 
 export default function ListMentor() {
   const router = useRouter();
@@ -15,28 +16,44 @@ export default function ListMentor() {
   };
   console.log("mentor123:", mentor);
   return (
-    <div className="container">
+    <div className="container min-h-[60vh]">
       {loading ? (
-        <div className="text-center text-5xl">loading...</div>
+        <div className="text-center text-5xl mt-5">
+          <Spin size="large" />
+        </div>
       ) : (
         <div>
           <div className="tab-reviews">
             <h3 className="text-[#212832] text-2xl font-medium my-3"></h3>
             <div className="reviews-wrapper reviews-active">
+<<<<<<< HEAD
               <button>
+=======
+              <>
+>>>>>>> origin/thuan
                 <div className="swiper-container">
                   {mentor &&
                     mentor.length > 0 &&
                     mentor.map((mentorItem, index) => (
+<<<<<<< HEAD
                       <div
                         className="swiper-wrapper mb-3 shadow-lg rounded-lg hover:border-[#309255] hover:bg-[#e7f8ee]"
+=======
+                      <button
+                        className="swiper-wrapper mb-3 shadow-lg  w-full rounded-lg hover:border-[#309255] hover:bg-[#e7f8ee]"
+>>>>>>> origin/thuan
                         key={mentorItem.id}
                         onClick={() =>
                           handleSwiperWrapperClick(mentorItem.mentorInfo.id)
                         }
                       >
+<<<<<<< HEAD
                         <div className="single-review mt-3.5 border border-opacity-20 border-[#30925533] p-7 rounded-md">
                           <div className="">
+=======
+                        <div className="single-review border border-opacity-20 border-[#30925533] p-7 rounded-md flex flex-col items-start">
+                          <div className="review-author flex items-center ">
+>>>>>>> origin/thuan
                             <div className="author-thumb border border-[#309255] rounded-full">
                               <img
                                 src={mentorItem.userInfo.profilePictureUrl}
@@ -49,7 +66,11 @@ export default function ListMentor() {
                               <h4 className="text-2xl font-medium">
                                 {mentorItem.userInfo.fullName}
                               </h4>
+<<<<<<< HEAD
                               <span className="text-sm text-[#309255] mt-1.5 font-light">
+=======
+                              <span className="text-sm text-[#309255] mt-1.5 font-normal">
+>>>>>>> origin/thuan
                                 {mentorItem.userInfo.email}
                               </span>
                               <span className="rating-star">
@@ -57,6 +78,7 @@ export default function ListMentor() {
                               </span>
                             </div>
                           </div>
+<<<<<<< HEAD
                           <p className="mt-3 font-light text-[#52565b] text-sm">
                             {mentorItem.userInfo.bioDescription}
                           </p>
@@ -65,6 +87,16 @@ export default function ListMentor() {
                     ))}
                 </div>
               </button>
+=======
+                          <p className="mt-3 font-normal text-[#52565b] text-sm text-start">
+                            {mentorItem.userInfo.bioDescription}
+                          </p>
+                        </div>
+                      </button>
+                    ))}
+                </div>
+              </>
+>>>>>>> origin/thuan
             </div>
           </div>
 

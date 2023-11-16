@@ -14,6 +14,8 @@ import { http } from "@/api/http";
 import { toast } from "sonner";
 
 export type Rating = {
+  ratingCourseInfo: any;
+  userRatingInfo: any;
   id: number;
   rating1: number;
   comment: string;
@@ -65,7 +67,24 @@ export default function CourseDetailPage({ params }: any) {
     fetchData();
   }, []);
 
-  const [rating, setRating] = useState<Rating[]>([]);
+  // const [rating, setRating] = useState<Rating[]>([]);
+
+  const [listRating, setListRating] = useState<Rating[]>([]);
+
+  useEffect(() => {
+    // Gọi API để lấy danh sách người dùng
+    http
+      .get(`/rating/listRatingOfCourse/${idCourse}`)
+      .then((response) => {
+        // setInfoTest(response.data.questions);
+        setListRating(response.data);
+        // setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching user data:", error);
+        // setLoading(false);
+      });
+  }, [idCourse]);
 
   // useEffect(() => {
   //   const fetchData = async () => {
@@ -238,7 +257,7 @@ export default function CourseDetailPage({ params }: any) {
                           </div>
                         </div> */}
                         <div className="lg:col-span-12">
-                          <div className="text-[15px] font-extralight mt-[25px] px-[15px]">
+                          <div className="text-[15px] font-medium mt-[25px] px-[15px]">
                             <p className="mb-4 leading-loose">
                               {courses?.description}{" "}
                             </p>
@@ -255,7 +274,7 @@ export default function CourseDetailPage({ params }: any) {
                                           <td className="whitespace-nowrap px-6 py-4">
                                             :
                                           </td>
-                                          <td className="whitespace-nowrap px-6 py-4 text-[#52565b] text-[15px] font-normal">
+                                          <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-normal">
                                             {/* {courses.} */}
                                             {courses?.mentorName}
                                           </td>
@@ -267,7 +286,7 @@ export default function CourseDetailPage({ params }: any) {
                                           <td className="whitespace-nowrap px-6 py-4">
                                             :
                                           </td>
-                                          <td className="whitespace-nowrap px-6 py-4 text-[#52565b] text-[15px] font-normal">
+                                          <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-normal">
                                             {courses?.contentLength}{" "}
                                             <span>min</span>
                                           </td>
@@ -279,7 +298,7 @@ export default function CourseDetailPage({ params }: any) {
                                           <td className="whitespace-nowrap px-6 py-4">
                                             :
                                           </td>
-                                          <td className="whitespace-nowrap px-6 py-4 text-[#52565b] text-[15px] font-normal">
+                                          <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-normal">
                                             {courses?.lectureCount}
                                           </td>
                                         </tr>
@@ -331,7 +350,7 @@ export default function CourseDetailPage({ params }: any) {
                                     <p className="mt-5 font-bold">
                                       Lecture {index + 1}: {item.title}
                                     </p>
-                                    <p className="mt-3.5 text-[#52565b] text-base font-extralight">
+                                    <p className="mt-3.5 text-[#52565b] text-base font-normal">
                                       {item?.content}
                                     </p>
                                   </div>
@@ -350,101 +369,60 @@ export default function CourseDetailPage({ params }: any) {
                       <div className="reviews-wrapper reviews-active">
                         <div className="swiper-container">
                           <div className="swiper-wrapper">
-                            <div className="single-review mt-3.5 border border-opacity-20 border-[#30925533] p-7 rounded-md">
-                              <div className="review-author flex items-center ">
-                                <div className="author-thumb p-2">
-                                  <img
-                                    src="./author/author-06.jpg"
-                                    alt="Author"
-                                    className="w-24 h-24 rounded-full"
-                                  />
-                                  <i className="icofont-quote-left"></i>
-                                </div>
-                                <div className="author-content pl-4">
-                                  <h4 className="text-2xl font-medium">
-                                    Sara Alexander
-                                  </h4>
-                                  <span className="text-sm text-[#309255] mt-1.5 font-light">
-                                    Product Designer, USA
-                                  </span>
-                                  <span className="rating-star">
-                                    <span className="rating-bar"></span>
-                                  </span>
-                                </div>
-                              </div>
-                              <p className="mt-3 font-light text-[#52565b] text-sm">
-                                Lorem Ipsum has been the industry&apos;s
-                                standard dummy text since the 1500 when unknown
-                                printer took a galley of type and scrambled to
-                                make type specimen book has survived not five
-                                centuries but also the leap into electronic type
-                                and book.
-                              </p>
-                            </div>
-
-                            <div className="single-review mt-3.5 border border-opacity-20 border-[#30925533] p-7 rounded-md">
-                              <div className="review-author flex items-center">
-                                <div className="author-thumb p-2">
-                                  <img
-                                    src="./author/author-07.jpg"
-                                    alt="Author"
-                                    className="w-24 h-24 rounded-full"
-                                  />
-                                  <i className="icofont-quote-left"></i>
-                                </div>
-                                <div className="author-content pl-4">
-                                  <h4 className="text-2xl font-medium">
-                                    Karol Bachman
-                                  </h4>
-                                  <span className="text-sm text-[#309255] mt-1.5 font-light">
-                                    Product Designer, USA
-                                  </span>
-                                  <span className="rating-star">
-                                    <span className="rating-bar"></span>
-                                  </span>
-                                </div>
-                              </div>
-                              <p className="mt-3 font-light text-[#52565b] text-sm">
-                                Lorem Ipsum has been the industry&apos;s
-                                standard dummy text since the 1500 when unknown
-                                printer took a galley of type and scrambled to
-                                make type specimen book has survived not five
-                                centuries but also the leap into electronic type
-                                and book.
-                              </p>
-                            </div>
-
-                            <div className="single-review mt-3.5 border border-opacity-20 border-[#30925533] p-7 rounded-md">
-                              <div className="review-author flex items-center">
-                                <div className="author-thumb p-2">
-                                  <img
-                                    src="./author/author-03.jpg"
-                                    alt="Author"
-                                    className="w-24 h-24 rounded-full"
-                                  />
-                                  <i className="icofont-quote-left"></i>
-                                </div>
-                                <div className="author-content pl-4">
-                                  <h4 className="text-2xl font-medium">
-                                    Gertude Culbertson
-                                  </h4>
-                                  <span className="text-sm text-[#309255] mt-1.5 font-light">
-                                    Product Designer, USA
-                                  </span>
-                                  <span className="rating-star">
-                                    <span className="rating-bar"></span>
-                                  </span>
-                                </div>
-                              </div>
-                              <p className="mt-7 font-light text-[#52565b] text-sm">
-                                Lorem Ipsum has been the industry&apos;s
-                                standard dummy text since the 1500 when unknown
-                                printer took a galley of type and scrambled to
-                                make type specimen book has survived not five
-                                centuries but also the leap into electronic type
-                                and book.
-                              </p>
-                            </div>
+                            {listRating.map((item) => {
+                              return (
+                                <>
+                                  <div className="single-review mt-3.5 border border-opacity-20 border-[#309255] p-7 rounded-md">
+                                    <div className="review-author flex justify-between">
+                                      <div className="flex flex-row">
+                                        <div className="author-thumb p-2 border border-[#309255] rounded-full">
+                                          <img
+                                            src={item.userRatingInfo.imageUser}
+                                            alt="Author"
+                                            className="w-16 h-16 rounded-full"
+                                          />
+                                          <i className="icofont-quote-left"></i>
+                                        </div>
+                                        <div className="author-content pl-4 flex flex-col justify-center">
+                                          <div className=" font-bold text-xl">
+                                            {item.userRatingInfo.fullName}
+                                          </div>
+                                          <span className=" text-[#309255] font-light">
+                                            {item.ratingCourseInfo.timeStamp
+                                              ? new Date(
+                                                  item.ratingCourseInfo.timeStamp
+                                                ).toLocaleTimeString("en-US")
+                                              : ""}{" "}
+                                            {item.ratingCourseInfo.timeStamp
+                                              ? new Date(
+                                                  item.ratingCourseInfo.timeStamp
+                                                ).toLocaleDateString("en-GB", {
+                                                  day: "numeric",
+                                                  month: "long",
+                                                  year: "numeric",
+                                                })
+                                              : ""}{" "}
+                                          </span>
+                                        </div>
+                                      </div>
+                                      <div className="">
+                                        <Rating
+                                          size="large"
+                                          name="half-rating-read"
+                                          max={5}
+                                          precision={0.1}
+                                          readOnly
+                                          value={item.ratingCourseInfo.rating1}
+                                        />
+                                      </div>
+                                    </div>
+                                    <p className="mt-3 font-semibold text-[#52565b] ">
+                                      {item.ratingCourseInfo.comment}
+                                    </p>
+                                  </div>
+                                </>
+                              );
+                            })}
                           </div>
                           <div className="swiper-pagination"></div>
                         </div>

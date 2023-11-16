@@ -98,7 +98,7 @@ export default function ProfileUser() {
                         <Link href="/edit-profile">Edit profile</Link>
                       </button>
                     </div>
-                    <div className="mt-4 lg:mt-0 lg:ms-3">
+                    <div className="mt-4 lg:mt-0 lg:ms-3 my-auto">
                       <h5 className="text-lg my-1">
                         Full Name: {DataUser?.fullName}
                       </h5>

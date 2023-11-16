@@ -4,7 +4,7 @@ import headerStyles from "./styles/styles.module.scss";
 import "../app/./globals.css";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { UserAuth } from "@/app/context/AuthContext";
+import { UserAuth, UserRole } from "@/app/context/AuthContext";
 import { Button } from "react-bootstrap";
 import { RegisterForm } from "@/components/registerForm";
 import { Modal } from "antd";
@@ -74,6 +74,26 @@ const Header = () => {
     router.push(`/notifications`);
   };
 
+  const returnHome = () => {
+    switch (role) {
+      case UserRole.Student:
+        router.push("/courses");
+        break;
+      case UserRole.Mentor:
+        router.push("/instructorcourses");
+        break;
+      case UserRole.Staff:
+        router.push("/staff-page");
+        break;
+      case UserRole.Admin:
+        router.push("/user-manage");
+        break;
+      default:
+        router.push("/");
+        break;
+    }
+  };
+
   useEffect(() => {
     const fetchNotificationData = async () => {
       try {
@@ -96,14 +116,14 @@ const Header = () => {
         <div className={`${headerStyles.header_login}`}>
           <div className={`${headerStyles.header_navbar}`}>
             <div className={`${headerStyles.header_login_left}`}>
-              <Link href="/">
+              <button onClick={returnHome}>
                 <Image
                   width={100}
                   height={40}
                   src="/images/LogoTextWhite.png"
                   alt="Logo"
                 />
-              </Link>
+              </button>
             </div>
             <ul className={`${headerStyles.header_login_right}`}>
               <li className={`${headerStyles.header_notification}`}>

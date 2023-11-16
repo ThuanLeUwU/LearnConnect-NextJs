@@ -169,7 +169,7 @@ export default function ProfileUser({ params }: any) {
                                           <h4 className="text-2xl font-medium">
                                             {item.name}
                                           </h4>
-                                          <div>
+                                          <div className="h-2/5 ">
                                             <span className="text-sm">
                                               {item.description}
                                             </span>
@@ -194,7 +194,7 @@ export default function ProfileUser({ params }: any) {
                                             </span>
                                           </div>
                                           <div>
-                                            <span className="text-[#309255] mt-1.5 font-light font-bold">
+                                            <span className="text-[#309255] mt-1.5 font-bold text-lg">
                                               {item.price === 0 ? (
                                                 <p>Free</p>
                                               ) : (

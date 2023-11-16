@@ -145,9 +145,9 @@ export default function AfterEnroll({ params }: any) {
   };
 
   const Reasons = [
-    { id: "1", name: "Nội dung không phù hợp" },
-    { id: "2", name: "Vi phạm bản quyền" },
-    { id: "3", name: "Vi phạm tiêu chuẩn cộng đồng " },
+    { id: "1", name: "Inappropriate content" },
+    { id: "2", name: "Copyright violation" },
+    { id: "3", name: "Community standards violation" },
   ];
 
   const handleChangeReason = (value: React.SetStateAction<null>) => {
@@ -213,18 +213,46 @@ export default function AfterEnroll({ params }: any) {
 
   //rating
   const [modalRating, setModalRatingOpen] = useState(false);
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState<number>(0);
   const desc = ["terrible", "bad", "normal", "good", "wonderful"];
 
   const showModalRating = () => {
     setModalRatingOpen(true);
   };
 
-  const handleSubmit = async (data: any) => {
-    const formdata = new FormData();
-    formdata.append("reportReason", value.toString());
-    formdata.append("reportComment", data.description);
+  const handleRateChange = (newValue: number) => {
+    setValue(newValue);
+  };
 
+  const handleSubmit = async (data: any) => {
+    // const numericValue = parseFloat(value);
+    const formdata = new FormData();
+    formdata.append("rating", value.toString());
+    console.log("rate");
+    formdata.append("comment", data.description);
+
+    try {
+      // console.log("formDataImage1", formDataImage);
+      // console.log("image1", image);
+      await http.post(
+        `/rating/rating-course?userId=${id}&courseId=${idCourse}`,
+        formdata,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      handleCancel();
+
+      setTimeout(() => {
+        toast.success("Rating successful");
+      });
+    } catch (err) {
+      setTimeout(() => {
+        toast.error("Rating fail");
+      });
+    }
     // console.log("value", parseInt(value.toString()));
     // console.log("value", data.description);
 
@@ -344,7 +372,11 @@ export default function AfterEnroll({ params }: any) {
                     onFinish={handleSubmit}
                   >
                     <span className="flex pl-[140px] pb-5">
-                      <Rate tooltips={desc} onChange={setValue} value={value} />
+                      <Rate
+                        tooltips={desc}
+                        onChange={handleRateChange}
+                        value={value}
+                      />
                     </span>
                     <Form.Item label="Description" name="description">
                       <Input.TextArea rows={3} />
@@ -450,7 +482,7 @@ export default function AfterEnroll({ params }: any) {
                               Lecture {activeVideoIndex + 1}:{" "}
                               {testVideo[activeVideoIndex].title}
                             </p>
-                            <p className="mt-3.5 text-[#52565b] text-base font-extralight">
+                            <p className="mt-3.5 text-[#52565b] text-base font-normal">
                               {testVideo[activeVideoIndex]?.content}
                             </p>
                           </div>
@@ -513,7 +545,7 @@ export default function AfterEnroll({ params }: any) {
                           </div>
                         </div> */}
                             <div className="lg:col-span-12">
-                              <div className="text-[15px] font-extralight mt-[25px] px-[15px]">
+                              <div className="text-[15px] font-medium mt-[25px] px-[15px]">
                                 <p className="mb-4 leading-loose">
                                   {courses?.description}{" "}
                                 </p>
@@ -530,7 +562,7 @@ export default function AfterEnroll({ params }: any) {
                                               <td className="whitespace-nowrap px-6 py-4">
                                                 :
                                               </td>
-                                              <td className="whitespace-nowrap px-6 py-4 text-[#52565b] text-[15px] font-normal">
+                                              <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-normal">
                                                 {/* {courses.} */}
                                                 {courses?.mentorName}
                                               </td>
@@ -542,7 +574,7 @@ export default function AfterEnroll({ params }: any) {
                                               <td className="whitespace-nowrap px-6 py-4">
                                                 :
                                               </td>
-                                              <td className="whitespace-nowrap px-6 py-4 text-[#52565b] text-[15px] font-normal">
+                                              <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-normal">
                                                 {courses?.contentLength}{" "}
                                                 <span>min</span>
                                               </td>
@@ -554,7 +586,7 @@ export default function AfterEnroll({ params }: any) {
                                               <td className="whitespace-nowrap px-6 py-4">
                                                 :
                                               </td>
-                                              <td className="whitespace-nowrap px-6 py-4 text-[#52565b] text-[15px] font-normal">
+                                              <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-normal">
                                                 {courses?.lectureCount}
                                               </td>
                                             </tr>
@@ -590,7 +622,7 @@ export default function AfterEnroll({ params }: any) {
                                     <p className="mt-5 font-bold">
                                       Lecture {index + 1}: {item.title}
                                     </p>
-                                    <p className="mt-3.5 text-[#52565b] text-base font-extralight">
+                                    <p className="mt-3.5 text-[#52565b] text-base font-medium">
                                       {item?.content}
                                     </p>
                                   </div>
@@ -619,21 +651,22 @@ export default function AfterEnroll({ params }: any) {
               <nav className="vids">
                 {testVideo.map((item, index) => {
                   return (
-                    <a
+                    <button
                       key={item.id}
-                      className={`link ${
+                      className={`hover:bg-[#dff0e6] w-full text-left link ${
                         activeVideoIndex === index
                           ? "active text-[#309255]"
                           : ""
                       }`}
                       onClick={() => changeVideoSource(item.contentUrl, index)}
                     >
-                      <div className="pl-20 py-2 pr-[30px]">
-                        <p>
-                          Lecture {index + 1} : {item.title}
+                      <div className="py-2 pl-[30px] flex flex-row gap-3">
+                        <p className="flex-none h-[50px]">
+                          Lecture {index + 1}:
                         </p>
+                        <p className="flex-auto"> {item.title}</p>
                       </div>
-                    </a>
+                    </button>
                   );
                 })}
                 <div className="pl-10 py-2 pr-[30px] bg-[#dff0e6] flex">
