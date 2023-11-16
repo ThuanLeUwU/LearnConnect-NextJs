@@ -1,14 +1,12 @@
-"use client";
 import Header from "@/pages/header";
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import React, { use, useEffect, useState } from "react";
+import React from "react";
 import Footer from "@/pages/Footer";
 import { AuthContextProvider } from "./context/AuthContext";
 import { ToastContainer } from "react-toastify";
 import { Toaster, toast } from "sonner";
-import { Spin } from "antd";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,41 +20,16 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // Simulate an asynchronous operation (e.g., fetching data) that takes some time
-    const fetchData = async () => {
-      // Perform your data fetching or any other asynchronous operation here
-
-      // Simulate a delay (remove this in a real application)
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      // Once the content is loaded, set loading to false
-      setLoading(false);
-    };
-
-    // Call the fetchData function
-    fetchData();
-  }, []);
   return (
     <html lang="en">
       <body className="flex flex-col justify-between min-h-screen main_wrapper">
         <Toaster position="top-right" richColors />
         <AuthContextProvider>
-          {loading ? (
-            <div className="text-center text-5xl mt-5">
-              {/* <Spin size="large" /> */}
-            </div>
-          ) : (
-            <>
-              <div className="">
-                <Header />
-                {children}
-              </div>
-              <Footer />
-            </>
-          )}
+          <div className="">
+            <Header />
+            {children}
+          </div>
+          <Footer />
         </AuthContextProvider>
       </body>
     </html>
