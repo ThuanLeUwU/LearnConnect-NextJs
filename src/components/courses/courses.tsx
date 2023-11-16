@@ -228,23 +228,29 @@ const Courses = ({
         <div
           className={`${CourseStyle.single_courses_price} flex items-center`}
         >
-          {price === 0 ? (
-            <div className="courses-price">
-              <span className={`${CourseStyle.single_courses_price_sale}`}>
-                Free
-              </span>
-            </div>
+          {enrolled === true ? (
+            <div className="enrollment-status">Enrolled</div>
           ) : (
-            <div className="courses-price flex">
-              <span className={`${CourseStyle.single_courses_price_sale}`}>
-                {price && price.toLocaleString()}
-              </span>
-              {price !== 0 && (
-                <div className="ml-auto flex items-center font-medium text-lg">
-                  VND
+            <>
+              {price === 0 ? (
+                <div className="courses-price">
+                  <span className={`${CourseStyle.single_courses_price_sale}`}>
+                    Free
+                  </span>
+                </div>
+              ) : (
+                <div className="courses-price flex">
+                  <span className={`${CourseStyle.single_courses_price_sale}`}>
+                    {price && price.toLocaleString()}
+                  </span>
+                  {price !== 0 && (
+                    <div className="ml-auto flex items-center font-medium text-lg">
+                      VND
+                    </div>
+                  )}
                 </div>
               )}
-            </div>
+            </>
           )}
         </div>
       </div>

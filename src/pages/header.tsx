@@ -264,7 +264,7 @@ const Header = () => {
                     <Link href="/courses">Courses</Link>
                   </li>
                   <li>
-                    <Link href="/list-mentor">List Mentor</Link>
+                    <Link href="/list-mentor">List Mentors</Link>
                   </li>
                   {/* <li>
                     <Link href="/about">About </Link>
@@ -321,13 +321,13 @@ const Header = () => {
                         <Link href="/my-course">My Courses </Link>
                       </li>
                       <li>
-                        <Link href="/favorites">Favorites</Link>
+                        <Link href="/favorites">My Favorites</Link>
                       </li>
                       {/* <li>
                         <Link href="/contact">Contact</Link>
                       </li> */}
                       <li>
-                        <Link href="/list-mentor">List Mentor</Link>
+                        <Link href="/list-mentor">List Mentors</Link>
                       </li>
                     </ul>
                   </div>
