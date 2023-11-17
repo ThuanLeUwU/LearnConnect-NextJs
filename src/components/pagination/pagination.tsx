@@ -47,7 +47,9 @@ const Paginate: React.FC<PaginateProps> = ({
             <button className="w-10 h-10 flex items-center justify-center bg-[#30925533] rounded-md">
               <BsChevronRight />
             </button>
-          ) : null
+          ) : (
+            <button className="w-10 h-10 flex items-center justify-center bg-[transparent] rounded-md"></button>
+          )
         }
         onPageChange={handlePageClick}
         pageRangeDisplayed={3}
@@ -57,12 +59,14 @@ const Paginate: React.FC<PaginateProps> = ({
             <button className="w-10 h-10 flex items-center justify-center bg-[#30925533] rounded-md">
               <BsChevronLeft />
             </button>
-          ) : null
+          ) : (
+            <button className="w-10 h-10 flex items-center justify-center bg-[transparent] rounded-md"></button>
+          )
         }
         containerClassName="flex items-center justify-center mt-8 mb-4"
         pageClassName="block border- border-solid border-[#309255] hover:bg-[#30925533] w-10 h-10 flex items-center justify-center rounded-md mx-2"
+        pageLinkClassName="block border- border-solid border-[#309255] hover:bg-[#30925533] w-10 h-10 flex items-center justify-center rounded-md"
         activeClassName="bg-[#309255]"
-
         // renderOnZeroPageCount={null}
       />
     </motion.div>

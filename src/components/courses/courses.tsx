@@ -34,7 +34,6 @@ export type Course = {
   mentorId: number;
   mentorProfilePictureUrl: string;
   totalRatingCount: number;
-  favoriteId: number;
   enrolled: boolean;
   createDate: string;
 };
@@ -65,7 +64,6 @@ const Courses = ({
   mentorId,
   mentorProfilePictureUrl,
   totalRatingCount,
-  favoriteId,
   enrolled,
 }: {
   imageUrl: string;
@@ -81,7 +79,6 @@ const Courses = ({
   mentorId: number;
   mentorProfilePictureUrl: string;
   totalRatingCount: number;
-  favoriteId: string | number;
   enrolled: boolean;
 }) => {
   const router = useRouter();
@@ -98,9 +95,9 @@ const Courses = ({
       const fetchFavoriteCourses = async () => {
         try {
           const response = await http.get(
-            `https://learnconnectapitest.azurewebsites.net/api/favorite-course/get-favorite-courses-by-user?userId=${userData?.id}&currentPage=1&pageSize=6`
+            `https://learnconnectapitest.azurewebsites.net/api/favorite-course/get-favorite-courses-by-user?userId=${userData?.id}`
           );
-          setCourses(response.data.listFavoriteCourses);
+          setCourses(response.data);
         } catch (error) {
           console.error("Error fetching favorite courses: ", error);
         }
@@ -111,7 +108,7 @@ const Courses = ({
 
   useEffect(() => {
     const isCourseLiked = courses.some(
-      (course) => course.favorite.courseId === id
+      (course) => course.favorite.favoriteCourseId === id
     );
     setIsLiked(isCourseLiked);
   }, [courses, id]);
@@ -143,7 +140,7 @@ const Courses = ({
           "https://learnconnectapitest.azurewebsites.net/api/favorite-course",
           {
             id: 0,
-            courseId: id,
+            favoriteCourseId: id,
             userId: userData?.id,
           }
         )

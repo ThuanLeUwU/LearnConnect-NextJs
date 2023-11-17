@@ -31,7 +31,6 @@ const MyCourse = () => {
               {courses.map((item) => (
                 <Courses
                   enrolled={false}
-                  favoriteId={item.favorite.id}
                   mentorId={0}
                   mentorProfilePictureUrl={""}
                   totalRatingCount={0}
