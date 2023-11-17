@@ -32,7 +32,7 @@ export type User = {
   profilePictureUrl: string;
 };
 
-interface Category {
+interface Specialization {
   id: number;
   name: string;
   description: string;
@@ -63,7 +63,7 @@ export const RegisterForm = ({ onCancel, visible, isEdit }: IProps) => {
 
   const { Option } = Select;
 
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [specialization, setSpecialization] = useState<Specialization[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -144,7 +144,7 @@ export const RegisterForm = ({ onCancel, visible, isEdit }: IProps) => {
   const handleSubmit = async (values: any) => {
     const formData = new FormData();
     const {
-      category,
+      specialization,
       description,
       BankNumber,
       BankName,
@@ -152,7 +152,7 @@ export const RegisterForm = ({ onCancel, visible, isEdit }: IProps) => {
       CardBack,
       DescriptionDocument,
     } = values;
-    formData.append("Category", values.category || "1");
+    formData.append("specializationId", values.specialization || "");
     formData.append("description", values.description);
     formData.append("BankNumber", values.BankNumber);
     formData.append("BankName", values.BankName);
@@ -189,7 +189,7 @@ export const RegisterForm = ({ onCancel, visible, isEdit }: IProps) => {
       formData.append("BackCardImage", DocumentData);
     }
     try {
-      const url = `https://learnconnectapitest.azurewebsites.net/api/user/become-a-mentor?userId=${id}&categoryId=${category}&description=${description}&accountNumber=${BankNumber}&bankName=${BankName}`;
+      const url = `https://learnconnectapitest.azurewebsites.net/api/user/become-a-mentor?userId=${id}&specializationId=${specialization}&description=${description}&accountNumber=${BankNumber}&bankName=${BankName}`;
       await axios.post(url, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -213,9 +213,9 @@ export const RegisterForm = ({ onCancel, visible, isEdit }: IProps) => {
     const fetchCategories = async () => {
       try {
         const response = await axios.get(
-          "https://learnconnectapitest.azurewebsites.net/api/major"
+          "https://learnconnectapitest.azurewebsites.net/api/specialization"
         );
-        setCategories(response.data);
+        setSpecialization(response.data);
       } catch (error) {
         console.error("Error fetching categories:", error);
       }
@@ -247,14 +247,16 @@ export const RegisterForm = ({ onCancel, visible, isEdit }: IProps) => {
         </Form.Item>
         <Form.Item label="Email">{user?.email}</Form.Item>
         <Form.Item
-          label="Category"
-          name="category"
-          rules={[{ required: true, message: "Please select a category!" }]}
+          label="specialization"
+          name="specialization"
+          rules={[
+            { required: true, message: "Please select a specialization!" },
+          ]}
         >
           <Select>
-            {categories.map((category) => (
-              <Option key={category.id} value={category.id}>
-                {category.name}
+            {specialization.map((specialization) => (
+              <Option key={specialization.id} value={specialization.id}>
+                {specialization.name}
               </Option>
             ))}
           </Select>

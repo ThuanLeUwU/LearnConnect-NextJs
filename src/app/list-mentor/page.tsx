@@ -46,7 +46,6 @@ export default function ListMentor() {
                                 alt="Author"
                                 className="w-24 h-24 rounded-full"
                               />
-                              <i className="icofont-quote-left"></i>
                             </div>
                             <div className="author-content pl-4">
                               <h4 className="text-2xl font-medium">

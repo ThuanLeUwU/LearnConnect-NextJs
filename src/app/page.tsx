@@ -30,8 +30,8 @@ export default function Home() {
                 return (
                   <div key={index}>
                     <Courses
+                      favorite={item.isFavorite}
                       enrolled={false}
-                      favoriteId={""}
                       totalRatingCount={0}
                       mentorProfilePictureUrl={""}
                       mentorId={0}

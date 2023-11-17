@@ -65,8 +65,8 @@ const SearchCourse = () => {
           <div className="grid cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 py-[30px] gap-5">
             {courses.map((item) => (
               <Courses
+                favorite={item.isFavorite}
                 enrolled={false}
-                favoriteId={""}
                 totalRatingCount={0}
                 mentorProfilePictureUrl={""}
                 mentorId={0}

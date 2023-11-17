@@ -55,7 +55,7 @@ export default function CourseDetailPage({ params }: any) {
       setAverageRating(responseData?.data.averageRating);
     };
     fetchData();
-  }, []);
+  }, [idUser]);
   // console.log("is enrolled", courses?.enrolled);
   useEffect(() => {
     const fetchData = async () => {
@@ -68,6 +68,11 @@ export default function CourseDetailPage({ params }: any) {
     fetchData();
   }, []);
 
+  const handlePushMentor = () => {
+    if (courses && courses.mentorId) {
+      router.push(`/profile-mentor/${courses.mentorId}`);
+    }
+  };
   // const [rating, setRating] = useState<Rating[]>([]);
 
   const [listRating, setListRating] = useState<Rating[]>([]);
@@ -171,16 +176,29 @@ export default function CourseDetailPage({ params }: any) {
               <div className="courses-details-admin text-[#212832] flex justify-between items-center py-2.5">
                 <div className="admin-author flex items-center">
                   <div className="w-12 h-12 ">
-                    <img
-                      src={courses?.mentorProfilePictureUrl}
-                      alt="Author"
-                      className="rounded-full w-12 h-12 object-cover"
-                    />
+                    <button>
+                      <img
+                        src={courses?.mentorProfilePictureUrl}
+                        alt="Author"
+                        className="rounded-full w-12 h-12 object-cover"
+                        onClick={handlePushMentor}
+                      />
+                    </button>
                   </div>
                   <div className="author-content pl-4">
-                    <Link className="text-base pl-4 pb-1.5" href="#">
+                    <button
+                      className="text-base pl-4 pb-1.5"
+                      onClick={handlePushMentor}
+                    >
                       {courses?.mentorName}
-                    </Link>
+                    </button>
+                    {/* <Link
+                      className="text-base pl-4 pb-1.5"
+                      href="#"
+                      onClick={handlePushMentor}
+                    >
+                      {courses?.mentorName}
+                    </Link> */}
                     <span className="mx-5"></span>
                     <span className="text-sm font-normal text-[#309255]">
                       {courses?.totalEnrollment &&
@@ -270,7 +288,18 @@ export default function CourseDetailPage({ params }: any) {
                                       <tbody>
                                         <tr className="border-b border-b-[#e7f8ee]">
                                           <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-medium">
-                                            Instructor
+                                            Specialization
+                                          </td>
+                                          <td className="whitespace-nowrap px-6 py-4">
+                                            :
+                                          </td>
+                                          <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-normal">
+                                            {/* {courses?.specialization} */}
+                                          </td>
+                                        </tr>
+                                        <tr className="border-b border-b-[#e7f8ee]">
+                                          <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-medium">
+                                            Mentor
                                           </td>
                                           <td className="whitespace-nowrap px-6 py-4">
                                             :
@@ -376,13 +405,12 @@ export default function CourseDetailPage({ params }: any) {
                                   <div className="single-review mt-3.5 border border-opacity-20 border-[#309255] p-7 rounded-md">
                                     <div className="review-author flex justify-between">
                                       <div className="flex flex-row">
-                                        <div className="author-thumb p-2 border border-[#309255] rounded-full">
+                                        <div className="author-thumb p-2 rounded-full">
                                           <img
                                             src={item.userRatingInfo.imageUser}
                                             alt="Author"
                                             className="w-16 h-16 rounded-full"
                                           />
-                                          <i className="icofont-quote-left"></i>
                                         </div>
                                         <div className="author-content pl-4 flex flex-col justify-center">
                                           <div className=" font-bold text-xl">

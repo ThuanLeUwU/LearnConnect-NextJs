@@ -32,6 +32,7 @@ const MyCourse = () => {
                 <Courses
                   enrolled={false}
                   mentorId={0}
+                  favorite={item.favorite ? true : false}
                   mentorProfilePictureUrl={""}
                   totalRatingCount={0}
                   lectureCount={""}
