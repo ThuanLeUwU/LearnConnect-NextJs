@@ -41,8 +41,8 @@ export default function CourseDetailPage({ params }: any) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const router = useRouter();
   const idUser = id;
-  // console.log("id user is", idUser);
-  // console.log("id course is", idCourse);
+  console.log("id user is", idUser);
+  console.log("id course is", idCourse);
 
   useEffect(() => {
     const fetchData = async () => {

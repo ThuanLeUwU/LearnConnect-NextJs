@@ -82,7 +82,14 @@ const Transaction = () => {
     VerificationDocument[]
   >([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [confirmationData, setConfirmationData] = useState<{
+    isOpen: boolean;
+    actionType: string;
+    mentorUserId: number | null;
+  }>({ isOpen: false, actionType: "", mentorUserId: null });
   axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
+  const [rejectReasonInput, setRejectReasonInput] = useState("");
+
   // console.log("id Staff:", userData?.id);
   const handleViewMoreClick = (documents: VerificationDocument[]) => {
     setSelectedDocuments(documents);
@@ -116,10 +123,56 @@ const Transaction = () => {
     fetchData();
   }, []);
 
-  const handleApprove = async (mentorUserId: number) => {
+  // const handleApprove = async (mentorUserId: number) => {
+  //   try {
+  //     await axios.post(
+  //       `https://learnconnectapitest.azurewebsites.net/api/mentor/process-mentor-request?staffUserId=${userData?.id}&mentorUserId=${mentorUserId}&acceptRequest=true`
+  //     );
+  //     fetchData();
+  //     toast.success("Mentor request approved successfully");
+  //   } catch (error) {
+  //     toast.error("Failed to approve mentor request");
+  //     console.error("Error approving mentor request:", error.message || error);
+  //   }
+  // };
+
+  // const handleReject = async (mentorUserId: number) => {
+  //   try {
+  //     await axios.post(
+  //       `https://learnconnectapitest.azurewebsites.net/api/mentor/process-mentor-request?staffUserId=${userData?.id}&mentorUserId=${mentorUserId}&acceptRequest=false`
+  //     );
+  //     fetchData();
+  //     toast.success("Mentor request rejected successfully");
+  //   } catch (error) {
+  //     toast.error("Failed to rejected mentor request");
+  //     console.error("Error rejecting mentor request:", error.message || error);
+  //   }
+  // };
+
+  const handleApprove = (mentorUserId: number) => {
+    setConfirmationData({
+      isOpen: true,
+      actionType: "approve",
+      mentorUserId,
+    });
+  };
+
+  const handleReject = (mentorUserId: number) => {
+    setConfirmationData({
+      isOpen: true,
+      actionType: "reject",
+      mentorUserId,
+    });
+  };
+
+  const handleApproveConfirmation = async (
+    mentorUserId: number | null,
+    rejectReason: string
+  ) => {
     try {
+      const reason = rejectReason || "Your request is Approve";
       await axios.post(
-        `https://learnconnectapitest.azurewebsites.net/api/mentor/process-mentor-request?staffUserId=${userData?.id}&mentorUserId=${mentorUserId}&acceptRequest=true`
+        `https://learnconnectapitest.azurewebsites.net/api/mentor/process-mentor-request?staffUserId=${userData?.id}&mentorUserId=${mentorUserId}&acceptRequest=true&rejectReason=${reason}`
       );
       fetchData();
       toast.success("Mentor request approved successfully");
@@ -129,15 +182,19 @@ const Transaction = () => {
     }
   };
 
-  const handleReject = async (mentorUserId: number) => {
+  const handleRejectConfirmation = async (
+    mentorUserId: number | null,
+    rejectReason: string
+  ) => {
     try {
+      const reason = rejectReason || "Your request is Not Approve";
       await axios.post(
-        `https://learnconnectapitest.azurewebsites.net/api/mentor/process-mentor-request?staffUserId=${userData?.id}&mentorUserId=${mentorUserId}&acceptRequest=false`
+        `https://learnconnectapitest.azurewebsites.net/api/mentor/process-mentor-request?staffUserId=${userData?.id}&mentorUserId=${mentorUserId}&acceptRequest=false&rejectReason=${reason}`
       );
       fetchData();
       toast.success("Mentor request rejected successfully");
     } catch (error) {
-      toast.error("Failed to rejected mentor request");
+      toast.error("Failed to reject mentor request");
       console.error("Error rejecting mentor request:", error.message || error);
     }
   };
@@ -489,6 +546,86 @@ const Transaction = () => {
                   </>
                 )}
               </Box>
+            </Modal>
+            <Modal
+              open={confirmationData.isOpen}
+              onClose={() =>
+                setConfirmationData({
+                  isOpen: false,
+                  actionType: "",
+                  mentorUserId: null,
+                })
+              }
+              aria-labelledby="modal-title"
+              aria-describedby="modal-description"
+            >
+              <div className="fixed inset-0 z-50 flex items-center justify-center">
+                <div className="bg-white p-8 max-w-md w-full rounded-lg shadow-md">
+                  <h2 className="text-2xl font-semibold mb-4">
+                    Confirm{" "}
+                    {confirmationData.actionType === "approve"
+                      ? "Approval"
+                      : "Rejection"}
+                    ?
+                  </h2>
+                  {confirmationData.actionType === "reject" && (
+                    <div className="mb-4">
+                      <label
+                        htmlFor="rejectReason"
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        Note:
+                      </label>
+                      <input
+                        type="text"
+                        id="rejectReason"
+                        name="rejectReason"
+                        value={rejectReasonInput}
+                        onChange={(e) => setRejectReasonInput(e.target.value)}
+                        className="mt-1 p-2 w-full border rounded-md"
+                        required
+                      />
+                    </div>
+                  )}
+                  <div className="flex justify-between">
+                    <button
+                      onClick={() => {
+                        if (confirmationData.actionType === "approve") {
+                          handleApproveConfirmation(
+                            confirmationData.mentorUserId,
+                            rejectReasonInput
+                          );
+                        } else {
+                          handleRejectConfirmation(
+                            confirmationData.mentorUserId,
+                            rejectReasonInput
+                          );
+                        }
+                        setConfirmationData({
+                          isOpen: false,
+                          actionType: "",
+                          mentorUserId: null,
+                        });
+                      }}
+                      className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2"
+                    >
+                      Confirm
+                    </button>
+                    <button
+                      onClick={() =>
+                        setConfirmationData({
+                          isOpen: false,
+                          actionType: "",
+                          mentorUserId: null,
+                        })
+                      }
+                      className="bg-gray-400 text-white px-4 py-2 rounded-md"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
             </Modal>
           </div>
         </div>

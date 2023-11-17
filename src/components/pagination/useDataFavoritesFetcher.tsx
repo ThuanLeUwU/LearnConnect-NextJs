@@ -3,8 +3,8 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 export type CourseItem = {
   favorite: {
+    favoriteCourseId: number;
     id: string | number;
-    courseId: number;
     userId: number;
   };
   course: {
@@ -36,7 +36,7 @@ export type User = {
 };
 export type Favorite = {
   id: string | number;
-  courseId: number;
+  favoriteCourseId: number;
   userId: number;
 };
 const useDataFavoritesFetcher = () => {

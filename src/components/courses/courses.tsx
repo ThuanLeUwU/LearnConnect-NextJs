@@ -34,7 +34,6 @@ export type Course = {
   mentorId: number;
   mentorProfilePictureUrl: string;
   totalRatingCount: number;
-  favoriteId: number;
   enrolled: boolean;
   createDate: string;
   specializationId: number;
@@ -66,7 +65,6 @@ const Courses = ({
   mentorId,
   mentorProfilePictureUrl,
   totalRatingCount,
-  favoriteId,
   enrolled,
 }: {
   imageUrl: string;
@@ -82,7 +80,6 @@ const Courses = ({
   mentorId: number;
   mentorProfilePictureUrl: string;
   totalRatingCount: number;
-  favoriteId: string | number;
   enrolled: boolean;
 }) => {
   const router = useRouter();
@@ -99,9 +96,9 @@ const Courses = ({
       const fetchFavoriteCourses = async () => {
         try {
           const response = await http.get(
-            `https://learnconnectapitest.azurewebsites.net/api/favorite-course/get-favorite-courses-by-user?userId=${userData?.id}&currentPage=1&pageSize=6`
+            `https://learnconnectapitest.azurewebsites.net/api/favorite-course/get-favorite-courses-by-user?userId=${userData?.id}`
           );
-          setCourses(response.data.listFavoriteCourses);
+          setCourses(response.data);
         } catch (error) {
           console.error("Error fetching favorite courses: ", error);
         }
@@ -112,10 +109,11 @@ const Courses = ({
 
   useEffect(() => {
     const isCourseLiked = courses.some(
-      (course) => course.favorite.courseId === id
+      (course) => course.favorite.favoriteCourseId === id
     );
     setIsLiked(isCourseLiked);
   }, [courses, id]);
+
   const handleLike = () => {
     if (!jwtToken) {
       toast.error("You Must Login To add Favorites");
@@ -143,7 +141,7 @@ const Courses = ({
           "https://learnconnectapitest.azurewebsites.net/api/favorite-course",
           {
             id: 0,
-            courseId: id,
+            favoriteCourseId: id,
             userId: userData?.id,
           }
         )
@@ -229,23 +227,29 @@ const Courses = ({
         <div
           className={`${CourseStyle.single_courses_price} flex items-center`}
         >
-          {price === 0 ? (
-            <div className="courses-price">
-              <span className={`${CourseStyle.single_courses_price_sale}`}>
-                Free
-              </span>
-            </div>
+          {enrolled === true ? (
+            <div className="enrollment-status">Enrolled</div>
           ) : (
-            <div className="courses-price flex">
-              <span className={`${CourseStyle.single_courses_price_sale}`}>
-                {price && price.toLocaleString()}
-              </span>
-              {price !== 0 && (
-                <div className="ml-auto flex items-center font-medium text-lg">
-                  VND
+            <>
+              {price === 0 ? (
+                <div className="courses-price">
+                  <span className={`${CourseStyle.single_courses_price_sale}`}>
+                    Free
+                  </span>
+                </div>
+              ) : (
+                <div className="courses-price flex">
+                  <span className={`${CourseStyle.single_courses_price_sale}`}>
+                    {price && price.toLocaleString()}
+                  </span>
+                  {price !== 0 && (
+                    <div className="ml-auto flex items-center font-medium text-lg">
+                      VND
+                    </div>
+                  )}
                 </div>
               )}
-            </div>
+            </>
           )}
         </div>
       </div>

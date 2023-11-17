@@ -93,12 +93,12 @@ export default function ProfileUser() {
                       />
                       <button
                         type="button"
-                        className="btn btn-outline-dark btn-sm"
+                        className="btn btn-outline-dark btn-sm bg-[#e7f8ee] rounded-lg text-black px-3 py-1 mt-1"
                       >
                         <Link href="/edit-profile">Edit profile</Link>
                       </button>
                     </div>
-                    <div className="mt-4 lg:mt-0 lg:ms-3 my-auto">
+                    <div className="author-content pl-4 my-auto">
                       <h5 className="text-lg my-1">
                         Full Name: {DataUser?.fullName}
                       </h5>

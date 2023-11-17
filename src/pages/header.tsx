@@ -111,56 +111,7 @@ const Header = () => {
   return (
     <div className={`${headerStyles.header_section}`}>
       {!userData ? (
-        <div className={`${headerStyles.header_top}`}>
-          {/* <div className="container">
-            <div className={`${headerStyles.header_top_wrapper}`}>
-              <div className={`${headerStyles.header_top_left}`}>
-                <p>
-                  All course 28% off for{" "}
-                  <Link href="#">Liberian people’s.</Link>
-                </p>
-              </div>
-              <div className={`${headerStyles.header_top_medal}`}>
-                <div className={`${headerStyles.top_info}`}>
-                  <p>
-                    <i className="flaticon-phone-call"></i>{" "}
-                    <Link href="tel:9702621413">(970) 262-1413</Link>
-                  </p>
-                  <p>
-                    <i className="flaticon-email"></i>{" "}
-                    <Link href="mailto:learnconnect@gmail.com">
-                      learnconnect@gmail.com
-                    </Link>
-                  </p>
-                </div>
-              </div>
-              <div className={`${headerStyles.header_top_right}`}>
-                <ul className={`${headerStyles.header_top_right_social}`}>
-                  <li>
-                    <Link href="#">
-                      <i className="flaticon-facebook"></i>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="#">
-                      <i className="flaticon-twitter"></i>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="#">
-                      <i className="flaticon-skype"></i>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="#">
-                      <i className="flaticon-instagram"></i>
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div> */}
-        </div>
+        <div className={`${headerStyles.header_top}`}></div>
       ) : (
         <div className={`${headerStyles.header_login}`}>
           <div className={`${headerStyles.header_navbar}`}>
@@ -313,7 +264,7 @@ const Header = () => {
                     <Link href="/courses">Courses</Link>
                   </li>
                   <li>
-                    <Link href="/list-mentor">List Mentor</Link>
+                    <Link href="/list-mentor">List Mentors</Link>
                   </li>
                   {/* <li>
                     <Link href="/about">About </Link>
@@ -370,13 +321,13 @@ const Header = () => {
                         <Link href="/my-course">My Courses </Link>
                       </li>
                       <li>
-                        <Link href="/favorites">Favorites</Link>
+                        <Link href="/favorites">My Favorites</Link>
                       </li>
                       {/* <li>
                         <Link href="/contact">Contact</Link>
                       </li> */}
                       <li>
-                        <Link href="/list-mentor">List Mentor</Link>
+                        <Link href="/list-mentor">List Mentors</Link>
                       </li>
                     </ul>
                   </div>
