@@ -20,6 +20,7 @@ export type ListCourse = {
   mentorId: number;
   categoryName: string;
   totalRatingCount: number;
+  specializationId: number;
 };
 
 const useDataCoursesInstructor = () => {

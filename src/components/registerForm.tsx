@@ -213,7 +213,7 @@ export const RegisterForm = ({ onCancel, visible, isEdit }: IProps) => {
     const fetchCategories = async () => {
       try {
         const response = await axios.get(
-          "https://learnconnectapitest.azurewebsites.net/api/category"
+          "https://learnconnectapitest.azurewebsites.net/api/major"
         );
         setCategories(response.data);
       } catch (error) {

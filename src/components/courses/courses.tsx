@@ -37,6 +37,7 @@ export type Course = {
   favoriteId: number;
   enrolled: boolean;
   createDate: string;
+  specializationId: number;
 };
 
 export type Lectures = {

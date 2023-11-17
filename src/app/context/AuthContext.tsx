@@ -178,7 +178,7 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
       }
     });
     return () => unsubscribe();
-  }, [user]);
+  }, []);
 
   return (
     <AuthContext.Provider
