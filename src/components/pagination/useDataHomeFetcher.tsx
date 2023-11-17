@@ -1,3 +1,4 @@
+import { UserAuth } from "@/app/context/AuthContext";
 import axios from "axios";
 import { useState, useEffect } from "react";
 export type CourseItem = {
@@ -29,8 +30,14 @@ export type User = {
 };
 const useDataHomeFetcher = () => {
   const [courses, setCourses] = useState<CourseItem[]>([]);
-  const API_URL =
+  const { id } = UserAuth();
+  let API_URL =
     "https://learnconnectapitest.azurewebsites.net/api/course/get-top-enrolled-courses";
+  if (id) {
+    API_URL = `https://learnconnectapitest.azurewebsites.net/api/course/get-top-enrolled-courses?userId=${id}`;
+  }
+  // const API_URL =
+  //   "https://learnconnectapitest.azurewebsites.net/api/course/get-top-enrolled-courses";
   const pagesize = 6;
   const [totalPages, setTotalPages] = useState(10);
   const [loading, setLoading] = useState(true);

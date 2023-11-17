@@ -330,9 +330,9 @@ const Header = () => {
                   </div>
                   <div className={`${headerStyles.header_menu}`}>
                     <ul className={`${headerStyles.nav_menu}`}>
-                      {/* <li>
+                      <li>
                         <Link href="/">Home</Link>
-                      </li> */}
+                      </li>
                       <li>
                         <Link href="/courses">Courses</Link>
                       </li>
