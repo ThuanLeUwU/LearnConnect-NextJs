@@ -283,7 +283,7 @@ const Header = () => {
                     <Link href="/courses">Courses</Link>
                   </li>
                   <li>
-                    <Link href="/list-mentor">List Mentors</Link>
+                    <Link href="/list-mentor">Mentors</Link>
                   </li>
                   {/* <li>
                     <Link href="/about">About </Link>
@@ -330,9 +330,9 @@ const Header = () => {
                   </div>
                   <div className={`${headerStyles.header_menu}`}>
                     <ul className={`${headerStyles.nav_menu}`}>
-                      <li>
+                      {/* <li>
                         <Link href="/">Home</Link>
-                      </li>
+                      </li> */}
                       <li>
                         <Link href="/courses">Courses</Link>
                       </li>
@@ -346,7 +346,7 @@ const Header = () => {
                         <Link href="/contact">Contact</Link>
                       </li> */}
                       <li>
-                        <Link href="/list-mentor">List Mentors</Link>
+                        <Link href="/list-mentor">Mentors</Link>
                       </li>
                     </ul>
                   </div>

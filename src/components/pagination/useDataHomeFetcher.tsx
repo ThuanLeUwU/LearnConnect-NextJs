@@ -13,6 +13,7 @@ export type CourseItem = {
   averageRating: number;
   status: number;
   categoryId: number;
+  isFavorite: boolean;
 };
 export type User = {
   id: string | number;
