@@ -36,6 +36,8 @@ export type Course = {
   totalRatingCount: number;
   enrolled: boolean;
   createDate: string;
+  specializationName: string;
+  favorite: boolean;
 };
 
 export type Lectures = {
@@ -65,6 +67,7 @@ const Courses = ({
   mentorProfilePictureUrl,
   totalRatingCount,
   enrolled,
+  favorite,
 }: {
   imageUrl: string;
   name: string;
@@ -80,38 +83,39 @@ const Courses = ({
   mentorProfilePictureUrl: string;
   totalRatingCount: number;
   enrolled: boolean;
+  favorite: boolean;
 }) => {
   const router = useRouter();
-  const [isLiked, setIsLiked] = useState(false);
+  const [isLiked, setIsLiked] = useState(favorite);
   const { userData, jwtToken } = UserAuth();
   const [courses, setCourses] = useState<CourseItem[]>([]);
   const handleClick = () => {
     router.push(`/course-detail/${id}`);
   };
-  useEffect(() => {
-    console.log("JWT Token Home:", jwtToken);
-    axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
-    if (userData) {
-      const fetchFavoriteCourses = async () => {
-        try {
-          const response = await http.get(
-            `https://learnconnectapitest.azurewebsites.net/api/favorite-course/get-favorite-courses-by-user?userId=${userData?.id}`
-          );
-          setCourses(response.data);
-        } catch (error) {
-          console.error("Error fetching favorite courses: ", error);
-        }
-      };
-      fetchFavoriteCourses();
-    }
-  }, [router]);
+  // useEffect(() => {
+  //   console.log("JWT Token Home:", jwtToken);
+  //   axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
+  //   if (userData) {
+  //     const fetchFavoriteCourses = async () => {
+  //       try {
+  //         const response = await http.get(
+  //           `https://learnconnectapitest.azurewebsites.net/api/favorite-course/get-favorite-courses-by-user?userId=${userData?.id}`
+  //         );
+  //         setCourses(response.data);
+  //       } catch (error) {
+  //         console.error("Error fetching favorite courses: ", error);
+  //       }
+  //     };
+  //     fetchFavoriteCourses();
+  //   }
+  // }, [router]);
 
-  useEffect(() => {
-    const isCourseLiked = courses.some(
-      (course) => course.favorite.favoriteCourseId === id
-    );
-    setIsLiked(isCourseLiked);
-  }, [courses, id]);
+  // useEffect(() => {
+  //   const isCourseLiked = courses.some(
+  //     (course) => course.favorite.favoriteCourseId === id
+  //   );
+  //   setIsLiked(isCourseLiked);
+  // }, [courses, id]);
 
   const handleLike = () => {
     if (!jwtToken) {

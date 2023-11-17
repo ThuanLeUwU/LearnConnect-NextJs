@@ -7,7 +7,7 @@ import React, { useEffect, useState } from "react";
 import { UserAuth, UserRole } from "@/app/context/AuthContext";
 import { Button } from "react-bootstrap";
 import { RegisterForm } from "@/components/registerForm";
-import { Modal } from "antd";
+import { Empty, Modal } from "antd";
 import { useRouter } from "next/navigation";
 import { AiFillBell } from "react-icons/ai";
 import axios from "axios";
@@ -131,20 +131,34 @@ const Header = () => {
                   <AiFillBell />
                 </button>
                 {notification && (
-                  <div className="origin-top-right absolute right-0 mt-2 w-[360px] rounded-lg shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-20">
-                    {notificationContent && notificationContent.length > 0 && (
+                  <div className="origin-top-right absolute right-0 mt-2 w-[450px] rounded-lg shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-20">
+                    {notificationContent && notificationContent.length > 0 ? (
                       <ul className="divide-y divide-gray-200 rounded-lg">
                         {notificationContent.slice(0, 7).map((item) => {
                           const date = new Date(item.timeStamp);
-                          const hours = String(date.getHours()).padStart(
-                            2,
-                            "0"
-                          );
-                          const minutes = String(date.getMinutes()).padStart(
-                            2,
-                            "0"
-                          );
-                          const timeString = `${hours}:${minutes}`;
+                          const now = Date.now();
+                          const tmp = (now - date.getTime()) / 1000;
+
+                          let timeString = `${tmp} second${
+                            tmp > 1 ? "s" : ""
+                          } ago`;
+                          if (tmp > 604800) {
+                            timeString = `${Math.floor(tmp / 604800)} week${
+                              Math.floor(tmp / 604800) > 1 ? "s" : ""
+                            } ago`;
+                          } else if (tmp > 86400) {
+                            timeString = `${Math.floor(tmp / 86400)} day${
+                              Math.floor(tmp / 86400) > 1 ? "s" : ""
+                            } ago`;
+                          } else if (tmp > 3600) {
+                            timeString = `${Math.floor(tmp / 3600)} hours${
+                              Math.floor(tmp / 3600) > 1 ? "s" : ""
+                            } ago`;
+                          } else if (tmp > 60) {
+                            timeString = `${Math.floor(tmp / 60)} minute${
+                              Math.floor(tmp / 60) > 1 ? "s" : ""
+                            } ago`;
+                          }
                           return (
                             <li
                               key={item.id}
@@ -160,7 +174,7 @@ const Header = () => {
                               </span>
                               <div className="ml-3 text-sm">
                                 <a href="#" className="text-gray-900">
-                                  <p className="truncate max-w-[250px]">
+                                  <p className="truncate max-w-[280px]">
                                     <strong>{item.title}</strong>{" "}
                                     {item.description}
                                   </p>
@@ -173,6 +187,11 @@ const Header = () => {
                           );
                         })}
                       </ul>
+                    ) : (
+                      <div className="text-center text-[#000] text-xl mt-8 items-center justify-center min-h-[280px]">
+                        <Empty description={false} />
+                        You don&apos;t have any notification.
+                      </div>
                     )}
                     <a
                       href="#"

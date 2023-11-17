@@ -27,8 +27,8 @@ const ListCourse = () => {
                 return (
                   <Courses
                     enrolled={false}
-                    favoriteId={""}
                     totalRatingCount={0}
+                    favorite={item.isFavorite}
                     mentorProfilePictureUrl={""}
                     mentorId={0}
                     lectureCount={""}

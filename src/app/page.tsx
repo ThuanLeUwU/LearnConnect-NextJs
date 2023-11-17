@@ -31,7 +31,6 @@ export default function Home() {
                   <div key={index}>
                     <Courses
                       enrolled={false}
-                      favoriteId={""}
                       totalRatingCount={0}
                       mentorProfilePictureUrl={""}
                       mentorId={0}

@@ -1,8 +1,9 @@
+import { UserAuth } from "@/app/context/AuthContext";
 import axios from "axios";
 import { useState, useEffect } from "react";
 export type CourseItem = {
-  course: any;
-  favorite: any;
+  // course: any;
+  // favorite: any;
   id: string | number;
   name: string;
   description: string;
@@ -15,6 +16,7 @@ export type CourseItem = {
   averageRating: number;
   status: number;
   categoryId: number;
+  isFavorite: boolean;
 };
 export type User = {
   id: string | number;
@@ -30,9 +32,14 @@ export type User = {
 };
 const useDataFetcher = () => {
   const [courses, setCourses] = useState<CourseItem[]>([]);
+  const { userData, id, jwtToken } = UserAuth();
+
   // console.log("tau nì", courses);
-  const API_URL =
-    "https://learnconnectapitest.azurewebsites.net/api/course/get-courses-paging";
+  let API_URL =
+    "https://learnconnectapitest.azurewebsites.net/api/course/get-courses-paging?";
+  if (id) {
+    API_URL = `https://learnconnectapitest.azurewebsites.net/api/course/courses-with-favorite?userId=${id}&`;
+  }
   const pagesize = 6;
   const [totalPages, setTotalPages] = useState(10);
   const [loading, setLoading] = useState(true);
@@ -41,7 +48,7 @@ const useDataFetcher = () => {
     const fetchData = async () => {
       const page = Math.min(currentPage + 1, totalPages);
       const result = await axios.get(
-        `${API_URL}?currentPage=${page}&pageSize=${pagesize}`
+        `${API_URL}currentPage=${page}&pageSize=${pagesize}`
       );
       setCourses(result?.data.listCourse);
       // console.log("result", result);
