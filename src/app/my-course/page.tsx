@@ -21,7 +21,7 @@ const MyCourse = () => {
           <Spin size="large" />
         </div>
       ) : (
-        <div className="min-h-[60vh]">
+        <div className="min-h-[1000px]">
           {courses.length === 0 ? (
             <div className="text-center text-2xl mt-8 items-center justify-center">
               <Empty description={false} />

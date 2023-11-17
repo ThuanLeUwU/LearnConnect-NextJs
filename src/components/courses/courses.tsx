@@ -115,6 +115,7 @@ const Courses = ({
     );
     setIsLiked(isCourseLiked);
   }, [courses, id]);
+
   const handleLike = () => {
     if (!jwtToken) {
       toast.error("You Must Login To add Favorites");
