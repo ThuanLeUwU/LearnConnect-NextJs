@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import ReactStars from "react-stars";
 import { Button } from "react-bootstrap";
-import { Modal, Space, Spin } from "antd";
+import { Empty, Modal, Space, Spin } from "antd";
 import InstructorCourseStyle from "./styles/style.module.scss";
 import Link from "next/link";
 import { Rating } from "@mui/material";
@@ -91,60 +91,69 @@ const Reviews = () => {
                 Reviews About Me
               </h1>
             </div>
-            {reviews.map((item) => {
-              return (
-                <>
-                  <div className="single-review mt-3.5 border-4 border-opacity-10 border-black p-7 rounded-md hover:border-[#48b544]">
-                    <div className="review-author flex justify-between">
-                      <div className="flex flex-row">
-                        <div className="author-thumb p-2">
-                          <img
-                            src={item.userRatingInfo.imageUser}
-                            alt="Author"
-                            className="w-24 h-24 rounded-full"
-                          />
-                          <i className="icofont-quote-left"></i>
-                        </div>
-                        <div className="author-content pl-4 flex flex-col">
-                          <h4 className="text-2xl font-medium">
-                            {item.userRatingInfo.fullName}
-                          </h4>
-                          <span className="text-lg text-[#309255] mt-1.5 font-medium ">
-                            {item.ratingMentorInfo.timeStamp
-                              ? new Date(
-                                  item.ratingMentorInfo.timeStamp
-                                ).toLocaleTimeString("en-US")
-                              : ""}{" "}
-                            {item.ratingMentorInfo.timeStamp
-                              ? new Date(
-                                  item.ratingMentorInfo.timeStamp
-                                ).toLocaleDateString("en-GB", {
-                                  day: "numeric",
-                                  month: "long",
-                                  year: "numeric",
-                                })
-                              : ""}{" "}
-                          </span>
-                          <p className="mt-3 font-medium text-[#52565b] text-lg">
-                            {item.ratingMentorInfo.comment}
-                          </p>
+            {reviews.length === 0 ? (
+              <div className="text-center">
+                <Empty description="No Reviews" className="text-4xl" />
+              </div>
+            ) : (
+              <>
+                {reviews.map((item) => {
+                  return (
+                    <>
+                      <div className="single-review mt-3.5 border-4 border-opacity-10 border-black p-7 rounded-md hover:border-[#48b544]">
+                        <div className="review-author flex justify-between">
+                          <div className="flex flex-row">
+                            <div className="author-thumb p-2">
+                              <img
+                                src={item.userRatingInfo.imageUser}
+                                alt="Author"
+                                className="w-24 h-24 rounded-full"
+                              />
+                              <i className="icofont-quote-left"></i>
+                            </div>
+                            <div className="author-content pl-4 flex flex-col">
+                              <h4 className="text-2xl font-medium">
+                                {item.userRatingInfo.fullName}
+                              </h4>
+                              <span className="text-lg text-[#309255] mt-1.5 font-medium ">
+                                {item.ratingMentorInfo.timeStamp
+                                  ? new Date(
+                                      item.ratingMentorInfo.timeStamp
+                                    ).toLocaleTimeString("en-US")
+                                  : ""}{" "}
+                                {item.ratingMentorInfo.timeStamp
+                                  ? new Date(
+                                      item.ratingMentorInfo.timeStamp
+                                    ).toLocaleDateString("en-GB", {
+                                      day: "numeric",
+                                      month: "long",
+                                      year: "numeric",
+                                    })
+                                  : ""}{" "}
+                              </span>
+                              <p className="mt-3 font-medium text-[#52565b] text-lg">
+                                {item.ratingMentorInfo.comment}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="">
+                            <Rating
+                              size="large"
+                              name="half-rating-read"
+                              max={5}
+                              precision={0.1}
+                              readOnly
+                              value={item.ratingMentorInfo.rating1}
+                            />
+                          </div>
                         </div>
                       </div>
-                      <div className="">
-                        <Rating
-                          size="large"
-                          name="half-rating-read"
-                          max={5}
-                          precision={0.1}
-                          readOnly
-                          value={item.ratingMentorInfo.rating1}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </>
-              );
-            })}
+                    </>
+                  );
+                })}
+              </>
+            )}
+
             {/* <div className={`${InstructorCourseStyle.featured_bottom}`}> */}
           </div>
           {/* <div className={`${InstructorCourseStyle.course_tab}`}>

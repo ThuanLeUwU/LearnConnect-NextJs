@@ -23,7 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="flex flex-col justify-between min-h-screen main_wrapper">
-        <Toaster position="top-right" richColors />
+        <Toaster position="bottom-right" richColors />
         <AuthContextProvider>
           <div className="">
             <Header />

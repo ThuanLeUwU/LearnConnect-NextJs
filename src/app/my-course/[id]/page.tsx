@@ -229,7 +229,10 @@ export default function AfterEnroll({ params }: any) {
     const formdata = new FormData();
     formdata.append("rating", value.toString());
     console.log("rate");
-    formdata.append("comment", data.description);
+    formdata.append(
+      "comment",
+      data.description !== undefined ? data.description : null
+    );
 
     try {
       // console.log("formDataImage1", formDataImage);
@@ -298,7 +301,7 @@ export default function AfterEnroll({ params }: any) {
 
   return (
     <div className="container">
-      <div className="grid cols-2 lg:grid-cols-12 mt-[40px]">
+      <div className="grid cols-2 lg:grid-cols-12 mt-[40px] gap-5">
         <div className="lg:col-span-8">
           {!videoSrc && (
             <img
@@ -321,8 +324,8 @@ export default function AfterEnroll({ params }: any) {
             </video>
           )}
           <div>
-            <div className="px-3">
-              <div className="flex justify-between mt-2.5">
+            <div className="">
+              <div className="flex justify-between mt-2.5 items-center">
                 <h2 className="text-[25px] leading-normal text-[#212832] font-medium ">
                   {activeVideoIndex !== -1
                     ? testVideo[activeVideoIndex].title

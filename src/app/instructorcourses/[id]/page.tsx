@@ -361,6 +361,11 @@ const Dashboard = ({ params }: any) => {
       });
   }, []);
 
+  const [activeTab, setActiveTab] = useState("tab1");
+  const handleTabClick = (tabName: string) => {
+    setActiveTab(tabName);
+  };
+
   //table lecture
   const columns = [
     {
@@ -612,146 +617,195 @@ const Dashboard = ({ params }: any) => {
             </div>
           </div>
         </div>
-        <div className={`${InstructorCourseStyle.lecture}`}>
-          <div className="flex justify-between mb-5">
-            <span className="text-lg">List of Lectures</span>
-            <Button onClick={showModal}> New Lectures</Button>
-          </div>
-          {loading ? (
-            <Spin size="large" />
-          ) : (
-            <Table dataSource={lectures} columns={columns} />
-          )}
+        <div className="flex justify-center bg-[#e7f8ee] py-4 rounded-md m-5">
+          <ul className="tabs flex space-x-5 ">
+            <li
+              className={`cursor-pointer rounded-md ${
+                activeTab === "tab1" ? "bg-[#309255] text-white" : "bg-white"
+              }`}
+              onClick={() => handleTabClick("tab1")}
+            >
+              <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#309255]">
+                Lectures
+              </button>
+            </li>
+            <li
+              className={`cursor-pointer rounded-md ${
+                activeTab === "tab2" ? "bg-[#309255] text-white" : "bg-white"
+              }`}
+              onClick={() => handleTabClick("tab2")}
+            >
+              <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#309255]">
+                Test
+              </button>
+            </li>
+            <li
+              className={`cursor-pointer rounded-md ${
+                activeTab === "tab3" ? "bg-[#309255] text-white" : "bg-white"
+              }`}
+              onClick={() => handleTabClick("tab3")}
+            >
+              <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#309255]">
+                Reviews
+              </button>
+            </li>
+          </ul>
         </div>
-        <div className={`${InstructorCourseStyle.lecture}`}>
-          <div className="flex justify-between mb-5">
-            <span className="text-lg">List of Questions</span>
-            <Button onClick={showModal}> New Question</Button>
+        {activeTab === "tab1" && (
+          <div className={`${InstructorCourseStyle.lecture}`}>
+            {course?.lectureCount !== lectures.length ? (
+              <div className="flex justify-between mb-5">
+                <Button onClick={showModal}> New Lectures</Button>
+              </div>
+            ) : (
+              <div className="flex justify-between mb-5">
+                <Button disabled> New Lectures</Button>
+              </div>
+            )}
+
+            {loading ? (
+              <Spin size="large" />
+            ) : (
+              <Table dataSource={lectures} columns={columns} />
+            )}
           </div>
-          {loading ? (
-            <Spin size="large" />
-          ) : (
-            <>
-              {listQuestion.map((item) => (
-                <div key={item.test.id} className="mb-4 mt-6">
-                  <h3 className="text-xl font-semibold mb-2">
-                    {item.test.title}
-                  </h3>
-                  {item.questions.map((q, index) => (
-                    <div
-                      key={q.question.id}
-                      className="mb-2 mt-6 p-6 border-2 rounded-lg border-gray-200"
-                    >
-                      <p className="mb-1 font-medium text-[18px]">
-                        {index + 1}. {q.question.questionTest}
-                      </p>
-                      <div className="pl-4 grid grid-cols-2 gap-4">
-                        {q.answers.map((answer, ansIndex) => (
-                          <div
-                            key={answer.id}
-                            className={`mt-3 border-2 p-2 text-left rounded-lg ${
-                              answer.isCorrect === true
-                                ? "border-green-500 bg-green-100"
-                                : ""
-                            }`}
-                            // onClick={() =>
-                            //   handleAnswerSelect(
-                            //     q.question.id,
-                            //     answer.answerTest,
-                            //     answer.isCorrect
-                            //   )
-                            // }
-                          >
-                            {/* <span className="mr-2">
+        )}
+        {activeTab === "tab2" && (
+          <div className={`${InstructorCourseStyle.lecture}`}>
+            <div className="flex justify-between mb-5">
+              <Button onClick={showModal}> New Question</Button>
+            </div>
+            {loading ? (
+              <Spin size="large" />
+            ) : (
+              <>
+                {listQuestion.map((item) => (
+                  <div key={item.test.id} className="mb-4 mt-6">
+                    <h3 className="text-xl font-semibold mb-2">
+                      {item.test.title}
+                    </h3>
+                    {item.questions.map((q, index) => (
+                      <div
+                        key={q.question.id}
+                        className="mb-2 mt-6 p-6 border-2 rounded-lg border-gray-200"
+                      >
+                        <p className="mb-1 font-medium text-[18px]">
+                          {index + 1}. {q.question.questionTest}
+                        </p>
+                        <div className="pl-4 grid grid-cols-2 gap-4">
+                          {q.answers.map((answer, ansIndex) => (
+                            <div
+                              key={answer.id}
+                              className={`mt-3 border-2 p-2 text-left rounded-lg ${
+                                answer.isCorrect === true
+                                  ? "border-green-500 bg-green-100"
+                                  : ""
+                              }`}
+                              // onClick={() =>
+                              //   handleAnswerSelect(
+                              //     q.question.id,
+                              //     answer.answerTest,
+                              //     answer.isCorrect
+                              //   )
+                              // }
+                            >
+                              {/* <span className="mr-2">
                               {answerOptions[ansIndex]}
                             </span> */}
-                            {answer.answerTest}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ))}
-            </>
-          )}
-        </div>
-        <div className={`${InstructorCourseStyle.lecture}`}>
-          <div className="flex justify-between mb-5">
-            <span className="text-lg">Rating of Course</span>
-          </div>
-          {loading ? (
-            <Spin size="large" />
-          ) : (
-            // <Table dataSource={listRating} columns={rating} />
-            <div className="reviews-wrapper reviews-active">
-              <div className="swiper-container">
-                <div className="swiper-wrapper">
-                  {listRating.map((item) => {
-                    return (
-                      <>
-                        <div className="single-review mt-3.5 border border-opacity-20 border-[#30925533] p-7 rounded-md">
-                          <div className="review-author flex justify-between">
-                            <div className="flex flex-row">
-                              <div className="author-thumb p-2">
-                                <Avatar
-                                  sx={{
-                                    width: "100px",
-                                    height: "100px",
-                                    borderRadius: "100%",
-                                  }}
-                                  src={item.userRatingInfo.imageUser}
-                                  alt="Author"
-                                  // className="w-24 h-24 rounded-full"
-                                />
-                                <i className="icofont-quote-left"></i>
-                              </div>
-                              <div className="author-content pl-4">
-                                <h4 className="text-2xl font-medium">
-                                  {item.userRatingInfo.fullName}
-                                </h4>
-                                <span className="text-lg text-[#309255] mt-1.5 font-light">
-                                  {item.ratingCourseInfo.timeStamp
-                                    ? new Date(
-                                        item.ratingCourseInfo.timeStamp
-                                      ).toLocaleTimeString("en-US")
-                                    : ""}{" "}
-                                  {item.ratingCourseInfo.timeStamp
-                                    ? new Date(
-                                        item.ratingCourseInfo.timeStamp
-                                      ).toLocaleDateString("en-GB", {
-                                        day: "numeric",
-                                        month: "long",
-                                        year: "numeric",
-                                      })
-                                    : ""}{" "}
-                                </span>
-                                <p className="mt-3 font-medium text-[#52565b] text-lg">
-                                  {item.ratingCourseInfo.comment}
-                                </p>
-                              </div>
+                              {answer.answerTest}
                             </div>
-                            <div className="">
-                              <Rating
-                                size="large"
-                                name="half-rating-read"
-                                max={5}
-                                precision={0.1}
-                                readOnly
-                                value={item.ratingCourseInfo.rating1}
-                              />
-                            </div>
-                          </div>
+                          ))}
                         </div>
-                      </>
-                    );
-                  })}
-                </div>
-                <div className="swiper-pagination"></div>
-              </div>
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </>
+            )}
+          </div>
+        )}
+        {activeTab === "tab3" && (
+          <div className={`${InstructorCourseStyle.lecture}`}>
+            <div className="flex justify-between mb-5">
+              <span className="text-lg">Rating of Course</span>
             </div>
-          )}
-        </div>
+            {loading ? (
+              <Spin size="large" />
+            ) : (
+              // <Table dataSource={listRating} columns={rating} />
+              <div className="reviews-wrapper reviews-active">
+                <div className="swiper-container">
+                  <div className="swiper-wrapper">
+                    {listRating.map((item) => {
+                      return (
+                        <>
+                          <div className="single-review mt-3.5 border border-opacity-20 border-[#30925533] p-7 rounded-md">
+                            <div className="review-author flex justify-between">
+                              <div className="flex flex-row">
+                                <div className="author-thumb p-2">
+                                  <Avatar
+                                    sx={{
+                                      width: "100px",
+                                      height: "100px",
+                                      borderRadius: "100%",
+                                    }}
+                                    src={item.userRatingInfo.imageUser}
+                                    alt="Author"
+                                    // className="w-24 h-24 rounded-full"
+                                  />
+                                  <i className="icofont-quote-left"></i>
+                                </div>
+                                <div className="author-content pl-4">
+                                  <h4 className="text-2xl font-medium">
+                                    {item.userRatingInfo.fullName}
+                                  </h4>
+                                  <span className="text-lg text-[#309255] mt-1.5 font-light">
+                                    {item.ratingCourseInfo.timeStamp
+                                      ? new Date(
+                                          item.ratingCourseInfo.timeStamp
+                                        ).toLocaleTimeString("en-US")
+                                      : ""}{" "}
+                                    {item.ratingCourseInfo.timeStamp
+                                      ? new Date(
+                                          item.ratingCourseInfo.timeStamp
+                                        ).toLocaleDateString("en-GB", {
+                                          day: "numeric",
+                                          month: "long",
+                                          year: "numeric",
+                                        })
+                                      : ""}{" "}
+                                  </span>
+                                  {item.ratingCourseInfo.comment == "null" ? (
+                                    <></>
+                                  ) : (
+                                    <p className="mt-3 font-medium text-[#52565b] text-lg">
+                                      {item.ratingCourseInfo.comment}
+                                    </p>
+                                  )}
+                                </div>
+                              </div>
+                              <div className="">
+                                <Rating
+                                  size="large"
+                                  name="half-rating-read"
+                                  max={5}
+                                  precision={0.1}
+                                  readOnly
+                                  value={item.ratingCourseInfo.rating1}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </>
+                      );
+                    })}
+                  </div>
+                  <div className="swiper-pagination"></div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
       {/* create Lecture */}
       <Modal
@@ -1000,7 +1054,7 @@ const Dashboard = ({ params }: any) => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Typography onClick={handleDeleteCancel}>cancel</Typography>
+          <Button onClick={handleDeleteCancel}>cancel</Button>
 
           <Button
             danger

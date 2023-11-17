@@ -6,6 +6,7 @@ import { CreateCourse } from "@/components/createCourse";
 // import { Button } from "react-bootstrap";
 import {
   Button,
+  Empty,
   Form,
   Image,
   Input,
@@ -115,35 +116,41 @@ const InstructorCourse = () => {
     setUpdateImage(course?.imageUrl);
   };
 
+  const [errorMassage, setErrorMessage] = useState("");
+
   const handleSubmit = async (data: any) => {
-    setIsModal(false);
-    const formData = new FormData();
-    formData.append("courseName", data.name);
-    formData.append("description", data.description);
-    formData.append("shortDescription", data.shortDes);
-    formData.append("price", data.price);
-    formData.append("lectureCount", data.lecture);
-    formData.append("categoryId", selected.toString());
-    if (formDataImage !== undefined) {
-      formData.append("courseImage", formDataImage);
+    if (formDataImage === undefined) {
+      setErrorMessage("Please Input Image");
+    } else {
+      setIsModal(false);
+      const formData = new FormData();
+      formData.append("courseName", data.name);
+      formData.append("description", data.description);
+      formData.append("shortDescription", data.shortDes);
+      formData.append("price", data.price);
+      formData.append("lectureCount", data.lecture);
+      formData.append("specializationId", selected.toString());
+      if (formDataImage !== undefined) {
+        formData.append("courseImage", formDataImage);
+      }
+      try {
+        await http.post(`/course/create-new-course?userId=${id}`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        handleCancel();
+        refetchList();
+        setTimeout(() => {
+          toast.success("Create Course successful");
+        });
+      } catch (err) {
+        setTimeout(() => {
+          toast.error("Create Course fail");
+        });
+      }
+      form.resetFields();
     }
-    try {
-      await http.post(`/course/create-new-course?userId=${id}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      handleCancel();
-      refetchList();
-      setTimeout(() => {
-        toast.success("Create Course successful");
-      });
-    } catch (err) {
-      setTimeout(() => {
-        toast.error("Create Course fail");
-      });
-    }
-    form.resetFields();
   };
 
   //upload image course
@@ -190,7 +197,7 @@ const InstructorCourse = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const responseData = await http.get("/category");
+        const responseData = await http.get("/major");
         setListCategory(responseData.data);
       } catch (err) {
         console.log(err);
@@ -209,7 +216,7 @@ const InstructorCourse = () => {
 
   // console.log("course,", course);
   // const [previousCate, setPreviousCate] = useState(course?.categoryId);
-  const [updateCate, setUpdateCate] = useState(course?.categoryId);
+  const [updateCate, setUpdateCate] = useState(course?.specializationId);
   // console.log("catebefore", course?.categoryId);
   // console.log("update", updateCate);
   const [updateImage, setUpdateImage] = useState(course?.imageUrl);
@@ -218,7 +225,7 @@ const InstructorCourse = () => {
   const showUpdateModal = (data: any) => {
     setUpdateModal(true);
     setCourse(data);
-    setUpdateCate(data.categoryId);
+    setUpdateCate(data.specializationId);
     setUpdateImage(data.imageUrl);
   };
 
@@ -239,7 +246,7 @@ const InstructorCourse = () => {
     formData.append("price", data.price || course?.price);
     // console.log("price", data.price);
     formData.append("lectureCount", data.lecture || course?.lectureCount);
-    formData.append("categoryId", selected.toString());
+    formData.append("specializationId", selected.toString());
     if (formDataImage !== undefined) {
       formData.append("courseImage", formDataImage);
     }
@@ -367,127 +374,137 @@ const InstructorCourse = () => {
             </Button>
           </div>
         </div>
-        {loading ? (
-          <div className="text-center text-5xl mt-5">
-            <Spin size="large" />
-          </div>
+        {listCourseInstructor.length === 0 ? (
+          <Empty />
         ) : (
-          <div className={`${InstructorCourseStyle.course_list_wrapper}`}>
-            {listCourseInstructor.map((item, index) => {
-              return (
-                <div key={index}>
-                  <div className={`${InstructorCourseStyle.course_item}`}>
-                    <div className="flex">
-                      <div>
-                        <button
-                          onClick={() => {
-                            handleClick(item);
-                          }}
-                        >
-                          <img src={item.imageUrl} alt="Image" />
-                        </button>
-                      </div>
-                      <div
-                        className={`${InstructorCourseStyle.course_item_title}`}
-                      >
-                        <h2>
-                          <button
-                            onClick={() => {
-                              handleClick(item);
-                            }}
+          <>
+            {loading ? (
+              <div className="text-center text-5xl mt-5">
+                <Spin size="large" />
+              </div>
+            ) : (
+              <div className={`${InstructorCourseStyle.course_list_wrapper}`}>
+                {listCourseInstructor.map((item, index) => {
+                  return (
+                    <div key={index}>
+                      <div className={`${InstructorCourseStyle.course_item}`}>
+                        <div className="flex">
+                          <div>
+                            <button
+                              onClick={() => {
+                                handleClick(item);
+                              }}
+                            >
+                              <img src={item.imageUrl} alt="Image" />
+                            </button>
+                          </div>
+                          <div
+                            className={`${InstructorCourseStyle.course_item_title}`}
                           >
-                            {item.name}
-                          </button>
-                        </h2>
-                      </div>
-                    </div>
-                    <div className={`${InstructorCourseStyle.course_tracker}`}>
-                      <div
-                        className={`${InstructorCourseStyle.course_tracker_1}`}
-                      >
-                        <p>Status</p>
-                        <span
-                          className={`${InstructorCourseStyle.course_tracker_count}`}
+                            <h2>
+                              <button
+                                onClick={() => {
+                                  handleClick(item);
+                                }}
+                              >
+                                {item.name}
+                              </button>
+                            </h2>
+                          </div>
+                        </div>
+                        <div
+                          className={`${InstructorCourseStyle.course_tracker}`}
                         >
-                          <span>{displayActive(item.status)}</span>
-                        </span>
-                      </div>
-                      <div
-                        className={`${InstructorCourseStyle.course_tracker_2}`}
-                      >
-                        <p>Enrollments</p>
-                        <span
-                          className={`${InstructorCourseStyle.course_tracker_count}`}
-                        >
-                          {item.totalEnrollment}
-                        </span>
-                      </div>
-                      <div
-                        className={`${InstructorCourseStyle.course_tracker_3}`}
-                      >
-                        <p>Course Rating</p>
-                        <span
-                          className={`${InstructorCourseStyle.course_tracker_count}`}
-                        >
-                          {item.averageRating}
-                          {/* <ReactStars count={1} color2={"#ffd700"}></ReactStars> */}
-                          <span>
-                            <Rating
-                              size="small"
-                              name="half-rating-read"
-                              precision={0.1}
-                              readOnly
-                              value={item.averageRating}
-                            />
-                          </span>
-                        </span>
-                      </div>
-                      <div
-                        className={`${InstructorCourseStyle.course_tracker_4}`}
-                      >
-                        <p className="flex justify-center">Action </p>
-                        <span className="flex  gap-2">
-                          <Button
-                            // type="primary"
-                            style={{ color: "black", backgroundColor: "" }}
-                            onClick={() => {
-                              showUpdateModal(item);
-                              // console.log("t nè", user);
-                            }}
+                          <div
+                            className={`${InstructorCourseStyle.course_tracker_1}`}
                           >
-                            Update
-                          </Button>
-                          <Button
-                            danger
-                            type="primary"
-                            style={{ color: "black" }}
-                            onClick={() => handleClickOpen(item)}
+                            <p>Status</p>
+                            <span
+                              className={`${InstructorCourseStyle.course_tracker_count}`}
+                            >
+                              <span>{displayActive(item.status)}</span>
+                            </span>
+                          </div>
+                          <div
+                            className={`${InstructorCourseStyle.course_tracker_2}`}
                           >
-                            Delete
-                          </Button>
-                        </span>
-                      </div>
-                      {/* <div>
+                            <p>Enrollments</p>
+                            <span
+                              className={`${InstructorCourseStyle.course_tracker_count}`}
+                            >
+                              {item.totalEnrollment}
+                            </span>
+                          </div>
+                          <div
+                            className={`${InstructorCourseStyle.course_tracker_3}`}
+                          >
+                            <p>Course Rating</p>
+                            <span
+                              className={`${InstructorCourseStyle.course_tracker_count}`}
+                            >
+                              {item.averageRating}
+                              {/* <ReactStars count={1} color2={"#ffd700"}></ReactStars> */}
+                              <span>
+                                <Rating
+                                  size="small"
+                                  name="half-rating-read"
+                                  precision={0.1}
+                                  readOnly
+                                  value={item.averageRating}
+                                />
+                              </span>
+                            </span>
+                          </div>
+                          <div
+                            className={`${InstructorCourseStyle.course_tracker_4}`}
+                          >
+                            <p className="flex justify-center">Action </p>
+                            <span className="flex  gap-2">
+                              <Button
+                                // type="primary"
+                                style={{ color: "black", backgroundColor: "" }}
+                                onClick={() => {
+                                  showUpdateModal(item);
+                                  // console.log("t nè", user);
+                                }}
+                              >
+                                Update
+                              </Button>
+                              <Button
+                                danger
+                                type="primary"
+                                style={{ color: "black" }}
+                                onClick={() => handleClickOpen(item)}
+                              >
+                                Delete
+                              </Button>
+                            </span>
+                          </div>
+                          {/* <div>
                       <p>Status</p>
                       <span>{displayActive(item.status)}</span>
                     </div> */}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              );
-            })}
-            <Paginate
-              totalPages={totalPages}
-              currentPage={currentPage}
-              setCurrentPage={setCurrentPage}
-            />
-          </div>
+                  );
+                })}
+                <Paginate
+                  totalPages={totalPages}
+                  currentPage={currentPage}
+                  setCurrentPage={setCurrentPage}
+                />
+              </div>
+            )}
+          </>
         )}
       </div>
       <Modal
         destroyOnClose={true}
         title="Create New Course Form"
         open={isModal}
+        // style={{ width: 800 }}
+        width="35%"
         // onOk={handleOk}
         onCancel={handleCancel}
         footer={false}
@@ -495,20 +512,20 @@ const InstructorCourse = () => {
         <Form
           autoComplete="off"
           form={form}
-          labelCol={{ span: 4 }}
-          wrapperCol={{ span: 14 }}
+          labelCol={{ span: 6 }}
+          wrapperCol={{ span: 18 }}
           layout="horizontal"
           className="mt-5"
-          style={{ width: 600 }}
+          style={{ width: "100%" }}
           onFinish={handleSubmit}
         >
-          <div style={{ display: "flex" }} className="flex px-[130px]">
-            <Image width={200} height={200} src={image} />
+          <div style={{ display: "flex" }} className="flex">
+            <Image width="100%" height={300} src={image} />
 
             {/* <video width={300} height={200} src={image} controls /> */}
           </div>
           <div
-            className="flex px-[190px] pt-2 pb-2"
+            className="flex flex-col items-center pt-2 pb-2"
             style={{ display: "flex" }}
           >
             <Upload
@@ -521,6 +538,7 @@ const InstructorCourse = () => {
               // action="https://learnconnectapitest.azurewebsites.net/api/Upload/video"
             >
               <Button>Upload</Button>
+              <span>{errorMassage}</span>
             </Upload>
           </div>
           <Form.Item
@@ -577,7 +595,7 @@ const InstructorCourse = () => {
                 message: "Please Input Price",
               },
             ]}
-            label="Price"
+            label="Price(VND):"
             name="price"
           >
             <InputNumber style={{ width: 200 }} min={0} controls={false} />
@@ -597,7 +615,7 @@ const InstructorCourse = () => {
           <Form.Item label="Description" name="description">
             <Input.TextArea rows={4} />
           </Form.Item>
-          <Space className="justify-end w-full pr-[150px]">
+          <Space className="justify-end w-full">
             <Form.Item className="mb-0">
               <Space>
                 <Button onClick={handleCancel}>Cancel</Button>
@@ -621,27 +639,28 @@ const InstructorCourse = () => {
         // onOk={handleOk}
         onCancel={handleCancel}
         footer={false}
+        width="35%"
       >
         <Form
           autoComplete="off"
           form={form}
-          labelCol={{ span: 4 }}
-          wrapperCol={{ span: 14 }}
+          labelCol={{ span: 6 }}
+          wrapperCol={{ span: 18 }}
           layout="horizontal"
           className="mt-5"
-          style={{ width: 600 }}
+          style={{ width: "100%" }}
           onFinish={handleUpdate}
         >
-          <div style={{ display: "flex" }} className="flex px-[130px]">
+          <div style={{ display: "flex" }} className="flex ">
             <Image
-              width={200}
-              height={200}
+              width="100%"
+              height={300}
               src={updateImage}
               // defaultValue={course?.imageUrl}
             />
           </div>
           <div
-            className="flex px-[190px] pt-2 pb-2"
+            className="flex justify-center items-center pt-2 pb-2"
             style={{ display: "flex" }}
           >
             <Upload
@@ -695,7 +714,7 @@ const InstructorCourse = () => {
               defaultValue={course?.lectureCount}
             />
           </Form.Item>
-          <Form.Item label="Price" name="price">
+          <Form.Item label="Price(VND):" name="price">
             <InputNumber
               style={{ width: 200 }}
               min={0}
@@ -709,7 +728,7 @@ const InstructorCourse = () => {
           <Form.Item label="Description" name="description">
             <Input.TextArea rows={4} defaultValue={course?.description} />
           </Form.Item>
-          <Space className="justify-end w-full pr-[150px]">
+          <Space className="justify-end w-full">
             <Form.Item className="mb-0">
               <Space>
                 <Button onClick={handleCancel}>Cancel</Button>

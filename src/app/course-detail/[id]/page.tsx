@@ -22,6 +22,7 @@ export type Rating = {
   timeStamp: string;
   status: number;
   userId: number;
+  ratingBy: number;
   courseId: number;
   mentorId: number;
 };
@@ -444,9 +445,13 @@ export default function CourseDetailPage({ params }: any) {
                                         />
                                       </div>
                                     </div>
-                                    <p className="mt-3 font-semibold text-[#52565b] ">
-                                      {item.ratingCourseInfo.comment}
-                                    </p>
+                                    {item.ratingCourseInfo.comment == "null" ? (
+                                      <></>
+                                    ) : (
+                                      <p className="mt-3 font-semibold text-[#52565b] ">
+                                        {item.ratingCourseInfo.comment}
+                                      </p>
+                                    )}
                                   </div>
                                 </>
                               );
@@ -542,8 +547,8 @@ export default function CourseDetailPage({ params }: any) {
                           payment(
                             idUser,
                             idCourse,
-                            "https://learn-connect-next-js-git-thuan-thuanleuwu.vercel.app/after-payment"
-                            // "http://localhost:3000/after-payment"
+                            // "https://learn-connect-next-js-git-thuan-thuanleuwu.vercel.app/after-payment"
+                            "http://localhost:3000/after-payment"
                           );
                           // console.log("Enrollment confirmed");
                           setIsModalVisible(false);

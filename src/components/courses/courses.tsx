@@ -38,6 +38,7 @@ export type Course = {
   createDate: string;
   specializationName: string;
   favorite: boolean;
+  specializationId: number;
 };
 
 export type Lectures = {

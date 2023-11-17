@@ -129,7 +129,7 @@ const Revenue = () => {
               <div>Day</div>
             </div>{" "}
           </div>
-          <div className="mt-5 rounded-[10px] p-5 border-solid flex">
+          <div className="mt-5 rounded-[10px] p-5 border-solid flex flex-col">
             <div>ádsad</div>
             <div>ádsad</div>
             <div>ádsad</div>
