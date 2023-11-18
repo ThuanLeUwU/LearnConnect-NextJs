@@ -49,16 +49,7 @@ const RegisInstructor = () => {
                     onClick={() => {
                       Modal.confirm({
                         title: "Create New Course",
-                        content: (
-                          <RegisterForm
-                            visible={visible}
-                            setVisible={setVisible}
-                            onCancel={() => {
-                              setVisible(false);
-                            }}
-                            isEdit={false}
-                          />
-                        ),
+                        content: <RegisterForm />,
                       });
                     }}
                   >
