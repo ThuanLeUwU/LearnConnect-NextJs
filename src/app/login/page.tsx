@@ -52,7 +52,8 @@ export default function LoginPage() {
     }
   };
 
-  const handleSignInEmailPassword = async () => {
+  const handleSignInEmailPassword = async (e) => {
+    e.preventDefault();
     if (!email) {
       setErrorMessage("Please Input Email");
     } else if (!password) {
@@ -80,6 +81,10 @@ export default function LoginPage() {
       }
     }
   };
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    handleSignInEmailPassword(e);
+  };
   return (
     <UnProtectWrapper>
       <div className={styles["main-wrapper"]}>
@@ -95,7 +100,7 @@ export default function LoginPage() {
                     Login <span className="text-[#309255]">Now</span>
                   </h3>
                   <div className="pt-8">
-                    <form>
+                    <form onSubmit={handleFormSubmit}>
                       <div className={styles["single-form"]}>
                         <input
                           required
@@ -117,20 +122,19 @@ export default function LoginPage() {
                         {errorMessage}
                       </div>
                       <div className={styles["single-form"]}>
-                        <a
+                        <button
                           className="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded-2xl py-4 px-3 leading-normal no-underline bg-[#309255] text-white hover:bg-black btn-hover-dark w-full transition-all duration-300 ease-in-out delay-0 my-2"
                           onClick={handleSignInEmailPassword}
+                          type="submit"
                         >
                           Login
-                        </a>
-
-                        <a
+                        </button>
+                        <button
                           className="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded-2xl py-4 px-3 leading-normal no-underline bg-white text-[#309255] hover:bg-[#309255] btn-outline w-full border-[#a9f9c8] hover:text-white transition-all duration-300 ease-in-out delay-0 my-2"
-                          href="#"
                           onClick={handleSignIn}
                         >
                           Login with Google
-                        </a>
+                        </button>
                       </div>
                     </form>
                   </div>
