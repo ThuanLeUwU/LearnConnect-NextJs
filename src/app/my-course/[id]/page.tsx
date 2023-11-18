@@ -6,6 +6,10 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { Course, Lectures } from "@/components/courses/courses";
 import Image from "next/image";
+// import { Worker, Viewer } from "@react-pdf-viewer/";
+// import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
+// import "@react-pdf-viewer/core/lib/styles/index.css";
+// import "@react-pdf-viewer/default-layout/lib/styles/index.css";
 
 // import { Button } from "react-bootstrap";
 import {
@@ -161,6 +165,7 @@ export default function AfterEnroll({ params }: any) {
     return e?.fileList;
   };
 
+  // const newplugin = defaultLayoutPlugin();
   // const uploadImage = () => {
   //   const fetchImg= async () => {
   //     const res = await axios.post(`https://learnconnectapitest.azurewebsites.net/api/image`)
@@ -185,6 +190,11 @@ export default function AfterEnroll({ params }: any) {
       setActiveVideoIndex(0);
     }
   }, []);
+
+  const [pdf, setPDF] = useState<number>();
+
+  const newplugin = defaultLayoutPlugin();
+
   const [videoSrc, setVideoSrc] = useState("");
   const changeVideoSource = (newSrc: string, index: number) => {
     setVideoSrc(newSrc);
@@ -310,18 +320,32 @@ export default function AfterEnroll({ params }: any) {
             />
           )}
           {videoSrc && (
-            <video
-              width="full"
-              height="full"
-              controls
-              id="courseVideo"
-              ref={videoRef}
-              onSeeked={handleOnSeek}
-              onTimeUpdate={handleOnTimeUpdate}
-              onProgress={handleOnProgress}
-            >
-              <source src={videoSrc} type="video/mp4" />
-            </video>
+            <>
+              {/* {pdf === 1 ? ( */}
+              <video
+                width="full"
+                height="full"
+                controls
+                id="courseVideo"
+                ref={videoRef}
+                onSeeked={handleOnSeek}
+                onTimeUpdate={handleOnTimeUpdate}
+                onProgress={handleOnProgress}
+              >
+                <source src={videoSrc} type="video/mp4" />
+              </video>
+              {/* // ) : ( */}
+              {/* // <></> */}
+              {/* // <div style={{ width: "100%", height: "100vh" }}> */}
+              {/* //   <Worker */}
+              {/* //     workerUrl={`https://unpkg.com/pdfjs-dist@/build/pdf.worker.min.js`} */}
+              {/* //   > */}
+              {/* //     <Viewer fileUrl={videoSrc} plugins={[newplugin]} /> */}
+              {/* //   </Worker> */}
+              {/* // </div> */}
+              {/* ) */}
+              {/* } */}
+            </>
           )}
           <div>
             <div className="">
@@ -661,7 +685,10 @@ export default function AfterEnroll({ params }: any) {
                           ? "active text-[#309255]"
                           : ""
                       }`}
-                      onClick={() => changeVideoSource(item.contentUrl, index)}
+                      onClick={() => {
+                        changeVideoSource(item.contentUrl, index);
+                        setPDF(item.contentType);
+                      }}
                     >
                       <div className="py-2 pl-[30px] flex flex-row gap-3">
                         <p className="flex-none h-[50px]">

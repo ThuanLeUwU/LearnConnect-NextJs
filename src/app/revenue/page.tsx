@@ -2,12 +2,13 @@
 import React, { useEffect, useState } from "react";
 import ReactStars from "react-stars";
 import { Button } from "react-bootstrap";
-import { Modal, Select, Space, Spin } from "antd";
+import { Avatar, Modal, Select, Space, Spin, Table } from "antd";
 import InstructorCourseStyle from "./styles/style.module.scss";
 import Link from "next/link";
 import { Rating } from "@mui/material";
 import { http } from "@/api/http";
 import { UserAuth } from "../context/AuthContext";
+import moment from "moment";
 import {
   Chart as ChartJs,
   BarElement,
@@ -43,6 +44,11 @@ export type Revenue = {
   courseName: string;
   totalEnroll: number;
   totalRevenueCourse: number;
+  usersEnroll: any;
+  userId: number;
+  userName: string;
+  userImage: string;
+  enrollmentDate: string;
 };
 
 const Revenue = () => {
@@ -166,8 +172,26 @@ const Revenue = () => {
 
   const [loading, setLoading] = useState(false);
 
-  const [date, setDate] = useState("Date");
-  console.log("homnay", listDate);
+  const [date, setDate] = useState<string | null>(null);
+  console.log("homnay", date);
+
+  useEffect(() => {
+    if (Array.isArray(listDate) && listDate.length > 0) {
+      setDate(listDate[listDate.length - 1].date);
+      console.log("homnay1", listDate[listDate.length - 1].date);
+      http
+        .get(
+          `https://learnconnectapitest.azurewebsites.net/api/payment-transaction/revenue-mentor?mentorUserId=${id}&filterDate=${new Date(
+            listDate[listDate.length - 1].date
+          )
+            .toISOString()
+            .slice(0, 10)}`
+        )
+        .then((res) => {
+          setEachCourse(res.data[0].revenueCourse);
+        });
+    }
+  }, [listDate, id]);
   // const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { Option } = Select;
 
@@ -177,7 +201,7 @@ const Revenue = () => {
 
   const [eachCourse, setEachCourse] = useState<Revenue[]>([]);
 
-  console.log(" tao nè", revenueEachCourse);
+  // console.log(" tao nè", revenueEachCourse);
   console.log(" tao  nuawx nnè", eachCourse);
 
   const handleFilterClick = (selectedDate) => {
@@ -198,10 +222,40 @@ const Revenue = () => {
         console.error("data fetch fail", err);
       });
   };
-  const handleChange = (value) => {
+
+  const [isModal, setIsModal] = useState(false);
+  const [enrollList, setEnrollList] = useState<Revenue[]>([]);
+
+  const detailsEnroll = (value) => {
     // Đặt logic xử lý cho việc lọc dữ liệu theo ngày ở đây
     console.log(`Filter by: ${value}`);
+    setIsModal(true);
+    setEnrollList(value);
   };
+
+  const handleCancel = () => {
+    setIsModal(false);
+  };
+
+  const columns = [
+    {
+      title: "Avatar",
+      dataIndex: "userImage",
+      key: "userImage",
+      render: (userImage) => <Avatar src={userImage} />,
+    },
+    {
+      title: "Name",
+      dataIndex: "userName",
+      key: "userName",
+    },
+    {
+      title: "Time",
+      dataIndex: "enrollmentDate",
+      key: "enrollmentDate",
+      render: (enrollmentDate) => moment(enrollmentDate).format("HH:mm:ss"),
+    },
+  ];
 
   return (
     <div className={`${InstructorCourseStyle.content_wrapper}`}>
@@ -247,18 +301,22 @@ const Revenue = () => {
               <div className="w-[100px]">Revenue</div>
               <div>Enrollment</div>
               {/* </div> */}
-              <Select
-                defaultValue={date}
-                onChange={handleFilterClick}
-                style={{ width: 120 }}
-              >
-                {listDate.map((option, index) => (
-                  // <div key={index}>hahaha {option.date}</div>
-                  <Option key={option.date} value={option.date}>
-                    {new Date(option.date).toISOString().slice(0, 10)}
-                  </Option>
-                ))}
-              </Select>
+              {date ? (
+                <Select
+                  defaultValue={date}
+                  onChange={handleFilterClick}
+                  style={{ width: 120 }}
+                >
+                  {listDate.map((option, index) => (
+                    // <div key={index}>hahaha {option.date}</div>
+                    <Option key={option.date} value={option.date}>
+                      {new Date(option.date).toISOString().slice(0, 10)}
+                    </Option>
+                  ))}
+                </Select>
+              ) : (
+                <></>
+              )}
             </div>{" "}
           </div>
           <div className=" flex flex-col">
@@ -268,7 +326,10 @@ const Revenue = () => {
                   <div className="w-[300px]">{item.courseName}</div>
                   <div className="w-[100px]">{item.totalRevenueCourse}</div>
                   <div className="">{item.totalEnroll}</div>
-                  <button className="rounded-[10px] border-solid border-2 p-2">
+                  <button
+                    className="rounded-[10px] border-solid border-2 p-2"
+                    onClick={() => detailsEnroll(item.usersEnroll)}
+                  >
                     View Details
                   </button>
                 </div>
@@ -277,6 +338,17 @@ const Revenue = () => {
           </div>
         </div>
       </div>
+      <Modal
+        title="List Enrollment"
+        open={isModal}
+        // style={{ width: 800 }}
+        // width="35%"
+        // onOk={handleOk}
+        onCancel={handleCancel}
+        footer={false}
+      >
+        <Table columns={columns} dataSource={enrollList} />
+      </Modal>
     </div>
   );
 };

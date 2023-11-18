@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import jwt from "jsonwebtoken";
 import UnProtectWrapper from "@/components/wrapper/UnProtecWrapper";
+import { http } from "@/api/http";
 
 export default function LoginPage() {
   const { user, jwtToken, googleSignIn, logOut, setUserLogin } = UserAuth();
@@ -33,7 +34,7 @@ export default function LoginPage() {
 
   const loginByEmail = async (email, password) => {
     try {
-      const response = await axios.post(
+      const response = await http.post(
         "https://learnconnectapitest.azurewebsites.net/api/user/login-by-email",
         { email: email, password: password },
         {
