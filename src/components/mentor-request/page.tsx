@@ -246,7 +246,7 @@ const MentorRequest = () => {
 
   return (
     <>
-      <div className="min-h-[1000px]">
+      <div className="min-h-[1000px] w-full">
         <Box
           component="main"
           sx={{
@@ -284,8 +284,9 @@ const MentorRequest = () => {
                             onClick={() =>
                               handleRequestSort("verificationDate")
                             }
+                            className="w-[110px]"
                           >
-                            CreateDate
+                            Create Date
                           </TableSortLabel>
                         </TableCell>
                         <TableCell>Name</TableCell>

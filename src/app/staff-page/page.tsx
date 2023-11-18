@@ -28,7 +28,7 @@ const StaffPage = () => {
   const [selectedComponent, setSelectedComponent] = useState("MentorRequest");
 
   return (
-    <div className="flex">
+    <div className="flex w-full">
       <LeftNavbar
         page1={"#"}
         page2={"/staff-page/staff-rating"}

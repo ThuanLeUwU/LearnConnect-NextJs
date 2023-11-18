@@ -1,4 +1,5 @@
 import LeftNavbar from "@/components/left-navbar/page";
+import StaffRatingTable from "@/components/staff-rating-table/page";
 
 const StaffRating = () => {
   return (
@@ -9,7 +10,7 @@ const StaffRating = () => {
         page3={"/staff-page/staff-report"}
         page4={"#"}
       />
-      <p>Staff Rating</p>
+      <StaffRatingTable />
     </div>
   );
 };
