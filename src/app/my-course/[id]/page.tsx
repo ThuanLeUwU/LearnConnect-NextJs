@@ -193,7 +193,7 @@ export default function AfterEnroll({ params }: any) {
 
   const [pdf, setPDF] = useState<number>();
 
-  const newplugin = defaultLayoutPlugin();
+  // const newplugin = defaultLayoutPlugin();
 
   const [videoSrc, setVideoSrc] = useState("");
   const changeVideoSource = (newSrc: string, index: number) => {
