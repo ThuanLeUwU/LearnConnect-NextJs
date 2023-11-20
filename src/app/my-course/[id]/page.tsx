@@ -6,11 +6,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { Course, Lectures } from "@/components/courses/courses";
 import Image from "next/image";
-// import { Worker, Viewer } from "@react-pdf-viewer/";
-// import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
-// import "@react-pdf-viewer/core/lib/styles/index.css";
-// import "@react-pdf-viewer/default-layout/lib/styles/index.css";
-
+import { Worker, Viewer } from "@react-pdf-viewer/core";
 // import { Button } from "react-bootstrap";
 import {
   Button,
@@ -28,6 +24,7 @@ import { UserAuth } from "@/app/context/AuthContext";
 import { toast } from "sonner";
 import { http } from "@/api/http";
 import { maxTime } from "date-fns";
+import { Document, Page } from "react-pdf/dist/esm/entry.webpack";
 
 export type Lecture = {
   id: string | number;
@@ -192,6 +189,12 @@ export default function AfterEnroll({ params }: any) {
   }, []);
 
   const [pdf, setPDF] = useState<number>();
+  const [numPages, setNumPages] = useState(null);
+  const [pageNumber, setPageNumber] = useState(1);
+
+  const onDocumentLoadSuccess = (numPages) => {
+    setNumPages(numPages);
+  };
 
   // const newplugin = defaultLayoutPlugin();
 
@@ -321,30 +324,29 @@ export default function AfterEnroll({ params }: any) {
           )}
           {videoSrc && (
             <>
-              {/* {pdf === 1 ? ( */}
-              <video
-                width="full"
-                height="full"
-                controls
-                id="courseVideo"
-                ref={videoRef}
-                onSeeked={handleOnSeek}
-                onTimeUpdate={handleOnTimeUpdate}
-                onProgress={handleOnProgress}
-              >
-                <source src={videoSrc} type="video/mp4" />
-              </video>
-              {/* // ) : ( */}
-              {/* // <></> */}
-              {/* // <div style={{ width: "100%", height: "100vh" }}> */}
-              {/* //   <Worker */}
-              {/* //     workerUrl={`https://unpkg.com/pdfjs-dist@/build/pdf.worker.min.js`} */}
-              {/* //   > */}
-              {/* //     <Viewer fileUrl={videoSrc} plugins={[newplugin]} /> */}
-              {/* //   </Worker> */}
-              {/* // </div> */}
-              {/* ) */}
-              {/* } */}
+              {pdf === 99 ? (
+                <video
+                  width="full"
+                  height="full"
+                  controls
+                  id="courseVideo"
+                  ref={videoRef}
+                  onSeeked={handleOnSeek}
+                  onTimeUpdate={handleOnTimeUpdate}
+                  onProgress={handleOnProgress}
+                >
+                  <source src={videoSrc} type="video/mp4" />
+                </video>
+              ) : (
+                <>
+                  <Document
+                    file="https://firebasestorage.googleapis.com/v0/b/learnconnect-6f324.appspot.com/o/videos%2Fbo-cau-hoi.pdf?alt=media&token=adb72de1-029d-4b56-99d2-8de5abafee65"
+                    onLoadSuccess={onDocumentLoadSuccess}
+                  >
+                    <Page pageNumber={pageNumber} />
+                  </Document>
+                </>
+              )}
             </>
           )}
           <div>
