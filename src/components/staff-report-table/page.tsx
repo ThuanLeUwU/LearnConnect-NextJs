@@ -4,6 +4,9 @@ import { http } from "@/api/http";
 import { Rating } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import axios from "axios";
+import { UserAuth } from "@/app/context/AuthContext";
+import Modal from "@mui/material/Modal";
 
 export type Report = {
   reportInfo: any;
@@ -23,6 +26,8 @@ export type Report = {
 };
 
 const StaffReportTable = () => {
+  const { jwtToken } = UserAuth();
+  axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("tab1");
   const [selectedType, setSelectedType] = useState("all");
@@ -31,16 +36,53 @@ const StaffReportTable = () => {
     setSelectedType(type);
   };
   const [report, setReport] = useState<Report[]>([]);
+  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
+  const [selectedRatingId, setSelectedRatingId] = useState(null);
+
+  const fetchData = async () => {
+    let token;
+    if (typeof window !== "undefined") {
+      token = localStorage.getItem("token");
+      try {
+        const responseData = await http.get(
+          `https://learnconnectapitest.azurewebsites.net/api/report/allListReports?reportType=${selectedType}`
+        );
+        setReport(responseData?.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      const responseData = await http.get(
-        `https://learnconnectapitest.azurewebsites.net/api/report/allListReports?reportType=${selectedType}`
-      );
-      setReport(responseData?.data);
-    };
     fetchData();
   }, [selectedType]);
+
+  const handleRatingStatusUpdate = async (id, status) => {
+    try {
+      await axios.put(
+        `https://learnconnectapitest.azurewebsites.net/api/mentor/update-mentor-status?id=${id}&status=${status}`
+      );
+      fetchData();
+    } catch (error) {
+      console.error("Error updating rating status:", error);
+    }
+  };
+
+  const handleBanConfirmation = async (confirmed) => {
+    setIsConfirmationModalOpen(false);
+
+    if (confirmed) {
+      try {
+        await axios.put(
+          `https://learnconnectapitest.azurewebsites.net/api/rating/update-rating-status?id=${selectedRatingId}&status=0`
+        );
+        fetchData();
+      } catch (error) {
+        console.error("Error updating rating status:", error);
+      }
+    }
+  };
 
   return (
     <div className="w-full">
@@ -130,6 +172,35 @@ const StaffReportTable = () => {
                                       </div>
                                     </div>
                                   </div>
+                                  <div className="flex justify-center h-[48px]">
+                                    <div className="flex justify-center">
+                                      {item.reportInfo.status === 0 ? (
+                                        <button
+                                          onClick={() =>
+                                            handleRatingStatusUpdate(
+                                              item.reportInfo.id,
+                                              1
+                                            )
+                                          }
+                                          className="px-5 py-3 mx-2 bg-[#309255] w-[100px] text-white rounded-lg"
+                                        >
+                                          UnBan
+                                        </button>
+                                      ) : (
+                                        <button
+                                          onClick={() => {
+                                            setSelectedRatingId(
+                                              item.reportInfo.id
+                                            );
+                                            setIsConfirmationModalOpen(true);
+                                          }}
+                                          className="px-5 py-3 mx-2 bg-red-500 w-[100px] text-white rounded-lg"
+                                        >
+                                          Ban
+                                        </button>
+                                      )}
+                                    </div>
+                                  </div>
                                 </div>
                                 {item.reportInfo.description == "null" ? (
                                   <></>
@@ -191,6 +262,35 @@ const StaffReportTable = () => {
                                       <div className=" font-normal text-lg">
                                         {item.reportInfo.reportType}
                                       </div>
+                                    </div>
+                                  </div>
+                                  <div className="flex justify-center h-[48px]">
+                                    <div className="flex justify-center">
+                                      {item.reportInfo.status === 0 ? (
+                                        <button
+                                          onClick={() =>
+                                            handleRatingStatusUpdate(
+                                              item.reportInfo.id,
+                                              1
+                                            )
+                                          }
+                                          className="px-5 py-3 mx-2 bg-[#309255] w-[100px] text-white rounded-lg"
+                                        >
+                                          UnBan
+                                        </button>
+                                      ) : (
+                                        <button
+                                          onClick={() => {
+                                            setSelectedRatingId(
+                                              item.reportInfo.id
+                                            );
+                                            setIsConfirmationModalOpen(true);
+                                          }}
+                                          className="px-5 py-3 mx-2 bg-red-500 w-[100px] text-white rounded-lg"
+                                        >
+                                          Ban
+                                        </button>
+                                      )}
                                     </div>
                                   </div>
                                 </div>
@@ -256,6 +356,35 @@ const StaffReportTable = () => {
                                       </div>
                                     </div>
                                   </div>
+                                  <div className="flex justify-center h-[48px]">
+                                    <div className="flex justify-center">
+                                      {item.reportInfo.status === 0 ? (
+                                        <button
+                                          onClick={() =>
+                                            handleRatingStatusUpdate(
+                                              item.reportInfo.id,
+                                              1
+                                            )
+                                          }
+                                          className="px-5 py-3 mx-2 bg-[#309255] w-[100px] text-white rounded-lg"
+                                        >
+                                          UnBan
+                                        </button>
+                                      ) : (
+                                        <button
+                                          onClick={() => {
+                                            setSelectedRatingId(
+                                              item.reportInfo.id
+                                            );
+                                            setIsConfirmationModalOpen(true);
+                                          }}
+                                          className="px-5 py-3 mx-2 bg-red-500 w-[100px] text-white rounded-lg"
+                                        >
+                                          Ban
+                                        </button>
+                                      )}
+                                    </div>
+                                  </div>
                                 </div>
                                 {item.reportInfo.description == "null" ? (
                                   <></>
@@ -277,6 +406,32 @@ const StaffReportTable = () => {
           </div>
         </div>
       </div>
+      <Modal
+        open={isConfirmationModalOpen}
+        onClose={() => setIsConfirmationModalOpen(false)}
+      >
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="bg-white p-8 max-w-md w-full rounded-lg shadow-md">
+            <h2 className="text-2xl font-semibold mb-4">
+              Are you sure you want to ban this user?
+            </h2>
+            <div className="flex justify-between">
+              <button
+                onClick={() => handleBanConfirmation(true)}
+                className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2"
+              >
+                Confirm
+              </button>
+              <button
+                onClick={() => handleBanConfirmation(false)}
+                className="bg-gray-400 text-white px-4 py-2 rounded-md"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };

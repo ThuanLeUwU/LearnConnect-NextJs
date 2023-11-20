@@ -45,7 +45,6 @@ const StaffRatingTable = () => {
         const responseData = await http.get(
           `https://learnconnectapitest.azurewebsites.net/api/rating/allListRatings?ratingType=${selectedType}`
         );
-        console.log("alo1");
         setRating(responseData?.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -124,7 +123,7 @@ const StaffRatingTable = () => {
 
           <div className="tab-content">
             {activeTab === "tab1" && (
-              <div className="tab-reviews">
+              <div className="tab-reviews pb-3">
                 <div className="reviews-wrapper reviews-active">
                   <div className="swiper-container">
                     <div className="swiper-wrapper">
@@ -225,7 +224,7 @@ const StaffRatingTable = () => {
               </div>
             )}
             {activeTab === "tab2" && (
-              <div className="tab-reviews">
+              <div className="tab-reviews ">
                 <div className="reviews-wrapper reviews-active">
                   <div className="swiper-container">
                     <div className="swiper-wrapper">
@@ -290,12 +289,12 @@ const StaffRatingTable = () => {
                                         </button>
                                       ) : (
                                         <button
-                                          onClick={() =>
-                                            handleRatingStatusUpdate(
-                                              item.ratingInfo.id,
-                                              0
-                                            )
-                                          }
+                                          onClick={() => {
+                                            setSelectedRatingId(
+                                              item.ratingInfo.id
+                                            );
+                                            setIsConfirmationModalOpen(true);
+                                          }}
                                           className="px-5 py-3 mx-2 bg-red-500 w-[100px] text-white rounded-lg"
                                         >
                                           Ban
@@ -322,7 +321,7 @@ const StaffRatingTable = () => {
               </div>
             )}
             {activeTab === "tab3" && (
-              <div className="tab-reviews">
+              <div className="tab-reviews pb-3 ">
                 <div className="reviews-wrapper reviews-active">
                   <div className="swiper-container">
                     <div className="swiper-wrapper">
@@ -387,12 +386,12 @@ const StaffRatingTable = () => {
                                         </button>
                                       ) : (
                                         <button
-                                          onClick={() =>
-                                            handleRatingStatusUpdate(
-                                              item.ratingInfo.id,
-                                              0
-                                            )
-                                          }
+                                          onClick={() => {
+                                            setSelectedRatingId(
+                                              item.ratingInfo.id
+                                            );
+                                            setIsConfirmationModalOpen(true);
+                                          }}
                                           className="px-5 py-3 mx-2 bg-red-500 w-[100px] text-white rounded-lg"
                                         >
                                           Ban
@@ -428,7 +427,7 @@ const StaffRatingTable = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <div className="bg-white p-8 max-w-md w-full rounded-lg shadow-md">
             <h2 className="text-2xl font-semibold mb-4">
-              Are you sure you want to ban this user?
+              Are you sure you want to Hidden this Comment?
             </h2>
             <div className="flex justify-between">
               <button
