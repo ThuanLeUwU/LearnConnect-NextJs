@@ -16,6 +16,7 @@ import axios from "axios";
 import { Select } from "antd";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import ".././app/./globals.css";
 
 export type User = {
   id: string | number;
@@ -47,9 +48,9 @@ interface IProps {
   // setSuccess: (e: boolean) => void;
 }
 
-export const RegisterForm = ({ onCancel, visible, isEdit }: IProps) => {
+export const RegisterForm = () => {
   const [show, setShow] = useState(false);
-  const { id, user } = UserAuth();
+  const { id, userData } = UserAuth();
   const [currentInfo, setCurrentInfo] = useState<User>();
 
   const [identifyImage, setIdentifyImage] = useState<string>();
@@ -225,147 +226,153 @@ export const RegisterForm = ({ onCancel, visible, isEdit }: IProps) => {
   }, []);
 
   return (
-    <Modal
-      className="w-2/3 min-h-[300px]"
-      title="Register Form"
-      destroyOnClose
-      open={visible}
-      onCancel={onCancel}
-      footer={false}
-    >
-      <Form
-        autoComplete="off"
-        form={form}
-        labelCol={{ span: 6 }}
-        wrapperCol={{ span: 15 }}
-        layout="horizontal"
-        className="mt-5"
-        onFinish={handleSubmit}
-      >
-        <Form.Item label="Name" name="disable">
-          {user?.displayName}
-        </Form.Item>
-        <Form.Item label="Email">{user?.email}</Form.Item>
-        <Form.Item
-          label="specialization"
-          name="specialization"
-          rules={[
-            { required: true, message: "Please select a specialization!" },
-          ]}
+    <div className="">
+      <div className="container border border-[#309255] my-3 rounded-lg mt-3">
+        <Form
+          autoComplete="off"
+          form={form}
+          labelCol={{ span: 4, offset: 3 }}
+          wrapperCol={{ span: 14 }}
+          layout="horizontal"
+          onFinish={handleSubmit}
+          className="mx-[30px] pt-3"
         >
-          <Select>
-            {specialization.map((specialization) => (
-              <Option key={specialization.id} value={specialization.id}>
-                {specialization.name}
-              </Option>
-            ))}
-          </Select>
-        </Form.Item>
-        <Form.Item
-          rules={[{ required: true, message: "Please input Description" }]}
-          label="Description"
-          name="description"
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          rules={[{ required: true, message: "Please input BankNumber" }]}
-          label="BankNumber"
-          name="BankNumber"
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          rules={[{ required: true, message: "Please input BankName" }]}
-          label="BankName"
-          name="BankName"
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          rules={[{ required: true, message: "Please input CardFront" }]}
-          label="CardFront"
-          name="CardFront"
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          rules={[{ required: true, message: "Please input CardFront" }]}
-          label="ID Card Font"
-          getValueFromEvent={normFile}
-        >
-          <Upload
-            accept="image/png, image/jpeg"
-            onChange={handleChange}
-            beforeUpload={beforeUpload}
-            action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
-            listType="picture-card"
+          <h3>personal information</h3>
+          <Form.Item
+            label="Full Name"
+            name="disable"
+            className=""
+            labelAlign="left"
           >
-            Upload
-          </Upload>
-        </Form.Item>
-        <Form.Item
-          rules={[{ required: true, message: "Please input CardBack" }]}
-          label="CardBack"
-          name="CardBack"
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          label="ID Card Back"
-          getValueFromEvent={normFile}
-          rules={[{ required: true, message: "Please input CardFront" }]}
-        >
-          <Upload
-            accept="image/png, image/jpeg"
-            onChange={handleChangeBackImg}
-            beforeUpload={beforeUpload}
-            action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
-            listType="picture-card"
-          >
-            Upload
-          </Upload>
-        </Form.Item>
-        <Form.Item
-          rules={[
-            { required: true, message: "Please input Description Document" },
-          ]}
-          label="DescriptionDocument"
-          name="DescriptionDocument"
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          label="ID Card Back"
-          name="CardBack"
-          getValueFromEvent={normFile}
-          rules={[{ required: true, message: "Please input CardFront" }]}
-        >
-          <Upload
-            accept="image/png, image/jpeg"
-            onChange={handleChangeDocumentData}
-            beforeUpload={beforeUpload}
-            action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
-            listType="picture-card"
-          >
-            Upload
-          </Upload>
-        </Form.Item>
-        <Space className="justify-end w-full">
-          <Form.Item className="mb-0">
-            <Space>
-              <Button onClick={handleClose}>Cancel</Button>
-              <Button
-                type="primary"
-                htmlType="submit"
-                style={{ color: "black" }}
-              >
-                Send
-              </Button>
-            </Space>
+            {userData?.fullName}
           </Form.Item>
-        </Space>
-      </Form>
-    </Modal>
+
+          <Form.Item label="Email" labelAlign="left">
+            {userData?.email}
+          </Form.Item>
+          <Form.Item
+            label="Specialization"
+            name="specialization"
+            rules={[
+              { required: true, message: "Please select a specialization!" },
+            ]}
+            className="text-start"
+            labelAlign="left"
+          >
+            <Select>
+              {specialization.map((specialization) => (
+                <Option key={specialization.id} value={specialization.id}>
+                  {specialization.name}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
+          <Form.Item
+            rules={[{ required: true, message: "Please input Description" }]}
+            label="Description"
+            name="description"
+            className=""
+            labelAlign="left"
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            rules={[{ required: true, message: "Please input Bank" }]}
+            label="Bank"
+            name="BankName"
+            labelAlign="left"
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            rules={[{ required: true, message: "Please input Card Number" }]}
+            label="Card Number"
+            name="BankNumber"
+            labelAlign="left"
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            rules={[{ required: true, message: "Please input CardFront" }]}
+            label="ID Number"
+            name="CardFront"
+            labelAlign="left"
+          >
+            <Input placeholder="Input Identity Number " />
+          </Form.Item>
+          <Form.Item
+            rules={[{ required: true, message: "Please input CardFront" }]}
+            label="ID Card Font"
+            getValueFromEvent={normFile}
+            labelAlign="left"
+          >
+            <Upload
+              accept="image/png, image/jpeg"
+              onChange={handleChange}
+              beforeUpload={beforeUpload}
+              action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
+              listType="picture-card"
+            >
+              Upload
+            </Upload>
+          </Form.Item>
+          <Form.Item
+            rules={[{ required: true, message: "Please input CardBack" }]}
+            label="CardBack"
+            name="CardBack"
+            labelAlign="left"
+          >
+            <Input placeholder="Particular trace or deformity" />
+          </Form.Item>
+          <Form.Item
+            label="ID Card Back"
+            getValueFromEvent={normFile}
+            rules={[{ required: true, message: "Please input CardFront" }]}
+            labelAlign="left"
+          >
+            <Upload
+              accept="image/png, image/jpeg"
+              onChange={handleChangeBackImg}
+              beforeUpload={beforeUpload}
+              action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
+              listType="picture-card"
+            >
+              Upload
+            </Upload>
+          </Form.Item>
+          <Form.Item
+            rules={[{ required: true, message: "Please input Document" }]}
+            label="Document"
+            name="DescriptionDocument"
+            labelAlign="left"
+          >
+            <Input placeholder="Input Degree, Diploma, Certificate, Qualification" />
+          </Form.Item>
+          <Form.Item
+            label="ID Card Back"
+            name="CardBack"
+            getValueFromEvent={normFile}
+            rules={[{ required: true, message: "Please input CardFront" }]}
+            labelAlign="left"
+          >
+            <Upload
+              accept="image/png, image/jpeg"
+              onChange={handleChangeDocumentData}
+              beforeUpload={beforeUpload}
+              action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
+              listType="picture-card"
+            >
+              Upload
+            </Upload>
+          </Form.Item>
+          <button
+            type="submit"
+            className="text-white text-lg w-full mb-3 mt-2 bg-[#309255] rounded-lg py-2"
+          >
+            Send
+          </button>
+        </Form>
+      </div>
+    </div>
   );
 };

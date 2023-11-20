@@ -74,6 +74,10 @@ const Header = () => {
     router.push(`/notifications`);
   };
 
+  const handleClickBecomeMentor = () => {
+    router.push(`/become-mentor`);
+  };
+
   const returnHome = () => {
     switch (role) {
       case UserRole.Student:
@@ -330,9 +334,9 @@ const Header = () => {
                   </div>
                   <div className={`${headerStyles.header_menu}`}>
                     <ul className={`${headerStyles.nav_menu}`}>
-                      {/* <li>
+                      <li>
                         <Link href="/">Home</Link>
-                      </li> */}
+                      </li>
                       <li>
                         <Link href="/courses">Courses</Link>
                       </li>
@@ -351,17 +355,17 @@ const Header = () => {
                     </ul>
                   </div>
                   <div className={`${headerStyles.regis_btn}`}>
-                    <Button onClick={() => setVisible(true)}>
+                    <Button onClick={handleClickBecomeMentor}>
                       Become a Mentor
                     </Button>
-                    <RegisterForm
+                    {/* <RegisterForm
                       visible={visible}
                       setVisible={setVisible}
                       onCancel={() => {
                         setVisible(false);
                       }}
                       isEdit={true}
-                    />
+                    /> */}
                   </div>
                 </div>
               ) : (

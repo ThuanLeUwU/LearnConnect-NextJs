@@ -232,7 +232,11 @@ const Courses = ({
           className={`${CourseStyle.single_courses_price} flex items-center`}
         >
           {enrolled === true ? (
-            <div className="enrollment-status">Enrolled</div>
+            <div className="courses-price">
+              <span className={`${CourseStyle.single_courses_price_sale}`}>
+                Enrolled
+              </span>
+            </div>
           ) : (
             <>
               {price === 0 ? (
