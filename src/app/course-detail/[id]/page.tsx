@@ -445,7 +445,8 @@ export default function CourseDetailPage({ params }: any) {
                                         />
                                       </div>
                                     </div>
-                                    {item.ratingCourseInfo.comment == "null" ? (
+                                    {item.ratingCourseInfo.comment ===
+                                    "null" ? (
                                       <></>
                                     ) : (
                                       <p className="mt-3 font-semibold text-[#52565b] ">

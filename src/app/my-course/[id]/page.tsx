@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { Course, Lectures } from "@/components/courses/courses";
 import Image from "next/image";
-
+import { Worker, Viewer } from "@react-pdf-viewer/core";
 // import { Button } from "react-bootstrap";
 import {
   Button,
@@ -24,6 +24,7 @@ import { UserAuth } from "@/app/context/AuthContext";
 import { toast } from "sonner";
 import { http } from "@/api/http";
 import { maxTime } from "date-fns";
+import { Document, Page } from "react-pdf/dist/esm/entry.webpack";
 
 export type Lecture = {
   id: string | number;
@@ -161,6 +162,7 @@ export default function AfterEnroll({ params }: any) {
     return e?.fileList;
   };
 
+  // const newplugin = defaultLayoutPlugin();
   // const uploadImage = () => {
   //   const fetchImg= async () => {
   //     const res = await axios.post(`https://learnconnectapitest.azurewebsites.net/api/image`)
@@ -185,6 +187,17 @@ export default function AfterEnroll({ params }: any) {
       setActiveVideoIndex(0);
     }
   }, []);
+
+  const [pdf, setPDF] = useState<number>();
+  const [numPages, setNumPages] = useState(null);
+  const [pageNumber, setPageNumber] = useState(1);
+
+  const onDocumentLoadSuccess = (numPages) => {
+    setNumPages(numPages);
+  };
+
+  // const newplugin = defaultLayoutPlugin();
+
   const [videoSrc, setVideoSrc] = useState("");
   const changeVideoSource = (newSrc: string, index: number) => {
     setVideoSrc(newSrc);
@@ -310,18 +323,31 @@ export default function AfterEnroll({ params }: any) {
             />
           )}
           {videoSrc && (
-            <video
-              width="full"
-              height="full"
-              controls
-              id="courseVideo"
-              ref={videoRef}
-              onSeeked={handleOnSeek}
-              onTimeUpdate={handleOnTimeUpdate}
-              onProgress={handleOnProgress}
-            >
-              <source src={videoSrc} type="video/mp4" />
-            </video>
+            <>
+              {pdf === 99 ? (
+                <video
+                  width="full"
+                  height="full"
+                  controls
+                  id="courseVideo"
+                  ref={videoRef}
+                  onSeeked={handleOnSeek}
+                  onTimeUpdate={handleOnTimeUpdate}
+                  onProgress={handleOnProgress}
+                >
+                  <source src={videoSrc} type="video/mp4" />
+                </video>
+              ) : (
+                <>
+                  <Document
+                    file="https://firebasestorage.googleapis.com/v0/b/learnconnect-6f324.appspot.com/o/videos%2Fbo-cau-hoi.pdf?alt=media&token=adb72de1-029d-4b56-99d2-8de5abafee65"
+                    onLoadSuccess={onDocumentLoadSuccess}
+                  >
+                    <Page pageNumber={pageNumber} />
+                  </Document>
+                </>
+              )}
+            </>
           )}
           <div>
             <div className="">
@@ -661,7 +687,10 @@ export default function AfterEnroll({ params }: any) {
                           ? "active text-[#309255]"
                           : ""
                       }`}
-                      onClick={() => changeVideoSource(item.contentUrl, index)}
+                      onClick={() => {
+                        changeVideoSource(item.contentUrl, index);
+                        setPDF(item.contentType);
+                      }}
                     >
                       <div className="py-2 pl-[30px] flex flex-row gap-3">
                         <p className="flex-none h-[50px]">

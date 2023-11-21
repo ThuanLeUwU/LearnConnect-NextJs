@@ -513,6 +513,7 @@ const InstructorCourse = () => {
           autoComplete="off"
           form={form}
           labelCol={{ span: 6 }}
+          labelAlign={"left"}
           wrapperCol={{ span: 18 }}
           layout="horizontal"
           className="mt-5"

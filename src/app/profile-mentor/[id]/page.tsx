@@ -8,6 +8,7 @@ import { CourseItem } from "@/components/pagination/useDataFavoritesFetcher";
 import { Empty, Spin } from "antd";
 import Paginate from "@/components/pagination/pagination";
 import { Rating } from "@mui/material";
+import { AiOutlineBars } from "react-icons/ai";
 
 export type User = {
   id: string | number;
@@ -47,6 +48,10 @@ export default function ProfileUser({ params }: any) {
   const [totalPages, setTotalPages] = useState(10);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -101,7 +106,7 @@ export default function ProfileUser({ params }: any) {
             <div className="flex justify-center items-center">
               <div className="w-full">
                 <div className="bg-[#fff] rounded-lg shadow-lg">
-                  <div className="bg-[#309255] text-white flex lg:flex-row rounded-t p-4 lg:p-8">
+                  <div className="bg-[#309255] text-white flex lg:flex-row rounded-t p-4 lg:p-8 position">
                     <div className="lg:mr-4 lg:mt-0 flex flex-col items-center w-full lg:w-36">
                       <img
                         src={
@@ -126,7 +131,26 @@ export default function ProfileUser({ params }: any) {
                         Phone: {DataMentor?.phoneNumber}
                       </h5>
                     </div>
+                    <div className="ml-auto">
+                      <button>
+                        <AiOutlineBars
+                          className="border border-opacity-20 border-[#fff] rounded-lg text-4xl"
+                          onClick={toggleDropdown}
+                        />
+                      </button>
+                      {isDropdownOpen && (
+                        <div className="modal-overlay absolute">
+                          <div className="bg-white border border-gray-300 rounded shadow-lg">
+                            <div className="p-2 text-black">
+                              <button className="px-3 py-2">Report</button>
+                              <button className="px-3 py-2">Rating</button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
+
                   <div className="card-body p-4 text-black">
                     <div className="mb-5">
                       <p className="font-semibold text-lg mb-2">

@@ -10,6 +10,7 @@ import {
   InputNumber,
   Upload,
   message,
+  DatePicker,
 } from "antd";
 import { useForm } from "antd/es/form/Form";
 import axios from "axios";
@@ -32,6 +33,13 @@ export type User = {
   bioDescription: string;
   profilePictureUrl: string;
 };
+
+interface Major {
+  id: number;
+  name: string;
+  description: string;
+  isActive: boolean;
+}
 
 interface Specialization {
   id: number;
@@ -65,6 +73,8 @@ export const RegisterForm = () => {
   const { Option } = Select;
 
   const [specialization, setSpecialization] = useState<Specialization[]>([]);
+  const [major, setMajor] = useState<Major[]>([]);
+  const [selectedMajor, setSelectedMajor] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -145,16 +155,20 @@ export const RegisterForm = () => {
   const handleSubmit = async (values: any) => {
     const formData = new FormData();
     const {
+      major,
       specialization,
       description,
       BankNumber,
       BankName,
       CardFront,
       CardBack,
+      IssueDate,
       DescriptionDocument,
     } = values;
+    formData.append("major", values.major || "");
     formData.append("specializationId", values.specialization || "");
     formData.append("description", values.description);
+    formData.append("IssueDate", values.IssueDate);
     formData.append("BankNumber", values.BankNumber);
     formData.append("BankName", values.BankName);
     formData.append("CardFront", CardFront);
@@ -171,14 +185,8 @@ export const RegisterForm = () => {
     if (DocumentData) {
       formData.append("verificationDocument", DocumentData);
     }
-    formData.append(
-      "identityCardBackDescription",
-      "Description for identity card back"
-    );
-    formData.append(
-      "identityCardFrontDescription",
-      "Description for identity card front"
-    );
+    formData.append("identityCardBackDescription", values.IssueDate);
+    formData.append("identityCardFrontDescription", CardFront);
 
     if (identifyData !== undefined) {
       formData.append("FontCardImage", identifyData);
@@ -211,19 +219,36 @@ export const RegisterForm = () => {
   };
 
   useEffect(() => {
-    const fetchCategories = async () => {
+    const fetchMajor = async () => {
       try {
         const response = await axios.get(
-          "https://learnconnectapitest.azurewebsites.net/api/specialization"
+          "https://learnconnectapitest.azurewebsites.net/api/major"
         );
-        setSpecialization(response.data);
+        setMajor(response.data);
       } catch (error) {
         console.error("Error fetching categories:", error);
       }
     };
-
-    fetchCategories();
+    fetchMajor();
   }, []);
+
+  useEffect(() => {
+    // Fetch specialization data based on the selected major
+    if (selectedMajor !== null) {
+      const fetchSpecializations = async () => {
+        try {
+          const response = await axios.get(
+            `https://learnconnectapitest.azurewebsites.net/api/specialization/by-major/${selectedMajor}`
+          );
+          setSpecialization(response.data);
+        } catch (error) {
+          console.error("Error fetching specializations:", error);
+        }
+      };
+
+      fetchSpecializations();
+    }
+  }, [selectedMajor]);
 
   return (
     <div className="">
@@ -237,13 +262,35 @@ export const RegisterForm = () => {
           onFinish={handleSubmit}
           className="mx-[30px] pt-3"
         >
-          <Form.Item label="Name" name="disable" className="" labelAlign="left">
+          <Form.Item
+            label="Full Name"
+            name="disable"
+            className=""
+            labelAlign="left"
+          >
             {userData?.fullName}
           </Form.Item>
 
           <Form.Item label="Email" labelAlign="left">
             {userData?.email}
           </Form.Item>
+          <Form.Item
+            label="Major"
+            name="major"
+            rules={[{ required: true, message: "Please select a major!" }]}
+            className="text-start"
+            labelAlign="left"
+          >
+            <Select onChange={(value) => setSelectedMajor(value)}>
+              {major.map((major) => (
+                <Option key={major.id} value={major.id}>
+                  {major.name}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
+
+          {/* Specialization selection */}
           <Form.Item
             label="Specialization"
             name="specialization"
@@ -271,81 +318,76 @@ export const RegisterForm = () => {
             <Input />
           </Form.Item>
           <Form.Item
-            rules={[{ required: true, message: "Please input BankNumber" }]}
-            label="BankNumber"
-            name="BankNumber"
-            labelAlign="left"
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            rules={[{ required: true, message: "Please input BankName" }]}
-            label="BankName"
+            rules={[{ required: true, message: "Please input Bank" }]}
+            label="Bank"
             name="BankName"
             labelAlign="left"
           >
             <Input />
           </Form.Item>
           <Form.Item
-            rules={[{ required: true, message: "Please input CardFront" }]}
-            label="CardFront"
-            name="CardFront"
+            rules={[{ required: true, message: "Please input Account Number" }]}
+            label="Account Number"
+            name="BankNumber"
             labelAlign="left"
           >
             <Input />
-          </Form.Item>
-          <Form.Item
-            rules={[{ required: true, message: "Please input CardFront" }]}
-            label="ID Card Font"
-            getValueFromEvent={normFile}
-            labelAlign="left"
-          >
-            <Upload
-              accept="image/png, image/jpeg"
-              onChange={handleChange}
-              beforeUpload={beforeUpload}
-              action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
-              listType="picture-card"
-            >
-              Upload
-            </Upload>
-          </Form.Item>
-          <Form.Item
-            rules={[{ required: true, message: "Please input CardBack" }]}
-            label="CardBack"
-            name="CardBack"
-            labelAlign="left"
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="ID Card Back"
-            getValueFromEvent={normFile}
-            rules={[{ required: true, message: "Please input CardFront" }]}
-            labelAlign="left"
-          >
-            <Upload
-              accept="image/png, image/jpeg"
-              onChange={handleChangeBackImg}
-              beforeUpload={beforeUpload}
-              action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
-              listType="picture-card"
-            >
-              Upload
-            </Upload>
           </Form.Item>
           <Form.Item
             rules={[
-              { required: true, message: "Please input Description Document" },
+              { required: true, message: "Please input Identify Number" },
             ]}
-            label="DescriptionDocument"
+            label="Identify Number"
+            name="CardFront"
+            labelAlign="left"
+          >
+            <Input placeholder="Input Identity Number " />
+          </Form.Item>
+          <Form.Item
+            rules={[{ required: true, message: "Please input Issue Date" }]}
+            label="Issue Date"
+            name="IssueDate"
+            labelAlign="left"
+          >
+            <DatePicker style={{ width: "100%" }} />
+          </Form.Item>
+          <Form.Item
+            rules={[{ required: true, message: "Please input image ID card" }]}
+            label="Image of ID Card"
+            getValueFromEvent={normFile}
+            labelAlign="left"
+          >
+            <Space>
+              <Upload
+                accept="image/png, image/jpeg"
+                onChange={handleChange}
+                beforeUpload={beforeUpload}
+                action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
+                listType="picture-card"
+              >
+                Font of ID
+              </Upload>
+              <Upload
+                accept="image/png, image/jpeg"
+                onChange={handleChangeBackImg}
+                beforeUpload={beforeUpload}
+                action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
+                listType="picture-card"
+              >
+                Back of ID
+              </Upload>
+            </Space>
+          </Form.Item>
+          <Form.Item
+            rules={[{ required: true, message: "Please input Document" }]}
+            label="Document"
             name="DescriptionDocument"
             labelAlign="left"
           >
-            <Input />
+            <Input placeholder="Input Degree, Diploma, Certificate, Qualification" />
           </Form.Item>
           <Form.Item
-            label="ID Card Back"
+            label="Image of ID Document"
             name="CardBack"
             getValueFromEvent={normFile}
             rules={[{ required: true, message: "Please input CardFront" }]}
@@ -358,7 +400,7 @@ export const RegisterForm = () => {
               action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
               listType="picture-card"
             >
-              Upload
+              Document
             </Upload>
           </Form.Item>
           <button

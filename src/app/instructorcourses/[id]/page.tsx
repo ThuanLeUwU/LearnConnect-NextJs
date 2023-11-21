@@ -775,7 +775,7 @@ const Dashboard = ({ params }: any) => {
                                         })
                                       : ""}{" "}
                                   </span>
-                                  {item.ratingCourseInfo.comment == "null" ? (
+                                  {item.ratingCourseInfo.comment === "null" ? (
                                     <></>
                                   ) : (
                                     <p className="mt-3 font-medium text-[#52565b] text-lg">
@@ -888,7 +888,7 @@ const Dashboard = ({ params }: any) => {
                   // accept="image/png, image/jpeg"
                   // ref={inputRef}
                   // accept=".mov,.mp4"
-                  accept=".docx"
+                  accept=".pdf"
                   onChange={handleFileChange}
                   // beforeUpload={beforeUpload}
                   // headers={{ Authorization: authorization }}
