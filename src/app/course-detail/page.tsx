@@ -9,6 +9,7 @@ export default function CourseDetailPage() {
   const [visible, setVisible] = useState(false);
 
   const [activeTab, setActiveTab] = useState("tab1");
+
   const handleTabClick = (tabName: string) => {
     setActiveTab(tabName);
   };

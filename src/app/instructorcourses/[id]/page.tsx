@@ -148,7 +148,7 @@ const Dashboard = ({ params }: any) => {
   useEffect(() => {
     http
       .get(
-        `https://learnconnectapitest.azurewebsites.net/api/course/user/${id}/course/${idCourse}`
+        `https://learnconnectapitest.azurewebsites.net/api/course/get-course-by-mentor/mentorUserId/${id}/course/${idCourse}`
       )
       .then((response) => {
         setCourse(response.data);
@@ -184,7 +184,7 @@ const Dashboard = ({ params }: any) => {
         )
         .then(() => {
           handleCancel();
-          toast.success("update Lecture Successfully");
+          toast.success("Update Lecture Successfully");
           http.get(`/lecture/by-course/${idCourse}`).then((response) => {
             setLectures(response.data);
             setLoading(false);
@@ -329,6 +329,21 @@ const Dashboard = ({ params }: any) => {
     reader.addEventListener("load", () => callback(reader.result as string));
     reader.readAsDataURL(src);
   };
+
+  // const beforeUpload = (file: any) => {
+  //   const isJpgOrPng =
+  //     file.type === "image/jpeg" ||
+  //     file.type === "image/png" ||
+  //     file.type === ".mp4";
+  //   if (!isJpgOrPng) {
+  //     toast.error("You can only upload JPG/PNG/Mp4 file!");
+  //   }
+  //   const isLt20M = file.size / 1024 / 1024 < 20;
+  //   if (!isLt20M) {
+  //     toast.error("Image must smaller than 20MB!");
+  //   }
+  //   return isJpgOrPng && isLt20M;
+  // };
   // const handleChoose = (event) => {
   //   inputRef.current.click();
   // };
@@ -421,12 +436,40 @@ const Dashboard = ({ params }: any) => {
       dataIndex: "status",
       key: "status",
       render: (status) => (
-        <Tag color={status === 1 ? "red" : "green"}>
-          {status === 1 ? "Inactive" : "Active"}
-        </Tag>
+        <Tag color={getStatusColor(status)}>{getStatusText(status)}</Tag>
       ),
     },
   ];
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 0:
+        return "green"; // Màu xanh cho trạng thái Active
+      case 1:
+        return "grey"; // Màu đỏ cho trạng thái Pending
+      case 2:
+        return "volcano"; // Màu đỏ cam cho trạng thái Reject
+      case 3:
+        return "red"; // Màu đỏ hồng cho trạng thái Banned
+      default:
+        return "defaultColor"; // Màu mặc định nếu status không phù hợp với bất kỳ trạng thái nào
+    }
+  };
+
+  const getStatusText = (status) => {
+    switch (status) {
+      case 0:
+        return "Active";
+      case 1:
+        return "Pending";
+      case 2:
+        return "Reject";
+      case 3:
+        return "Banned";
+      default:
+        return "Unknown Status";
+    }
+  };
 
   const [listRating, setListRating] = useState<Rating[]>([]);
 

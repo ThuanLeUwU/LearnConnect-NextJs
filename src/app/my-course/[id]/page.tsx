@@ -35,6 +35,7 @@ export type Lecture = {
   rejectReason: string;
   status: number;
   courseId: number;
+  courseName: string;
 };
 
 export type Performance = {

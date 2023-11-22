@@ -96,7 +96,7 @@ const InstructorCourse = () => {
     if (status === 0) {
       return <p style={{ color: "green" }}>Active</p>;
     } else if (status === 1) {
-      return <p style={{ color: "red" }}>Inactive</p>;
+      return <p style={{ color: "red" }}>Pending</p>;
     }
   };
 
@@ -182,11 +182,11 @@ const InstructorCourse = () => {
     if (!isJpgOrPng) {
       toast.error("You can only upload JPG/PNG file!");
     }
-    const isLt2M = file.size / 1024 / 1024 < 2;
-    if (!isLt2M) {
-      toast.error("Image must smaller than 2MB!");
+    const isLt20M = file.size / 1024 / 1024 < 20;
+    if (!isLt20M) {
+      toast.error("Image must smaller than 20MB!");
     }
-    return isJpgOrPng && isLt2M;
+    return isJpgOrPng && isLt20M;
   };
 
   //List category
@@ -197,7 +197,7 @@ const InstructorCourse = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const responseData = await http.get("/major");
+        const responseData = await http.get("/specialization");
         setListCategory(responseData.data);
       } catch (err) {
         console.log(err);

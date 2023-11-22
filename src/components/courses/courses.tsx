@@ -39,6 +39,7 @@ export type Course = {
   specializationName: string;
   favorite: boolean;
   specializationId: number;
+  status: number;
 };
 
 export type Lectures = {

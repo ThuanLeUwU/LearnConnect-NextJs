@@ -52,6 +52,7 @@ const Paginate: React.FC<PaginateProps> = ({
           )
         }
         onPageChange={handlePageClick}
+        forcePage={currentPage}
         pageRangeDisplayed={3}
         pageCount={totalPages}
         previousLabel={

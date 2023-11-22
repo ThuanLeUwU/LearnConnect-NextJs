@@ -46,7 +46,8 @@ const StaffReportID = ({ params }: any) => {
         page1={"/staff-page"}
         page2={"/staff-page/staff-rating"}
         page3={"/staff-page/staff-report"}
-        page4={"#"}
+        page4={"/staff-page/moderation"}
+        page5={"/staff-page/moderation-lecture"}
       />
 
       <div className="w-full">

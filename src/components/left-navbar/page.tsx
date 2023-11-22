@@ -1,7 +1,7 @@
 import Link from "next/link";
 import InstructorCourseStyle from "./styles.module.scss";
 
-const LeftNavbar = ({ page1, page2, page3, page4 }) => {
+const LeftNavbar = ({ page1, page2, page3, page4, page5 }) => {
   const menuItem = [
     {
       image: "/menu-icon/icon-1.png",
@@ -18,6 +18,10 @@ const LeftNavbar = ({ page1, page2, page3, page4 }) => {
     {
       image: "/menu-icon/icon-4.png",
       href: `${page4}`,
+    },
+    {
+      image: "/menu-icon/icon-4.png",
+      href: `${page5}`,
     },
   ];
 

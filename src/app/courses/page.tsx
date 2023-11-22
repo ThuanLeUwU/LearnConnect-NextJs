@@ -20,12 +20,12 @@ export type Filter = {
 
 const ListCourse = () => {
   const [selectedFilter, setSelectedFilter] = useState<number[]>([]);
-  const [minPrice, setMinPrice] = useState<number>(-1);
-  const [maxPrice, setMaxPrice] = useState<number>(0);
-  const [rate, setRate] = useState<number>(0);
+  const [minPrice, setMinPrice] = useState<any>(null);
+  const [maxPrice, setMaxPrice] = useState<any>();
+  const [rate, setRate] = useState<any>(null);
   console.log("rate", rate);
   const [specialized, setSpecialized] = useState<Category[]>([]);
-  const [filterBySpecialized, setFilterBySpecialized] = useState<number>(-1);
+  const [filterBySpecialized, setFilterBySpecialized] = useState<any>(null);
 
   // console.log("spe", specialized[0].id);
 
@@ -100,9 +100,9 @@ const ListCourse = () => {
 
   // const selectMinPriceRef = useRef<Select>(null);
   const removeFilterClick = () => {
-    setFilterBySpecialized(-1);
-    setMinPrice(-1);
-    setRate(0);
+    setFilterBySpecialized("");
+    setMinPrice("");
+    setRate("");
     setReload(true);
     // if (selectMinPriceRef.current) {
     //   selectMinPriceRef.current.state.value = null;
@@ -126,7 +126,7 @@ const ListCourse = () => {
             defaultValue=""
             onChange={handleFilterMinPrice}
             style={{ width: 200 }}
-            value={minPrice === -1 ? <></> : minPrice}
+            value={minPrice === null ? <></> : minPrice}
             // ref={selectMinPriceRef}
           >
             {minPriceOption.map((option, index) => (

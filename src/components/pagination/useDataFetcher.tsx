@@ -33,11 +33,11 @@ export type User = {
   status: number;
 };
 const useDataFetcher = (
-  minPrice: number,
-  maxPrice: number,
-  specializationId: number,
+  minPrice: any,
+  maxPrice: any,
+  specializationId: any,
   refresh: boolean,
-  rate: number
+  rate: any
 ) => {
   const [courses, setCourses] = useState<CourseItem[]>([]);
   const { userData, id, jwtToken } = UserAuth();
@@ -47,7 +47,7 @@ const useDataFetcher = (
   console.log("tau nì", price);
   let API_URL =
     "https://learnconnectapitest.azurewebsites.net/api/course/get-courses-paging?";
-  if (minPrice !== 0 || specializationId !== 0) {
+  if (minPrice !== null || specializationId !== null || rate !== null) {
     API_URL =
       "https://learnconnectapitest.azurewebsites.net/api/course/get-courses-paging-with-filter?";
   } else if (id) {
@@ -107,25 +107,47 @@ const useDataFetcher = (
       const page = Math.min(currentPage + 1, totalPages);
       if (minPrice === 0) {
         const result = await axios.get(
-          `${API_URL}currentPage=${page}&pageSize=${pagesize}&priceMin=${minPrice}&priceMax=0&orderByLatestCreationDate=true&orderByEnrollmentCount=true`
+          `${API_URL}currentPage=${page}&pageSize=${pagesize}&specializationId=${
+            specializationId === null ? "" : specializationId
+          }&priceMin=${minPrice === null ? "" : minPrice}&priceMax=${
+            minPrice === null ? "" : minPrice
+          }&minAverageRating=${
+            rate === null ? "" : rate
+          }&orderByLatestCreationDate=true&orderByEnrollmentCount=true`
         );
         setCourses(result?.data.listCourse);
         setTotalPages(result?.data.paginationData.totalPages);
       } else if (minPrice === 1) {
         const result = await axios.get(
-          `${API_URL}currentPage=${page}&pageSize=${pagesize}&priceMin=${minPrice}&priceMax=200000&orderByLatestCreationDate=true&orderByEnrollmentCount=true`
+          `${API_URL}currentPage=${page}&pageSize=${pagesize}&specializationId=${
+            specializationId === null ? "" : specializationId
+          }&priceMin=${
+            minPrice === null ? "" : minPrice
+          }&priceMax=200000&minAverageRating=${
+            rate === null ? "" : rate
+          }&orderByLatestCreationDate=true&orderByEnrollmentCount=true`
         );
         setCourses(result?.data.listCourse);
         setTotalPages(result?.data.paginationData.totalPages);
       } else if (minPrice === 200001) {
         const result = await axios.get(
-          `${API_URL}currentPage=${page}&pageSize=${pagesize}&priceMin=${minPrice}&priceMax=1000000&orderByLatestCreationDate=true&orderByEnrollmentCount=true`
+          `${API_URL}currentPage=${page}&pageSize=${pagesize}&specializationId=${
+            specializationId === null ? "" : specializationId
+          }&priceMin=${
+            minPrice === null ? "" : minPrice
+          }&priceMax=1000000&minAverageRating=${
+            rate === null ? "" : rate
+          }&orderByLatestCreationDate=true&orderByEnrollmentCount=true`
         );
         setCourses(result?.data.listCourse);
         setTotalPages(result?.data.paginationData.totalPages);
       } else if (minPrice === 1000001) {
         const result = await axios.get(
-          `${API_URL}currentPage=${page}&pageSize=${pagesize}&priceMin=${minPrice}&orderByLatestCreationDate=true&orderByEnrollmentCount=true`
+          `${API_URL}currentPage=${page}&pageSize=${pagesize}&specializationId=${
+            specializationId === null ? "" : specializationId
+          }&priceMin=${minPrice === null ? "" : minPrice}&minAverageRating=${
+            rate === null ? "" : rate
+          }&orderByLatestCreationDate=true&orderByEnrollmentCount=true`
         );
         setCourses(result?.data.listCourse);
         setTotalPages(result?.data.paginationData.totalPages);
@@ -139,15 +161,42 @@ const useDataFetcher = (
       // console.log("totalPages", result);
     };
     fetchData();
-  }, [minPrice]);
+  }, [minPrice, rate, specializationId]);
+  // useEffect(() => {
+  //   setCurrentPage(0);
+  //   const fetchData = async () => {
+  //     const page = Math.min(currentPage + 1, totalPages);
+  //     if (specializationId !== -1) {
+  //       console.log("page", page, currentPage);
+  //       const result = await axios.get(
+  //         `${API_URL}currentPage=${page}&pageSize=${pagesize}&specializationId=${specializationId}&orderByLatestCreationDate=true&orderByEnrollmentCount=true`
+  //       );
+  //       setCourses(result?.data.listCourse);
+  //       setTotalPages(result?.data.paginationData.totalPages);
+  //     }
+
+  //     // console.log("result", result);
+
+  //     // console.log("toalpage", totalPages);
+  //     setLoading(false);
+  //     setReload(false);
+  //     // console.log("totalPages", result);
+  //   };
+  //   fetchData();
+  // }, []);
+
   useEffect(() => {
     setCurrentPage(0);
     const fetchData = async () => {
       const page = Math.min(currentPage + 1, totalPages);
-      if (specializationId !== -1) {
+      if (rate !== null || specializationId !== null) {
         console.log("page", page, currentPage);
         const result = await axios.get(
-          `${API_URL}currentPage=${page}&pageSize=${pagesize}&specializationId=${specializationId}&orderByLatestCreationDate=true&orderByEnrollmentCount=true`
+          `${API_URL}currentPage=${page}&pageSize=${pagesize}&specializationId=${
+            specializationId === null ? "" : specializationId
+          }&minAverageRating=${
+            rate === null ? "" : rate
+          }&orderByLatestCreationDate=true&orderByEnrollmentCount=true`
         );
         setCourses(result?.data.listCourse);
         setTotalPages(result?.data.paginationData.totalPages);
@@ -161,30 +210,7 @@ const useDataFetcher = (
       // console.log("totalPages", result);
     };
     fetchData();
-  }, [specializationId]);
-
-  useEffect(() => {
-    setCurrentPage(0);
-    const fetchData = async () => {
-      const page = Math.min(currentPage + 1, totalPages);
-      if (rate !== 0) {
-        console.log("page", page, currentPage);
-        const result = await axios.get(
-          `${API_URL}currentPage=${page}&pageSize=${pagesize}&minAverageRating=${rate}&orderByLatestCreationDate=true&orderByEnrollmentCount=true`
-        );
-        setCourses(result?.data.listCourse);
-        setTotalPages(result?.data.paginationData.totalPages);
-      }
-
-      // console.log("result", result);
-
-      // console.log("toalpage", totalPages);
-      setLoading(false);
-      setReload(false);
-      // console.log("totalPages", result);
-    };
-    fetchData();
-  }, [rate]);
+  }, [rate, specializationId]);
   useEffect(() => {
     // setCurrentPage(0);
     const fetchData = async () => {
@@ -213,16 +239,13 @@ const useDataFetcher = (
         );
         setCourses(result?.data.listCourse);
         setTotalPages(result?.data.paginationData.totalPages);
-      } else if (specializationId !== -1) {
+      } else if (specializationId !== null || rate !== null) {
         const result = await axios.get(
-          `${API_URL}currentPage=${page}&pageSize=${pagesize}&specializationId=${specializationId}&orderByLatestCreationDate=true&orderByEnrollmentCount=true`
-        );
-        setCourses(result?.data.listCourse);
-        setTotalPages(result?.data.paginationData.totalPages);
-      } else if (rate !== 0) {
-        console.log("page", page, currentPage);
-        const result = await axios.get(
-          `${API_URL}currentPage=${page}&pageSize=${pagesize}&minAverageRating=${rate}&orderByLatestCreationDate=true&orderByEnrollmentCount=true`
+          `${API_URL}currentPage=${page}&pageSize=${pagesize}&specializationId=${
+            specializationId === null ? "" : specializationId
+          }&minAverageRating=${
+            rate === null ? "" : rate
+          }&orderByLatestCreationDate=true&orderByEnrollmentCount=true`
         );
         setCourses(result?.data.listCourse);
         setTotalPages(result?.data.paginationData.totalPages);
@@ -238,7 +261,6 @@ const useDataFetcher = (
 
       // console.log("toalpage", totalPages);
       setLoading(false);
-      // console.log("totalPages", result);
     };
     fetchData();
   }, [currentPage]);

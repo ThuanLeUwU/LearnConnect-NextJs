@@ -4,6 +4,7 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 
 export type ListCourse = {
+  mentorName: string;
   id: number;
   name: string;
   description: string;
