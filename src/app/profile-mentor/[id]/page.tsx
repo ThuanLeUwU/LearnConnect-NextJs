@@ -8,6 +8,21 @@ import { CourseItem } from "@/components/pagination/useDataFavoritesFetcher";
 import { Empty, Spin } from "antd";
 import Paginate from "@/components/pagination/pagination";
 import { Rating } from "@mui/material";
+import { AiOutlineBars } from "react-icons/ai";
+import { toast } from "sonner";
+import {
+  Button,
+  Form,
+  Input,
+  Modal,
+  Rate,
+  Select,
+  Space,
+  Upload,
+  message,
+} from "antd";
+import { http } from "@/api/http";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 
 export type User = {
   id: string | number;
@@ -44,9 +59,163 @@ export default function ProfileUser({ params }: any) {
   const API_URL =
     "https://learnconnectapitest.azurewebsites.net/api/course/get-courses-by-mentor?mentorId=";
   const pagesize = 4;
+  const router = useRouter();
+  const pathName = usePathname();
+  const searchParams = useSearchParams();
   const [totalPages, setTotalPages] = useState(10);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [selected, setSelected] = useState(null);
+  const { id, userData, jwtToken } = UserAuth();
+  const [form] = Form.useForm();
+  const [image, setImage] = useState<string>();
+  const { Option } = Select;
+  const [modalRating, setModalRatingOpen] = useState(false);
+  const [value, setValue] = useState<number>(0);
+  const desc = ["terrible", "bad", "normal", "good", "wonderful"];
+
+  const Reasons = [
+    { id: "1", name: "Inappropriate content" },
+    { id: "2", name: "Copyright violation" },
+    { id: "3", name: "Community standards violation" },
+  ];
+  const handleChangeReason = (value: React.SetStateAction<null>) => {
+    setSelected(value);
+  };
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+    if (!jwtToken) {
+      toast.error("You Must Login To add Favorites");
+      router.push("/login");
+      return;
+    }
+  };
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [formDataImage, setFormDataImage] = useState();
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+  const showModalRating = () => {
+    setModalRatingOpen(true);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+    setModalRatingOpen(false);
+    form.resetFields();
+  };
+  const handleRateChange = (newValue: number) => {
+    setValue(newValue);
+  };
+
+  const normFile = (e: any) => {
+    if (Array.isArray(e)) {
+      return e;
+    }
+    return e?.fileList;
+  };
+
+  const handleChange = (info: any) => {
+    if (info.file.status === "uploading") {
+      return;
+    }
+    if (info.file.status === "done") {
+      setFormDataImage(info.file.originFileObj);
+      getBase64(info.file.originFileObj, (url) => {
+        setImage(url);
+      });
+    }
+  };
+
+  const getBase64 = (img: any, callback: (url: string) => void) => {
+    const reader = new FileReader();
+    reader.addEventListener("load", () => callback(reader.result as string));
+    reader.readAsDataURL(img);
+  };
+
+  const handleOk = async (data: any) => {
+    setIsModalOpen(false);
+    const formdata = new FormData();
+    formdata.append("reportReason", selected || "1");
+    formdata.append("reportComment", data.comment);
+    if (formDataImage !== undefined) {
+      formdata.append("reportImage", formDataImage);
+    }
+    try {
+      await axios.post(
+        `https://learnconnectapitest.azurewebsites.net/api/report/report-mentor?userId=${id}&mentorId=${idMentor}`,
+        formdata,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      handleCancel();
+
+      setTimeout(() => {
+        toast.success("Report successful");
+      });
+    } catch (err) {
+      setTimeout(() => {
+        toast.error("Report fail");
+      });
+    }
+  };
+
+  const handleSubmit = async (data: any) => {
+    // const numericValue = parseFloat(value);
+    const formdata = new FormData();
+    formdata.append("rating", value.toString());
+    console.log("rate");
+    formdata.append(
+      "comment",
+      data.description !== undefined ? data.description : null
+    );
+
+    try {
+      // console.log("formDataImage1", formDataImage);
+      // console.log("image1", image);
+      await http.post(
+        `https://learnconnectapitest.azurewebsites.net/api/rating/rating-mentor?userId=${id}&mentorId=${idMentor}`,
+        // `/rating/rating-course?userId=${id}&courseId=${idCourse}`,
+        formdata,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      handleCancel();
+
+      setTimeout(() => {
+        toast.success("Rating successful");
+      });
+    } catch (err) {
+      setTimeout(() => {
+        toast.error("Rating fail");
+      });
+    }
+    // console.log("value", parseInt(value.toString()));
+    // console.log("value", data.description);
+
+    setModalRatingOpen(false);
+  };
+
+  const beforeUpload = (file: any) => {
+    const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
+    if (!isJpgOrPng) {
+      toast.error("You can only upload JPG/PNG file!");
+    }
+    const isLt2M = file.size / 1024 / 1024 < 2;
+    if (!isLt2M) {
+      toast.error("Image must smaller than 2MB!");
+    }
+    return isJpgOrPng && isLt2M;
+  };
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -101,7 +270,7 @@ export default function ProfileUser({ params }: any) {
             <div className="flex justify-center items-center">
               <div className="w-full">
                 <div className="bg-[#fff] rounded-lg shadow-lg">
-                  <div className="bg-[#309255] text-white flex lg:flex-row rounded-t p-4 lg:p-8">
+                  <div className="bg-[#309255] text-white flex lg:flex-row rounded-t p-4 lg:p-8 position">
                     <div className="lg:mr-4 lg:mt-0 flex flex-col items-center w-full lg:w-36">
                       <img
                         src={
@@ -126,7 +295,36 @@ export default function ProfileUser({ params }: any) {
                         Phone: {DataMentor?.phoneNumber}
                       </h5>
                     </div>
+                    <div className="ml-auto">
+                      <button>
+                        <AiOutlineBars
+                          className="border border-opacity-20 border-[#fff] rounded-lg text-4xl"
+                          onClick={toggleDropdown}
+                        />
+                      </button>
+                      {isDropdownOpen && (
+                        <div className="modal-overlay absolute">
+                          <div className="bg-white border border-gray-300 rounded shadow-lg">
+                            <div className="p-2 text-black flex flex-col">
+                              <button
+                                className="px-3 py-2 mb-1 hover:bg-[#e7f8ee]"
+                                onClick={showModal}
+                              >
+                                Report
+                              </button>
+                              <button
+                                className="px-3 py-2 hover:bg-[#e7f8ee]"
+                                onClick={showModalRating}
+                              >
+                                Rating
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
+
                   <div className="card-body p-4 text-black">
                     <div className="mb-5">
                       <p className="font-semibold text-lg mb-2">
@@ -218,6 +416,110 @@ export default function ProfileUser({ params }: any) {
                     )}
                   </div>
                 </div>
+                <Modal
+                  destroyOnClose={true}
+                  title={`Report ${DataMentor?.fullName} by ${userData?.fullName}`}
+                  open={isModalOpen}
+                  // onOk={handleOk}
+                  onCancel={handleCancel}
+                  footer={false}
+                >
+                  <Form
+                    autoComplete="off"
+                    form={form}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 14 }}
+                    layout="horizontal"
+                    className="mt-5"
+                    style={{ width: 600 }}
+                    onFinish={handleOk}
+                  >
+                    <Form.Item label="Reason">
+                      <Select
+                        onChange={handleChangeReason}
+                        // defaultValue={selected}  // You can set a default value if needed
+                      >
+                        {Reasons.map((option) => (
+                          <Option key={option.id} value={option.name}>
+                            {option.name}
+                          </Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+                    <Form.Item label="Comment" name="comment">
+                      <Input.TextArea rows={4} />
+                    </Form.Item>
+                    <Form.Item label="Capture" getValueFromEvent={normFile}>
+                      <Upload
+                        accept="image/png, image/jpeg"
+                        onChange={handleChange}
+                        beforeUpload={beforeUpload}
+                        action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
+                        listType="picture-card"
+                      >
+                        Upload
+                      </Upload>
+                    </Form.Item>
+                    <Space className="justify-end w-full pr-[150px]">
+                      <Form.Item className="mb-0">
+                        <Space>
+                          <Button onClick={handleCancel}>Cancel</Button>
+                          <Button
+                            type="primary"
+                            htmlType="submit"
+                            style={{ color: "black" }}
+                          >
+                            Report
+                          </Button>
+                        </Space>
+                      </Form.Item>
+                    </Space>
+                  </Form>
+                </Modal>
+                <Modal
+                  destroyOnClose={true}
+                  title={`Rating ${DataMentor?.fullName} by ${userData?.fullName}`}
+                  open={modalRating}
+                  // onOk={handleOk}
+                  onCancel={handleCancel}
+                  footer={false}
+                >
+                  <Form
+                    autoComplete="off"
+                    form={form}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 14 }}
+                    layout="horizontal"
+                    className="mt-5"
+                    style={{ width: 600 }}
+                    onFinish={handleSubmit}
+                  >
+                    <span className="flex pl-[140px] pb-5">
+                      <Rate
+                        tooltips={desc}
+                        onChange={handleRateChange}
+                        value={value}
+                      />
+                    </span>
+                    <Form.Item label="Description" name="description">
+                      <Input.TextArea rows={3} />
+                    </Form.Item>
+                    <Space className="justify-end w-full pr-[150px]">
+                      <Form.Item className="mb-0">
+                        <Space>
+                          <Button onClick={handleCancel}>Cancel</Button>
+                          <Button
+                            type="primary"
+                            htmlType="submit"
+                            style={{ color: "black" }}
+                          >
+                            Rating
+                          </Button>
+                        </Space>
+                      </Form.Item>
+                    </Space>
+                  </Form>
+                </Modal>
               </div>
             </div>
             {courses.length > 0 && (

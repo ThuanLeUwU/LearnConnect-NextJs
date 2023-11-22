@@ -7,6 +7,8 @@ import { useState } from "react";
 import jwt from "jsonwebtoken";
 import UnProtectWrapper from "@/components/wrapper/UnProtecWrapper";
 import { http } from "@/api/http";
+import { Spin } from "antd";
+import { toast } from "sonner";
 
 export default function LoginPage() {
   const { user, jwtToken, googleSignIn, logOut, setUserLogin } = UserAuth();
@@ -14,13 +16,18 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [googleSignInLoading, setGoogleSignInLoading] = useState(false);
   // axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
 
   const handleSignIn = async () => {
     try {
+      setLoading(true);
       googleSignIn();
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -61,6 +68,7 @@ export default function LoginPage() {
       setErrorMessage("Please Input Password");
     } else {
       try {
+        setLoading(true);
         const response = await loginByEmail(email, password);
         const decodedToken = jwt.decode(response);
         let userData;
@@ -78,10 +86,14 @@ export default function LoginPage() {
         await fetchUser(decodedToken?.Id);
         setUserLogin(userData, response);
       } catch (error) {
+        setErrorMessage("Email or Password is not correct!!!");
         console.error("An error occurred while logging in:", error);
+      } finally {
+        setLoading(false);
       }
     }
   };
+
   const handleFormSubmit = (e) => {
     e.preventDefault();
     handleSignInEmailPassword(e);
@@ -91,57 +103,63 @@ export default function LoginPage() {
       <div className={styles["main-wrapper"]}>
         <div className="bg-[#fff]">
           <div className="container mx-auto max-w-screen-xl py-20">
-            <div className="grid lg:grid-cols-2 pt-6 px-10 pb-16 border border-solid border-opacity-20 border-[#30925533] rounded-10">
-              <div className="mx-auto pt-16">
-                <img src="/register-login.png" alt="Shape" />
+            {loading ? (
+              <div className="text-center text-5xl mt-5">
+                <Spin size="large" />
               </div>
-              <div className="">
-                <div className="mx-auto max-w-md">
-                  <h3 className="text-[30px] font-medium text-[#212832] px-10 pt-32">
-                    Login <span className="text-[#309255]">Now</span>
-                  </h3>
-                  <div className="pt-8">
-                    <form onSubmit={handleFormSubmit}>
-                      <div className={styles["single-form"]}>
-                        <input
-                          required
-                          type="email"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          placeholder="Email"
-                        />{" "}
-                      </div>
-                      <div className={styles["single-form"]}>
-                        <input
-                          type="password"
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                          placeholder="Password"
-                        />{" "}
-                      </div>
-                      <div className="mt-5 text-red-500 text-lg">
-                        {errorMessage}
-                      </div>
-                      <div className={styles["single-form"]}>
-                        <button
-                          className="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded-2xl py-4 px-3 leading-normal no-underline bg-[#309255] text-white hover:bg-black btn-hover-dark w-full transition-all duration-300 ease-in-out delay-0 my-2"
-                          onClick={handleSignInEmailPassword}
-                          type="submit"
-                        >
-                          Login
-                        </button>
-                        <button
-                          className="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded-2xl py-4 px-3 leading-normal no-underline bg-white text-[#309255] hover:bg-[#309255] btn-outline w-full border-[#a9f9c8] hover:text-white transition-all duration-300 ease-in-out delay-0 my-2"
-                          onClick={handleSignIn}
-                        >
-                          Login with Google
-                        </button>
-                      </div>
-                    </form>
+            ) : (
+              <div className="grid lg:grid-cols-2 pt-6 px-10 pb-16 border border-solid border-opacity-20 border-[#30925533] rounded-10">
+                <div className="mx-auto pt-16">
+                  <img src="/register-login.png" alt="Shape" />
+                </div>
+                <div className="">
+                  <div className="mx-auto max-w-md">
+                    <h3 className="text-[30px] font-medium text-[#212832] px-10 pt-32">
+                      Login <span className="text-[#309255]">Now</span>
+                    </h3>
+                    <div className="pt-8">
+                      <form onSubmit={handleFormSubmit}>
+                        <div className={styles["single-form"]}>
+                          <input
+                            required
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder="Email"
+                          />{" "}
+                        </div>
+                        <div className={styles["single-form"]}>
+                          <input
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            placeholder="Password"
+                          />{" "}
+                        </div>
+                        <div className="mt-5 text-red-500 text-lg">
+                          {errorMessage}
+                        </div>
+                        <div className={styles["single-form"]}>
+                          <button
+                            className="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded-2xl py-4 px-3 leading-normal no-underline bg-[#309255] text-white hover:bg-black btn-hover-dark w-full transition-all duration-300 ease-in-out delay-0 my-2"
+                            onClick={handleSignInEmailPassword}
+                            type="submit"
+                          >
+                            Login
+                          </button>
+                          <button
+                            className="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded-2xl py-4 px-3 leading-normal no-underline bg-white text-[#309255] hover:bg-[#309255] btn-outline w-full border-[#a9f9c8] hover:text-white transition-all duration-300 ease-in-out delay-0 my-2"
+                            onClick={handleSignIn}
+                          >
+                            Login with Google
+                          </button>
+                        </div>
+                      </form>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>

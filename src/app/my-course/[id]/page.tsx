@@ -182,10 +182,10 @@ export default function AfterEnroll({ params }: any) {
     };
 
     fetchData();
-    if (testVideo.length > 0) {
-      setVideoSrc(testVideo[0].contentUrl);
-      setActiveVideoIndex(0);
-    }
+    // if (testVideo.length > 0) {
+    //   setVideoSrc(testVideo[0].contentUrl);
+    //   setActiveVideoIndex(0);
+    // }
   }, []);
 
   const [pdf, setPDF] = useState<number>();
@@ -293,10 +293,21 @@ export default function AfterEnroll({ params }: any) {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const [maxTime, setMaxTime] = useState<number>(0); //truyen maxTime tu API response
-
+  const [currentTime, setCurrentTime] = useState<number>(0);
+  const [totalTime, setTotalTime] = useState(0);
   const handleOnTimeUpdate = (e) => {
+    setCurrentTime(e.target.currentTime);
     if (videoRef.current && e.target.currentTime > maxTime) {
       setMaxTime(videoRef.current.played.end(0));
+    }
+    if (Math.floor(e.target.currentTime) % 5 == 0) {
+      http.post(
+        `https://learnconnectapitest.azurewebsites.net/api/learning-process/save_process?userId=${id}&lectureId=${
+          testVideo[activeVideoIndex].id
+        }&courseId=${idCourse}&currentTime=${Math.floor(
+          currentTime
+        )}&maxTime=${Math.floor(maxTime)}&totalTime=${totalTime}`
+      );
     }
   };
 
@@ -308,7 +319,8 @@ export default function AfterEnroll({ params }: any) {
 
   const handleOnProgress = () => {
     if (videoRef.current) {
-      videoRef.current.currentTime = maxTime; //truyen currentTime tu API response
+      videoRef.current.currentTime = currentTime; //truyen currentTime tu API response
+      setTotalTime(Math.floor(videoRef.current.duration));
     }
   };
 

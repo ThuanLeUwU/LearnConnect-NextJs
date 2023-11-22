@@ -88,7 +88,13 @@ const MentorRequest = () => {
     isOpen: boolean;
     actionType: string;
     mentorUserId: number | null;
-  }>({ isOpen: false, actionType: "", mentorUserId: null });
+    specializationId: number | null;
+  }>({
+    isOpen: false,
+    actionType: "",
+    mentorUserId: null,
+    specializationId: null,
+  });
   axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
   const [noteInput, setNoteInput] = useState("");
 
@@ -125,30 +131,33 @@ const MentorRequest = () => {
     fetchData();
   }, []);
 
-  const handleApprove = (mentorUserId: number) => {
+  const handleApprove = (mentorUserId: number, specializationId: number) => {
     setConfirmationData({
       isOpen: true,
       actionType: "approve",
       mentorUserId,
+      specializationId,
     });
   };
 
-  const handleReject = (mentorUserId: number) => {
+  const handleReject = (mentorUserId: number, specializationId: number) => {
     setConfirmationData({
       isOpen: true,
       actionType: "reject",
       mentorUserId,
+      specializationId,
     });
   };
 
   const handleApproveConfirmation = async (
     mentorUserId: number | null,
-    rejectReason: string
+    rejectReason: string,
+    specializationId: number | null
   ) => {
     try {
       const reason = rejectReason || "Your request is Approve";
       await axios.post(
-        `https://learnconnectapitest.azurewebsites.net/api/mentor/process-mentor-request?staffUserId=${userData?.id}&mentorUserId=${mentorUserId}&acceptRequest=true&rejectReason=${reason}`
+        `https://learnconnectapitest.azurewebsites.net/api/mentor/process-mentor-request?staffUserId=${userData?.id}&mentorUserId=${mentorUserId}&specializationId=${specializationId}&acceptRequest=true&rejectReason=${reason}`
       );
       fetchData();
       toast.success("Mentor request approved successfully");
@@ -160,12 +169,13 @@ const MentorRequest = () => {
 
   const handleRejectConfirmation = async (
     mentorUserId: number | null,
-    rejectReason: string
+    rejectReason: string,
+    specializationId: number | null
   ) => {
     try {
       const reason = rejectReason || "Your request is Not Approve";
       await axios.post(
-        `https://learnconnectapitest.azurewebsites.net/api/mentor/process-mentor-request?staffUserId=${userData?.id}&mentorUserId=${mentorUserId}&acceptRequest=false&rejectReason=${reason}`
+        `https://learnconnectapitest.azurewebsites.net/api/mentor/process-mentor-request?staffUserId=${userData?.id}&mentorUserId=${mentorUserId}&specializationId=${specializationId}&acceptRequest=false&rejectReason=${reason}`
       );
       fetchData();
       toast.success("Mentor request rejected successfully");
@@ -373,7 +383,11 @@ const MentorRequest = () => {
                                         color="success"
                                         variant="contained"
                                         onClick={() =>
-                                          handleApprove(data.mentor.userId)
+                                          handleApprove(
+                                            data.mentor.userId,
+                                            data.specializationOfMentor
+                                              .specializationId
+                                          )
                                         }
                                       >
                                         Approve
@@ -386,7 +400,11 @@ const MentorRequest = () => {
                                         color="error"
                                         className="w-full my-1 bg-red-500 text-white"
                                         onClick={() =>
-                                          handleReject(data.mentor.userId)
+                                          handleReject(
+                                            data.mentor.userId,
+                                            data.specializationOfMentor
+                                              .specializationId
+                                          )
                                         }
                                       >
                                         Reject
@@ -482,6 +500,7 @@ const MentorRequest = () => {
               isOpen: false,
               actionType: "",
               mentorUserId: null,
+              specializationId: null,
             })
           }
           aria-labelledby="modal-title"
@@ -521,18 +540,21 @@ const MentorRequest = () => {
                     if (confirmationData.actionType === "approve") {
                       handleApproveConfirmation(
                         confirmationData.mentorUserId,
-                        noteInput
+                        noteInput,
+                        confirmationData.specializationId
                       );
                     } else {
                       handleRejectConfirmation(
                         confirmationData.mentorUserId,
-                        noteInput
+                        noteInput,
+                        confirmationData.specializationId
                       );
                     }
                     setConfirmationData({
                       isOpen: false,
                       actionType: "",
                       mentorUserId: null,
+                      specializationId: null,
                     });
                   }}
                   className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2"
@@ -545,6 +567,7 @@ const MentorRequest = () => {
                       isOpen: false,
                       actionType: "",
                       mentorUserId: null,
+                      specializationId: null,
                     })
                   }
                   className="bg-gray-400 text-white px-4 py-2 rounded-md"
