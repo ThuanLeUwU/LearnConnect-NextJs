@@ -265,12 +265,9 @@ const MentorRequest = () => {
             p: 5,
           }}
         >
+          <Typography variant="h3">Request Become Mentor</Typography>
+          <p className="mb-3"></p>
           <Card>
-            <Box display="flex" justifyContent="center">
-              <Typography textTransform="uppercase" variant="h3">
-                Request Become Mentor
-              </Typography>
-            </Box>
             <Paper sx={{ width: "100%" }}>
               {isLoading ? (
                 <div className="text-center text-5xl mt-5">

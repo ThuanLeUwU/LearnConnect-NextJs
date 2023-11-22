@@ -7,6 +7,21 @@ import { useRouter } from "next/navigation";
 import { UserAuth } from "@/app/context/AuthContext";
 import Modal from "@mui/material/Modal";
 import axios from "axios";
+import {
+  Box,
+  Card,
+  Link,
+  Paper,
+  Table,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TablePagination,
+  TableRow,
+  TableSortLabel,
+  Typography,
+} from "@mui/material";
+import { Spin } from "antd";
 
 export type Rating = {
   ratingInfo: any;
@@ -18,7 +33,9 @@ export type Rating = {
   ratingBy: number;
   courseId: number;
   mentorId: number;
+  email: string;
   userRatingInfo: {
+    email: string;
     fullName: string;
     imageUser: string;
   };
@@ -36,6 +53,11 @@ const StaffRatingTable = () => {
   const [rating, setRating] = useState<Rating[]>([]);
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [selectedRatingId, setSelectedRatingId] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [page, setPage] = useState(0);
+  const [order, setOrder] = useState<"asc" | "desc">("asc");
+  const [orderBy, setOrderBy] = useState<string>("verificationDate");
 
   const fetchData = async () => {
     let token;
@@ -48,6 +70,8 @@ const StaffRatingTable = () => {
         setRating(responseData?.data);
       } catch (error) {
         console.error("Error fetching data:", error);
+      } finally {
+        setIsLoading(false);
       }
     }
   };
@@ -82,22 +106,35 @@ const StaffRatingTable = () => {
     }
   };
 
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  function getComparator(
+    order: "asc" | "desc",
+    orderBy: string
+  ): (a: any, b: any) => number {
+    return (a, b) => {
+      if (order === "asc") {
+        return a[orderBy] > b[orderBy] ? 1 : -1;
+      } else {
+        return b[orderBy] > a[orderBy] ? 1 : -1;
+      }
+    };
+  }
   return (
     <div className="w-full">
       <div>
         <div className=" text-[#212832] ">
           <div className="flex justify-center bg-[#e7f8ee] py-4 rounded-md">
             <ul className="tabs flex space-x-5 ">
-              {/* <li
-                className={`cursor-pointer rounded-md ${
-                  activeTab === "tab1" ? "bg-[#309255] text-white" : "bg-white"
-                }`}
-                onClick={() => handleTabClick("tab1", "all")}
-              >
-                <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#309255]">
-                  All Ratings
-                </button>
-              </li> */}
               <li
                 className={`cursor-pointer rounded-md ${
                   activeTab === "tab2" ? "bg-[#309255] text-white" : "bg-white"
@@ -122,299 +159,318 @@ const StaffRatingTable = () => {
           </div>
 
           <div className="tab-content">
-            {/* {activeTab === "tab1" && (
-              <div className="tab-reviews pb-3">
-                <div className="reviews-wrapper reviews-active">
-                  <div className="swiper-container">
-                    <div className="swiper-wrapper">
-                      {rating &&
-                        rating.length > 0 &&
-                        rating.map((item) => {
-                          return (
-                            <>
-                              <div
-                                key={item.ratingInfo.id}
-                                className="single-review mt-3.5 border border-opacity-20 border-[#309255] p-7 rounded-md mx-5"
-                              >
-                                <div className="review-author flex justify-between">
-                                  <div className="flex flex-row">
-                                    <div className="author-thumb p-2 rounded-full">
-                                      <img
-                                        src={item.userRatingInfo.imageUser}
-                                        alt="Author"
-                                        className="w-16 h-16 rounded-full"
-                                      />
-                                    </div>
-                                    <div className="author-content pl-4 flex flex-col justify-center">
-                                      <div className=" font-bold text-xl">
-                                        {item.userRatingInfo.fullName}
-                                      </div>
-                                      <span className=" text-[#309255] font-light">
-                                        {item.ratingInfo.timeStamp
-                                          ? new Date(
-                                              item.ratingInfo.timeStamp
-                                            ).toLocaleTimeString("en-US")
-                                          : ""}{" "}
-                                        {item.ratingInfo.timeStamp
-                                          ? new Date(
-                                              item.ratingInfo.timeStamp
-                                            ).toLocaleDateString("en-GB", {
-                                              day: "numeric",
-                                              month: "long",
-                                              year: "numeric",
-                                            })
-                                          : ""}{" "}
-                                      </span>
-                                    </div>
-                                  </div>
-                                  <div className="items-center">
-                                    <Rating
-                                      size="large"
-                                      name="half-rating-read"
-                                      max={5}
-                                      precision={0.1}
-                                      readOnly
-                                      value={item.ratingInfo.rating1}
-                                      className="flex items-center text-center justify-center mx-auto"
-                                    />
-                                    <div className="flex justify-center">
-                                      {item.ratingInfo.status === 0 ? (
-                                        <button
-                                          onClick={() =>
-                                            handleRatingStatusUpdate(
-                                              item.ratingInfo.id,
-                                              1
-                                            )
-                                          }
-                                          className="px-5 py-3 mx-2 bg-[#309255] w-[100px] text-white rounded-lg"
-                                        >
-                                          Display
-                                        </button>
-                                      ) : (
-                                        <button
-                                          onClick={() => {
-                                            setSelectedRatingId(
-                                              item.ratingInfo.id
-                                            );
-                                            setIsConfirmationModalOpen(true);
-                                          }}
-                                          className="px-5 py-3 mx-2 bg-red-500 w-[100px] text-white rounded-lg"
-                                        >
-                                          Hidden
-                                        </button>
-                                      )}
-                                    </div>
-                                  </div>
-                                </div>
-                                {item.ratingInfo.comment == "null" ? (
-                                  <></>
-                                ) : (
-                                  <p className="mt-3 font-semibold text-[#52565b] ">
-                                    {item.ratingInfo.comment}
-                                  </p>
-                                )}
-                              </div>
-                            </>
-                          );
-                        })}
-                    </div>
-                    <div className="swiper-pagination"></div>
-                  </div>
-                </div>
-              </div>
-            )} */}
             {activeTab === "tab2" && (
-              <div className="tab-reviews ">
-                <div className="reviews-wrapper reviews-active">
-                  <div className="swiper-container">
-                    <div className="swiper-wrapper">
-                      {rating &&
-                        rating.length > 0 &&
-                        rating.map((item) => {
-                          return (
-                            <>
-                              <div className="single-review mt-3.5 border border-opacity-20 border-[#309255] p-7 rounded-md mx-5 h-[200px]">
-                                <div className="review-author flex justify-between">
-                                  <div className="flex flex-row">
-                                    <div className="author-thumb p-2 rounded-full">
-                                      <img
-                                        src={item.userRatingInfo.imageUser}
-                                        alt="Author"
-                                        className="w-16 h-16 rounded-full"
-                                      />
-                                    </div>
-                                    <div className="author-content pl-4 flex flex-col justify-center">
-                                      <div className=" font-bold text-xl">
-                                        {item.userRatingInfo.fullName}
-                                      </div>
-                                      <span className=" text-[#309255] font-light">
-                                        {item.ratingInfo.timeStamp
-                                          ? new Date(
-                                              item.ratingInfo.timeStamp
-                                            ).toLocaleTimeString("en-US")
-                                          : ""}{" "}
-                                        {item.ratingInfo.timeStamp
-                                          ? new Date(
-                                              item.ratingInfo.timeStamp
-                                            ).toLocaleDateString("en-GB", {
-                                              day: "numeric",
-                                              month: "long",
-                                              year: "numeric",
-                                            })
-                                          : ""}{" "}
-                                      </span>
-                                    </div>
-                                  </div>
-                                  <div className="">
-                                    <Rating
-                                      size="large"
-                                      name="half-rating-read"
-                                      max={5}
-                                      precision={0.1}
-                                      readOnly
-                                      value={item.ratingInfo.rating1}
-                                    />
-                                    <div className="flex justify-center">
-                                      {item.ratingInfo.status === 0 ? (
-                                        <button
-                                          onClick={() =>
-                                            handleRatingStatusUpdate(
-                                              item.ratingInfo.id,
-                                              1
-                                            )
-                                          }
-                                          className="px-5 py-3 mx-2 bg-[#309255] w-[100px] text-white rounded-lg"
-                                        >
-                                          Display
-                                        </button>
-                                      ) : (
-                                        <button
-                                          onClick={() => {
-                                            setSelectedRatingId(
-                                              item.ratingInfo.id
-                                            );
-                                            setIsConfirmationModalOpen(true);
-                                          }}
-                                          className="px-5 py-3 mx-2 bg-red-500 w-[100px] text-white rounded-lg"
-                                        >
-                                          Hidden
-                                        </button>
-                                      )}
-                                    </div>
-                                  </div>
-                                </div>
-                                {item.ratingInfo.comment == "null" ? (
-                                  <></>
-                                ) : (
-                                  <p className="mt-3 font-semibold text-[#52565b] ">
-                                    {item.ratingInfo.comment}
-                                  </p>
-                                )}
-                              </div>
-                            </>
-                          );
-                        })}
-                    </div>
-                    <div className="swiper-pagination"></div>
-                  </div>
-                </div>
+              <div className="min-h-[1000px] w-full">
+                <Box
+                  component="main"
+                  sx={{
+                    flexGrow: 1,
+                    py: 5,
+                    p: 5,
+                  }}
+                >
+                  <Typography variant="h3">FeedBack</Typography>
+                  <p className="pb-5">
+                    All reviews, starting with the most recent, are listed here
+                  </p>
+                  <Card>
+                    <Paper sx={{ width: "100%" }}>
+                      {isLoading ? (
+                        <div className="text-center text-5xl mt-5">
+                          <Spin size="large" />
+                        </div>
+                      ) : (
+                        <TableContainer>
+                          <Table
+                            sx={{ minWidth: 750 }}
+                            aria-labelledby="tableTitle"
+                            size="medium"
+                          >
+                            <TableHead>
+                              <TableRow className="">
+                                <TableCell>
+                                  <TableSortLabel className="w-[110px] text-[14px]">
+                                    Rating Date
+                                  </TableSortLabel>
+                                </TableCell>
+                                <TableCell className="w-[400px] text-[14px]">
+                                  Rating by
+                                </TableCell>
+                                <TableCell className="text-[14px]">
+                                  Rating
+                                </TableCell>
+                                <TableCell className="w-[600px] text-[14px]">
+                                  Description
+                                </TableCell>
+
+                                <TableCell
+                                  align="center"
+                                  className="text-[14px]"
+                                >
+                                  Action
+                                </TableCell>
+                              </TableRow>
+                              {rating &&
+                                rating
+                                  .slice(
+                                    page * rowsPerPage,
+                                    page * rowsPerPage + rowsPerPage
+                                  )
+                                  .map((rating) => (
+                                    <TableRow key={rating.id}>
+                                      <TableCell>
+                                        <div>
+                                          {new Date(
+                                            rating.ratingInfo.timeStamp
+                                          ).toLocaleDateString()}
+                                        </div>
+                                        <div>
+                                          {new Date(
+                                            rating.ratingInfo.timeStamp
+                                          ).toLocaleTimeString()}
+                                        </div>
+                                      </TableCell>
+                                      <TableCell>
+                                        <div className="flex">
+                                          <img
+                                            src={
+                                              rating.userRatingInfo.imageUser
+                                            }
+                                            alt="Author"
+                                            className="w-28 h-28 rounded-lg border border-opacity-20 border-[#309255]"
+                                          />
+                                          <div className="mt-2">
+                                            <p className="ml-2 text-[20px]">
+                                              {rating.userRatingInfo.fullName}
+                                            </p>
+                                            <p className="ml-2">
+                                              {rating.userRatingInfo.email}
+                                            </p>
+                                          </div>
+                                        </div>
+                                      </TableCell>
+                                      <TableCell>
+                                        <Rating
+                                          size="large"
+                                          name="half-rating-read"
+                                          max={5}
+                                          precision={0.1}
+                                          readOnly
+                                          value={rating.ratingInfo.rating1}
+                                        />
+                                      </TableCell>
+                                      <TableCell>
+                                        <p className="text-[16px]">
+                                          {" "}
+                                          {rating.ratingInfo.comment}
+                                        </p>
+                                      </TableCell>
+                                      <TableCell>
+                                        <div className="flex justify-center">
+                                          {rating.ratingInfo.status === 0 ? (
+                                            <button
+                                              onClick={() =>
+                                                handleRatingStatusUpdate(
+                                                  rating.ratingInfo.id,
+                                                  1
+                                                )
+                                              }
+                                              className="px-5 py-3 mx-2 bg-[#309255] w-[100px] text-white rounded-lg"
+                                            >
+                                              Display
+                                            </button>
+                                          ) : (
+                                            <button
+                                              onClick={() => {
+                                                setSelectedRatingId(
+                                                  rating.ratingInfo.id
+                                                );
+                                                setIsConfirmationModalOpen(
+                                                  true
+                                                );
+                                              }}
+                                              className="px-5 py-3 mx-2 bg-red-500 w-[100px] text-white rounded-lg"
+                                            >
+                                              Hidden
+                                            </button>
+                                          )}
+                                        </div>
+                                      </TableCell>
+                                    </TableRow>
+                                  ))}
+                            </TableHead>
+                          </Table>
+                        </TableContainer>
+                      )}
+                      <TablePagination
+                        rowsPerPageOptions={[5, 10, 25]}
+                        component="div"
+                        count={rating ? rating.length : 0}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        onPageChange={handleChangePage}
+                        onRowsPerPageChange={handleChangeRowsPerPage}
+                      />
+                    </Paper>
+                  </Card>
+                </Box>
               </div>
             )}
             {activeTab === "tab3" && (
-              <div className="tab-reviews pb-3 ">
-                <div className="reviews-wrapper reviews-active">
-                  <div className="swiper-container">
-                    <div className="swiper-wrapper">
-                      {rating &&
-                        rating.length > 0 &&
-                        rating.map((item) => {
-                          return (
-                            <>
-                              <div className="single-review mt-3.5 border border-opacity-20 border-[#309255] p-7 rounded-md mx-5">
-                                <div className="review-author flex justify-between">
-                                  <div className="flex flex-row">
-                                    <div className="author-thumb p-2 rounded-full">
-                                      <img
-                                        src={item.userRatingInfo.imageUser}
-                                        alt="Author"
-                                        className="w-16 h-16 rounded-full"
-                                      />
-                                    </div>
-                                    <div className="author-content pl-4 flex flex-col justify-center">
-                                      <div className=" font-bold text-xl">
-                                        {item.userRatingInfo.fullName}
-                                      </div>
-                                      <span className=" text-[#309255] font-light">
-                                        {item.ratingInfo.timeStamp
-                                          ? new Date(
-                                              item.ratingInfo.timeStamp
-                                            ).toLocaleTimeString("en-US")
-                                          : ""}{" "}
-                                        {item.ratingInfo.timeStamp
-                                          ? new Date(
-                                              item.ratingInfo.timeStamp
-                                            ).toLocaleDateString("en-GB", {
-                                              day: "numeric",
-                                              month: "long",
-                                              year: "numeric",
-                                            })
-                                          : ""}{" "}
-                                      </span>
-                                    </div>
-                                  </div>
-                                  <div className="">
-                                    <Rating
-                                      size="large"
-                                      name="half-rating-read"
-                                      max={5}
-                                      precision={0.1}
-                                      readOnly
-                                      value={item.ratingInfo.rating1}
-                                    />
-                                    <div className="flex justify-center">
-                                      {item.ratingInfo.status === 0 ? (
-                                        <button
-                                          onClick={() =>
-                                            handleRatingStatusUpdate(
-                                              item.ratingInfo.id,
-                                              1
-                                            )
-                                          }
-                                          className="px-5 py-3 mx-2 bg-[#309255] w-[100px] text-white rounded-lg"
-                                        >
-                                          Display
-                                        </button>
-                                      ) : (
-                                        <button
-                                          onClick={() => {
-                                            setSelectedRatingId(
-                                              item.ratingInfo.id
-                                            );
-                                            setIsConfirmationModalOpen(true);
-                                          }}
-                                          className="px-5 py-3 mx-2 bg-red-500 w-[100px] text-white rounded-lg"
-                                        >
-                                          Hidden
-                                        </button>
-                                      )}
-                                    </div>
-                                  </div>
-                                </div>
-                                {item.ratingInfo.comment == "null" ? (
-                                  <></>
-                                ) : (
-                                  <p className="mt-3 font-semibold text-[#52565b] ">
-                                    {item.ratingInfo.comment}
-                                  </p>
-                                )}
-                              </div>
-                            </>
-                          );
-                        })}
-                    </div>
-                    <div className="swiper-pagination"></div>
-                  </div>
-                </div>
+              <div className="min-h-[1000px] w-full">
+                <Box
+                  component="main"
+                  sx={{
+                    flexGrow: 1,
+                    py: 5,
+                    p: 5,
+                  }}
+                >
+                  <Typography variant="h3">FeedBack</Typography>
+                  <p className="pb-5">
+                    All reviews, starting with the most recent, are listed here
+                  </p>
+                  <Card>
+                    <Paper sx={{ width: "100%" }}>
+                      {isLoading ? (
+                        <div className="text-center text-5xl mt-5">
+                          <Spin size="large" />
+                        </div>
+                      ) : (
+                        <TableContainer>
+                          <Table
+                            sx={{ minWidth: 750 }}
+                            aria-labelledby="tableTitle"
+                            size="medium"
+                          >
+                            <TableHead>
+                              <TableRow className="">
+                                <TableCell>
+                                  <TableSortLabel className="w-[110px] text-[14px]">
+                                    Rating Date
+                                  </TableSortLabel>
+                                </TableCell>
+                                <TableCell className="w-[400px] text-[14px]">
+                                  Rating by
+                                </TableCell>
+                                <TableCell className="text-[14px]">
+                                  Rating
+                                </TableCell>
+                                <TableCell className="w-[600px] text-[14px]">
+                                  Description
+                                </TableCell>
+
+                                <TableCell
+                                  align="center"
+                                  className="text-[14px]"
+                                >
+                                  Action
+                                </TableCell>
+                              </TableRow>
+                              {rating &&
+                                rating
+                                  .slice(
+                                    page * rowsPerPage,
+                                    page * rowsPerPage + rowsPerPage
+                                  )
+                                  .map((rating) => (
+                                    <TableRow key={rating.id}>
+                                      <TableCell>
+                                        <div>
+                                          {new Date(
+                                            rating.ratingInfo.timeStamp
+                                          ).toLocaleDateString()}
+                                        </div>
+                                        <div>
+                                          {new Date(
+                                            rating.ratingInfo.timeStamp
+                                          ).toLocaleTimeString()}
+                                        </div>
+                                      </TableCell>
+                                      <TableCell>
+                                        <div className="flex">
+                                          <img
+                                            src={
+                                              rating.userRatingInfo.imageUser
+                                            }
+                                            alt="Author"
+                                            className="w-28 h-28 rounded-lg border border-opacity-20 border-[#309255]"
+                                          />
+                                          <div className="mt-2">
+                                            <p className="ml-2 text-[20px]">
+                                              {rating.userRatingInfo.fullName}
+                                            </p>
+                                            <p className="ml-2">
+                                              {rating.userRatingInfo.email}
+                                            </p>
+                                          </div>
+                                        </div>
+                                      </TableCell>
+                                      <TableCell>
+                                        <Rating
+                                          size="large"
+                                          name="half-rating-read"
+                                          max={5}
+                                          precision={0.1}
+                                          readOnly
+                                          value={rating.ratingInfo.rating1}
+                                        />
+                                      </TableCell>
+                                      <TableCell>
+                                        <p className="text-[16px]">
+                                          {" "}
+                                          {rating.ratingInfo.comment}
+                                        </p>
+                                      </TableCell>
+                                      <TableCell>
+                                        <div className="flex justify-center">
+                                          {rating.ratingInfo.status === 0 ? (
+                                            <button
+                                              onClick={() =>
+                                                handleRatingStatusUpdate(
+                                                  rating.ratingInfo.id,
+                                                  1
+                                                )
+                                              }
+                                              className="px-5 py-3 mx-2 bg-[#309255] w-[100px] text-white rounded-lg"
+                                            >
+                                              Display
+                                            </button>
+                                          ) : (
+                                            <button
+                                              onClick={() => {
+                                                setSelectedRatingId(
+                                                  rating.ratingInfo.id
+                                                );
+                                                setIsConfirmationModalOpen(
+                                                  true
+                                                );
+                                              }}
+                                              className="px-5 py-3 mx-2 bg-red-500 w-[100px] text-white rounded-lg"
+                                            >
+                                              Hidden
+                                            </button>
+                                          )}
+                                        </div>
+                                      </TableCell>
+                                    </TableRow>
+                                  ))}
+                            </TableHead>
+                          </Table>
+                        </TableContainer>
+                      )}
+                      <TablePagination
+                        rowsPerPageOptions={[5, 10, 25]}
+                        component="div"
+                        count={rating ? rating.length : 0}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        onPageChange={handleChangePage}
+                        onRowsPerPageChange={handleChangeRowsPerPage}
+                      />
+                    </Paper>
+                  </Card>
+                </Box>
               </div>
             )}
           </div>

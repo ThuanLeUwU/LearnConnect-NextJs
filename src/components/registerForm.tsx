@@ -384,6 +384,7 @@ export const RegisterForm = () => {
                 beforeUpload={beforeUpload}
                 action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
                 listType="picture-card"
+                maxCount={1}
               >
                 Font of ID
               </Upload>
@@ -393,6 +394,7 @@ export const RegisterForm = () => {
                 beforeUpload={beforeUpload}
                 action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
                 listType="picture-card"
+                maxCount={1}
               >
                 Back of ID
               </Upload>

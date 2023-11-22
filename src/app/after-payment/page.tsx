@@ -25,23 +25,6 @@ const AfterPayment = () => {
   const { id, jwtToken, role } = UserAuth();
   const router = useRouter();
 
-  useEffect(() => {
-    if (role === 0) {
-      router.push(`/user-manage`);
-    }
-    if (role === 1) {
-      router.push(`/staff-page`);
-    }
-    // if (role === 2) {
-    //   router.push(`/instructorcourses`);
-    // }
-    if (role === 3) {
-      router.push(`/`);
-    }
-    if (role === -1) {
-      router.push(`/`);
-    }
-  });
   axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
   console.log("jwtToken", jwtToken);
   const [urlParams, setUrlParams] = useState<URLSearchParams | null>(null);

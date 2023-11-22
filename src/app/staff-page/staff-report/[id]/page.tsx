@@ -3,7 +3,8 @@ import React, { useEffect, useState } from "react";
 import LeftNavbar from "@/components/left-navbar/page";
 import axios from "axios";
 import Modal from "@mui/material/Modal";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { GrFormPrevious } from "react-icons/gr";
 interface Report {
   id: number;
   reportType: string;
@@ -22,6 +23,7 @@ const StaffReportID = ({ params }: any) => {
   const idCourse = params.id;
   const target = searchParam?.get("target");
   const [selectedReportId, setSelectedReportId] = useState<number | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,6 +42,10 @@ const StaffReportID = ({ params }: any) => {
     fetchData();
   }, [idCourse]);
 
+  const handleBack = () => {
+    router.push(`/staff-page/staff-report`);
+  };
+
   return (
     <div className="flex">
       <LeftNavbar
@@ -50,11 +56,22 @@ const StaffReportID = ({ params }: any) => {
       />
 
       <div className="w-full">
-        <div className="flex justify-end">
-          <button className="mx-5 my-3 px-5 py-3 bg-red-500 rounded-lg text-white">
-            Ban this {target}
-          </button>
+        <div className="flex">
+          <div className="">
+            <button
+              className="mx-5 my-3 px-5 py-3 rounded-lg text-black bg-[#e7f8ee]"
+              onClick={handleBack}
+            >
+              <GrFormPrevious className="text-2xl" />
+            </button>
+          </div>
+          <div className="ml-auto">
+            <button className="mx-5 my-3 px-5 py-3 bg-red-500 rounded-lg text-white">
+              Ban this {target}
+            </button>
+          </div>
         </div>
+
         {reportData.length > 0 ? (
           reportData.map((report) => (
             <div
@@ -62,7 +79,7 @@ const StaffReportID = ({ params }: any) => {
               className="single-review mt-3.5 border border-opacity-20 border-[#309255] p-5 rounded-md mx-5 h-[250px]"
             >
               <div className="review-author flex justify-between">
-                <div className="flex flex-row">
+                <div className="flex flex-row mb-3">
                   <div className="author-thumb p-2 rounded-full">
                     <img
                       src={report.reportByNavigation.profilePictureUrl}

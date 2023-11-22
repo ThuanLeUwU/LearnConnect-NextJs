@@ -55,9 +55,9 @@ export default function AfterEnroll({ params }: any) {
     if (role === 1) {
       router.push(`/staff-page`);
     }
-    if (role === 2) {
-      router.push(`/instructorcourses`);
-    }
+    // if (role === 2) {
+    //   router.push(`/instructorcourses`);
+    // }
     // if (role === 3) {
     //   router.push(`/`);
     // }

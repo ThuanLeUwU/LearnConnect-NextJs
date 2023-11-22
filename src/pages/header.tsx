@@ -142,7 +142,6 @@ const Header = () => {
     }
   };
 
-  const handleSwitchRoleStudent = () => {};
   return (
     <div className={`${headerStyles.header_section}`}>
       {!userData ? (
@@ -162,8 +161,11 @@ const Header = () => {
             </div>
             <ul className={`${headerStyles.header_login_right}`}>
               {userData?.role === 2 ? (
-                <button onClick={handleSwitchRole}>
-                  Switch Role {role === 3 ? "mentor" : "student"}
+                <button
+                  onClick={handleSwitchRole}
+                  className="text-white border border-solid border-[#309255] border-opacity-20 rounded-lg bg-[#309255] py-1 px-3"
+                >
+                  Switch role {role === 3 ? "mentor" : "student"}
                 </button>
               ) : (
                 <></>
@@ -173,12 +175,12 @@ const Header = () => {
                   <AiFillBell />
                 </button>
                 {notification && (
-                  <div className="origin-top-right absolute right-0 mt-2 w-[450px] rounded-lg shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-20">
+                  <div
+                    className="origin-top-right absolute right-0 mt-2 w-[450px] rounded-lg shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-20"
+                    id="dropdown-menu"
+                  >
                     {notificationContent && notificationContent.length > 0 ? (
-                      <ul
-                        className="divide-y divide-gray-200 rounded-lg"
-                        id="dropdown-menu"
-                      >
+                      <ul className="divide-y divide-gray-200 rounded-lg">
                         {notificationContent.slice(0, 7).map((item) => {
                           const date = new Date(item.timeStamp);
                           const now = Date.now();
@@ -238,16 +240,14 @@ const Header = () => {
                         You don&apos;t have any notification.
                       </div>
                     )}
-                    <a
-                      href="#"
+                    <button
                       onClick={() => {
                         handleClickSeeAll();
-                        closeDropdownNotification();
                       }}
-                      className="block text-center text-sm text-gray-700 py-2  bg-[#e7f8ee] rounded-br-lg rounded-bl-lg hover:rounded-bl-lg hover:rounded-br-lg"
+                      className="block text-center text-sm text-gray-700 py-2  bg-[#e7f8ee] rounded-br-lg rounded-bl-lg hover:rounded-bl-lg hover:rounded-br-lg w-full"
                     >
                       See all notifications
-                    </a>
+                    </button>
                   </div>
                 )}
               </li>
