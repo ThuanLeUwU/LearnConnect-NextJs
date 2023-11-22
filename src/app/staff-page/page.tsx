@@ -33,7 +33,7 @@ const StaffPage = () => {
         page1={"#"}
         page2={"/staff-page/staff-rating"}
         page3={"/staff-page/staff-report"}
-        page4={"#"}
+        page4={"/staff-page/moderation"}
       />
       <MentorRequest />
     </div>

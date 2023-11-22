@@ -324,7 +324,7 @@ export default function AfterEnroll({ params }: any) {
           )}
           {videoSrc && (
             <>
-              {pdf === 99 ? (
+              {pdf === 1 ? (
                 <video
                   width="full"
                   height="full"
@@ -338,14 +338,14 @@ export default function AfterEnroll({ params }: any) {
                   <source src={videoSrc} type="video/mp4" />
                 </video>
               ) : (
-                <>
-                  <Document
-                    file="https://firebasestorage.googleapis.com/v0/b/learnconnect-6f324.appspot.com/o/videos%2Fbo-cau-hoi.pdf?alt=media&token=adb72de1-029d-4b56-99d2-8de5abafee65"
-                    onLoadSuccess={onDocumentLoadSuccess}
-                  >
-                    <Page pageNumber={pageNumber} />
-                  </Document>
-                </>
+                // <></>
+                <iframe
+                  title="PDF Viewer"
+                  width="100%"
+                  height="438px"
+                  src={videoSrc}
+                  aria-readonly
+                ></iframe>
               )}
             </>
           )}

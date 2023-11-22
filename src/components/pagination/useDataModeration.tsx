@@ -1,42 +1,23 @@
-import { http } from "@/api/http";
 import { UserAuth } from "@/app/context/AuthContext";
 import axios from "axios";
 import { useState, useEffect } from "react";
+import { CourseItem } from "./useDataFetcher";
+import { http } from "@/api/http";
+import { ListCourse } from "./useDataCoursesInstructor";
 
-export type ListCourse = {
-  id: number;
-  name: string;
-  description: string;
-  shortDescription: string;
-  imageUrl: string;
-  price: string;
-  totalEnrollment: number;
-  lectureCount: number;
-  contentLength: number;
-  averageRating: number;
-  createDate: string;
-  status: number;
-  categoryId: number;
-  mentorId: number;
-  categoryName: string;
-  totalRatingCount: number;
-  specializationId: number;
-  specializationName: string;
-};
-
-const useDataCoursesInstructor = () => {
+const useDataModeration = () => {
   const refetchList = async () => {
     const page = Math.min(currentPage + 1, totalPages);
     if (id) {
-      const responseUser = await http.get(
-        `/course/get-courses-by-mentorUserId?userId=${id}&currentPage=${page}&pageSize=${pagesize}`
+      const responseData = await http.get(
+        `/course/get-courses-pending?currentPage=${page}&pageSize=${pagesize}`
       );
-      setListCourseInstructor(responseUser?.data.courses);
+      setListCourseModeration(responseData?.data.courses);
     }
   };
 
   const { id } = UserAuth();
-  const [listCourseInstructor, setListCourseInstructor] = useState<
+  const [listCourseModeration, setListCourseModeration] = useState<
     ListCourse[]
   >([]);
   const pagesize = 6;
@@ -49,9 +30,9 @@ const useDataCoursesInstructor = () => {
       const page = Math.min(currentPage + 1, totalPages);
       try {
         const responseData = await http.get(
-          `/course/get-courses-by-mentorUserId?userId=${id}&currentPage=${page}&pageSize=${pagesize}`
+          `/course/get-courses-pending?currentPage=${page}&pageSize=${pagesize}`
         );
-        setListCourseInstructor(responseData?.data.courses);
+        setListCourseModeration(responseData?.data.courses);
         setTotalPages(responseData?.data.paginationData.totalPages);
         setLoading(false);
       } catch (err) {
@@ -63,7 +44,7 @@ const useDataCoursesInstructor = () => {
   }, [currentPage, id]);
   return {
     loading,
-    listCourseInstructor,
+    listCourseModeration,
     totalPages,
     currentPage,
     setCurrentPage,
@@ -71,4 +52,4 @@ const useDataCoursesInstructor = () => {
   };
 };
 
-export default useDataCoursesInstructor;
+export default useDataModeration;

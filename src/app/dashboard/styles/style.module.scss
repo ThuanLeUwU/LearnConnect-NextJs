@@ -17,6 +17,7 @@
   padding-top: 20px;
   padding-bottom: 80px;
   position: relative;
+  // justify-content: space-evenly;
   // gap: 20px;
 }
 
@@ -66,7 +67,11 @@
 }
 
 .body_container {
+  max-width: 1200px;
   padding: 0 15px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
 }
 
 .body_message {

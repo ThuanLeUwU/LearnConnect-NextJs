@@ -156,10 +156,10 @@ const Revenue = () => {
       image: "/menu-icon/icon-1.png",
       href: "/instructorcourses",
     },
-    {
-      image: "/menu-icon/icon-2.png",
-      href: "/dashboard",
-    },
+    // {
+    //   image: "/menu-icon/icon-2.png",
+    //   href: "/dashboard",
+    // },
     {
       image: "/menu-icon/icon-3.png",
       href: "/review-mentor",
@@ -173,12 +173,12 @@ const Revenue = () => {
   const [loading, setLoading] = useState(false);
 
   const [date, setDate] = useState<string | null>(null);
-  console.log("homnay", date);
+  // console.log("homnay", date);
 
   useEffect(() => {
     if (Array.isArray(listDate) && listDate.length > 0) {
       setDate(listDate[listDate.length - 1].date);
-      console.log("homnay1", listDate[listDate.length - 1].date);
+      // console.log("homnay1", listDate[listDate.length - 1].date);
       http
         .get(
           `https://learnconnectapitest.azurewebsites.net/api/payment-transaction/revenue-mentor?mentorUserId=${id}&filterDate=${new Date(
@@ -206,7 +206,7 @@ const Revenue = () => {
 
   const handleFilterClick = (selectedDate) => {
     // Đặt logic xử lý cho việc lọc dữ liệu theo ngày ở đây
-    console.log(`Filter by: ${selectedDate}`);
+    // console.log(`Filter by: ${selectedDate}`);
     setDate(selectedDate);
 
     http

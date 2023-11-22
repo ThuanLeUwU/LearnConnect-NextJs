@@ -497,10 +497,10 @@ const Dashboard = ({ params }: any) => {
       image: "/menu-icon/icon-1.png",
       href: "/instructorcourses",
     },
-    {
-      image: "/menu-icon/icon-2.png",
-      href: "/dashboard",
-    },
+    // {
+    //   image: "/menu-icon/icon-2.png",
+    //   href: "/dashboard",
+    // },
     {
       image: "/menu-icon/icon-3.png",
       href: "/review-mentor",
