@@ -48,7 +48,25 @@ export type Category = {
 };
 
 const InstructorCourse = () => {
-  const { id, user } = UserAuth();
+  const router = useRouter();
+  const { id, user, role } = UserAuth();
+  useEffect(() => {
+    if (role === 0) {
+      router.push(`/user-manage`);
+    }
+    if (role === 1) {
+      router.push(`/staff-page`);
+    }
+    // if (role === 2) {
+    //   router.push(`/instructorcourses`);
+    // }
+    if (role === 3) {
+      router.push(`/`);
+    }
+    if (role === -1) {
+      router.push(`/`);
+    }
+  });
   // getMessageToken();
   // console.log("id", id);
   // console.log("id", user);
@@ -85,7 +103,6 @@ const InstructorCourse = () => {
 
   const [dashboardCourse, setDashboardCourse] = useState("");
 
-  const router = useRouter();
   const handleClick = (idcourse) => {
     setDashboardCourse(idcourse);
     router.push(`/instructorcourses/${idcourse.id}`);
@@ -484,7 +501,12 @@ const InstructorCourse = () => {
           onFinish={handleSubmit}
         >
           <div style={{ display: "flex" }} className="flex">
-            <Image width="100%" height={300} src={image} />
+            <Image
+              width="100%"
+              height={300}
+              src={image}
+              className="overflow-hidden"
+            />
 
             {/* <video width={300} height={200} src={image} controls /> */}
           </div>
@@ -615,11 +637,12 @@ const InstructorCourse = () => {
           style={{ width: "100%" }}
           onFinish={handleUpdate}
         >
-          <div style={{ display: "flex" }} className="flex ">
+          <div style={{ display: "flex" }} className="flex overflow-hidden">
             <Image
               width="100%"
               height={300}
               src={updateImage}
+              className="overflow-hidden"
               // defaultValue={course?.imageUrl}
             />
           </div>

@@ -4,6 +4,7 @@ import ".././globals.css";
 import { UserAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 // import { User } from "firebase/auth";
 
 export type User = {
@@ -19,6 +20,25 @@ export type User = {
   status: number;
 };
 export default function ProfileUser() {
+  const { role } = UserAuth();
+  const router = useRouter();
+  useEffect(() => {
+    if (role === 0) {
+      router.push(`/user-manage`);
+    }
+    if (role === 1) {
+      router.push(`/staff-page`);
+    }
+    if (role === 2) {
+      router.push(`/instructorcourses`);
+    }
+    // if (role === 3) {
+    //   router.push(`/`);
+    // }
+    if (role === -1) {
+      router.push(`/`);
+    }
+  });
   const { userData, id, jwtToken } = UserAuth();
   axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
   // console.log("data:", userData?.fullName);

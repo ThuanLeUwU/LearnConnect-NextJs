@@ -27,6 +27,24 @@ export type User = {
 };
 export default function EditProfile() {
   const router = useRouter();
+  const { role } = UserAuth();
+  useEffect(() => {
+    if (role === 0) {
+      router.push(`/user-manage`);
+    }
+    if (role === 1) {
+      router.push(`/staff-page`);
+    }
+    // if (role === 2) {
+    //   router.push(`/instructorcourses`);
+    // }
+    // if (role === 3) {
+    //   router.push(`/`);
+    // }
+    if (role === -1) {
+      router.push(`/`);
+    }
+  });
   const { id, userData, refetchUser, jwtToken } = UserAuth();
   axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
   const [fullName, setFullName] = useState(userData?.fullName);
@@ -34,7 +52,7 @@ export default function EditProfile() {
   const [phoneNumber, setPhoneNumber] = useState(userData?.phoneNumber || "");
   const [password, setPassword] = useState(userData?.password || "");
   const [email, setEmail] = useState(userData?.email || "");
-  const [role, setRole] = useState(userData?.role || 3);
+  const [roleUser, setRoleUser] = useState(userData?.role || 3);
   const [status, setStatus] = useState(userData?.status || 0);
   const [bioDescription, setBioDescription] = useState(
     userData?.bioDescription || ""
@@ -129,7 +147,7 @@ export default function EditProfile() {
       id: id,
       password: password,
       email: email,
-      role: role,
+      role: roleUser,
       fullName: fullName,
       phoneNumber: phoneNumber,
       gender: gender,

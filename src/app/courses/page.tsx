@@ -11,6 +11,7 @@ import { useEffect, useRef, useState } from "react";
 import { http } from "@/api/http";
 import { Category } from "../instructorcourses/page";
 import { useRouter } from "next/navigation";
+import { UserAuth } from "../context/AuthContext";
 // import { CourseItem } from "@/components/pagination/useDataFavoritesFetcher";
 export type Filter = {
   minPrice: number;
@@ -18,7 +19,27 @@ export type Filter = {
   specialized: number;
 };
 
-const ListCourse = () => {
+export default function ListCourse() {
+  const router = useRouter();
+  const { id, user, role } = UserAuth();
+  useEffect(() => {
+    if (role === 0) {
+      router.push(`/user-manage`);
+    }
+    if (role === 1) {
+      router.push(`/staff-page`);
+    }
+    if (role === 2) {
+      router.push(`/instructorcourses`);
+    }
+    // if (role === 3) {
+    //   router.push(`/`);
+    // }
+    // if (role === -1) {
+    //   router.push(`/`);
+    // }
+  });
+
   const [selectedFilter, setSelectedFilter] = useState<number[]>([]);
   const [minPrice, setMinPrice] = useState<any>(null);
   const [maxPrice, setMaxPrice] = useState<any>();
@@ -48,9 +69,6 @@ const ListCourse = () => {
   const [selected, setSelected] = useState(false);
   const [courseFilter, setCourseFilter] = useState<CourseItem[]>([]);
   // console.log("FilterPrice", price);
-
-  const router = useRouter();
-
   useEffect(() => {
     try {
       http
@@ -237,6 +255,4 @@ const ListCourse = () => {
       )}
     </div>
   );
-};
-
-export default ListCourse;
+}

@@ -6,8 +6,29 @@ import useDataUserFetcher from "@/components/pagination/useDataUserFetcher";
 import { UserAuth } from "../context/AuthContext";
 import axios from "axios";
 import { Empty, Spin } from "antd";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
-const MyCourse = () => {
+export default function MyCourse() {
+  const { role } = UserAuth();
+  const router = useRouter();
+  useEffect(() => {
+    if (role === 0) {
+      router.push(`/user-manage`);
+    }
+    if (role === 1) {
+      router.push(`/staff-page`);
+    }
+    if (role === 2) {
+      router.push(`/instructorcourses`);
+    }
+    // if (role === 3) {
+    //   router.push(`/`);
+    // }
+    if (role === -1) {
+      router.push(`/`);
+    }
+  });
   const { loading, courses, totalPages, currentPage, setCurrentPage } =
     useDataUserFetcher();
   const { jwtToken, id } = UserAuth();
@@ -52,6 +73,4 @@ const MyCourse = () => {
       )}
     </div>
   );
-};
-
-export default MyCourse;
+}

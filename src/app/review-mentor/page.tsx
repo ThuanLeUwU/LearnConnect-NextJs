@@ -8,6 +8,7 @@ import Link from "next/link";
 import { Rating } from "@mui/material";
 import { http } from "@/api/http";
 import { UserAuth } from "../context/AuthContext";
+import { useRouter } from "next/navigation";
 
 export type Review = {
   ratingMentorInfo: any;
@@ -23,6 +24,25 @@ export type Review = {
 };
 
 const Reviews = () => {
+  const { role } = UserAuth();
+  const router = useRouter();
+  useEffect(() => {
+    if (role === 0) {
+      router.push(`/user-manage`);
+    }
+    if (role === 1) {
+      router.push(`/staff-page`);
+    }
+    // if (role === 2) {
+    //   router.push(`/instructorcourses`);
+    // }
+    if (role === 3) {
+      router.push(`/`);
+    }
+    if (role === -1) {
+      router.push(`/`);
+    }
+  });
   const { id, userData } = UserAuth();
 
   const menuItem = [

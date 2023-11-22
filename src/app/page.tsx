@@ -4,17 +4,41 @@ import Courses from "@/components/courses/courses";
 import HowItWork from "@/components/howItWorks/HowItWork";
 import RegisInstructor from "@/components/registerInstructor/Register";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect } from "react";
 import useDataFetcher from "@/components/pagination/useDataFetcher";
 import Paginate from "@/components/pagination/pagination";
 import useDataHomeFetcher from "@/components/pagination/useDataHomeFetcher";
 import Search from "@/components/search/search";
 import { Spin } from "antd";
+import { UserAuth } from "./context/AuthContext";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const { jwtToken } = UserAuth();
+
+  const router = useRouter();
+  const { id, user, role } = UserAuth();
+  useEffect(() => {
+    if (role === 0) {
+      router.push(`/user-manage`);
+    }
+    if (role === 1) {
+      router.push(`/staff-page`);
+    }
+    // if (role === 2) {
+    //   router.push(`/instructorcourses`);
+    // }
+    // if (role === 3) {
+    //   router.push(`/`);
+    // }
+    // if (role === -1) {
+    //   router.push(`/`);
+    // }
+  });
+
   const { loading, courses, totalPages, currentPage, setCurrentPage } =
     useDataHomeFetcher();
-
+  console.log("user token", jwtToken);
   return (
     <>
       <div className="container">

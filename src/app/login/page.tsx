@@ -3,7 +3,7 @@ import styles from "../login/styles.module.scss";
 import { UserAuth } from "@/app/context/AuthContext";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import jwt from "jsonwebtoken";
 import UnProtectWrapper from "@/components/wrapper/UnProtecWrapper";
 import { http } from "@/api/http";
@@ -11,8 +11,25 @@ import { Spin } from "antd";
 import { toast } from "sonner";
 
 export default function LoginPage() {
-  const { user, jwtToken, googleSignIn, logOut, setUserLogin } = UserAuth();
+  const { googleSignIn, logOut, setUserLogin, role } = UserAuth();
   const router = useRouter();
+  useEffect(() => {
+    if (role === 0) {
+      router.push(`/user-manage`);
+    }
+    if (role === 1) {
+      router.push(`/staff-page`);
+    }
+    if (role === 2) {
+      router.push(`/instructorcourses`);
+    }
+    // if (role === 3) {
+    //   router.push(`/`);
+    // }
+    // if (role === -1) {
+    //   router.push(`/`);
+    // }
+  });
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");

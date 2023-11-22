@@ -37,7 +37,26 @@ export type Test = {
   ];
 };
 
-const Quiz = ({ params }: any) => {
+export default function Quiz({ params }: any) {
+  const router = useRouter();
+  const { role } = UserAuth();
+  useEffect(() => {
+    if (role === 0) {
+      router.push(`/user-manage`);
+    }
+    if (role === 1) {
+      router.push(`/staff-page`);
+    }
+    // if (role === 2) {
+    //   router.push(`/instructorcourses`);
+    // }
+    // if (role === 3) {
+    //   router.push(`/`);
+    // }
+    if (role === -1) {
+      router.push(`/`);
+    }
+  });
   const [questionsTest, setQuestionsTest] = useState<Test[]>([]);
   const [selectedAnswers, setSelectedAnswers] = useState<{
     [key: number]: { answer: string; isCorrect: boolean };
@@ -46,7 +65,6 @@ const Quiz = ({ params }: any) => {
   const [correctAnswers, setCorrectAnswers] = useState<number>(0);
   const { userData, jwtToken } = UserAuth();
   axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
-  const router = useRouter();
   const [submitted, setSubmitted] = useState(false); // Track whether the quiz has been submitted
   const [isModalVisible, setIsModalVisible] = useState(false);
   const handleCancel = () => {
@@ -229,6 +247,4 @@ const Quiz = ({ params }: any) => {
       </div>
     </div>
   );
-};
-
-export default Quiz;
+}

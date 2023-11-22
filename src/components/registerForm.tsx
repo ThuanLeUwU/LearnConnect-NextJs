@@ -18,6 +18,7 @@ import { Select } from "antd";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import ".././app/./globals.css";
+import { useRouter } from "next/navigation";
 
 export type User = {
   id: string | number;
@@ -57,6 +58,25 @@ interface IProps {
 }
 
 export const RegisterForm = () => {
+  const router = useRouter();
+  const { role } = UserAuth();
+  useEffect(() => {
+    if (role === 0) {
+      router.push(`/user-manage`);
+    }
+    if (role === 1) {
+      router.push(`/staff-page`);
+    }
+    if (role === 2) {
+      router.push(`/instructorcourses`);
+    }
+    // if (role === 3) {
+    //   router.push(`/`);
+    // }
+    if (role === -1) {
+      router.push(`/`);
+    }
+  });
   const [show, setShow] = useState(false);
   const { id, userData } = UserAuth();
   const [currentInfo, setCurrentInfo] = useState<User>();
@@ -364,6 +384,7 @@ export const RegisterForm = () => {
                 beforeUpload={beforeUpload}
                 action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
                 listType="picture-card"
+                maxCount={1}
               >
                 Font of ID
               </Upload>
@@ -373,6 +394,7 @@ export const RegisterForm = () => {
                 beforeUpload={beforeUpload}
                 action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
                 listType="picture-card"
+                maxCount={1}
               >
                 Back of ID
               </Upload>

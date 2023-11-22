@@ -22,14 +22,15 @@ export type Payment = {
 };
 
 const AfterPayment = () => {
-  const { id, jwtToken } = UserAuth();
+  const { id, jwtToken, role } = UserAuth();
+  const router = useRouter();
+
   axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
   console.log("jwtToken", jwtToken);
   const [urlParams, setUrlParams] = useState<URLSearchParams | null>(null);
   const [payment, setPayment] = useState<Payment>();
   const [courseId, setCourseId] = useState("");
   const [courseName, setCourseName] = useState("");
-  const router = useRouter();
 
   useEffect(() => {
     if (typeof window !== "undefined") {

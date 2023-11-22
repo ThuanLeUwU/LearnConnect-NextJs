@@ -6,8 +6,29 @@ import Paginate from "@/components/pagination/pagination";
 import axios from "axios";
 import { UserAuth } from "../context/AuthContext";
 import { Spin } from "antd";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const Transaction = () => {
+  const router = useRouter();
+  const { role } = UserAuth();
+  useEffect(() => {
+    if (role === 0) {
+      router.push(`/user-manage`);
+    }
+    if (role === 1) {
+      router.push(`/staff-page`);
+    }
+    // if (role === 2) {
+    //   router.push(`/instructorcourses`);
+    // }
+    // if (role === 3) {
+    //   router.push(`/`);
+    // }
+    if (role === -1) {
+      router.push(`/`);
+    }
+  });
   const { loading, transaction, totalPages, currentPage, setCurrentPage } =
     useDataPaymentFetcher();
   const { jwtToken } = UserAuth();

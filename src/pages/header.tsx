@@ -26,22 +26,17 @@ const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [notification, setNotification] = useState(false);
   const [visible, setVisible] = useState(false);
-  const { userData, id, jwtToken } = UserAuth();
+  const { userData, id, jwtToken, switchRole } = UserAuth();
   axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
   const [notificationContent, setNotificationContent] = useState<
     Notification[]
   >([]);
   const router = useRouter();
-
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
     setNotification(false);
   };
   const closeDropdown = () => {
-    setIsOpen(false);
-  };
-  const toggleDropdownNotification = () => {
-    setNotification(!notification);
     setIsOpen(false);
   };
 
@@ -51,7 +46,7 @@ const Header = () => {
 
   const { role, user, googleSignIn, logOut } = UserAuth();
 
-  // console.log("user", role);
+  console.log("userrole", userData?.role);
   const handleSignIn = async () => {
     try {
       await googleSignIn();
@@ -112,6 +107,41 @@ const Header = () => {
     }
   }, [id]);
 
+  const handleClickOutside = (event: MouseEvent) => {
+    const dropdown = document.getElementById("dropdown-menu");
+    const dropdownProfile = document.getElementById("dropdown-profile");
+
+    if (dropdown && !dropdown.contains(event.target as Node)) {
+      setNotification(false);
+    }
+    if (dropdownProfile && !dropdownProfile.contains(event.target as Node)) {
+      setIsOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const toggleDropdownNotification = () => {
+    setNotification(!notification);
+    setIsOpen(false);
+  };
+
+  const handleSwitchRole = () => {
+    if (role === 3) {
+      switchRole(2);
+      router.push(`/instructorcourses`);
+    }
+    if (role === 2) {
+      switchRole(3);
+      router.push(`/`);
+    }
+  };
+
   return (
     <div className={`${headerStyles.header_section}`}>
       {!userData ? (
@@ -130,12 +160,25 @@ const Header = () => {
               </button>
             </div>
             <ul className={`${headerStyles.header_login_right}`}>
+              {userData?.role === 2 ? (
+                <button
+                  onClick={handleSwitchRole}
+                  className="text-white border border-solid border-[#309255] border-opacity-20 rounded-lg bg-[#309255] py-1 px-3"
+                >
+                  Switch role {role === 3 ? "mentor" : "student"}
+                </button>
+              ) : (
+                <></>
+              )}
               <li className={`${headerStyles.header_notification}`}>
                 <button onClick={toggleDropdownNotification}>
                   <AiFillBell />
                 </button>
                 {notification && (
-                  <div className="origin-top-right absolute right-0 mt-2 w-[450px] rounded-lg shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-20">
+                  <div
+                    className="origin-top-right absolute right-0 mt-2 w-[450px] rounded-lg shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-20"
+                    id="dropdown-menu"
+                  >
                     {notificationContent && notificationContent.length > 0 ? (
                       <ul className="divide-y divide-gray-200 rounded-lg">
                         {notificationContent.slice(0, 7).map((item) => {
@@ -197,16 +240,14 @@ const Header = () => {
                         You don&apos;t have any notification.
                       </div>
                     )}
-                    <a
-                      href="#"
+                    <button
                       onClick={() => {
                         handleClickSeeAll();
-                        closeDropdownNotification();
                       }}
-                      className="block text-center text-sm text-gray-700 py-2  bg-[#e7f8ee] rounded-br-lg rounded-bl-lg hover:rounded-bl-lg hover:rounded-br-lg"
+                      className="block text-center text-sm text-gray-700 py-2  bg-[#e7f8ee] rounded-br-lg rounded-bl-lg hover:rounded-bl-lg hover:rounded-br-lg w-full"
                     >
                       See all notifications
-                    </a>
+                    </button>
                   </div>
                 )}
               </li>
@@ -223,13 +264,38 @@ const Header = () => {
                   ></img>
                 </button>
                 {isOpen && (
-                  <div className="origin-top-right absolute right-0 mt-2 w-44 rounded-lg shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-[2]">
+                  <div
+                    className="origin-top-right absolute right-0 mt-2 w-44 rounded-lg shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-[2]"
+                    id="dropdown-profile"
+                  >
                     <ul
                       role="menu"
                       aria-orientation="vertical"
                       aria-labelledby="options-menu"
                     >
-                      <li>
+                      {userData?.role !== 0 && userData?.role !== 1 && (
+                        <>
+                          <li>
+                            <Link
+                              href="/profile"
+                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-tl-lg rounded-tr-lg hover:rounded-bl-lg hover:rounded-br-lg"
+                              onClick={closeDropdown}
+                            >
+                              Profile
+                            </Link>
+                          </li>
+                          <li>
+                            <Link
+                              href="/transaction"
+                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-tl-lg rounded-tr-lg hover:rounded-bl-lg hover:rounded-br-lg"
+                              onClick={closeDropdown}
+                            >
+                              Transaction
+                            </Link>
+                          </li>
+                        </>
+                      )}
+                      {/* <li>
                         <Link
                           href="/profile"
                           className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-tl-lg rounded-tr-lg hover:rounded-bl-lg hover:rounded-br-lg"
@@ -246,7 +312,7 @@ const Header = () => {
                         >
                           Transaction
                         </Link>
-                      </li>
+                      </li> */}
                       <li>
                         <a
                           href="#"
@@ -320,7 +386,7 @@ const Header = () => {
             </div>
           ) : (
             <>
-              {role == 3 ? (
+              {role === 3 ? (
                 <div className={`${headerStyles.header_main_wrapper}`}>
                   <div className={`${headerStyles.header_logo}`}>
                     <Link href="/">
@@ -354,18 +420,17 @@ const Header = () => {
                       </li>
                     </ul>
                   </div>
-                  <div className={`${headerStyles.regis_btn}`}>
-                    <Button onClick={handleClickBecomeMentor}>
-                      Become a Mentor
-                    </Button>
-                    {/* <RegisterForm
-                      visible={visible}
-                      setVisible={setVisible}
-                      onCancel={() => {
-                        setVisible(false);
-                      }}
-                      isEdit={true}
-                    /> */}
+
+                  <div>
+                    {userData?.role == 3 ? (
+                      <div className={`${headerStyles.regis_btn}`}>
+                        <Button onClick={handleClickBecomeMentor}>
+                          Become a Mentor
+                        </Button>
+                      </div>
+                    ) : (
+                      <></>
+                    )}
                   </div>
                 </div>
               ) : (
