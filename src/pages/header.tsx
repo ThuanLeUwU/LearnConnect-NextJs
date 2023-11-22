@@ -40,10 +40,6 @@ const Header = () => {
   const closeDropdown = () => {
     setIsOpen(false);
   };
-  const toggleDropdownNotification = () => {
-    setNotification(!notification);
-    setIsOpen(false);
-  };
 
   const closeDropdownNotification = () => {
     setNotification(false);
@@ -51,7 +47,7 @@ const Header = () => {
 
   const { role, user, googleSignIn, logOut } = UserAuth();
 
-  // console.log("user", role);
+  console.log("userrole", userData?.role);
   const handleSignIn = async () => {
     try {
       await googleSignIn();
@@ -112,6 +108,30 @@ const Header = () => {
     }
   }, [id]);
 
+  const handleClickOutside = (event: MouseEvent) => {
+    const dropdown = document.getElementById("dropdown-menu");
+    const dropdownProfile = document.getElementById("dropdown-profile");
+
+    if (dropdown && !dropdown.contains(event.target as Node)) {
+      setNotification(false);
+    }
+    if (dropdownProfile && !dropdownProfile.contains(event.target as Node)) {
+      setIsOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const toggleDropdownNotification = () => {
+    setNotification(!notification);
+    setIsOpen(false);
+  };
+
   return (
     <div className={`${headerStyles.header_section}`}>
       {!userData ? (
@@ -137,7 +157,10 @@ const Header = () => {
                 {notification && (
                   <div className="origin-top-right absolute right-0 mt-2 w-[450px] rounded-lg shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-20">
                     {notificationContent && notificationContent.length > 0 ? (
-                      <ul className="divide-y divide-gray-200 rounded-lg">
+                      <ul
+                        className="divide-y divide-gray-200 rounded-lg"
+                        id="dropdown-menu"
+                      >
                         {notificationContent.slice(0, 7).map((item) => {
                           const date = new Date(item.timeStamp);
                           const now = Date.now();
@@ -223,13 +246,38 @@ const Header = () => {
                   ></img>
                 </button>
                 {isOpen && (
-                  <div className="origin-top-right absolute right-0 mt-2 w-44 rounded-lg shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-[2]">
+                  <div
+                    className="origin-top-right absolute right-0 mt-2 w-44 rounded-lg shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-[2]"
+                    id="dropdown-profile"
+                  >
                     <ul
                       role="menu"
                       aria-orientation="vertical"
                       aria-labelledby="options-menu"
                     >
-                      <li>
+                      {userData?.role !== 1 && userData?.role !== 2 && (
+                        <>
+                          <li>
+                            <Link
+                              href="/profile"
+                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-tl-lg rounded-tr-lg hover:rounded-bl-lg hover:rounded-br-lg"
+                              onClick={closeDropdown}
+                            >
+                              Profile
+                            </Link>
+                          </li>
+                          <li>
+                            <Link
+                              href="/transaction"
+                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-tl-lg rounded-tr-lg hover:rounded-bl-lg hover:rounded-br-lg"
+                              onClick={closeDropdown}
+                            >
+                              Transaction
+                            </Link>
+                          </li>
+                        </>
+                      )}
+                      {/* <li>
                         <Link
                           href="/profile"
                           className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-tl-lg rounded-tr-lg hover:rounded-bl-lg hover:rounded-br-lg"
@@ -246,7 +294,7 @@ const Header = () => {
                         >
                           Transaction
                         </Link>
-                      </li>
+                      </li> */}
                       <li>
                         <a
                           href="#"

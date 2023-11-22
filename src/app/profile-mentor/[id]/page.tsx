@@ -91,6 +91,29 @@ export default function ProfileUser({ params }: any) {
       return;
     }
   };
+
+  const handleClickMoveToCourse = (courseId: string | number) => {
+    router.push(`/course-detail/${courseId}`);
+  };
+
+  const handleClickOutside = (event: MouseEvent) => {
+    const dropdown = document.getElementById("dropdown-menu");
+
+    if (dropdown && !dropdown.contains(event.target as Node)) {
+      setIsDropdownOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    // Attach event listener when the component mounts
+    document.addEventListener("mousedown", handleClickOutside);
+
+    // Clean up event listener when the component unmounts
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [formDataImage, setFormDataImage] = useState();
@@ -98,6 +121,7 @@ export default function ProfileUser({ params }: any) {
   const showModal = () => {
     setIsModalOpen(true);
   };
+
   const showModalRating = () => {
     setModalRatingOpen(true);
   };
@@ -296,14 +320,17 @@ export default function ProfileUser({ params }: any) {
                       </h5>
                     </div>
                     <div className="ml-auto">
-                      <button>
+                      <button onClick={toggleDropdown}>
                         <AiOutlineBars
                           className="border border-opacity-20 border-[#fff] rounded-lg text-4xl"
                           onClick={toggleDropdown}
                         />
                       </button>
                       {isDropdownOpen && (
-                        <div className="modal-overlay absolute">
+                        <div
+                          id="dropdown-menu"
+                          className="modal-overlay absolute"
+                        >
                           <div className="bg-white border border-gray-300 rounded shadow-lg">
                             <div className="p-2 text-black flex flex-col">
                               <button
@@ -353,8 +380,13 @@ export default function ProfileUser({ params }: any) {
                               courses.length > 0 &&
                               courses.map((item) => (
                                 <div className="swiper-container" key={item.id}>
-                                  <div className="swiper-wrapper mb-3 shadow-lg rounded-lg hover:border-[#309255] hover:bg-[#e7f8ee]">
-                                    <div className="single-review mt-3.5 border border-opacity-20 border-[#30925533] p-7 rounded-md">
+                                  <button
+                                    className="swiper-wrapper mb-3 shadow-lg rounded-lg hover:border-[#309255] hover:bg-[#e7f8ee] w-full"
+                                    onClick={() =>
+                                      handleClickMoveToCourse(item.id)
+                                    }
+                                  >
+                                    <div className="single-review border border-opacity-20 border-[#30925533] p-7 rounded-md flex flex-col items-start text-start">
                                       <div className="review-author flex ">
                                         <div className="author-thumb border border-[#309255]">
                                           <img
@@ -407,7 +439,7 @@ export default function ProfileUser({ params }: any) {
                                         </div>
                                       </div>
                                     </div>
-                                  </div>
+                                  </button>
                                 </div>
                               ))}
                           </div>
