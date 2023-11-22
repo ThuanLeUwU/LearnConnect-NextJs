@@ -182,10 +182,10 @@ export default function AfterEnroll({ params }: any) {
     };
 
     fetchData();
-    if (testVideo.length > 0) {
-      setVideoSrc(testVideo[0].contentUrl);
-      setActiveVideoIndex(0);
-    }
+    // if (testVideo.length > 0) {
+    //   setVideoSrc(testVideo[0].contentUrl);
+    //   setActiveVideoIndex(0);
+    // }
   }, []);
 
   const [pdf, setPDF] = useState<number>();
@@ -296,13 +296,17 @@ export default function AfterEnroll({ params }: any) {
   const [currentTime, setCurrentTime] = useState<number>(0);
   const [totalTime, setTotalTime] = useState(0);
   const handleOnTimeUpdate = (e) => {
-    setCurrentTime(Math.floor(e.target.currentTime));
+    setCurrentTime(e.target.currentTime);
     if (videoRef.current && e.target.currentTime > maxTime) {
-      setMaxTime(Math.floor(videoRef.current.played.end(0)));
+      setMaxTime(videoRef.current.played.end(0));
     }
     if (Math.floor(e.target.currentTime) % 5 == 0) {
       http.post(
-        `https://learnconnectapitest.azurewebsites.net/api/learning-process/save_process?userId=${id}&lectureId=${testVideo[activeVideoIndex].id}&courseId=${idCourse}&currentTime=${currentTime}&maxTime=${maxTime}&totalTime=${totalTime}`
+        `https://learnconnectapitest.azurewebsites.net/api/learning-process/save_process?userId=${id}&lectureId=${
+          testVideo[activeVideoIndex].id
+        }&courseId=${idCourse}&currentTime=${Math.floor(
+          currentTime
+        )}&maxTime=${Math.floor(maxTime)}&totalTime=${totalTime}`
       );
     }
   };
@@ -315,19 +319,8 @@ export default function AfterEnroll({ params }: any) {
 
   const handleOnProgress = () => {
     if (videoRef.current) {
-      videoRef.current.currentTime = maxTime; //truyen currentTime tu API response
+      videoRef.current.currentTime = currentTime; //truyen currentTime tu API response
       setTotalTime(Math.floor(videoRef.current.duration));
-    }
-  };
-
-  const saveProcess = () => {
-    console.log("time");
-    try {
-      http.post(
-        `https://learnconnectapitest.azurewebsites.net/api/learning-process/save_process?userId=${id}&lectureId=${testVideo[activeVideoIndex].id}&courseId=${idCourse}&currentTime=${currentTime}&maxTime=${maxTime}&totalTime=${totalTime}`
-      );
-    } catch (e) {
-      console.log("error", e);
     }
   };
 
