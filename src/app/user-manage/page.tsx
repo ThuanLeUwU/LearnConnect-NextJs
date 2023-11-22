@@ -32,7 +32,7 @@ import { format, parseISO } from "date-fns";
 import axios from "axios";
 import Head from "next/head";
 import PropTypes from "prop-types";
-import { Button, Form, Modal } from "antd";
+import { Button, Form, Modal, Tag } from "antd";
 
 export type User = {
   id: string | number;
@@ -63,6 +63,7 @@ export default function UserManagePage() {
   const [dense, setDense] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [mounted, setMounted] = useState(false);
+  // console.log("sort,",allUser);
 
   const handleRequestSort = (event: any, property: any) => {
     const isAsc = orderBy === property && order === "asc";
@@ -99,17 +100,20 @@ export default function UserManagePage() {
       // const response = await axios.get(`https://evenu.herokuapp.com/api/students`, {
       //   headers
       // })
-      setAllUser(response?.data);
+      const sortedData = response.data.sort((a, b) => a.role - b.role);
+      // setUserData(sortedData);
+      setAllUser(sortedData);
+
       setMounted(true);
     };
     fetchData();
   }, []);
 
   const menuItem = [
-    {
-      image: "/menu-icon/icon-1.png",
-      href: "/instructorcourses",
-    },
+    // {
+    //   image: "/menu-icon/icon-1.png",
+    //   href: "/instructorcourses",
+    // },
     {
       image: "/menu-icon/icon-2.png",
       href: "/user-manage",
@@ -118,10 +122,10 @@ export default function UserManagePage() {
       image: "/menu-icon/icon-3.png",
       href: "/dashboard",
     },
-    {
-      image: "/menu-icon/icon-4.png",
-      href: "/instructorcourses",
-    },
+    // {
+    //   image: "/menu-icon/icon-4.png",
+    //   href: "/instructorcourses",
+    // },
   ];
 
   //update Role
@@ -144,11 +148,11 @@ export default function UserManagePage() {
 
   const displayRoleText = (role: number) => {
     if (role === 0) {
-      return "Admin";
+      return <div className="text-red-500"> Admin</div>;
     } else if (role === 1) {
-      return "Staff";
+      return <div className="text-blue-500"> Staff</div>;
     } else if (role === 2) {
-      return "Mentor";
+      return <div className="text-pink-600"> Mentor</div>;
     } else {
       return "Student";
     }
@@ -156,9 +160,13 @@ export default function UserManagePage() {
 
   const displayActive = (status: number) => {
     if (status === 0) {
-      return "Active";
+      return (
+        <Tag color="green" className="mx-2">
+          Active
+        </Tag>
+      );
     } else if (status === 1) {
-      return "Inactive";
+      return <Tag color="red">Inactive</Tag>;
     }
   };
   // if (!mounted)

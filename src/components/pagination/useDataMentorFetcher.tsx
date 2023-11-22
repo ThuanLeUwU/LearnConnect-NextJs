@@ -3,6 +3,7 @@ import { type } from "os";
 import { useState, useEffect } from "react";
 
 export type Mentor = {
+  averageRating: number;
   mentorInfo: any;
   userInfo: any;
   id: string | number;
