@@ -27,8 +27,8 @@ export type Rating = {
 const StaffRatingTable = () => {
   const { jwtToken } = UserAuth();
   axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
-  const [activeTab, setActiveTab] = useState("tab1");
-  const [selectedType, setSelectedType] = useState("all");
+  const [activeTab, setActiveTab] = useState("tab2");
+  const [selectedType, setSelectedType] = useState("course");
   const handleTabClick = (tabName: string, type: string) => {
     setActiveTab(tabName);
     setSelectedType(type);
@@ -88,7 +88,7 @@ const StaffRatingTable = () => {
         <div className=" text-[#212832] ">
           <div className="flex justify-center bg-[#e7f8ee] py-4 rounded-md">
             <ul className="tabs flex space-x-5 ">
-              <li
+              {/* <li
                 className={`cursor-pointer rounded-md ${
                   activeTab === "tab1" ? "bg-[#309255] text-white" : "bg-white"
                 }`}
@@ -97,7 +97,7 @@ const StaffRatingTable = () => {
                 <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#309255]">
                   All Ratings
                 </button>
-              </li>
+              </li> */}
               <li
                 className={`cursor-pointer rounded-md ${
                   activeTab === "tab2" ? "bg-[#309255] text-white" : "bg-white"
@@ -122,7 +122,7 @@ const StaffRatingTable = () => {
           </div>
 
           <div className="tab-content">
-            {activeTab === "tab1" && (
+            {/* {activeTab === "tab1" && (
               <div className="tab-reviews pb-3">
                 <div className="reviews-wrapper reviews-active">
                   <div className="swiper-container">
@@ -188,7 +188,7 @@ const StaffRatingTable = () => {
                                           }
                                           className="px-5 py-3 mx-2 bg-[#309255] w-[100px] text-white rounded-lg"
                                         >
-                                          UnBan
+                                          Display
                                         </button>
                                       ) : (
                                         <button
@@ -200,7 +200,7 @@ const StaffRatingTable = () => {
                                           }}
                                           className="px-5 py-3 mx-2 bg-red-500 w-[100px] text-white rounded-lg"
                                         >
-                                          Ban
+                                          Hidden
                                         </button>
                                       )}
                                     </div>
@@ -222,7 +222,7 @@ const StaffRatingTable = () => {
                   </div>
                 </div>
               </div>
-            )}
+            )} */}
             {activeTab === "tab2" && (
               <div className="tab-reviews ">
                 <div className="reviews-wrapper reviews-active">
@@ -233,7 +233,7 @@ const StaffRatingTable = () => {
                         rating.map((item) => {
                           return (
                             <>
-                              <div className="single-review mt-3.5 border border-opacity-20 border-[#309255] p-7 rounded-md mx-5">
+                              <div className="single-review mt-3.5 border border-opacity-20 border-[#309255] p-7 rounded-md mx-5 h-[200px]">
                                 <div className="review-author flex justify-between">
                                   <div className="flex flex-row">
                                     <div className="author-thumb p-2 rounded-full">
@@ -285,7 +285,7 @@ const StaffRatingTable = () => {
                                           }
                                           className="px-5 py-3 mx-2 bg-[#309255] w-[100px] text-white rounded-lg"
                                         >
-                                          UnBan
+                                          Display
                                         </button>
                                       ) : (
                                         <button
@@ -297,7 +297,7 @@ const StaffRatingTable = () => {
                                           }}
                                           className="px-5 py-3 mx-2 bg-red-500 w-[100px] text-white rounded-lg"
                                         >
-                                          Ban
+                                          Hidden
                                         </button>
                                       )}
                                     </div>
@@ -382,7 +382,7 @@ const StaffRatingTable = () => {
                                           }
                                           className="px-5 py-3 mx-2 bg-[#309255] w-[100px] text-white rounded-lg"
                                         >
-                                          UnBan
+                                          Display
                                         </button>
                                       ) : (
                                         <button
@@ -394,7 +394,7 @@ const StaffRatingTable = () => {
                                           }}
                                           className="px-5 py-3 mx-2 bg-red-500 w-[100px] text-white rounded-lg"
                                         >
-                                          Ban
+                                          Hidden
                                         </button>
                                       )}
                                     </div>

@@ -27,7 +27,7 @@ const StaffReportID = ({ params }: any) => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `https://learnconnectapitest.azurewebsites.net/api/report/GetReports?targetId=${idCourse}&reportType=${target}`
+          `https://learnconnectapitest.azurewebsites.net/api/report/get-reports?targetId=${idCourse}&reportType=${target}`
         );
         setReportData(response.data);
         console.log("idCourse", idCourse);
@@ -59,7 +59,7 @@ const StaffReportID = ({ params }: any) => {
           reportData.map((report) => (
             <div
               key={report.id}
-              className="single-review mt-3.5 border border-opacity-20 border-[#309255] p-5 rounded-md mx-5"
+              className="single-review mt-3.5 border border-opacity-20 border-[#309255] p-5 rounded-md mx-5 h-[250px]"
             >
               <div className="review-author flex justify-between">
                 <div className="flex flex-row">
@@ -118,12 +118,14 @@ const StaffReportID = ({ params }: any) => {
                     )}
                   </div>
                 </Modal>
-                <img
-                  src={report.imageUrl}
-                  alt="Report img"
-                  className="w-52 h-52 border border-opacity-20 border-[#309255] rounded-lg"
-                  onClick={() => setSelectedReportId(report.id)}
-                />
+                {report.imageUrl && (
+                  <img
+                    src={report.imageUrl}
+                    alt="Report img"
+                    className="w-52 h-52 border border-opacity-20 border-[#309255] rounded-lg"
+                    onClick={() => setSelectedReportId(report.id)}
+                  />
+                )}
                 {/* <div>
                   <button
                     className="bg-[#309255] px-5 py-3 text-white rounded-lg w-[100px]"

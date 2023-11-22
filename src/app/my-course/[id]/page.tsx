@@ -293,10 +293,17 @@ export default function AfterEnroll({ params }: any) {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const [maxTime, setMaxTime] = useState<number>(0); //truyen maxTime tu API response
-
+  const [currentTime, setCurrentTime] = useState<number>(0);
+  const [totalTime, setTotalTime] = useState(0);
   const handleOnTimeUpdate = (e) => {
+    setCurrentTime(Math.floor(e.target.currentTime));
     if (videoRef.current && e.target.currentTime > maxTime) {
-      setMaxTime(videoRef.current.played.end(0));
+      setMaxTime(Math.floor(videoRef.current.played.end(0)));
+    }
+    if (Math.floor(e.target.currentTime) % 5 == 0) {
+      http.post(
+        `https://learnconnectapitest.azurewebsites.net/api/learning-process/save_process?userId=${id}&lectureId=${testVideo[activeVideoIndex].id}&courseId=${idCourse}&currentTime=${currentTime}&maxTime=${maxTime}&totalTime=${totalTime}`
+      );
     }
   };
 
@@ -309,6 +316,18 @@ export default function AfterEnroll({ params }: any) {
   const handleOnProgress = () => {
     if (videoRef.current) {
       videoRef.current.currentTime = maxTime; //truyen currentTime tu API response
+      setTotalTime(Math.floor(videoRef.current.duration));
+    }
+  };
+
+  const saveProcess = () => {
+    console.log("time");
+    try {
+      http.post(
+        `https://learnconnectapitest.azurewebsites.net/api/learning-process/save_process?userId=${id}&lectureId=${testVideo[activeVideoIndex].id}&courseId=${idCourse}&currentTime=${currentTime}&maxTime=${maxTime}&totalTime=${totalTime}`
+      );
+    } catch (e) {
+      console.log("error", e);
     }
   };
 
@@ -324,7 +343,7 @@ export default function AfterEnroll({ params }: any) {
           )}
           {videoSrc && (
             <>
-              {pdf === 99 ? (
+              {pdf === 1 ? (
                 <video
                   width="full"
                   height="full"
@@ -338,14 +357,14 @@ export default function AfterEnroll({ params }: any) {
                   <source src={videoSrc} type="video/mp4" />
                 </video>
               ) : (
-                <>
-                  <Document
-                    file="https://firebasestorage.googleapis.com/v0/b/learnconnect-6f324.appspot.com/o/videos%2Fbo-cau-hoi.pdf?alt=media&token=adb72de1-029d-4b56-99d2-8de5abafee65"
-                    onLoadSuccess={onDocumentLoadSuccess}
-                  >
-                    <Page pageNumber={pageNumber} />
-                  </Document>
-                </>
+                // <></>
+                <iframe
+                  title="PDF Viewer"
+                  width="100%"
+                  height="438px"
+                  src={videoSrc}
+                  aria-readonly
+                ></iframe>
               )}
             </>
           )}

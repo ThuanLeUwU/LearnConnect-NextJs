@@ -22,6 +22,7 @@ import {
   message,
 } from "antd";
 import { http } from "@/api/http";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 
 export type User = {
   id: string | number;
@@ -58,12 +59,15 @@ export default function ProfileUser({ params }: any) {
   const API_URL =
     "https://learnconnectapitest.azurewebsites.net/api/course/get-courses-by-mentor?mentorId=";
   const pagesize = 4;
+  const router = useRouter();
+  const pathName = usePathname();
+  const searchParams = useSearchParams();
   const [totalPages, setTotalPages] = useState(10);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selected, setSelected] = useState(null);
-  const { id, userData } = UserAuth();
+  const { id, userData, jwtToken } = UserAuth();
   const [form] = Form.useForm();
   const [image, setImage] = useState<string>();
   const { Option } = Select;
@@ -81,6 +85,11 @@ export default function ProfileUser({ params }: any) {
   };
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
+    if (!jwtToken) {
+      toast.error("You Must Login To add Favorites");
+      router.push("/login");
+      return;
+    }
   };
   const [isModalOpen, setIsModalOpen] = useState(false);
 
