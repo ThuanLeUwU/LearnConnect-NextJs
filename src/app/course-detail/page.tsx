@@ -2,10 +2,31 @@
 import { Payment } from "@/components/payment";
 import { Modal } from "antd";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
+import { UserAuth } from "../context/AuthContext";
+import { useRouter } from "next/navigation";
 
 export default function CourseDetailPage() {
+  const router = useRouter();
+  const { id, user, role } = UserAuth();
+  useEffect(() => {
+    if (role === 0) {
+      router.push(`/user-manage`);
+    }
+    if (role === 1) {
+      router.push(`/staff-page`);
+    }
+    if (role === 2) {
+      router.push(`/instructorcourses`);
+    }
+    // if (role === 3) {
+    //   router.push(`/`);
+    // }
+    // if (role === -1) {
+    //   router.push(`/`);
+    // }
+  });
   const [visible, setVisible] = useState(false);
 
   const [activeTab, setActiveTab] = useState("tab1");

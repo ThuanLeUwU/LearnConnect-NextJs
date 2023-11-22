@@ -18,6 +18,7 @@ import {
   Legend,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
+import { useRouter } from "next/navigation";
 ChartJs.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 // export type Revenue = {
@@ -52,6 +53,25 @@ export type Revenue = {
 };
 
 const Revenue = () => {
+  const { role } = UserAuth();
+  const router = useRouter();
+  useEffect(() => {
+    if (role === 0) {
+      router.push(`/user-manage`);
+    }
+    if (role === 1) {
+      router.push(`/staff-page`);
+    }
+    // if (role === 2) {
+    //   router.push(`/instructorcourses`);
+    // }
+    if (role === 3) {
+      router.push(`/`);
+    }
+    if (role === -1) {
+      router.push(`/`);
+    }
+  });
   const { id, userData } = UserAuth();
 
   const [today, setToday] = useState<string>();

@@ -26,13 +26,12 @@ const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [notification, setNotification] = useState(false);
   const [visible, setVisible] = useState(false);
-  const { userData, id, jwtToken } = UserAuth();
+  const { userData, id, jwtToken, switchRole } = UserAuth();
   axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
   const [notificationContent, setNotificationContent] = useState<
     Notification[]
   >([]);
   const router = useRouter();
-
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
     setNotification(false);
@@ -132,6 +131,18 @@ const Header = () => {
     setIsOpen(false);
   };
 
+  const handleSwitchRole = () => {
+    if (role === 3) {
+      switchRole(2);
+      router.push(`/instructorcourses`);
+    }
+    if (role === 2) {
+      switchRole(3);
+      router.push(`/`);
+    }
+  };
+
+  const handleSwitchRoleStudent = () => {};
   return (
     <div className={`${headerStyles.header_section}`}>
       {!userData ? (
@@ -150,6 +161,13 @@ const Header = () => {
               </button>
             </div>
             <ul className={`${headerStyles.header_login_right}`}>
+              {userData?.role === 2 ? (
+                <button onClick={handleSwitchRole}>
+                  Switch Role {role === 3 ? "mentor" : "student"}
+                </button>
+              ) : (
+                <></>
+              )}
               <li className={`${headerStyles.header_notification}`}>
                 <button onClick={toggleDropdownNotification}>
                   <AiFillBell />
@@ -255,7 +273,7 @@ const Header = () => {
                       aria-orientation="vertical"
                       aria-labelledby="options-menu"
                     >
-                      {userData?.role !== 1 && userData?.role !== 2 && (
+                      {userData?.role !== 0 && userData?.role !== 1 && (
                         <>
                           <li>
                             <Link
@@ -368,7 +386,7 @@ const Header = () => {
             </div>
           ) : (
             <>
-              {role == 3 ? (
+              {role === 3 ? (
                 <div className={`${headerStyles.header_main_wrapper}`}>
                   <div className={`${headerStyles.header_logo}`}>
                     <Link href="/">
@@ -402,18 +420,17 @@ const Header = () => {
                       </li>
                     </ul>
                   </div>
-                  <div className={`${headerStyles.regis_btn}`}>
-                    <Button onClick={handleClickBecomeMentor}>
-                      Become a Mentor
-                    </Button>
-                    {/* <RegisterForm
-                      visible={visible}
-                      setVisible={setVisible}
-                      onCancel={() => {
-                        setVisible(false);
-                      }}
-                      isEdit={true}
-                    /> */}
+
+                  <div>
+                    {userData?.role == 3 ? (
+                      <div className={`${headerStyles.regis_btn}`}>
+                        <Button onClick={handleClickBecomeMentor}>
+                          Become a Mentor
+                        </Button>
+                      </div>
+                    ) : (
+                      <></>
+                    )}
                   </div>
                 </div>
               ) : (

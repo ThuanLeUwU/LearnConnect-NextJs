@@ -1,13 +1,32 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ".././globals.css";
 import useDataMentorFetcher from "@/components/pagination/useDataMentorFetcher";
 import Paginate from "@/components/pagination/pagination";
 import { useRouter } from "next/navigation";
 import { Spin } from "antd";
+import { UserAuth } from "../context/AuthContext";
 
 export default function ListMentor() {
   const router = useRouter();
+  const { id, user, role } = UserAuth();
+  useEffect(() => {
+    if (role === 0) {
+      router.push(`/user-manage`);
+    }
+    if (role === 1) {
+      router.push(`/staff-page`);
+    }
+    if (role === 2) {
+      router.push(`/instructorcourses`);
+    }
+    // if (role === 3) {
+    //   router.push(`/`);
+    // }
+    // if (role === -1) {
+    //   router.push(`/`);
+    // }
+  });
   const { loading, mentor, mentorID, totalPages, currentPage, setCurrentPage } =
     useDataMentorFetcher();
   const handleSwiperWrapperClick = (IdMentor) => {

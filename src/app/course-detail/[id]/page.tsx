@@ -28,6 +28,25 @@ export type Rating = {
 };
 
 export default function CourseDetailPage({ params }: any) {
+  const router = useRouter();
+  const { id, user, role } = UserAuth();
+  useEffect(() => {
+    if (role === 0) {
+      router.push(`/user-manage`);
+    }
+    if (role === 1) {
+      router.push(`/staff-page`);
+    }
+    if (role === 2) {
+      router.push(`/instructorcourses`);
+    }
+    // if (role === 3) {
+    //   router.push(`/`);
+    // }
+    // if (role === -1) {
+    //   router.push(`/`);
+    // }
+  });
   const [visible, setVisible] = useState(false);
   const idCourse = params.id;
   const [activeTab, setActiveTab] = useState("tab1");
@@ -36,10 +55,9 @@ export default function CourseDetailPage({ params }: any) {
   };
   const [courses, setCourses] = useState<Course>();
   const [lectures, setLectures] = useState<Lectures>();
-  const { id, userData, jwtToken } = UserAuth();
+  const { userData, jwtToken } = UserAuth();
   const [averageRating, setAverageRating] = useState(0);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const router = useRouter();
   const idUser = id;
   console.log("id user is", idUser);
   console.log("id course is", idCourse);

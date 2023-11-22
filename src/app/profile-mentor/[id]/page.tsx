@@ -53,13 +53,31 @@ export type CourseItemProfile = {
 };
 
 export default function ProfileUser({ params }: any) {
+  const { role } = UserAuth();
+  const router = useRouter();
+  useEffect(() => {
+    if (role === 0) {
+      router.push(`/user-manage`);
+    }
+    if (role === 1) {
+      router.push(`/staff-page`);
+    }
+    if (role === 2) {
+      router.push(`/instructorcourses`);
+    }
+    // if (role === 3) {
+    //   router.push(`/`);
+    // }
+    // if (role === -1) {
+    //   router.push(`/`);
+    // }
+  });
   const idMentor = params.id;
   const [DataMentor, SetDataMentor] = useState<User>();
   const [courses, setCourses] = useState<CourseItemProfile[]>([]);
   const API_URL =
     "https://learnconnectapitest.azurewebsites.net/api/course/get-courses-by-mentor?mentorId=";
   const pagesize = 4;
-  const router = useRouter();
   const pathName = usePathname();
   const searchParams = useSearchParams();
   const [totalPages, setTotalPages] = useState(10);
@@ -105,10 +123,7 @@ export default function ProfileUser({ params }: any) {
   };
 
   useEffect(() => {
-    // Attach event listener when the component mounts
     document.addEventListener("mousedown", handleClickOutside);
-
-    // Clean up event listener when the component unmounts
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };

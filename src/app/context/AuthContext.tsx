@@ -51,6 +51,7 @@ interface AuthContextValue {
   role: number;
   userData: User | null;
   googleSignIn: () => void;
+  switchRole: (r) => void;
   logOut: () => void;
   setUserLogin: (user, token) => void;
   refetchUser: () => void;
@@ -63,6 +64,7 @@ const AuthContext = createContext<AuthContextValue>({
   role: -1,
   userData: null,
   googleSignIn: () => {},
+  switchRole: (r) => {},
   logOut: () => {},
   setUserLogin: (user, token) => {},
   refetchUser: () => {},
@@ -118,6 +120,10 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
       const responseUser = await http.get(`/user/${id}`);
       setUserData(responseUser?.data);
     }
+  };
+
+  const switchRole = (r) => {
+    setRole(r);
   };
 
   // useEffect(() => {
@@ -188,6 +194,7 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
         id,
         role,
         userData,
+        switchRole,
         googleSignIn,
         logOut,
         setUserLogin,

@@ -9,7 +9,28 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Paginate from "@/components/pagination/pagination";
 import { Empty } from "antd";
+import { UserAuth } from "@/app/context/AuthContext";
+import { useRouter } from "next/navigation";
 const SearchCourse = () => {
+  const router = useRouter();
+  const { id, user, role } = UserAuth();
+  useEffect(() => {
+    if (role === 0) {
+      router.push(`/user-manage`);
+    }
+    if (role === 1) {
+      router.push(`/staff-page`);
+    }
+    if (role === 2) {
+      router.push(`/instructorcourses`);
+    }
+    // if (role === 3) {
+    //   router.push(`/`);
+    // }
+    // if (role === -1) {
+    //   router.push(`/`);
+    // }
+  });
   const [courses, setCourses] = useState<CourseItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const API_URL =

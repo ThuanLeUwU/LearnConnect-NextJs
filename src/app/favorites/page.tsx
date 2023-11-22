@@ -7,11 +7,33 @@ import useDataFavoritesFetcher from "@/components/pagination/useDataFavoritesFet
 import { UserAuth } from "../context/AuthContext";
 import axios from "axios";
 import { Empty, Spin } from "antd";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const MyCourse = () => {
+  const { role } = UserAuth();
+  const router = useRouter();
+  useEffect(() => {
+    if (role === 0) {
+      router.push(`/user-manage`);
+    }
+    if (role === 1) {
+      router.push(`/staff-page`);
+    }
+    // if (role === 2) {
+    //   router.push(`/instructorcourses`);
+    // }
+    // if (role === 3) {
+    //   router.push(`/`);
+    // }
+    if (role === -1) {
+      router.push(`/`);
+    }
+  });
   const { loading, courses, totalPages, currentPage, setCurrentPage } =
     useDataFavoritesFetcher();
   const { jwtToken } = UserAuth();
+
   axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
   return (
     <div className="container">
