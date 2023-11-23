@@ -12,6 +12,7 @@ export type Test = {
     title: string;
     description: string;
     totalQuestion: number;
+    createDate: string;
     status: number;
     courseId: number;
     questions: any;
@@ -20,7 +21,7 @@ export type Test = {
     {
       question: {
         id: number;
-        questionTest: string;
+        questionText: string;
         questionType: number;
         status: number;
         testId: number;
@@ -28,7 +29,7 @@ export type Test = {
       answers: [
         {
           id: number;
-          answerTest: string;
+          answerText: string;
           isCorrect: boolean;
           questionId: number;
         }
@@ -113,7 +114,7 @@ export default function Quiz({ params }: any) {
       item.questions.forEach((q) => {
         const selectedAnswer = selectedAnswers[q.question.id]?.answer;
         const correctAnswer = q.answers.find((answer) => answer.isCorrect);
-        if (correctAnswer && selectedAnswer === correctAnswer.answerTest) {
+        if (correctAnswer && selectedAnswer === correctAnswer.answerText) {
           count++;
         }
       });
@@ -188,7 +189,7 @@ export default function Quiz({ params }: any) {
                   className="mb-2 mt-6 p-6 border-2 rounded-lg border-gray-200"
                 >
                   <p className="mb-1 font-medium text-[18px]">
-                    {index + 1}. {q.question.questionTest}
+                    {index + 1}. {q.question.questionText}
                   </p>
                   <div className="pl-4 grid grid-cols-2 gap-4">
                     {q.answers.map((answer, ansIndex) => (
@@ -197,26 +198,26 @@ export default function Quiz({ params }: any) {
                         className={`mt-3 border-2 p-2 text-left rounded-lg ${
                           submitted
                             ? selectedAnswers[q.question.id]?.answer ===
-                              answer.answerTest
+                              answer.answerText
                               ? selectedAnswers[q.question.id]?.isCorrect
                                 ? "border-green-500 bg-green-100"
                                 : "border-red-500 bg-red-100"
                               : "border-gray-300"
                             : selectedAnswers[q.question.id]?.answer ===
-                              answer.answerTest
+                              answer.answerText
                             ? "border-blue-500 bg-blue-100"
                             : "border-gray-100"
                         }`}
                         onClick={() =>
                           handleAnswerSelect(
                             q.question.id,
-                            answer.answerTest,
+                            answer.answerText,
                             answer.isCorrect
                           )
                         }
                       >
                         <span className="mr-2">{answerOptions[ansIndex]}</span>
-                        {answer.answerTest}
+                        {answer.answerText}
                       </button>
                     ))}
                   </div>
