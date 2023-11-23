@@ -509,6 +509,10 @@ const Dashboard = ({ params }: any) => {
       image: "/menu-icon/icon1.png",
       href: "/revenue",
     },
+    {
+      image: "/menu-icon/icon2.png",
+      href: "/request-history",
+    },
   ];
 
   return (

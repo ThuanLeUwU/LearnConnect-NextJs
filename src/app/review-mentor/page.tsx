@@ -62,6 +62,10 @@ const Reviews = () => {
       image: "/menu-icon/icon1.png",
       href: "/revenue",
     },
+    {
+      image: "/menu-icon/icon2.png",
+      href: "/request-history",
+    },
   ];
 
   const [reviews, setReviews] = useState<Review[]>([]);
