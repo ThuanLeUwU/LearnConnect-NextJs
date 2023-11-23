@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { AiOutlineCheckCircle, AiFillExclamationCircle } from "react-icons/ai";
 import { UserAuth } from "../context/AuthContext";
 import { http } from "@/api/http";
+import { Spin } from "antd";
 
 export type Payment = {
   id: string | number;
@@ -24,7 +25,7 @@ export type Payment = {
 const AfterPayment = () => {
   const { id, jwtToken, role } = UserAuth();
   const router = useRouter();
-
+  const [loading, setLoading] = useState<boolean>(true);
   axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
   console.log("jwtToken", jwtToken);
   const [urlParams, setUrlParams] = useState<URLSearchParams | null>(null);
@@ -43,9 +44,6 @@ const AfterPayment = () => {
     if (urlParams) {
       const vnp_TxnRef = urlParams.get("vnp_TxnRef");
       const vnp_PayDate = urlParams.get("vnp_PayDate");
-      // console.log("vnp_TxnRef", vnp_TxnRef);
-      // console.log("vnp_PayDate", vnp_PayDate);
-
       const fetchData = async () => {
         try {
           const responseData = await http.get(
@@ -55,8 +53,9 @@ const AfterPayment = () => {
           setCourseId(responseData.data.courseId);
           setCourseName(responseData.data.courseName);
         } catch (error) {
-          // Handle error here
           console.error("Error fetching data:", error);
+        } finally {
+          setLoading(false);
         }
       };
       fetchData();
@@ -69,12 +68,11 @@ const AfterPayment = () => {
   const handleClickBacktoCourse = () => {
     router.push(`/`);
   };
-  // console.log("courseName", courseName);
-  // console.log("payment", payment);
-  // console.log("courseID", courseId);
   return (
     <div className="flex items-center justify-center min-h-[60vh]">
-      {payment?.status === 0 ? (
+      {loading ? (
+        <Spin size="large" />
+      ) : payment?.status === 0 ? (
         <div className="text-center">
           <AiOutlineCheckCircle className="text-6xl mx-auto text-[#309255]" />
           <h1 className="text-3xl font-bold mb-4">Payment successful</h1>

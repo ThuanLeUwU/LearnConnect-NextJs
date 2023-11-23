@@ -12,6 +12,7 @@ export type Test = {
     title: string;
     description: string;
     totalQuestion: number;
+    createDate: string;
     status: number;
     courseId: number;
     questions: any;

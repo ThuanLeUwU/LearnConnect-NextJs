@@ -104,6 +104,10 @@ const InstructorCourse = () => {
       image: "/menu-icon/icon1.png",
       href: "/revenue",
     },
+    {
+      image: "/menu-icon/icon2.png",
+      href: "/request-history",
+    },
   ];
 
   const [dashboardCourse, setDashboardCourse] = useState("");
@@ -527,12 +531,8 @@ const InstructorCourse = () => {
           >
             <Upload
               accept="image/png, image/jpeg"
-              // accept=".mov,.mp4"
               onChange={handleChange}
-              // beforeUpload={beforeUpload}
-              // headers={{ Authorization: authorization }}
               action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
-              // action="https://learnconnectapitest.azurewebsites.net/api/Upload/video"
             >
               <Button>Upload</Button>
               <span>{errorMassage}</span>
