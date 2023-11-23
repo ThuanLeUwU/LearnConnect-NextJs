@@ -4,6 +4,7 @@ import InstructorCourseStyle from ".././styles/style.module.scss";
 import Link from "next/link";
 import {
   Button,
+  Checkbox,
   Form,
   Input,
   Modal,
@@ -35,6 +36,16 @@ import { toast } from "sonner";
 import { Course } from "@/components/courses/courses";
 import { Test } from "@/app/test/[id]/page";
 // import { Rating } from "@/app/course-detail/[id]/page";
+
+export type TestTitle = {
+  id: number;
+  title: string;
+  description: string;
+  totalQuestion: number;
+  createDate: string;
+  status: number;
+  courseId: number;
+};
 
 export type Rating = {
   userRatingInfo: any;
@@ -113,6 +124,9 @@ const Dashboard = ({ params }: any) => {
   const handleCancel = () => {
     setIsModal(false);
     form.resetFields();
+    setTestTitleModal(false);
+    setShowQuestionForm(false);
+    setShowAnswerForm(false);
   };
 
   //update
@@ -352,6 +366,10 @@ const Dashboard = ({ params }: any) => {
   // const [infoTest, setInfoTest] = useState<Test>();
   // console.log("test", infoTest);
   const [listQuestion, setListQuestion] = useState<Test[]>([]);
+  const [allQuestions, setAllQuestions] = useState<Test[]>([]);
+  console.log("all", allQuestions);
+  const [idTest, setIdTest] = useState<Test>();
+  console.log("list", idTest);
   const [submitted, setSubmitted] = useState(false);
   const [selectedAnswers, setSelectedAnswers] = useState<{
     [key: number]: { answer: string; isCorrect: boolean };
@@ -364,6 +382,8 @@ const Dashboard = ({ params }: any) => {
       .then((response) => {
         // setInfoTest(response.data.questions);
         setListQuestion(response.data);
+        setAllQuestions(response.data[0].questions);
+        setIdTest(response.data[0].test.id);
         listQuestion.forEach((item) => {
           const totalQuestion = item.test.totalQuestion;
           // console.log("Total Questions:", totalQuestion);
@@ -489,51 +509,52 @@ const Dashboard = ({ params }: any) => {
       });
   }, [idCourse]);
 
-  const rating = [
-    {
-      title: "Rating",
-      dataIndex: "rating1",
-      key: "rating1",
-      render: (rating1) => <Tag color="blue">{rating1}</Tag>,
-    },
-    {
-      title: "Comment",
-      dataIndex: "comment",
-      key: "comment",
-    },
-    {
-      title: "Time",
-      dataIndex: "timeStamp",
-      key: "timeStamp",
-      render: (timeStamp) => {
-        const formattedDate = new Intl.DateTimeFormat("en-US", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-          hour: "numeric",
-          minute: "numeric",
-          second: "numeric",
-          timeZone: "Asia/Ho_Chi_Minh", // Chỉ định múi giờ nếu cần thiết
-        }).format(new Date(timeStamp));
-        return <span>{formattedDate}</span>;
-      },
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      render: (status) => (
-        <Tag color={status === 1 ? "red" : "green"}>
-          {status === 1 ? "Active" : "Inactive"}
-        </Tag>
-      ),
-    },
-    {
-      title: "User ID",
-      dataIndex: "userId",
-      key: "userId",
-    },
-  ];
+  const [test, setTest] = useState<Test[]>([]);
+  // console.log("test", test);
+
+  useEffect(() => {
+    http
+      .get(`/test/get-tests-by-course?courseId=${idCourse}`)
+      .then((response) => {
+        setTest(response.data);
+      });
+  }, []);
+
+  const [testTitleModal, setTestTitleModal] = useState(false);
+
+  const showTestTitleModal = () => {
+    setTestTitleModal(true);
+  };
+
+  const handleCreateTestTitle = (data: any) => {
+    const formData = new FormData();
+    formData.append("title", data.title);
+    formData.append("description", data.description);
+
+    try {
+      http
+        .post(
+          `https://learnconnectapitest.azurewebsites.net/api/test/create-test?courseId=${idCourse}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        )
+        .then(() => {
+          toast.success("Create Test Successfully!!!");
+          setTestTitleModal(false);
+          http
+            .get(`/test/get-tests-by-course?courseId=${idCourse}`)
+            .then((response) => {
+              setListQuestion(response.data);
+            });
+        });
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const menuItem = [
     {
@@ -553,6 +574,114 @@ const Dashboard = ({ params }: any) => {
       href: "/revenue",
     },
   ];
+
+  const [showQuestionForm, setShowQuestionForm] = useState(false);
+
+  const handleNewQuestionClick = () => {
+    setShowQuestionForm(true);
+  };
+
+  const [showAnswerForm, setShowAnswerForm] = useState(false);
+
+  const handleNewAnswerClick = (data: any) => {
+    setShowAnswerForm(true);
+  };
+
+  const handleFormQuestionSubmit = (data: any) => {
+    // Xử lý dữ liệu khi form được gửi
+    const formDataQ = new FormData();
+    formDataQ.append("questionText", data.question);
+    const formDataA = new FormData();
+    const formDataB = new FormData();
+    const formDataC = new FormData();
+    const formDataD = new FormData();
+
+    try {
+      http
+        .post(
+          `https://learnconnectapitest.azurewebsites.net/api/question/create-question?testId=${idTest}`,
+          formDataQ,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        )
+        .then(() => {
+          http
+            .get(`/test/get-tests-by-course?courseId=${idCourse}`)
+            .then((response) => {
+              setListQuestion(response.data);
+              setAllQuestions(response.data[0].questions);
+              setIdTest(response.data[0].test.id);
+            });
+          // http.get();
+          setShowQuestionForm(false);
+          toast.success("create question successfully!!!");
+        });
+    } catch (err) {
+      console.error(err);
+    }
+    // console.log("Received values:", values);
+    // Đóng form sau khi xử lý
+  };
+
+  const [isChecked, setIsChecked] = useState(false);
+  const [answerA, setAnswerA] = useState(false);
+  const [answerB, setAnswerB] = useState(false);
+  const [answerC, setAnswerC] = useState(false);
+  const [answerD, setAnswerD] = useState(false);
+  console.log("A", answerA);
+  console.log("B", answerB);
+  console.log("C", answerC);
+  console.log("D", answerD);
+
+  // const handleCheckboxAChange = (e) => {
+  //   setAnswerA(e.target.checked);
+  //   if (e.target.checked) {
+  //     // Nếu ô A được chọn, tắt (disable) các ô khác
+  //     setAnswerB(false);
+  //     setAnswerC(false);
+  //     setAnswerD(false);
+  //   }
+  // };
+  // const handleCheckboxBChange = (e) => {
+  //   setAnswerB(e.target.checked);
+  //   if (e.target.checked) {
+  //     // Nếu ô B được chọn, tắt (disable) các ô khác
+  //     setAnswerA(false);
+  //     setAnswerC(false);
+  //     setAnswerD(false);
+  //   }
+  // };
+  // const handleCheckboxCChange = (e) => {
+  //   setAnswerC(e.target.checked);
+  //   if (e.target.checked) {
+  //     // Nếu ô C được chọn, tắt (disable) các ô khác
+  //     setAnswerB(false);
+  //     setAnswerA(false);
+  //     setAnswerD(false);
+  //   }
+  // };
+  // const handleCheckboxDChange = (e) => {
+  //   setAnswerD(e.target.checked);
+  //   if (e.target.checked) {
+  //     // Nếu ô D được chọn, tắt (disable) các ô khác
+  //     setAnswerB(false);
+  //     setAnswerC(false);
+  //     setAnswerA(false);
+  //   }
+  // };
+
+  const handleCheckboxChange = (checked, answerSetter) => {
+    setAnswerA(false);
+    setAnswerB(false);
+    setAnswerC(false);
+    setAnswerD(false);
+
+    // Thiết lập trạng thái của ô đang xét
+    answerSetter(checked);
+  };
 
   return (
     <div className={`${InstructorCourseStyle.content_wrapper}`}>
@@ -715,54 +844,286 @@ const Dashboard = ({ params }: any) => {
         )}
         {activeTab === "tab2" && (
           <div className={`${InstructorCourseStyle.lecture}`}>
-            <div className="flex justify-between mb-5">
+            {/* <div className="flex justify-between mb-5">
               <Button onClick={showModal}> New Question</Button>
-            </div>
-            {loading ? (
-              <Spin size="large" />
+            </div> */}
+            {listQuestion.length === 0 ? (
+              <div className="flex justify-between mb-5">
+                <Button onClick={showTestTitleModal}>Create New Test</Button>
+              </div>
             ) : (
               <>
-                {listQuestion.map((item) => (
-                  <div key={item.test.id} className="mb-4 mt-6">
-                    <h3 className="text-xl font-semibold mb-2">
-                      {item.test.title}
-                    </h3>
-                    {item.questions.map((q, index) => (
-                      <div
-                        key={q.question.id}
-                        className="mb-2 mt-6 p-6 border-2 rounded-lg border-gray-200"
-                      >
-                        <p className="mb-1 font-medium text-[18px]">
-                          {index + 1}. {q.question.questionTest}
-                        </p>
-                        <div className="pl-4 grid grid-cols-2 gap-4">
-                          {q.answers.map((answer, ansIndex) => (
-                            <div
-                              key={answer.id}
-                              className={`mt-3 border-2 p-2 text-left rounded-lg ${
-                                answer.isCorrect === true
-                                  ? "border-green-500 bg-green-100"
-                                  : ""
-                              }`}
-                              // onClick={() =>
-                              //   handleAnswerSelect(
-                              //     q.question.id,
-                              //     answer.answerTest,
-                              //     answer.isCorrect
-                              //   )
-                              // }
-                            >
-                              {/* <span className="mr-2">
-                              {answerOptions[ansIndex]}
-                            </span> */}
-                              {answer.answerTest}
+                {loading ? (
+                  <Spin size="large" />
+                ) : (
+                  <>
+                    {listQuestion.map((item) => (
+                      <div key={item.test.id} className="mb-4 mt-6">
+                        <h3 className="text-xl font-semibold mb-2">
+                          <div>
+                            <div>Title: {item.test.title}</div>
+
+                            <br />
+                            <div>Description: {item.test.description}</div>
+                          </div>
+                        </h3>
+                        {allQuestions.length === 0 ? (
+                          <>câu hỏi đâu ra</>
+                        ) : (
+                          <>câu hỏi đây</>
+                        )}
+                        {/* {item.questions.length == 0 ? <></> : <></>} */}
+                        {item.questions.map((q, index) => (
+                          <div
+                            key={q.question.id}
+                            className="mb-2 mt-6 p-6 border-2 rounded-lg border-gray-200"
+                          >
+                            <p className="mb-1 font-medium text-[18px] flex flex-row justify-between bott">
+                              <div>
+                                {index + 1}. {q.question.questionText}
+                              </div>
+                              <Button
+                                onClick={() =>
+                                  handleNewAnswerClick(q.question.id)
+                                }
+                              >
+                                Add Answer
+                              </Button>
+                            </p>
+                            {showAnswerForm && (
+                              <Form
+                                onFinish={handleFormQuestionSubmit}
+                                style={{ width: "80%", alignItems: "start" }}
+                              >
+                                <Form.Item
+                                  name="answer"
+                                  label="Answer"
+                                  rules={[
+                                    {
+                                      required: true,
+                                      message: "Please input your question!",
+                                    },
+                                  ]}
+                                >
+                                  <Input
+                                    className={
+                                      answerA
+                                        ? "border-green-500 bg-green-500"
+                                        : ""
+                                    }
+                                  />
+                                  <Checkbox
+                                    checked={answerA}
+                                    onChange={(e) =>
+                                      handleCheckboxChange(
+                                        e.target.checked,
+                                        setAnswerA
+                                      )
+                                    }
+                                    disabled={answerA}
+                                  >
+                                    Correct Answer
+                                  </Checkbox>
+                                </Form.Item>
+                                <Button onClick={handleCancel}>Cancel</Button>
+                                <Button
+                                  style={{
+                                    backgroundColor: "#4caf50",
+                                    borderColor: "#4caf50",
+                                    color: "#fff",
+                                  }}
+                                  type="primary"
+                                  htmlType="submit"
+                                >
+                                  Submit
+                                </Button>
+                              </Form>
+                            )}
+                            <div className="pl-4 grid grid-cols-2 gap-4">
+                              {q.answers.map((answer, ansIndex) => (
+                                <div
+                                  key={answer.id}
+                                  className={`mt-3 border-2 p-2 text-left rounded-lg ${
+                                    answer.isCorrect === true
+                                      ? "border-green-500 bg-green-100"
+                                      : ""
+                                  }`}
+                                >
+                                  {answer.answerText}
+                                </div>
+                              ))}
                             </div>
-                          ))}
-                        </div>
+                          </div>
+                        ))}
+                        <>
+                          <div className="flex justify-between mb-5">
+                            <Button onClick={handleNewQuestionClick}>
+                              New Question
+                            </Button>
+                          </div>
+                          <div className=" flex justify-center">
+                            {showQuestionForm && (
+                              <Form
+                                onFinish={handleFormQuestionSubmit}
+                                style={{ width: "80%", alignItems: "center" }}
+                              >
+                                <Form.Item
+                                  name="question"
+                                  label="Question"
+                                  rules={[
+                                    {
+                                      required: true,
+                                      message: "Please input your question!",
+                                    },
+                                  ]}
+                                >
+                                  <Input />
+                                </Form.Item>
+                                {/* <div className="grid grid-cols-2 gap-4 p-10">
+                                  <Form.Item
+                                    name="answerA"
+                                    label="A"
+                                    rules={[
+                                      {
+                                        required: true,
+                                        message: "Please input your question!",
+                                      },
+                                    ]}
+                                  >
+                                    <Input
+                                      className={
+                                        answerA
+                                          ? "border-green-500 bg-green-500"
+                                          : ""
+                                      }
+                                    />
+                                    <Checkbox
+                                      checked={answerA}
+                                      onChange={(e) =>
+                                        handleCheckboxChange(
+                                          e.target.checked,
+                                          setAnswerA
+                                        )
+                                      }
+                                      disabled={answerA}
+                                    >
+                                      Correct Answer
+                                    </Checkbox>
+                                  </Form.Item>
+                                  <Form.Item
+                                    name="answerB"
+                                    label="B"
+                                    rules={[
+                                      {
+                                        required: true,
+                                        message: "Please input your question!",
+                                      },
+                                    ]}
+                                  >
+                                    <Input
+                                      className={
+                                        answerB
+                                          ? "border-green-500 bg-green-500"
+                                          : ""
+                                      }
+                                    />
+                                    <Checkbox
+                                      checked={answerB}
+                                      onChange={(e) =>
+                                        handleCheckboxChange(
+                                          e.target.checked,
+                                          setAnswerB
+                                        )
+                                      }
+                                      disabled={answerB}
+                                    >
+                                      Correct Answer
+                                    </Checkbox>
+                                  </Form.Item>
+                                  <Form.Item
+                                    name="answerC"
+                                    label="C"
+                                    rules={[
+                                      {
+                                        required: true,
+                                        message: "Please input your question!",
+                                      },
+                                    ]}
+                                  >
+                                    <Input
+                                      className={
+                                        answerC
+                                          ? "border-green-500 bg-green-500"
+                                          : ""
+                                      }
+                                    />
+                                    <Checkbox
+                                      checked={answerC}
+                                      onChange={(e) =>
+                                        handleCheckboxChange(
+                                          e.target.checked,
+                                          setAnswerC
+                                        )
+                                      }
+                                      disabled={answerC}
+                                    >
+                                      Correct Answer
+                                    </Checkbox>
+                                  </Form.Item>
+                                  <Form.Item
+                                    name="answerD"
+                                    label="D"
+                                    rules={[
+                                      {
+                                        required: true,
+                                        message: "Please input your question!",
+                                      },
+                                    ]}
+                                  >
+                                    <Input
+                                      className={
+                                        answerD
+                                          ? "border-green-500 bg-green-500"
+                                          : ""
+                                      }
+                                    />
+                                    <Checkbox
+                                      checked={answerD}
+                                      onChange={(e) =>
+                                        handleCheckboxChange(
+                                          e.target.checked,
+                                          setAnswerD
+                                        )
+                                      }
+                                      disabled={answerD}
+                                    >
+                                      Correct Answer
+                                    </Checkbox>
+                                  </Form.Item>
+                                </div> */}
+                                <div className="flex gap-5 justify-end">
+                                  {/* Thêm các trường dữ liệu khác cần thiết vào đây */}
+                                  <Button onClick={handleCancel}>Cancel</Button>
+                                  <Button
+                                    style={{
+                                      backgroundColor: "#4caf50",
+                                      borderColor: "#4caf50",
+                                      color: "#fff",
+                                    }}
+                                    type="primary"
+                                    htmlType="submit"
+                                  >
+                                    Submit
+                                  </Button>
+                                </div>
+                              </Form>
+                            )}
+                          </div>
+                        </>
                       </div>
                     ))}
-                  </div>
-                ))}
+                  </>
+                )}
               </>
             )}
           </div>
@@ -1108,6 +1469,67 @@ const Dashboard = ({ params }: any) => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Test Title Modal */}
+      <Modal
+        destroyOnClose={true}
+        title={`Information About Test (Title, Description) `}
+        open={testTitleModal}
+        // onOk={handleUpdateOk}
+        width="40%"
+        onCancel={handleCancel}
+        footer={false}
+        // style={{ background: "#FFCCCC" }}
+      >
+        {/* Add your update form here */}
+        <Form
+          autoComplete="off"
+          form={form}
+          labelCol={{ span: 5 }}
+          wrapperCol={{ span: 18 }}
+          layout="horizontal"
+          className="mt-5"
+          style={{ width: "100%" }}
+          onFinish={handleCreateTestTitle}
+        >
+          <Form.Item
+            rules={[
+              { required: true, message: "Please input Name!" },
+              { max: 500, message: "Maximum 500 characters allowed!" },
+            ]}
+            label="Title"
+            name="title"
+          >
+            <Input placeholder="Put title of Test here !!!" />
+          </Form.Item>
+
+          <Form.Item
+            rules={[
+              { required: true, message: "Please input Name!" },
+              { max: 500, message: "Maximum 500 characters allowed!" },
+            ]}
+            label="Description"
+            name="description"
+          >
+            <Input.TextArea placeholder="Type some description here !!!" />
+          </Form.Item>
+
+          <Space className="justify-end w-full">
+            <Form.Item className="mb-0">
+              <Space>
+                <Button onClick={handleCancel}>Cancel</Button>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  style={{ color: "black" }}
+                >
+                  Create
+                </Button>
+              </Space>
+            </Form.Item>
+          </Space>
+        </Form>
+      </Modal>
     </div>
   );
 };

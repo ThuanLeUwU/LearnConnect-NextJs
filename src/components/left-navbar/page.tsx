@@ -4,24 +4,24 @@ import InstructorCourseStyle from "./styles.module.scss";
 const LeftNavbar = ({ page1, page2, page3, page4, page5 }) => {
   const menuItem = [
     {
-      image: "/menu-icon/icon-1.png",
+      image: "/menu-icon/form.png",
+      title: "Specialize Request",
       href: `${page1}`,
     },
     {
-      image: "/menu-icon/icon-2.png",
+      image: "/menu-icon/star.png",
+      title: "Ratings",
       href: `${page2}`,
     },
     {
-      image: "/menu-icon/icon-3.png",
+      image: "/menu-icon/flag-alt (2).png",
+      title: "Reports",
       href: `${page3}`,
     },
     {
-      image: "/menu-icon/icon-4.png",
+      image: "/menu-icon/course.png",
+      title: "Courses",
       href: `${page4}`,
-    },
-    {
-      image: "/menu-icon/icon-4.png",
-      href: `${page5}`,
     },
   ];
 
@@ -36,6 +36,7 @@ const LeftNavbar = ({ page1, page2, page3, page4, page5 }) => {
               className={`${InstructorCourseStyle.sidebar_active} mt-5`}
             >
               <img src={item.image} alt={`icon-${index + 1}`} />
+              {/* <span className="text-white">{item.title}</span> */}
             </Link>
           ))}
         </div>

@@ -40,6 +40,11 @@ import { Course } from "@/components/courses/courses";
 import { http } from "@/api/http";
 // import { getMessageToken } from "../firebase";
 
+export type Specialize = {
+  specId: number;
+  specName: string;
+};
+
 export type Category = {
   id: number;
   name: string;
@@ -113,7 +118,11 @@ const InstructorCourse = () => {
     if (status === 0) {
       return <p style={{ color: "green" }}>Active</p>;
     } else if (status === 1) {
-      return <p style={{ color: "red" }}>Pending</p>;
+      return <p style={{ color: "grey" }}>Pending</p>;
+    } else if (status === 2) {
+      return <p style={{ color: "#b8ba5a" }}>Reject</p>;
+    } else if (status === 3) {
+      return <p style={{ color: "red" }}>Banned</p>;
     }
   };
 
@@ -210,11 +219,13 @@ const InstructorCourse = () => {
   // const [selected, setSelected] = useState(null);
   const [selected, setSelected] = useState<number>(0);
   const { Option } = Select;
-  const [listCategory, setListCategory] = useState<Category[]>([]);
+  const [listCategory, setListCategory] = useState<Specialize[]>([]);
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const responseData = await http.get("/specialization");
+        const responseData = await http.get(
+          `/specialization-of-mentor/by-mentor/${id}`
+        );
         setListCategory(responseData.data);
       } catch (err) {
         console.log(err);
@@ -534,12 +545,12 @@ const InstructorCourse = () => {
           >
             <Input placeholder="Name Course" />
           </Form.Item>
-          <Form.Item label="Category">
+          <Form.Item label="Specialize">
             <Select onChange={handleChangeCate}>
               {listCategory.map((option) => {
                 return (
-                  <Option key={option.id} value={option.id}>
-                    {option.name}
+                  <Option key={option.specId} value={option.specId}>
+                    {option.specName}
                   </Option>
                 );
               })}
@@ -667,12 +678,12 @@ const InstructorCourse = () => {
               defaultValue={course?.name}
             />
           </Form.Item>
-          <Form.Item label="Category">
+          <Form.Item label="Specialize">
             <Select onChange={handleUpdateCate} defaultValue={updateCate}>
               {listCategory.map((option) => {
                 return (
-                  <Option key={option.id} value={option.id}>
-                    {option.name}
+                  <Option key={option.specId} value={option.specId}>
+                    {option.specName}
                   </Option>
                 );
               })}

@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { http } from "@/api/http";
 import { Lecture } from "@/app/my-course/[id]/page";
 import {
+  Breadcrumb,
   Button,
   Form,
   Input,
@@ -115,8 +116,7 @@ const DetailsContent = ({ params }: any) => {
     try {
       http
         .post(
-          `https://learnconnectapitest.azurewebsites.net/api/lecture/process-lecture-request?lectureId=${oneLecture?.id}&acceptRequest=false`,
-          formData,
+          `https://learnconnectapitest.azurewebsites.net/api/lecture/process-lecture-request?lectureId=${oneLecture?.id}&acceptRequest=false&note=${data.reason}`,
           {
             headers: {
               "Content-Type": "multipart/form-data",
@@ -332,6 +332,10 @@ const DetailsContent = ({ params }: any) => {
     }
   };
 
+  const breadcrumbNavigation = () => {
+    router.push("/staff-page/moderation");
+  };
+
   return (
     <div className="flex">
       <LeftNavbar
@@ -342,7 +346,16 @@ const DetailsContent = ({ params }: any) => {
         page5={"/staff-page/moderation-lecture"}
       />
       {/* <StaffRatingTable />áhkfjaskf */}
-      <div className={`${InstructorCourseStyle.body_wrapper}`}>
+      <div className="container mt-4">
+        <Breadcrumb className="font-semibold text-xl m">
+          <Breadcrumb.Item>
+            <button onClick={breadcrumbNavigation}>Courses</button>
+          </Breadcrumb.Item>
+          <Breadcrumb.Item>
+            {course?.name} ({course?.status})
+          </Breadcrumb.Item>
+          {/* <Breadcrumb.Item>React</Breadcrumb.Item> */}
+        </Breadcrumb>
         <div className={`${InstructorCourseStyle.featured}`}>
           <div className={`${InstructorCourseStyle.featured_top}`}>
             <h1 className={`${InstructorCourseStyle.featured_top_title}`}>
