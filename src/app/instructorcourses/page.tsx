@@ -604,7 +604,7 @@ const InstructorCourse = () => {
                 message: "Please Type Short Description",
               },
             ]}
-            label="Intro"
+            label="Introduction"
             name="shortDes"
           >
             <Input />

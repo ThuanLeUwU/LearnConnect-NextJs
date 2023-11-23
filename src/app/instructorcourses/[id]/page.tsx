@@ -5,6 +5,7 @@ import Link from "next/link";
 import {
   Button,
   Checkbox,
+  Empty,
   Form,
   Input,
   Modal,
@@ -45,6 +46,11 @@ export type TestTitle = {
   createDate: string;
   status: number;
   courseId: number;
+};
+
+export type ABC = {
+  id: number;
+  status: boolean;
 };
 
 export type Rating = {
@@ -127,6 +133,7 @@ const Dashboard = ({ params }: any) => {
     setTestTitleModal(false);
     setShowQuestionForm(false);
     setShowAnswerForm(false);
+    setIsChecked(false);
   };
 
   //update
@@ -384,6 +391,7 @@ const Dashboard = ({ params }: any) => {
         setListQuestion(response.data);
         setAllQuestions(response.data[0].questions);
         setIdTest(response.data[0].test.id);
+        console.log("vải ò", response.data);
         listQuestion.forEach((item) => {
           const totalQuestion = item.test.totalQuestion;
           // console.log("Total Questions:", totalQuestion);
@@ -391,7 +399,7 @@ const Dashboard = ({ params }: any) => {
         setLoading(false);
       })
       .catch((error) => {
-        console.error("Error fetching user data:", error);
+        console.log("Error fetching user data:", error);
         setLoading(false);
       });
   }, []);
@@ -549,6 +557,8 @@ const Dashboard = ({ params }: any) => {
             .get(`/test/get-tests-by-course?courseId=${idCourse}`)
             .then((response) => {
               setListQuestion(response.data);
+              setAllQuestions(response.data[0].questions);
+              setIdTest(response.data[0].test.id);
             });
         });
     } catch (err) {
@@ -586,9 +596,25 @@ const Dashboard = ({ params }: any) => {
   };
 
   const [showAnswerForm, setShowAnswerForm] = useState(false);
+  const [mano, setmano] = useState<number>(0);
+  console.log("mano", mano);
 
   const handleNewAnswerClick = (data: any) => {
     setShowAnswerForm(true);
+    setmano(data);
+  };
+  const [questionId, setQuestionId] = useState<number>(0);
+  // useEffect(() => {
+  //   if (showAnswerForm && questionId !== 0) {
+  //     http.get(
+  //       `https://learnconnectapitest.azurewebsites.net/api/question/${questionId}`
+  //     );
+  //   }
+  // }, [showAnswerForm, questionId]);
+  const [showUpdateQuestion, setShowUpdateQuestion] = useState(false);
+  const handleUpdateQuestionClick = (data: any) => {
+    setShowUpdateQuestion(true);
+    setmano(data);
   };
 
   const handleFormQuestionSubmit = (data: any) => {
@@ -631,14 +657,15 @@ const Dashboard = ({ params }: any) => {
   };
 
   const [isChecked, setIsChecked] = useState(false);
-  const [answerA, setAnswerA] = useState(false);
-  const [answerB, setAnswerB] = useState(false);
-  const [answerC, setAnswerC] = useState(false);
-  const [answerD, setAnswerD] = useState(false);
-  console.log("A", answerA);
-  console.log("B", answerB);
-  console.log("C", answerC);
-  console.log("D", answerD);
+  console.log("check", isChecked);
+  // const [answerA, setAnswerA] = useState(false);
+  // const [answerB, setAnswerB] = useState(false);
+  // const [answerC, setAnswerC] = useState(false);
+  // const [answerD, setAnswerD] = useState(false);
+  // console.log("A", answerA);
+  // console.log("B", answerB);
+  // console.log("C", answerC);
+  // console.log("D", answerD);
 
   // const handleCheckboxAChange = (e) => {
   //   setAnswerA(e.target.checked);
@@ -677,14 +704,106 @@ const Dashboard = ({ params }: any) => {
   //   }
   // };
 
-  const handleCheckboxChange = (checked, answerSetter) => {
-    setAnswerA(false);
-    setAnswerB(false);
-    setAnswerC(false);
-    setAnswerD(false);
+  const handleFormAnswerSubmit = (data: any) => {
+    const formData = new FormData();
+    formData.append("answerText", data.answer);
+    formData.append("isCorrect", isChecked.toString());
 
-    // Thiết lập trạng thái của ô đang xét
-    answerSetter(checked);
+    try {
+      http
+        .post(
+          `https://learnconnectapitest.azurewebsites.net/api/answer/create-answer?questionId=${mano}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        )
+        .then(() => {
+          http
+            .get(`/test/get-tests-by-course?courseId=${idCourse}`)
+            .then((response) => {
+              setListQuestion(response.data);
+              setAllQuestions(response.data[0].questions);
+              setIdTest(response.data[0].test.id);
+              setShowAnswerForm(false);
+            });
+          // http.get();
+          form.resetFields();
+          setIsChecked(false);
+          toast.success("Create Answer successfully!!!");
+        });
+    } catch (err) {
+      toast.error("Create Answer Fail!!!");
+    }
+  };
+
+  const handleCheckboxChange = (e) => {
+    setIsChecked(e.target.checked);
+  };
+
+  const [updateQuestion, setUpdateQuestion] = useState<string>("");
+  const [hasChanged, setHasChanged] = useState(false);
+
+  const handleInputChange = (event) => {
+    // Xử lý sự kiện khi có sự thay đổi trong ô input
+    setUpdateQuestion(event.target.value);
+    console.log("tehje", event.target.value);
+    setHasChanged(true);
+  };
+
+  const handleSaveData = (data: any) => {
+    console.log("tui nè má", data);
+    console.log("Data saved successfully:", updateQuestion);
+    const formData = new FormData();
+    formData.append("questionText", updateQuestion);
+    try {
+      http
+        .put(
+          `https://learnconnectapitest.azurewebsites.net/api/question/${data}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        )
+        .then(() => {
+          http
+            .get(`/test/get-tests-by-course?courseId=${idCourse}`)
+            .then((response) => {
+              setListQuestion(response.data);
+              setAllQuestions(response.data[0].questions);
+              setIdTest(response.data[0].test.id);
+              // setShowAnswerForm(false);
+              setQuestionId(0);
+              setHasChanged(false);
+              Modal.destroyAll();
+            });
+        });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleBlur = (data: any) => {
+    console.log("tao nè", data);
+    if (hasChanged) {
+      Modal.confirm({
+        title: "Confirm",
+        content: "Bạn có muốn lưu những thay đổi không?",
+        onOk: () => {
+          handleSaveData(data);
+        },
+        onCancel: () => {
+          setHasChanged(false);
+          setQuestionId(0);
+          setUpdateQuestion("");
+        },
+      });
+    }
+    setShowUpdateQuestion(false);
   };
 
   return (
@@ -852,9 +971,12 @@ const Dashboard = ({ params }: any) => {
               <Button onClick={showModal}> New Question</Button>
             </div> */}
             {listQuestion.length === 0 ? (
-              <div className="flex justify-between mb-5">
-                <Button onClick={showTestTitleModal}>Create New Test</Button>
-              </div>
+              <>
+                <div className="flex justify-between mb-5">
+                  <Button onClick={showTestTitleModal}>Create New Test</Button>
+                </div>
+                <Empty />
+              </>
             ) : (
               <>
                 {loading ? (
@@ -863,98 +985,114 @@ const Dashboard = ({ params }: any) => {
                   <>
                     {listQuestion.map((item) => (
                       <div key={item.test.id} className="mb-4 mt-6">
-                        <h3 className="text-xl font-semibold mb-2">
-                          <div>
+                        <h3 className="text-xl font-semibold mb-2 ">
+                          <div className="flex flex-col justify-center items-center">
                             <div>Title: {item.test.title}</div>
 
                             <br />
                             <div>Description: {item.test.description}</div>
                           </div>
                         </h3>
-                        {allQuestions.length === 0 ? (
-                          <>câu hỏi đâu ra</>
-                        ) : (
-                          <>câu hỏi đây</>
-                        )}
                         {/* {item.questions.length == 0 ? <></> : <></>} */}
                         {item.questions.map((q, index) => (
                           <div
                             key={q.question.id}
                             className="mb-2 mt-6 p-6 border-2 rounded-lg border-gray-200"
                           >
-                            <p className="mb-1 font-medium text-[18px] flex flex-row justify-between bott">
-                              <div>
-                                {index + 1}. {q.question.questionText}
+                            <div className="mb-1 font-medium text-[18px] flex flex-row justify-between bott">
+                              <div className="flex flex-row gap-2">
+                                {index + 1}.{" "}
+                                {showUpdateQuestion &&
+                                questionId === q.question.id ? (
+                                  <Input
+                                    autoFocus
+                                    defaultValue={q.question.questionText}
+                                    value={updateQuestion}
+                                    onChange={handleInputChange}
+                                    onBlur={() => handleBlur(q.question.id)}
+                                  />
+                                ) : (
+                                  <div
+                                    onClick={() => {
+                                      handleUpdateQuestionClick(q.question.id);
+                                      setQuestionId(q.question.id);
+                                      setUpdateQuestion(
+                                        q.question.questionText
+                                      );
+                                    }}
+                                  >
+                                    {q.question.questionText}
+                                  </div>
+                                )}
                               </div>
                               <Button
-                                onClick={() =>
-                                  handleNewAnswerClick(q.question.id)
-                                }
+                                onClick={() => {
+                                  handleNewAnswerClick(q.question.id);
+                                  setQuestionId(q.question.id);
+                                }}
                               >
                                 Add Answer
                               </Button>
-                            </p>
-                            {showAnswerForm && (
+                            </div>
+                            {showAnswerForm && questionId === q.question.id && (
                               <Form
-                                onFinish={handleFormQuestionSubmit}
+                                onFinish={handleFormAnswerSubmit}
                                 style={{ width: "80%", alignItems: "start" }}
                               >
-                                <Form.Item
-                                  name="answer"
-                                  label="Answer"
-                                  rules={[
-                                    {
-                                      required: true,
-                                      message: "Please input your question!",
-                                    },
-                                  ]}
-                                >
-                                  <Input
-                                    className={
-                                      answerA
-                                        ? "border-green-500 bg-green-500"
-                                        : ""
-                                    }
-                                  />
+                                <div className="flex flex-col justify-end">
+                                  <Form.Item
+                                    name="answer"
+                                    label="Answer"
+                                    rules={[
+                                      {
+                                        required: true,
+                                        message: "Please input your question!",
+                                      },
+                                    ]}
+                                  >
+                                    <Input
+                                      className={` border-2 p-2 text-left rounded-lg ${
+                                        isChecked
+                                          ? "border-green-500 bg-green-100"
+                                          : ""
+                                      }`}
+                                    />
+                                  </Form.Item>
                                   <Checkbox
-                                    checked={answerA}
-                                    onChange={(e) =>
-                                      handleCheckboxChange(
-                                        e.target.checked,
-                                        setAnswerA
-                                      )
-                                    }
-                                    disabled={answerA}
+                                    className="flex items-end justify-end"
+                                    checked={isChecked}
+                                    onChange={handleCheckboxChange}
                                   >
                                     Correct Answer
                                   </Checkbox>
-                                </Form.Item>
-                                <Button onClick={handleCancel}>Cancel</Button>
-                                <Button
-                                  style={{
-                                    backgroundColor: "#4caf50",
-                                    borderColor: "#4caf50",
-                                    color: "#fff",
-                                  }}
-                                  type="primary"
-                                  htmlType="submit"
-                                >
-                                  Submit
-                                </Button>
+                                </div>
+                                <div className="flex justify-end gap-2 mt-2">
+                                  <Button onClick={handleCancel}>Cancel</Button>
+                                  <Button
+                                    style={{
+                                      backgroundColor: "#4caf50",
+                                      borderColor: "#4caf50",
+                                      color: "#fff",
+                                    }}
+                                    type="primary"
+                                    htmlType="submit"
+                                  >
+                                    Submit
+                                  </Button>
+                                </div>
                               </Form>
                             )}
                             <div className="pl-4 grid grid-cols-2 gap-4">
                               {q.answers.map((answer, ansIndex) => (
-                                <div
+                                <Input
+                                  defaultValue={answer.answerText}
                                   key={answer.id}
                                   className={`mt-3 border-2 p-2 text-left rounded-lg ${
                                     answer.isCorrect === true
                                       ? "border-green-500 bg-green-100"
                                       : ""
                                   }`}
-                                >
-                                  {answer.answerText}
-                                </div>
+                                />
                               ))}
                             </div>
                           </div>
@@ -1137,80 +1275,87 @@ const Dashboard = ({ params }: any) => {
             <div className="flex justify-between mb-5">
               <span className="text-lg">Rating of Course</span>
             </div>
-            {loading ? (
-              <Spin size="large" />
+            {listRating.length === 0 ? (
+              <Empty />
             ) : (
-              // <Table dataSource={listRating} columns={rating} />
-              <div className="reviews-wrapper reviews-active">
-                <div className="swiper-container">
-                  <div className="swiper-wrapper">
-                    {listRating.map((item) => {
-                      return (
-                        <>
-                          <div className="single-review mt-3.5 border border-opacity-20 border-[#30925533] p-7 rounded-md">
-                            <div className="review-author flex justify-between">
-                              <div className="flex flex-row">
-                                <div className="author-thumb p-2">
-                                  <Avatar
-                                    sx={{
-                                      width: "100px",
-                                      height: "100px",
-                                      borderRadius: "100%",
-                                    }}
-                                    src={item.userRatingInfo.imageUser}
-                                    alt="Author"
-                                    // className="w-24 h-24 rounded-full"
-                                  />
-                                  <i className="icofont-quote-left"></i>
-                                </div>
-                                <div className="author-content pl-4">
-                                  <h4 className="text-2xl font-medium">
-                                    {item.userRatingInfo.fullName}
-                                  </h4>
-                                  <span className="text-lg text-[#309255] mt-1.5 font-light">
-                                    {item.ratingCourseInfo.timeStamp
-                                      ? new Date(
-                                          item.ratingCourseInfo.timeStamp
-                                        ).toLocaleTimeString("en-US")
-                                      : ""}{" "}
-                                    {item.ratingCourseInfo.timeStamp
-                                      ? new Date(
-                                          item.ratingCourseInfo.timeStamp
-                                        ).toLocaleDateString("en-GB", {
-                                          day: "numeric",
-                                          month: "long",
-                                          year: "numeric",
-                                        })
-                                      : ""}{" "}
-                                  </span>
-                                  {item.ratingCourseInfo.comment === "null" ? (
-                                    <></>
-                                  ) : (
-                                    <p className="mt-3 font-medium text-[#52565b] text-lg">
-                                      {item.ratingCourseInfo.comment}
-                                    </p>
-                                  )}
+              <>
+                {loading ? (
+                  <Spin size="large" />
+                ) : (
+                  // <Table dataSource={listRating} columns={rating} />
+                  <div className="reviews-wrapper reviews-active">
+                    <div className="swiper-container">
+                      <div className="swiper-wrapper">
+                        {listRating.map((item) => {
+                          return (
+                            <>
+                              <div className="single-review mt-3.5 border border-opacity-20 border-[#30925533] p-7 rounded-md">
+                                <div className="review-author flex justify-between">
+                                  <div className="flex flex-row">
+                                    <div className="author-thumb p-2">
+                                      <Avatar
+                                        sx={{
+                                          width: "100px",
+                                          height: "100px",
+                                          borderRadius: "100%",
+                                        }}
+                                        src={item.userRatingInfo.imageUser}
+                                        alt="Author"
+                                        // className="w-24 h-24 rounded-full"
+                                      />
+                                      <i className="icofont-quote-left"></i>
+                                    </div>
+                                    <div className="author-content pl-4">
+                                      <h4 className="text-2xl font-medium">
+                                        {item.userRatingInfo.fullName}
+                                      </h4>
+                                      <span className="text-lg text-[#309255] mt-1.5 font-light">
+                                        {item.ratingCourseInfo.timeStamp
+                                          ? new Date(
+                                              item.ratingCourseInfo.timeStamp
+                                            ).toLocaleTimeString("en-US")
+                                          : ""}{" "}
+                                        {item.ratingCourseInfo.timeStamp
+                                          ? new Date(
+                                              item.ratingCourseInfo.timeStamp
+                                            ).toLocaleDateString("en-GB", {
+                                              day: "numeric",
+                                              month: "long",
+                                              year: "numeric",
+                                            })
+                                          : ""}{" "}
+                                      </span>
+                                      {item.ratingCourseInfo.comment ===
+                                      "null" ? (
+                                        <></>
+                                      ) : (
+                                        <p className="mt-3 font-medium text-[#52565b] text-lg">
+                                          {item.ratingCourseInfo.comment}
+                                        </p>
+                                      )}
+                                    </div>
+                                  </div>
+                                  <div className="">
+                                    <Rating
+                                      size="large"
+                                      name="half-rating-read"
+                                      max={5}
+                                      precision={0.1}
+                                      readOnly
+                                      value={item.ratingCourseInfo.rating1}
+                                    />
+                                  </div>
                                 </div>
                               </div>
-                              <div className="">
-                                <Rating
-                                  size="large"
-                                  name="half-rating-read"
-                                  max={5}
-                                  precision={0.1}
-                                  readOnly
-                                  value={item.ratingCourseInfo.rating1}
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        </>
-                      );
-                    })}
+                            </>
+                          );
+                        })}
+                      </div>
+                      <div className="swiper-pagination"></div>
+                    </div>
                   </div>
-                  <div className="swiper-pagination"></div>
-                </div>
-              </div>
+                )}
+              </>
             )}
           </div>
         )}
