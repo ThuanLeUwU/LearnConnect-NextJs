@@ -9,6 +9,7 @@ import { UserAuth } from "../context/AuthContext";
 import { useRouter } from "next/navigation";
 import {
   Button,
+  Empty,
   Form,
   Input,
   Modal,
@@ -96,8 +97,6 @@ const Reviews = () => {
     }
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selected, setSelected] = useState(null);
-  const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
   const [formDataImage, setFormDataImage] = useState();
   const [image, setImage] = useState<string>();
@@ -230,6 +229,7 @@ const Reviews = () => {
           `https://learnconnectapitest.azurewebsites.net/api/mentor/specializations-request/${userData?.id}/${selectedType}`
         );
         setMentor(responseData?.data);
+        console.log("mentor", mentor);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -276,18 +276,22 @@ const Reviews = () => {
   };
 
   const handleTabClick = (tabName: string, type: string) => {
-    setActiveTab(tabName);
-    setSelectedType(type);
+    if (activeTab !== tabName) {
+      setIsLoading(true);
+      setMentor([]);
+      setActiveTab(tabName);
+      setSelectedType(type);
+    }
   };
 
   const getColorByStatus = (status) => {
     switch (status) {
       case 0: // Reject
-        return "red";
+        return "green";
       case 1: // Pending
         return "black";
       case 2: // Approve
-        return "green";
+        return "red";
       default:
         return "black";
     }
@@ -296,11 +300,11 @@ const Reviews = () => {
   const getStatusText = (status) => {
     switch (status) {
       case 0:
-        return "Reject";
+        return "Approve";
       case 1:
         return "Pending";
       case 2:
-        return "Approve";
+        return "Reject";
       default:
         return "";
     }
@@ -346,180 +350,174 @@ const Reviews = () => {
         </div>
       </div>
 
-      {loading ? (
-        <div className="text-center text-5xl mt-5">
-          <Spin size="large" />
-        </div>
-      ) : (
-        <div className={`${InstructorCourseStyle.body_wrapper}`}>
-          <Modal
-            destroyOnClose={true}
-            title={`Register for a new specialization`}
-            open={isModalOpen}
-            onCancel={handleCancel}
-            footer={false}
-            width="50%"
+      <div className={`${InstructorCourseStyle.body_wrapper}`}>
+        <Modal
+          destroyOnClose={true}
+          title={`Register for a new specialization`}
+          open={isModalOpen}
+          onCancel={handleCancel}
+          footer={false}
+          width="50%"
+        >
+          <Form
+            autoComplete="off"
+            form={form}
+            labelCol={{ span: 7 }}
+            wrapperCol={{ span: 17 }}
+            layout="horizontal"
+            className="mt-5"
+            style={{ width: "100%" }}
+            onFinish={handleOk}
           >
-            <Form
-              autoComplete="off"
-              form={form}
-              labelCol={{ span: 7 }}
-              wrapperCol={{ span: 17 }}
-              layout="horizontal"
-              className="mt-5"
-              style={{ width: "100%" }}
-              onFinish={handleOk}
+            <Form.Item
+              label="Major"
+              name="major"
+              rules={[{ required: true, message: "Please select a major!" }]}
+              className="text-start"
+              labelAlign="left"
             >
-              <Form.Item
-                label="Major"
-                name="major"
-                rules={[{ required: true, message: "Please select a major!" }]}
-                className="text-start"
-                labelAlign="left"
+              <Select onChange={(value) => setSelectedMajor(value)}>
+                {major.map((major) => (
+                  <Option key={major.majorId} value={major.majorId}>
+                    {major.majorName}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+            <Form.Item
+              label="Specialization"
+              name="specialization"
+              rules={[
+                {
+                  required: true,
+                  message: "Please select a specialization!",
+                },
+              ]}
+              className="text-start"
+              labelAlign="left"
+            >
+              <Select>
+                {specialization.map((specialization) => (
+                  <Option
+                    key={specialization.specId}
+                    value={specialization.specId}
+                  >
+                    {specialization.specName}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+            <Form.Item
+              rules={[{ required: true, message: "Please input Document" }]}
+              label="Document"
+              name="DescriptionDocument"
+              labelAlign="left"
+            >
+              <Input placeholder="Input Degree, Diploma, Certificate, Qualification" />
+            </Form.Item>
+            <Form.Item
+              label="Image of ID Document"
+              name="verificationDocument"
+              getValueFromEvent={normFile}
+              labelAlign="left"
+            >
+              <Upload
+                accept="image/png, image/jpeg"
+                onChange={handleChange}
+                beforeUpload={beforeUpload}
+                action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
+                listType="picture-card"
               >
-                <Select onChange={(value) => setSelectedMajor(value)}>
-                  {major.map((major) => (
-                    <Option key={major.majorId} value={major.majorId}>
-                      {major.majorName}
-                    </Option>
-                  ))}
-                </Select>
-              </Form.Item>
-              <Form.Item
-                label="Specialization"
-                name="specialization"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please select a specialization!",
-                  },
-                ]}
-                className="text-start"
-                labelAlign="left"
-              >
-                <Select>
-                  {specialization.map((specialization) => (
-                    <Option
-                      key={specialization.specId}
-                      value={specialization.specId}
-                    >
-                      {specialization.specName}
-                    </Option>
-                  ))}
-                </Select>
-              </Form.Item>
-              <Form.Item
-                rules={[{ required: true, message: "Please input Document" }]}
-                label="Document"
-                name="DescriptionDocument"
-                labelAlign="left"
-              >
-                <Input placeholder="Input Degree, Diploma, Certificate, Qualification" />
-              </Form.Item>
-              <Form.Item
-                label="Image of ID Document"
-                name="verificationDocument"
-                getValueFromEvent={normFile}
-                labelAlign="left"
-              >
-                <Upload
-                  accept="image/png, image/jpeg"
-                  onChange={handleChange}
-                  beforeUpload={beforeUpload}
-                  action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
-                  listType="picture-card"
-                >
-                  Document
-                </Upload>
-              </Form.Item>
+                Document
+              </Upload>
+            </Form.Item>
 
-              <Space className="justify-end w-full">
-                <Form.Item className="mb-0">
-                  <Space>
-                    <Button onClick={handleCancel}>Cancel</Button>
-                    <Button
-                      type="primary"
-                      htmlType="submit"
-                      style={{ color: "black" }}
-                    >
-                      Send
-                    </Button>
-                  </Space>
-                </Form.Item>
-              </Space>
-            </Form>
-          </Modal>
-
-          <div className="w-full">
-            <div className="flex justify-center bg-[#e7f8ee] py-4 rounded-md">
-              <ul className="tabs flex space-x-5">
-                <li
-                  className={`cursor-pointer rounded-md ${
-                    activeTab === "tab1"
-                      ? "bg-[#309255] text-white"
-                      : "bg-white"
-                  }`}
-                  onClick={() => handleTabClick("tab1", "1")}
-                >
-                  <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#309255]">
-                    Pending request
-                  </button>
-                </li>
-                <li
-                  className={`cursor-pointer rounded-md ${
-                    activeTab === "tab2"
-                      ? "bg-[#309255] text-white"
-                      : "bg-white"
-                  }`}
-                  onClick={() => handleTabClick("tab2", "2")}
-                >
-                  <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#309255]">
-                    Approve request
-                  </button>
-                </li>
-                <li
-                  className={`cursor-pointer rounded-md ${
-                    activeTab === "tab3"
-                      ? "bg-[#309255] text-white"
-                      : "bg-white"
-                  }`}
-                  onClick={() => handleTabClick("tab3", "0")}
-                >
-                  <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#309255]">
-                    Reject request
-                  </button>
-                </li>
-              </ul>
-            </div>
-            <div className="flex justify-end">
-              <button
-                className="mx-5 my-3 px-5 py-3 bg-[#309255] rounded-lg text-white"
-                onClick={showModal}
+            <Space className="justify-end w-full">
+              <Form.Item className="mb-0">
+                <Space>
+                  <Button onClick={handleCancel}>Cancel</Button>
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    style={{ color: "black" }}
+                  >
+                    Send
+                  </Button>
+                </Space>
+              </Form.Item>
+            </Space>
+          </Form>
+        </Modal>
+        <div className="w-full">
+          <div className="flex justify-center bg-[#e7f8ee] py-4 rounded-md">
+            <ul className="tabs flex space-x-5">
+              <li
+                className={`cursor-pointer rounded-md ${
+                  activeTab === "tab1" ? "bg-[#309255] text-white" : "bg-white"
+                }`}
+                onClick={() => handleTabClick("tab1", "1")}
               >
-                Regis new specialization
-              </button>
+                <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#309255]">
+                  Pending request
+                </button>
+              </li>
+              <li
+                className={`cursor-pointer rounded-md ${
+                  activeTab === "tab2" ? "bg-[#309255] text-white" : "bg-white"
+                }`}
+                onClick={() => handleTabClick("tab2", "0")}
+              >
+                <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#309255]">
+                  Approve request
+                </button>
+              </li>
+              <li
+                className={`cursor-pointer rounded-md ${
+                  activeTab === "tab3" ? "bg-[#309255] text-white" : "bg-white"
+                }`}
+                onClick={() => handleTabClick("tab3", "2")}
+              >
+                <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#309255]">
+                  Reject request
+                </button>
+              </li>
+            </ul>
+          </div>
+          <div className="flex justify-end">
+            <button
+              className="mx-5 my-3 px-5 py-3 bg-[#309255] rounded-lg text-white"
+              onClick={showModal}
+            >
+              Register new specialization
+            </button>
+          </div>
+          {isLoading ? (
+            <div className="text-center text-5xl mt-5">
+              <Spin size="large" />
             </div>
+          ) : (
             <div>
               <div className=" text-[#212832] ">
                 <div className="tab-content">
                   {activeTab === "tab1" && (
                     <div className="min-h-[1000px] w-full">
-                      <Box
-                        component="main"
-                        sx={{
-                          flexGrow: 1,
-                          py: 5,
-                          p: 5,
-                        }}
-                      >
-                        <Typography>Pending Request</Typography>
-                        <Card>
-                          <Paper sx={{ width: "100%" }}>
-                            {isLoading ? (
-                              <div className="text-center text-5xl mt-5">
-                                <Spin size="large" />
-                              </div>
-                            ) : (
+                      {mentor.length === 0 ? (
+                        <div>
+                          <div className="text-center text-2xl mt-8 items-center justify-center">
+                            <Empty description={false} />
+                            don&apos;t have any request.
+                          </div>
+                        </div>
+                      ) : (
+                        <Box
+                          component="main"
+                          sx={{
+                            flexGrow: 1,
+                          }}
+                          className="shadow-[50px_20px_20px_10px_rgba(0,0,0,0.15)] m-5"
+                        >
+                          <Card>
+                            <Paper sx={{ width: "100%" }}>
                               <TableContainer>
                                 <Table
                                   sx={{ minWidth: 750 }}
@@ -533,7 +531,7 @@ const Reviews = () => {
                                           Date
                                         </TableSortLabel>
                                       </TableCell>
-                                      <TableCell className="w-[400px] text-[14px]">
+                                      <TableCell className="text-[14px]">
                                         Status
                                       </TableCell>
                                       <TableCell className="text-[14px]">
@@ -543,7 +541,7 @@ const Reviews = () => {
                                         Description
                                       </TableCell>
 
-                                      <TableCell className="text-[14px]">
+                                      <TableCell className="text-[14px] w-[200px]">
                                         Verification Document
                                       </TableCell>
                                     </TableRow>
@@ -646,39 +644,40 @@ const Reviews = () => {
                                   </TableHead>
                                 </Table>
                               </TableContainer>
-                            )}
-                            <TablePagination
-                              rowsPerPageOptions={[5, 10, 25]}
-                              component="div"
-                              count={mentor ? mentor.length : 0}
-                              rowsPerPage={rowsPerPage}
-                              page={page}
-                              onPageChange={handleChangePage}
-                              onRowsPerPageChange={handleChangeRowsPerPage}
-                            />
-                          </Paper>
-                        </Card>
-                      </Box>
+                              <TablePagination
+                                rowsPerPageOptions={[5, 10, 25]}
+                                component="div"
+                                count={mentor ? mentor.length : 0}
+                                rowsPerPage={rowsPerPage}
+                                page={page}
+                                onPageChange={handleChangePage}
+                                onRowsPerPageChange={handleChangeRowsPerPage}
+                              />
+                            </Paper>
+                          </Card>
+                        </Box>
+                      )}
                     </div>
                   )}
                   {activeTab === "tab2" && (
                     <div className="min-h-[1000px] w-full">
-                      <Box
-                        component="main"
-                        sx={{
-                          flexGrow: 1,
-                          py: 5,
-                          p: 5,
-                        }}
-                      >
-                        <Typography>Approve Request</Typography>
-                        <Card>
-                          <Paper sx={{ width: "100%" }}>
-                            {isLoading ? (
-                              <div className="text-center text-5xl mt-5">
-                                <Spin size="large" />
-                              </div>
-                            ) : (
+                      {mentor.length === 0 ? (
+                        <div>
+                          <div className="text-center text-2xl mt-8 items-center justify-center">
+                            <Empty description={false} />
+                            don&apos;t have any request.
+                          </div>
+                        </div>
+                      ) : (
+                        <Box
+                          component="main"
+                          sx={{
+                            flexGrow: 1,
+                          }}
+                          className="shadow-[50px_20px_20px_10px_rgba(0,0,0,0.15)] m-5 rounded-lg"
+                        >
+                          <Card>
+                            <Paper sx={{ width: "100%" }}>
                               <TableContainer>
                                 <Table
                                   sx={{ minWidth: 750 }}
@@ -692,7 +691,7 @@ const Reviews = () => {
                                           Date
                                         </TableSortLabel>
                                       </TableCell>
-                                      <TableCell className="w-[400px] text-[14px]">
+                                      <TableCell className="text-[14px]">
                                         Status
                                       </TableCell>
                                       <TableCell className="text-[14px]">
@@ -702,7 +701,7 @@ const Reviews = () => {
                                         Description
                                       </TableCell>
 
-                                      <TableCell className="text-[14px]">
+                                      <TableCell className="text-[14px] w-[200px]">
                                         Verification Document
                                       </TableCell>
                                     </TableRow>
@@ -805,39 +804,40 @@ const Reviews = () => {
                                   </TableHead>
                                 </Table>
                               </TableContainer>
-                            )}
-                            <TablePagination
-                              rowsPerPageOptions={[5, 10, 25]}
-                              component="div"
-                              count={mentor ? mentor.length : 0}
-                              rowsPerPage={rowsPerPage}
-                              page={page}
-                              onPageChange={handleChangePage}
-                              onRowsPerPageChange={handleChangeRowsPerPage}
-                            />
-                          </Paper>
-                        </Card>
-                      </Box>
+                              <TablePagination
+                                rowsPerPageOptions={[5, 10, 25]}
+                                component="div"
+                                count={mentor ? mentor.length : 0}
+                                rowsPerPage={rowsPerPage}
+                                page={page}
+                                onPageChange={handleChangePage}
+                                onRowsPerPageChange={handleChangeRowsPerPage}
+                              />
+                            </Paper>
+                          </Card>
+                        </Box>
+                      )}
                     </div>
                   )}
                   {activeTab === "tab3" && (
                     <div className="min-h-[1000px] w-full">
-                      <Box
-                        component="main"
-                        sx={{
-                          flexGrow: 1,
-                          py: 5,
-                          p: 5,
-                        }}
-                      >
-                        <Typography>Reject Request</Typography>
-                        <Card>
-                          <Paper sx={{ width: "100%" }}>
-                            {isLoading ? (
-                              <div className="text-center text-5xl mt-5">
-                                <Spin size="large" />
-                              </div>
-                            ) : (
+                      {mentor.length === 0 ? (
+                        <div>
+                          <div className="text-center text-2xl mt-8 items-center justify-center">
+                            <Empty description={false} />
+                            Don&apos;t have any request.
+                          </div>
+                        </div>
+                      ) : (
+                        <Box
+                          component="main"
+                          sx={{
+                            flexGrow: 1,
+                          }}
+                          className="shadow-[50px_20px_20px_10px_rgba(0,0,0,0.15)] m-5 rounded-lg"
+                        >
+                          <Card>
+                            <Paper sx={{ width: "100%" }}>
                               <TableContainer>
                                 <Table
                                   sx={{ minWidth: 750 }}
@@ -851,7 +851,7 @@ const Reviews = () => {
                                           Date
                                         </TableSortLabel>
                                       </TableCell>
-                                      <TableCell className="w-[400px] text-[14px]">
+                                      <TableCell className="text-[14px]">
                                         Status
                                       </TableCell>
                                       <TableCell className="text-[14px]">
@@ -861,7 +861,7 @@ const Reviews = () => {
                                         Description
                                       </TableCell>
 
-                                      <TableCell className="text-[14px]">
+                                      <TableCell className="text-[14px] w-[200px]">
                                         Verification Document
                                       </TableCell>
                                     </TableRow>
@@ -964,27 +964,27 @@ const Reviews = () => {
                                   </TableHead>
                                 </Table>
                               </TableContainer>
-                            )}
-                            <TablePagination
-                              rowsPerPageOptions={[5, 10, 25]}
-                              component="div"
-                              count={mentor ? mentor.length : 0}
-                              rowsPerPage={rowsPerPage}
-                              page={page}
-                              onPageChange={handleChangePage}
-                              onRowsPerPageChange={handleChangeRowsPerPage}
-                            />
-                          </Paper>
-                        </Card>
-                      </Box>
+                              <TablePagination
+                                rowsPerPageOptions={[5, 10, 25]}
+                                component="div"
+                                count={mentor ? mentor.length : 0}
+                                rowsPerPage={rowsPerPage}
+                                page={page}
+                                onPageChange={handleChangePage}
+                                onRowsPerPageChange={handleChangeRowsPerPage}
+                              />
+                            </Paper>
+                          </Card>
+                        </Box>
+                      )}
                     </div>
                   )}
                 </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 };

@@ -159,13 +159,23 @@ const Header = () => {
                 />
               </button>
             </div>
-            <ul className={`${headerStyles.header_login_right}`}>
+            <ul className={`${headerStyles.header_login_right} `}>
               {userData?.role === 2 ? (
                 <button
                   onClick={handleSwitchRole}
-                  className="text-white border border-solid border-[#309255] border-opacity-20 rounded-lg bg-[#309255] py-1 px-3"
+                  className="text-white border border-solid border-[#309255] shadow-lg border-opacity-20 rounded-lg bg-[#309255] py-1 px-3"
                 >
                   Switch role {role === 3 ? "mentor" : "student"}
+                </button>
+              ) : (
+                <></>
+              )}
+              {userData?.role === 0 ? (
+                <button
+                  // onClick={handleSwitchRole}
+                  className="text-white border border-solid border-[#309255] border-opacity-20 rounded-lg bg-[#309255] py-1 px-3"
+                >
+                  Create Account for staff {role === 3 ? "mentor" : "student"}
                 </button>
               ) : (
                 <></>
@@ -387,7 +397,9 @@ const Header = () => {
           ) : (
             <>
               {role === 3 ? (
-                <div className={`${headerStyles.header_main_wrapper}`}>
+                <div
+                  className={`${headerStyles.header_main_wrapper} shadow-lg`}
+                >
                   <div className={`${headerStyles.header_logo}`}>
                     <Link href="/">
                       <Image

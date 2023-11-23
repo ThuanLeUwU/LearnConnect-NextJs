@@ -137,7 +137,7 @@ export default function ListCourse() {
   return (
     <div className="container">
       <Search searchQueryData={""} />
-      <div className="bg-[#e5f4eb] rounded-[10px] px-10 mt-5">
+      <div className="bg-[#e5f4eb] rounded-[10px] px-10 mt-5 shadow-lg">
         <div className="flex justify-between p-5 items-center text-center ">
           <span>Price: </span>
           <Select
