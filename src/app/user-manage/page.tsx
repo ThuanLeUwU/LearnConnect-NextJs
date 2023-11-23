@@ -194,7 +194,9 @@ export default function UserManagePage() {
           </div>
         </div>
         <div className={`${InstructorCourseStyle.body_wrapper}`}>
-          {/* DashBoard */}
+          <div className="ml-3">
+            <Typography variant="h3">Table Of all user</Typography>
+          </div>
           <div className={`${InstructorCourseStyle.body_container}`}>
             <Box
               component="main"
@@ -205,12 +207,6 @@ export default function UserManagePage() {
               }}
             >
               <Card>
-                <Box display="flex" justifyContent="center">
-                  <Typography textTransform="uppercase" variant="h3">
-                    Table Of all user
-                  </Typography>
-                </Box>
-
                 <Paper sx={{ width: "100%" }}>
                   <TableContainer>
                     <Table

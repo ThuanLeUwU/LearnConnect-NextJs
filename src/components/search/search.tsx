@@ -39,7 +39,7 @@ const Search: React.FC<SearchProps> = ({ searchQueryData }: SearchProps) => {
 
   return (
     <>
-      <div className="border-2 border-[#309255] rounded-2xl flex mt-[30px]">
+      <div className="border-2 border-[#309255] rounded-2xl flex mt-[30px] shadow-lg">
         <AiOutlineSearch className={`text-2xl my-auto ml-2 text-[#309255]`} />
         <input
           type="text"

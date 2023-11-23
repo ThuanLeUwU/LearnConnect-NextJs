@@ -67,7 +67,7 @@ export default function AfterEnroll({ params }: any) {
     }
   });
   const [activeTab, setActiveTab] = useState("tab1");
-  const { id, user, jwtToken } = UserAuth();
+  const { id, user, jwtToken, userData } = UserAuth();
   axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
   const [form] = Form.useForm();
 
@@ -92,6 +92,7 @@ export default function AfterEnroll({ params }: any) {
   const showModal = () => {
     setIsModalOpen(true);
   };
+  const [timeSpent, setTimeSpent] = useState<Performance>();
 
   const handleOk = async (data: any) => {
     // console.log(e)
@@ -342,6 +343,43 @@ export default function AfterEnroll({ params }: any) {
       setTotalTime(Math.floor(videoRef.current.duration));
     }
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const responseData = await axios.get(
+        `https://learnconnectapitest.azurewebsites.net/api/learning-performance/get-by/${userData?.id}/${idCourse}`
+      );
+      setTimeSpent(responseData?.data);
+    };
+
+    fetchData();
+  }, []);
+
+  function formatTime(minutes) {
+    if (isNaN(minutes) || minutes < 0) {
+      return "Invalid input";
+    }
+
+    const days = Math.floor(minutes / (24 * 60));
+    const hours = Math.floor((minutes % (24 * 60)) / 60);
+    const remainingMinutes = minutes % 60;
+
+    let formattedTime = "";
+
+    if (days > 0) {
+      formattedTime += `${days} Day `;
+    }
+
+    if (hours > 0) {
+      formattedTime += `${hours} Hour `;
+    }
+
+    if (remainingMinutes > 0) {
+      formattedTime += `${remainingMinutes} Minute`;
+    }
+
+    return formattedTime.trim(); // Remove trailing space
+  }
 
   return (
     <div className="container">
@@ -732,6 +770,9 @@ export default function AfterEnroll({ params }: any) {
                     </button>
                   );
                 })}
+                <div className="pl-10 py-2 pr-[30px] bg-[#dff0e6] flex">
+                  <p className=" py-1">{formatTime(timeSpent?.timeSpent)}</p>
+                </div>
                 <div className="pl-10 py-2 pr-[30px] bg-[#dff0e6] flex">
                   <button
                     className="border-2 border-[#309255] px-5 py-1 rounded-lg hover:bg-[#309255] active:bg-[#75c989] hover:text-white"

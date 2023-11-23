@@ -17,6 +17,7 @@ import {
   Typography,
   Upload,
 } from "antd";
+import UploadFirebase from "@/components/uploadfirebase/uploadfirebase";
 import { UserAuth } from "@/app/context/AuthContext";
 import { Lecture } from "@/app/my-course/[id]/page";
 import axios from "axios";
@@ -134,6 +135,7 @@ const Dashboard = ({ params }: any) => {
     setShowQuestionForm(false);
     setShowAnswerForm(false);
     setIsChecked(false);
+    setSource(undefined);
   };
 
   //update
@@ -1406,28 +1408,22 @@ const Dashboard = ({ params }: any) => {
             </Select>
           </Form.Item>
           {type === 1 ? (
-            // <Form.Item label="Video">
             <div>
               <div style={{ display: "flex" }} className="flex justify-center">
-                {/* <video width={200} height={200} src={source} /> */}
-                <video width={400} height={300} src={source} controls />
+                {source && (
+                  <video width={400} height={300} src={source} controls />
+                )}
               </div>
               <div
                 className="flex justify-center pt-2 pb-2"
                 style={{ display: "flex" }}
               >
-                <Upload
-                  // accept="image/png, image/jpeg"
-                  // ref={inputRef}
-                  accept=".mov,.mp4"
-                  // accept=".docx"
-                  onChange={handleFileChange}
-                  // beforeUpload={beforeUpload}
-                  // headers={{ Authorization: authorization }}
-                  action="https://learnconnectapitest.azurewebsites.net/api/Upload/video"
-                >
-                  <Button>Upload</Button>
-                </Upload>
+                <UploadFirebase
+                  fileName={`course${course?.id}-lecture${
+                    lectures.length + 1
+                  }-`}
+                  returnUrl={setSource}
+                />
               </div>
             </div>
           ) : (

@@ -20,11 +20,11 @@ const firebaseConfig = {
   storageBucket: "learnconnect-6f324.appspot.com",
   messagingSenderId: "915054679433",
   appId: "1:915054679433:web:0a7daa005ff6b176eabd58",
-  measurementId: "G-69KWPWKQV6",
+  // measurementId: "G-69KWPWKQV6",
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
+export const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 
 // const messaging = firebase.messaging.isSupported() ? firebase.messaging() : null
