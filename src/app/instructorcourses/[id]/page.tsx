@@ -694,7 +694,7 @@ const Dashboard = ({ params }: any) => {
                         className="mb-2 mt-6 p-6 border-2 rounded-lg border-gray-200"
                       >
                         <p className="mb-1 font-medium text-[18px]">
-                          {index + 1}. {q.question.questionTest}
+                          {index + 1}. {q.question.questionText}
                         </p>
                         <div className="pl-4 grid grid-cols-2 gap-4">
                           {q.answers.map((answer, ansIndex) => (
@@ -716,7 +716,7 @@ const Dashboard = ({ params }: any) => {
                               {/* <span className="mr-2">
                               {answerOptions[ansIndex]}
                             </span> */}
-                              {answer.answerTest}
+                              {answer.answerText}
                             </div>
                           ))}
                         </div>
