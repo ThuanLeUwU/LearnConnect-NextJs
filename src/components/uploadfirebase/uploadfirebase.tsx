@@ -36,7 +36,7 @@ const UploadFirebase = ({
   const handleUpload = (video) => {
     if (video) {
       // const storageRef = ref(storage, `videos/${(fileName)?fileName:video.name}`);
-      const storageRef = ref(storage, `videos/${fileName}`);
+      const storageRef = ref(storage, `lectures/${fileName}`);
       const uploadTask = uploadBytesResumable(storageRef, video);
 
       uploadTask.on(

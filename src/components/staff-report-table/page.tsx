@@ -113,7 +113,7 @@ const StaffReportTable = () => {
   const [data, setData] = useState<ApiResponse[]>([]);
   const [activeTab, setActiveTab] = useState("tab1");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedType, setSelectedType] = useState("all");
+  const [selectedType, setSelectedType] = useState("course");
 
   const handleTabClick = (tabName: string, type: string) => {
     setActiveTab(tabName);
@@ -128,13 +128,14 @@ const StaffReportTable = () => {
           `https://learnconnectapitest.azurewebsites.net/api/report/all-list-reports?reportType=${selectedType}`
         );
         setData(response.data);
+        console.log("response.data", response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
 
     fetchData();
-  }, []);
+  }, [selectedType]);
 
   return (
     <div className="w-full">
@@ -187,7 +188,7 @@ const StaffReportTable = () => {
                           <div key={index}>
                             {item.courseInfo && (
                               <div
-                                className="single-review mt-3.5 border border-opacity-20 border-[#309255] p-5 rounded-md mx-5 hover:bg-[#e7f8ee]"
+                                className="single-review mt-3.5 border border-opacity-20 border-[#309255] p-5 rounded-md mx-5 hover:bg-[#e7f8ee] shadow-lg"
                                 onClick={() => {
                                   if (
                                     item.courseInfo &&
@@ -212,8 +213,16 @@ const StaffReportTable = () => {
                                     </div>
                                     <div className="author-content pl-4 flex flex-col">
                                       <div className="font-bold text-xl">
-                                        {item.courseInfo.courseDetails.name}
+                                        <p>
+                                          {item.courseInfo.courseDetails.name}
+                                        </p>
                                       </div>
+                                      <div className="text-xl">
+                                        <p className="flex">
+                                          {item.courseInfo.reportCount} Reports
+                                        </p>
+                                      </div>
+
                                       {/* <span className="text-[#309255] font-light">
                                         {item.courseInfo.courseDetails.createDate
                                           ? new Date(

@@ -5,6 +5,8 @@ import axios from "axios";
 import Modal from "@mui/material/Modal";
 import { useRouter, useSearchParams } from "next/navigation";
 import { GrFormPrevious } from "react-icons/gr";
+import { toast } from "sonner";
+
 interface Report {
   id: number;
   reportType: string;
@@ -24,6 +26,15 @@ const StaffReportID = ({ params }: any) => {
   const target = searchParam?.get("target");
   const [selectedReportId, setSelectedReportId] = useState<number | null>(null);
   const router = useRouter();
+  const [isConfirmationModalOpen, setConfirmationModalOpen] = useState(false);
+
+  const handleBanClick = () => {
+    setConfirmationModalOpen(true);
+  };
+
+  const handleCancelBan = () => {
+    setConfirmationModalOpen(false);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -31,9 +42,8 @@ const StaffReportID = ({ params }: any) => {
         const response = await axios.get(
           `https://learnconnectapitest.azurewebsites.net/api/report/get-reports?targetId=${idCourse}&reportType=${target}`
         );
+        console.log("API Response:", response.data);
         setReportData(response.data);
-        console.log("idCourse", idCourse);
-        console.log("Data", response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -44,6 +54,33 @@ const StaffReportID = ({ params }: any) => {
 
   const handleBack = () => {
     router.push(`/staff-page/staff-report`);
+  };
+
+  const fetchData = async () => {
+    try {
+      let apiUrl;
+
+      if (target === "course") {
+        apiUrl = `https://learnconnectapitest.azurewebsites.net/api/course/ban-course?courseId=${idCourse}&status=true`;
+      }
+
+      const response = await axios.post(apiUrl);
+      setReportData(response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const handleConfirmBan = async () => {
+    try {
+      await fetchData();
+      setConfirmationModalOpen(false);
+      handleBack();
+      toast.success(`Successfully banned ${target}`);
+    } catch (error) {
+      console.error("Error banning course:", error);
+      toast.error("Failed to ban course. Please try again.");
+    }
   };
 
   return (
@@ -67,13 +104,45 @@ const StaffReportID = ({ params }: any) => {
             </button>
           </div>
           <div className="ml-auto">
-            <button className="mx-5 my-3 px-5 py-3 bg-red-500 rounded-lg text-white">
+            <button
+              className="mx-5 my-3 px-5 py-3 bg-red-500 rounded-lg text-white"
+              onClick={handleBanClick}
+            >
               Ban this {target}
             </button>
           </div>
+          <Modal
+            open={isConfirmationModalOpen}
+            onClose={handleCancelBan}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <div className="bg-white p-8 w-96 rounded-md">
+              <p className="text-xl mb-4">
+                Are you sure you want to ban this {target}?
+              </p>
+              <div className="flex justify-end">
+                <button
+                  className="mx-2 px-4 py-2 bg-red-500 text-white rounded-lg"
+                  onClick={handleConfirmBan}
+                >
+                  Confirm
+                </button>
+                <button
+                  className="mx-2 px-4 py-2 bg-gray-300 rounded-lg"
+                  onClick={handleCancelBan}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </Modal>
         </div>
 
-        {reportData.length > 0 ? (
+        {Array.isArray(reportData) && reportData.length > 0 ? (
           reportData.map((report) => (
             <div
               key={report.id}
@@ -144,35 +213,6 @@ const StaffReportID = ({ params }: any) => {
                     onClick={() => setSelectedReportId(report.id)}
                   />
                 )}
-                {/* <div>
-                  <button
-                    className="bg-[#309255] px-5 py-3 text-white rounded-lg w-[100px]"
-                    onClick={() => setSelectedReportId(report.id)}
-                  >
-                    View
-                  </button>
-                </div> */}
-                {/* <Modal
-                  open={selectedReportId === report.id}
-                  onClose={() => setSelectedReportId(null)}
-                >
-                  <div className="fixed inset-0 z-50 flex items-center justify-center">
-                    <div className="bg-white p-8 max-w-md w-full rounded-lg shadow-md">
-                      <h2 className="text-2xl font-semibold mb-4">
-                        Are you sure you want to hide this comment?
-                      </h2>
-                      
-                    </div>
-                  </div>
-                </Modal> */}
-
-                {/* <div>
-                  <img
-                    src={report.imageUrl}
-                    alt="ImgReport"
-                    className="w-72 h-72 rounded-lg"
-                  />
-                </div> */}
               </div>
             </div>
           ))

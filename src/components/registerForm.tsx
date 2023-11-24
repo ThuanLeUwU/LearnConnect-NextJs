@@ -184,6 +184,7 @@ export const RegisterForm = () => {
       CardBack,
       IssueDate,
       DescriptionDocument,
+      reason,
     } = values;
     formData.append("major", values.major || "");
     formData.append("specializationId", values.specialization || "");
@@ -191,6 +192,7 @@ export const RegisterForm = () => {
     formData.append("IssueDate", values.IssueDate);
     formData.append("BankNumber", values.BankNumber);
     formData.append("BankName", values.BankName);
+    formData.append("BankName", values.reason);
     formData.append("CardFront", CardFront);
     formData.append("CardBack", CardBack);
     formData.append("DescriptionDocument", DescriptionDocument);
@@ -218,7 +220,7 @@ export const RegisterForm = () => {
       formData.append("BackCardImage", DocumentData);
     }
     try {
-      const url = `https://learnconnectapitest.azurewebsites.net/api/user/become-a-mentor?userId=${id}&specializationId=${specialization}&description=${description}&accountNumber=${BankNumber}&bankName=${BankName}`;
+      const url = `https://learnconnectapitest.azurewebsites.net/api/mentor/become-a-mentor?userId=${id}&specializationId=${specialization}&description=${description}&reason=${reason}&accountNumber=${BankNumber}&bankName=${BankName}`;
       await axios.post(url, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -230,7 +232,7 @@ export const RegisterForm = () => {
       // console.log("url", url);
     } catch (error) {
       setTimeout(() => {
-        toast.error("Failed to submit the form. Please try again later.");
+        toast.error(error.response.data);
       }, 0);
       console.log("error", error);
     } finally {
@@ -295,6 +297,84 @@ export const RegisterForm = () => {
             {userData?.email}
           </Form.Item>
           <Form.Item
+            rules={[{ required: true, message: "Please input Description" }]}
+            label="Introduction"
+            name="description"
+            className=""
+            labelAlign="left"
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            rules={[{ required: true, message: "Please input Bank" }]}
+            label="Bank"
+            name="BankName"
+            labelAlign="left"
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            rules={[{ required: true, message: "Please input Account Number" }]}
+            label="Account Number"
+            name="BankNumber"
+            labelAlign="left"
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            rules={[
+              { required: true, message: "Please input Identify Number" },
+            ]}
+            label="Identity Number"
+            name="CardFront"
+            labelAlign="left"
+          >
+            <Input placeholder="Input Identity Number " />
+          </Form.Item>
+
+          <Form.Item
+            rules={[{ required: true, message: "Please input Issue Date" }]}
+            label="Issue Date"
+            name="IssueDate"
+            labelAlign="left"
+          >
+            <DatePicker style={{ width: "100%" }} />
+          </Form.Item>
+
+          <Form.Item
+            rules={[{ required: true, message: "Please input image ID card" }]}
+            label="Image of ID Card"
+            getValueFromEvent={normFile}
+            labelAlign="left"
+          >
+            <Space>
+              <Upload
+                accept="image/png, image/jpeg"
+                onChange={handleChange}
+                beforeUpload={beforeUpload}
+                action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
+                listType="picture-card"
+                maxCount={1}
+              >
+                Font of ID
+              </Upload>
+              <Upload
+                accept="image/png, image/jpeg"
+                onChange={handleChangeBackImg}
+                beforeUpload={beforeUpload}
+                action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
+                listType="picture-card"
+                maxCount={1}
+              >
+                Back of ID
+              </Upload>
+            </Space>
+          </Form.Item>
+
+          <Form.Item
             label="Major"
             name="major"
             rules={[{ required: true, message: "Please select a major!" }]}
@@ -328,78 +408,17 @@ export const RegisterForm = () => {
               ))}
             </Select>
           </Form.Item>
+
           <Form.Item
             rules={[{ required: true, message: "Please input Description" }]}
             label="Description"
-            name="description"
+            name="reason"
             className=""
             labelAlign="left"
           >
             <Input />
           </Form.Item>
-          <Form.Item
-            rules={[{ required: true, message: "Please input Bank" }]}
-            label="Bank"
-            name="BankName"
-            labelAlign="left"
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            rules={[{ required: true, message: "Please input Account Number" }]}
-            label="Account Number"
-            name="BankNumber"
-            labelAlign="left"
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            rules={[
-              { required: true, message: "Please input Identify Number" },
-            ]}
-            label="Identify Number"
-            name="CardFront"
-            labelAlign="left"
-          >
-            <Input placeholder="Input Identity Number " />
-          </Form.Item>
-          <Form.Item
-            rules={[{ required: true, message: "Please input Issue Date" }]}
-            label="Issue Date"
-            name="IssueDate"
-            labelAlign="left"
-          >
-            <DatePicker style={{ width: "100%" }} />
-          </Form.Item>
-          <Form.Item
-            rules={[{ required: true, message: "Please input image ID card" }]}
-            label="Image of ID Card"
-            getValueFromEvent={normFile}
-            labelAlign="left"
-          >
-            <Space>
-              <Upload
-                accept="image/png, image/jpeg"
-                onChange={handleChange}
-                beforeUpload={beforeUpload}
-                action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
-                listType="picture-card"
-                maxCount={1}
-              >
-                Font of ID
-              </Upload>
-              <Upload
-                accept="image/png, image/jpeg"
-                onChange={handleChangeBackImg}
-                beforeUpload={beforeUpload}
-                action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
-                listType="picture-card"
-                maxCount={1}
-              >
-                Back of ID
-              </Upload>
-            </Space>
-          </Form.Item>
+
           <Form.Item
             rules={[{ required: true, message: "Please input Document" }]}
             label="Document"

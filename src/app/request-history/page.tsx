@@ -48,6 +48,7 @@ interface Specialization {
 
 interface MentorData {
   specializationOfMentor: {
+    description: string;
     id: number;
     verificationDate: string;
     note: string | null;
@@ -74,6 +75,17 @@ interface MentorData {
     mentor: null;
   }[];
 }
+
+interface verificationDocuments {
+  id: number;
+  description: string;
+  documentUrl: string;
+  specializationOfMentorId: number;
+  mentorId: number;
+  mentor: null;
+  documentType: number;
+}
+[];
 
 const Reviews = () => {
   const { role, userData, jwtToken } = UserAuth();
@@ -113,7 +125,9 @@ const Reviews = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(0);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
-  const [largerImageSrc, setLargerImageSrc] = useState("");
+  const [largerImageSrc, setLargerImageSrc] = useState<verificationDocuments[]>(
+    []
+  );
   const [triggerEffect, setTriggerEffect] = useState(false);
 
   const menuItem = [
@@ -249,6 +263,7 @@ const Reviews = () => {
     formData.append("major", data.major || "");
     formData.append("specialization", data.specialization || "");
     formData.append("DescriptionDocument", data.DescriptionDocument);
+    formData.append("reason", data.reason);
     if (formDataImage !== undefined) {
       formData.append("verificationDocument", formDataImage);
     }
@@ -270,7 +285,7 @@ const Reviews = () => {
       });
     } catch (err) {
       setTimeout(() => {
-        toast.error("Submit fail");
+        toast.error(err.response.data);
       });
     }
   };
@@ -328,7 +343,7 @@ const Reviews = () => {
 
   // Function to close the modal
   const closeImageModal = () => {
-    setLargerImageSrc("");
+    setLargerImageSrc([]);
     setIsImageModalOpen(false);
   };
 
@@ -406,6 +421,15 @@ const Reviews = () => {
                   </Option>
                 ))}
               </Select>
+            </Form.Item>
+
+            <Form.Item
+              rules={[{ required: true, message: "Please input Description" }]}
+              label="Description"
+              name="reason"
+              labelAlign="left"
+            >
+              <Input placeholder="Input Degree, Diploma, Certificate, Qualification" />
             </Form.Item>
             <Form.Item
               rules={[{ required: true, message: "Please input Document" }]}
@@ -540,9 +564,8 @@ const Reviews = () => {
                                       <TableCell className="w-[600px] text-[14px]">
                                         Description
                                       </TableCell>
-
                                       <TableCell className="text-[14px] w-[200px]">
-                                        Verification Document
+                                        Image of Document
                                       </TableCell>
                                     </TableRow>
                                     {mentor &&
@@ -598,7 +621,7 @@ const Reviews = () => {
                                               <p className="ml-2 text-[20px]">
                                                 {
                                                   mentorData
-                                                    .verificationDocuments[0]
+                                                    .specializationOfMentor
                                                     .description
                                                 }
                                               </p>
@@ -615,9 +638,7 @@ const Reviews = () => {
                                                   className="w-44 h-28 rounded-lg border border-opacity-20 border-[#309255]"
                                                   onClick={() =>
                                                     openImageModal(
-                                                      mentorData
-                                                        .verificationDocuments[0]
-                                                        .documentUrl
+                                                      mentorData.verificationDocuments
                                                     )
                                                   }
                                                 />
@@ -628,15 +649,21 @@ const Reviews = () => {
                                               visible={isImageModalOpen}
                                               onCancel={closeImageModal}
                                               footer={null}
-                                              width={800}
+                                              width={"70%"}
                                             >
                                               <div className="bg-white p-8 w-full h-full max-w-full max-h-full overflow-auto">
-                                                {/* Adjust the styles of the image container */}
-                                                <img
-                                                  src={largerImageSrc}
-                                                  alt="Larger Image"
-                                                  className="w-[600px] h-auto max-w-full max-h-full overflow-hidden"
-                                                />
+                                                {largerImageSrc.map((src) => (
+                                                  <div key={src.id}>
+                                                    <p className="text-xl">
+                                                      {src.description}
+                                                    </p>
+                                                    <img
+                                                      src={src.documentUrl}
+                                                      alt="Larger Image"
+                                                      className="w-full h-auto max-w-full max-h-full overflow-hidden "
+                                                    />
+                                                  </div>
+                                                ))}
                                               </div>
                                             </Modal>
                                           </TableRow>
@@ -695,14 +722,16 @@ const Reviews = () => {
                                         Status
                                       </TableCell>
                                       <TableCell className="text-[14px]">
+                                        Note
+                                      </TableCell>
+                                      <TableCell className="text-[14px]">
                                         Specialization
                                       </TableCell>
                                       <TableCell className="w-[600px] text-[14px]">
                                         Description
                                       </TableCell>
-
                                       <TableCell className="text-[14px] w-[200px]">
-                                        Verification Document
+                                        Image of Document
                                       </TableCell>
                                     </TableRow>
                                     {mentor &&
@@ -750,6 +779,14 @@ const Reviews = () => {
                                             </TableCell>
                                             <TableCell>
                                               <p className="text-[16px]">
+                                                {
+                                                  mentorData
+                                                    .specializationOfMentor.note
+                                                }
+                                              </p>
+                                            </TableCell>
+                                            <TableCell>
+                                              <p className="text-[16px]">
                                                 {" "}
                                                 {mentorData.specialization.name}
                                               </p>
@@ -758,7 +795,7 @@ const Reviews = () => {
                                               <p className="ml-2 text-[20px]">
                                                 {
                                                   mentorData
-                                                    .verificationDocuments[0]
+                                                    .specializationOfMentor
                                                     .description
                                                 }
                                               </p>
@@ -775,9 +812,7 @@ const Reviews = () => {
                                                   className="w-44 h-28 rounded-lg border border-opacity-20 border-[#309255]"
                                                   onClick={() =>
                                                     openImageModal(
-                                                      mentorData
-                                                        .verificationDocuments[0]
-                                                        .documentUrl
+                                                      mentorData.verificationDocuments
                                                     )
                                                   }
                                                 />
@@ -788,15 +823,43 @@ const Reviews = () => {
                                               visible={isImageModalOpen}
                                               onCancel={closeImageModal}
                                               footer={null}
-                                              width={800}
+                                              width={
+                                                largerImageSrc.length > 1
+                                                  ? "90%"
+                                                  : "70%"
+                                              }
                                             >
-                                              <div className="bg-white p-8 w-full h-full max-w-full max-h-full overflow-auto">
-                                                {/* Adjust the styles of the image container */}
-                                                <img
-                                                  src={largerImageSrc}
-                                                  alt="Larger Image"
-                                                  className="w-[600px] h-auto max-w-full max-h-full overflow-hidden"
-                                                />
+                                              <div
+                                                className={`bg-white p-8 w-full h-full max-w-full max-h-full overflow-auto ${
+                                                  largerImageSrc.length > 1
+                                                    ? "grid grid-cols-2 gap-4 justify-center items-center mx-auto"
+                                                    : ""
+                                                }`}
+                                              >
+                                                {largerImageSrc.map((src) => (
+                                                  <div
+                                                    key={src.id}
+                                                    className={`${
+                                                      largerImageSrc.length > 1
+                                                        ? ""
+                                                        : ""
+                                                    }`}
+                                                  >
+                                                    <p className="text-xl">
+                                                      {src.description}
+                                                    </p>
+                                                    <img
+                                                      src={src.documentUrl}
+                                                      alt="Larger Image"
+                                                      className={`w-full ${
+                                                        largerImageSrc.length >
+                                                        1
+                                                          ? "h-[500px]"
+                                                          : "h-auto"
+                                                      } max-w-full max-h-full overflow-hidden my-5 rounded-lg`}
+                                                    />
+                                                  </div>
+                                                ))}
                                               </div>
                                             </Modal>
                                           </TableRow>
@@ -855,14 +918,16 @@ const Reviews = () => {
                                         Status
                                       </TableCell>
                                       <TableCell className="text-[14px]">
+                                        Reject Reason
+                                      </TableCell>
+                                      <TableCell className="text-[14px]">
                                         Specialization
                                       </TableCell>
                                       <TableCell className="w-[600px] text-[14px]">
                                         Description
                                       </TableCell>
-
                                       <TableCell className="text-[14px] w-[200px]">
-                                        Verification Document
+                                        Image of Document
                                       </TableCell>
                                     </TableRow>
                                     {mentor &&
@@ -910,6 +975,14 @@ const Reviews = () => {
                                             </TableCell>
                                             <TableCell>
                                               <p className="text-[16px]">
+                                                {
+                                                  mentorData
+                                                    .specializationOfMentor.note
+                                                }
+                                              </p>
+                                            </TableCell>
+                                            <TableCell>
+                                              <p className="text-[16px]">
                                                 {" "}
                                                 {mentorData.specialization.name}
                                               </p>
@@ -918,7 +991,7 @@ const Reviews = () => {
                                               <p className="ml-2 text-[20px]">
                                                 {
                                                   mentorData
-                                                    .verificationDocuments[0]
+                                                    .specializationOfMentor
                                                     .description
                                                 }
                                               </p>
@@ -935,9 +1008,7 @@ const Reviews = () => {
                                                   className="w-44 h-28 rounded-lg border border-opacity-20 border-[#309255]"
                                                   onClick={() =>
                                                     openImageModal(
-                                                      mentorData
-                                                        .verificationDocuments[0]
-                                                        .documentUrl
+                                                      mentorData.verificationDocuments
                                                     )
                                                   }
                                                 />
@@ -948,15 +1019,22 @@ const Reviews = () => {
                                               visible={isImageModalOpen}
                                               onCancel={closeImageModal}
                                               footer={null}
-                                              width={800}
+                                              width={"70%"}
                                             >
                                               <div className="bg-white p-8 w-full h-full max-w-full max-h-full overflow-auto">
                                                 {/* Adjust the styles of the image container */}
-                                                <img
-                                                  src={largerImageSrc}
-                                                  alt="Larger Image"
-                                                  className="w-[600px] h-auto max-w-full max-h-full overflow-hidden"
-                                                />
+                                                {largerImageSrc.map((src) => (
+                                                  <div key={src.id}>
+                                                    <p className="text-xl">
+                                                      {src.description}
+                                                    </p>
+                                                    <img
+                                                      src={src.documentUrl}
+                                                      alt="Larger Image"
+                                                      className="w-full h-auto max-w-full max-h-full overflow-hidden my-5 rounded-lg"
+                                                    />
+                                                  </div>
+                                                ))}
                                               </div>
                                             </Modal>
                                           </TableRow>

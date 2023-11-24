@@ -64,6 +64,7 @@ export default function UserManagePage() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [mounted, setMounted] = useState(false);
   // console.log("sort,",allUser);
+  console.log("Admin Token", jwtToken);
 
   const handleRequestSort = (event: any, property: any) => {
     const isAsc = orderBy === property && order === "asc";

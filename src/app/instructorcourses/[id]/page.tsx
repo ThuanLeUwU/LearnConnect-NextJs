@@ -1620,9 +1620,11 @@ const Dashboard = ({ params }: any) => {
                 style={{ display: "flex" }}
               >
                 <UploadFirebase
-                  fileName={`course${course?.id}-lecture${
+                  fileName={`Course${idCourse}_Lecture${
                     lectures.length + 1
-                  }-`}
+                  }_${Math.floor(
+                    new Date().getTime() - new Date(2020, 0, 1).getSeconds()
+                  )}`}
                   returnUrl={setSource}
                 />
               </div>

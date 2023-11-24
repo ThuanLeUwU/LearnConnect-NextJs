@@ -161,18 +161,19 @@ const StaffRatingTable = () => {
           <div className="tab-content">
             {activeTab === "tab2" && (
               <div className="min-h-[1000px] w-full">
+                <div className="px-3 py-3">
+                  <Typography variant="h3">FeedBack</Typography>
+                  <p>
+                    All reviews, starting with the most recent, are listed here
+                  </p>
+                </div>
                 <Box
                   component="main"
                   sx={{
                     flexGrow: 1,
-                    py: 5,
-                    p: 5,
                   }}
+                  className="shadow-[5px_10px_20px_15px_rgba(0,0,0,0.15)] rounded-lg mx-5 my-5"
                 >
-                  <Typography variant="h3">FeedBack</Typography>
-                  <p className="pb-5">
-                    All reviews, starting with the most recent, are listed here
-                  </p>
                   <Card>
                     <Paper sx={{ width: "100%" }}>
                       {isLoading ? (
@@ -318,18 +319,19 @@ const StaffRatingTable = () => {
             )}
             {activeTab === "tab3" && (
               <div className="min-h-[1000px] w-full">
-                <Box
-                  component="main"
-                  sx={{
-                    flexGrow: 1,
-                    py: 5,
-                    p: 5,
-                  }}
-                >
+                <div className="px-3 py-3">
                   <Typography variant="h3">FeedBack</Typography>
                   <p className="pb-5">
                     All reviews, starting with the most recent, are listed here
                   </p>
+                </div>
+                <Box
+                  component="main"
+                  sx={{
+                    flexGrow: 1,
+                  }}
+                  className="shadow-[5px_10px_20px_15px_rgba(0,0,0,0.15)] rounded-lg mx-5 my-5"
+                >
                   <Card>
                     <Paper sx={{ width: "100%" }}>
                       {isLoading ? (

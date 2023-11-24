@@ -6,7 +6,7 @@ import useDataFetcher, {
 } from "@/components/pagination/useDataFetcher";
 import Paginate from "@/components/pagination/pagination";
 import Search from "@/components/search/search";
-import { Rate, Select, Spin } from "antd";
+import { Empty, Rate, Select, Spin } from "antd";
 import { useEffect, useRef, useState } from "react";
 import { http } from "@/api/http";
 import { Category } from "../instructorcourses/page";
@@ -186,6 +186,7 @@ export default function ListCourse() {
         <div className="min-h-[60vh]">
           {courses.length === 0 ? (
             <div className="text-center text-2xl mt-8 items-center justify-center">
+              <Empty description={false} />
               No course with your filter!!!
             </div>
           ) : (
