@@ -12,6 +12,7 @@ import {
   Form,
   Input,
   Modal,
+  Popconfirm,
   Space,
   Spin,
   Table,
@@ -142,12 +143,28 @@ const DetailsContent = ({ params }: any) => {
 
   const [approveCourse, setApproveCourse] = useState(false);
   const [rejectCourse, setRejectCourse] = useState(false);
+  const [banCourse, setBanCourse] = useState(false);
   const handleApprove = (data: any) => {
     setApproveCourse(true);
   };
 
   const handleReject = (data: any) => {
     setRejectCourse(true);
+  };
+
+  const handleBan = (data: any) => {
+    try {
+      http
+        .post(
+          `https://learnconnectapitest.azurewebsites.net/api/course/ban-course?courseId=${idCourse}&status=true`
+        )
+        .then(() => {
+          toast.success("Ban Course Successfully !!!");
+          router.push("/staff-page/moderation");
+        });
+    } catch (err) {
+      toast.error("Ban course Fails !!!");
+    }
   };
 
   const handleApproveClick = () => {
@@ -173,11 +190,13 @@ const DetailsContent = ({ params }: any) => {
     }
   };
 
-  const handleRejectCourse = () => {
+  const handleRejectCourse = (data: any) => {
+    const formData = new FormData();
+    formData.append("note", data.reason);
     try {
       http
         .post(
-          `https://learnconnectapitest.azurewebsites.net/api/course/process-course-request?courseId=${idCourse}&acceptRequest=false`
+          `https://learnconnectapitest.azurewebsites.net/api/course/process-course-request?courseId=${idCourse}&acceptRequest=false&note=${data.reason}`
         )
         .then(() => {
           {
@@ -277,7 +296,14 @@ const DetailsContent = ({ params }: any) => {
               <Button onClick={() => handleAcceptLecture(record)}>
                 Accept
               </Button>
-              <Button danger onClick={() => handleRejectLecture(record)}>
+              <Button
+                style={{
+                  backgroundColor: "#ffa04e",
+                  borderColor: "#ffa04e",
+                  color: "#fff",
+                }}
+                onClick={() => handleRejectLecture(record)}
+              >
                 Reject
               </Button>
             </>
@@ -343,19 +369,26 @@ const DetailsContent = ({ params }: any) => {
         page2={"/staff-page/staff-rating"}
         page3={"/staff-page/staff-report"}
         page4={"/staff-page/moderation"}
-        page5={"/staff-page/moderation-lecture"}
+        page5={"/staff-page/list-major"}
       />
       {/* <StaffRatingTable />áhkfjaskf */}
       <div className="container mt-4">
-        <Breadcrumb className="font-semibold text-xl m">
+        <Breadcrumb className="font-semibold text-xl ">
           <Breadcrumb.Item>
             <button onClick={breadcrumbNavigation}>Courses</button>
           </Breadcrumb.Item>
           <Breadcrumb.Item>
-            {course?.name} ({course?.status})
+            {course?.name} ({getStatusText(course?.status)})
           </Breadcrumb.Item>
           {/* <Breadcrumb.Item>React</Breadcrumb.Item> */}
         </Breadcrumb>
+        <>
+          {course?.status === 2 && (
+            <div className="text-3xl mt-4 underline">
+              Reasons for reject the course : {course?.note}
+            </div>
+          )}
+        </>
         <div className={`${InstructorCourseStyle.featured}`}>
           <div className={`${InstructorCourseStyle.featured_top}`}>
             <h1 className={`${InstructorCourseStyle.featured_top_title}`}>
@@ -429,50 +462,112 @@ const DetailsContent = ({ params }: any) => {
             </div>
           </div>
         </div>
-        <div>
-          {" "}
+        <div className="mt-5">
+          <div className="text-xl">List Of Lectures</div>
           {loading ? (
             <Spin size="large" />
           ) : (
-            <Table dataSource={lectures} columns={columns} />
+            <Table
+              className="shadow-[5px_15px_25px_10px_rgba(0,0,0,0.15)] mt-2 rounded-lg"
+              dataSource={lectures}
+              columns={columns}
+            />
           )}
         </div>
-        <div className="flex justify-end gap-2">
-          {course?.status === 0 ? (
+        <div className="flex justify-end gap-2 mt-10">
+          {/* {course?.status === 0 ? (
             <>
               <Button
-                style={{
-                  backgroundColor: "red",
-                  borderColor: "red",
-                  color: "#fff",
-                }}
+                className="bg-white text-black border rounded-lg border-[#24ee00] hover:bg-[#24ee00] hover:text-white transition duration-300 px-4 py-2"
+                onClick={handleBan}
               >
                 Ban
               </Button>
             </>
           ) : (
             <>
-              <Button
-                style={{
-                  backgroundColor: "#4caf50",
-                  borderColor: "#4caf50",
-                  color: "#fff",
-                }}
+              <button
+                className="bg-white text-black border rounded-lg border-[#24ee00] hover:bg-[#24ee00] hover:text-white transition duration-300 px-4 py-2"
                 onClick={handleApprove}
               >
                 Approve
-              </Button>
-              <Button
-                style={{
-                  backgroundColor: "red",
-                  borderColor: "red",
-                  color: "#fff",
-                }}
+              </button>
+              <button
+                className="bg-white text-black border rounded-lg border-[#ffa04e] hover:bg-[#ffa04e] hover:text-white transition duration-300 px-4 py-2"
+                // style={{
+                //   backgroundColor: "#ffa04e",
+                //   borderColor: "#ffa04e",
+                //   color: "#fff",
+                // }}
                 onClick={handleReject}
               >
                 Reject
-              </Button>
+              </button>
             </>
+          )} */}
+          {course?.status === 0 ? (
+            <button
+              className="bg-white text-black border rounded-lg border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-6 py-2"
+              onClick={handleBan}
+            >
+              Ban
+            </button>
+          ) : course?.status === 1 ? (
+            <>
+              {" "}
+              <button
+                className="bg-white text-black border rounded-lg border-[#24ee00] hover:bg-[#24ee00] hover:text-white transition duration-300 px-4 py-2"
+                onClick={handleApprove}
+              >
+                Approve
+              </button>
+              <button
+                className="bg-white text-black border rounded-lg border-[#ffa04e] hover:bg-[#ffa04e] hover:text-white transition duration-300 px-5 py-2"
+                // style={{
+                //   backgroundColor: "#ffa04e",
+                //   borderColor: "#ffa04e",
+                //   color: "#fff",
+                // }}
+                onClick={handleReject}
+              >
+                Reject
+              </button>
+              {/* <button
+                className="bg-white text-black border rounded-lg border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-6 py-2"
+                onClick={handleBan}
+              >
+                Ban
+              </button> */}
+              <Popconfirm
+                title="Are you sure you want to delete this item?"
+                onConfirm={handleBan}
+                okText="Yes"
+                okButtonProps={{
+                  style: {
+                    background: "red",
+                    borderColor: "red",
+                    color: "#fff",
+                  },
+                }}
+                cancelText="No"
+              >
+                <button
+                  className="bg-white text-black border rounded-lg border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-6 py-2"
+                  // onClick={handleBan}
+                >
+                  Ban
+                </button>
+              </Popconfirm>
+            </>
+          ) : course?.status === 3 ? (
+            <button
+              className="bg-white text-black border rounded-lg border-[#ffa04e] hover:bg-[#ffa04e] hover:text-white transition duration-300 px-4 py-2"
+              // onClick={}
+            >
+              Unban
+            </button>
+          ) : (
+            <></>
           )}
         </div>
       </div>
@@ -554,13 +649,13 @@ const DetailsContent = ({ params }: any) => {
         </DialogActions>
       </Dialog>
 
-      <Dialog
+      {/* <Dialog
         open={rejectCourse}
         onClose={handleModalCancel}
         aria-describedby="alert-dialog-slide-description"
       >
         <DialogTitle
-          sx={{ backgroundColor: "#ff0000", fontSize: "20px", color: "white" }}
+          sx={{ backgroundColor: "#ffa04e", fontSize: "20px", color: "white" }}
         >
           {" "}
           Warning!!!{" "}
@@ -571,21 +666,21 @@ const DetailsContent = ({ params }: any) => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleModalCancel}>cancel</Button>
+          <button
+            className="bg-white text-black border rounded-lg border-blue-400 hover:text-blue-400 transition duration-300 px-4 py-1"
+            onClick={handleModalCancel}
+          >
+            Cancel
+          </button>
 
-          <Button
-            style={{
-              backgroundColor: "#ff0000",
-              borderColor: "#ff0000",
-              color: "#fff",
-            }}
+          <button
+            className="bg-white text-black border rounded-lg border-[#ffa04e] hover:bg-[#ffa04e] hover:text-white transition duration-300 px-2 py-1"
             onClick={() => handleRejectCourse()}
-            type="primary"
           >
             Confirm
-          </Button>
+          </button>
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
 
       <Modal
         destroyOnClose={true}
@@ -605,6 +700,50 @@ const DetailsContent = ({ params }: any) => {
           className="mt-5"
           style={{ width: "100%" }}
           onFinish={handleRejectClick}
+        >
+          <Form.Item
+            rules={[{ required: true, message: "Please input Reason!" }]}
+            label="Reason"
+            name="reason"
+          >
+            <Input.TextArea rows={4} placeholder="Write your Reason" />
+          </Form.Item>
+
+          <Space className="justify-end w-full">
+            <Form.Item className="mb-0">
+              <Space>
+                <Button onClick={handleModalCancel}>Cancel</Button>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  style={{ color: "black" }}
+                >
+                  Confirm
+                </Button>
+              </Space>
+            </Form.Item>
+          </Space>
+        </Form>
+      </Modal>
+
+      <Modal
+        destroyOnClose={true}
+        title={`Are you sure you want to reject this Course?`}
+        open={rejectCourse}
+        // onOk={handleOk}
+        width="35%"
+        onCancel={handleModalCancel}
+        footer={false}
+      >
+        <Form
+          autoComplete="off"
+          form={form}
+          labelCol={{ span: 4 }}
+          wrapperCol={{ span: 16 }}
+          layout="horizontal"
+          className="mt-5"
+          style={{ width: "100%" }}
+          onFinish={handleRejectCourse}
         >
           <Form.Item
             rules={[{ required: true, message: "Please input Reason!" }]}

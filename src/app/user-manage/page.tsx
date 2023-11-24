@@ -349,7 +349,7 @@ export default function UserManagePage() {
                                         </Button>
 
                                         <Button type="primary" danger>
-                                          Disable
+                                          Ban
                                         </Button>
                                       </div>
                                     </Typography>

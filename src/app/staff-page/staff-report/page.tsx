@@ -9,7 +9,7 @@ const StaffRating = () => {
         page2={"/staff-page/staff-rating"}
         page3={"#"}
         page4={"/staff-page/moderation"}
-        page5={"/staff-page/moderation-lecture"}
+        page5={"/staff-page/list-major"}
       />
       <StaffReportTable />
     </div>

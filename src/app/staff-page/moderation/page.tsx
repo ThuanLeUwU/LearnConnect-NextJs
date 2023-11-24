@@ -46,7 +46,7 @@ const ModerationContent = () => {
         page2={"/staff-page/staff-rating"}
         page3={"/staff-page/staff-report"}
         page4={"#"}
-        page5={"/staff-page/moderation-lecture"}
+        page5={"/staff-page/list-major"}
       />
       {/* <StaffRatingTable />
        */}

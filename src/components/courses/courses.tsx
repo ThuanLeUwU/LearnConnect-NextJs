@@ -30,6 +30,7 @@ export type Course = {
   contentLength: number;
   lectureCount: number;
   averageRating: number;
+  note: string;
   mentorName: string;
   mentorId: number;
   mentorProfilePictureUrl: string;

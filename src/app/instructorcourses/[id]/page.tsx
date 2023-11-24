@@ -137,7 +137,7 @@ const Dashboard = ({ params }: any) => {
     setShowQuestionForm(false);
     setShowAnswerForm(false);
     setIsChecked(false);
-    setSource(undefined);
+    setSource("");
   };
 
   //update
@@ -233,7 +233,7 @@ const Dashboard = ({ params }: any) => {
   };
 
   const handleUpdateCancel = () => {
-    setSource(undefined);
+    setSource("");
     setUpdateVisible(false);
     form.resetFields();
   };
@@ -247,9 +247,10 @@ const Dashboard = ({ params }: any) => {
     formData.append("title", data.title);
     formData.append("content", data.content);
     formData.append("contentType", type.toString());
-    if (formDataSource !== undefined) {
-      formData.append("contentUrl", formDataSource);
-    }
+    formData.append("contentUrl", source);
+    // if (formDataSource !== undefined) {
+    //   formData.append("contentUrl", formDataSource);
+    // }
 
     try {
       await http
@@ -317,7 +318,7 @@ const Dashboard = ({ params }: any) => {
   //video upload
   // const inputRef = React.useRef();
   const [formDataSource, setFormDataSource] = useState();
-  const [source, setSource] = useState<string>();
+  const [source, setSource] = useState<string>("");
 
   const handleFileChange = (info: any) => {
     if (info.file.status === "uploading") {
@@ -981,6 +982,12 @@ const Dashboard = ({ params }: any) => {
       toast.error("Delete Fails !!!");
     }
   };
+
+  const handleRowClick = (record) => {
+    // Xử lý khi click vào một hàng (item)
+    console.log("Clicked item:", record);
+    // Thực hiện các hành động khác cần thiết
+  };
   return (
     <div className={`${InstructorCourseStyle.content_wrapper}`}>
       <div className={`${InstructorCourseStyle.sidebar_wrapper}`}>
@@ -1140,6 +1147,11 @@ const Dashboard = ({ params }: any) => {
                 className="shadow-[5px_15px_25px_10px_rgba(0,0,0,0.15)] m-5 rounded-lg"
                 dataSource={lectures}
                 columns={columns}
+                onRow={(record, rowIndex) => {
+                  return {
+                    onClick: () => handleRowClick(record), // Xử lý sự kiện click
+                  };
+                }}
               />
             )}
           </div>

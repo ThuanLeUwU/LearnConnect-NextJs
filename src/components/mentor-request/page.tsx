@@ -49,11 +49,12 @@ export type Mentor = {
   userId: number;
 };
 
-export type specialization = {
+export type Specialization = {
   id: number;
   name: string;
   description: string;
   isActive: boolean;
+  majorId: number;
 };
 
 export type VerificationDocument = {
