@@ -218,8 +218,20 @@ export default function AfterEnroll({ params }: any) {
   // const newplugin = defaultLayoutPlugin();
 
   const [videoSrc, setVideoSrc] = useState("");
-  const changeVideoSource = (newSrc: string, index: number) => {
-    setVideoSrc(newSrc);
+  const changeVideoSource = (lecture: Lecture, index: number) => {
+    const getProcess = async () => {
+      await http
+        .get(
+          `https://learnconnectapitest.azurewebsites.net/api/learning-process/get_lecture_process?lectureId=${lecture.id}`
+        )
+        .then((res) => {
+          setCurrentTime(res?.data.currentStudyTime);
+          setMaxTime(res?.data.maxStudyTime);
+        })
+        .catch();
+    };
+    getProcess();
+    setVideoSrc(lecture.contentUrl);
     setActiveVideoIndex(index);
     const videoElement = document.getElementById(
       "courseVideo"
@@ -338,8 +350,10 @@ export default function AfterEnroll({ params }: any) {
 
   const handleOnProgress = () => {
     if (videoRef.current) {
-      videoRef.current.currentTime = currentTime; //truyen currentTime tu API response
       setTotalTime(Math.floor(videoRef.current.duration));
+      if (currentTime) {
+        videoRef.current.currentTime = currentTime; //truyen currentTime tu API response
+      }
     }
   };
 
@@ -756,7 +770,7 @@ export default function AfterEnroll({ params }: any) {
                           : ""
                       }`}
                       onClick={() => {
-                        changeVideoSource(item.contentUrl, index);
+                        changeVideoSource(item, index);
                         setPDF(item.contentType);
                       }}
                     >
@@ -770,7 +784,9 @@ export default function AfterEnroll({ params }: any) {
                   );
                 })}
                 <div className="pl-10 py-2 pr-[30px] bg-[#dff0e6] flex">
-                  <p className=" py-1">{formatTime(timeSpent?.timeSpent)}</p>
+                  <p className=" py-1">
+                    Time Spent: {formatTime(timeSpent?.timeSpent)}
+                  </p>
                 </div>
                 <div className="pl-10 py-2 pr-[30px] bg-[#dff0e6] flex">
                   <button

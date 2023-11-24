@@ -7,11 +7,13 @@ import React, { useEffect, useState } from "react";
 import { UserAuth, UserRole } from "@/app/context/AuthContext";
 import { Button } from "react-bootstrap";
 import { RegisterForm } from "@/components/registerForm";
-import { Empty, Modal } from "antd";
+import { Empty, Modal, Space } from "antd";
 import { useRouter } from "next/navigation";
 import { AiFillBell } from "react-icons/ai";
 import axios from "axios";
 import { http } from "@/api/http";
+import { Form, Input } from "antd";
+import { toast } from "sonner";
 
 export type Notification = {
   id: string | number;
@@ -31,6 +33,9 @@ const Header = () => {
   const [notificationContent, setNotificationContent] = useState<
     Notification[]
   >([]);
+  const [form] = Form.useForm();
+
+  const [isLogin, setIsLogin] = useState(false);
   const router = useRouter();
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -47,19 +52,19 @@ const Header = () => {
   const { role, user, googleSignIn, logOut } = UserAuth();
 
   console.log("userrole", userData?.role);
-  const handleSignIn = async () => {
-    try {
-      await googleSignIn();
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const handleSignIn = async () => {
+  //   try {
+  //     await googleSignIn();
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   const handleSignOut = async () => {
     try {
       logOut();
       closeDropdown();
-      router.push("/");
+      handleTabChange("");
     } catch (error) {
       console.log(error);
     }
@@ -76,7 +81,7 @@ const Header = () => {
   const returnHome = () => {
     switch (role) {
       case UserRole.Student:
-        router.push("/courses");
+        handleTabChange("");
         break;
       case UserRole.Mentor:
         router.push("/instructorcourses");
@@ -88,7 +93,7 @@ const Header = () => {
         router.push("/user-manage");
         break;
       default:
-        router.push("/");
+        handleTabChange("");
         break;
     }
   };
@@ -138,7 +143,56 @@ const Header = () => {
     }
     if (role === 2) {
       switchRole(3);
-      router.push(`/`);
+      handleTabChange("");
+    }
+  };
+
+  const [activeTab, setActiveTab] = useState("");
+
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    setIsLogin(false);
+    router.push(`/${tab}`);
+  };
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const [formDataImage, setFormDataImage] = useState();
+
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleCancel = () => {
+    form.resetFields();
+    setIsModalVisible(false);
+  };
+
+  const handleFormSubmit = async (data: any) => {
+    const formData = new FormData();
+    formData.append("fullName", data.fullName);
+    formData.append("email", data.email);
+    formData.append("password", data.password);
+    console.log("data", data.fullName, data.email, data.password);
+    try {
+      await http.post(
+        `https://learnconnectapitest.azurewebsites.net/api/user/create-account-staff`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      form.resetFields();
+      setIsModalVisible(false);
+      setTimeout(() => {
+        toast.success("Create Account successful");
+      });
+    } catch (error) {
+      setTimeout(() => {
+        toast.error("Create Account fail");
+      });
     }
   };
 
@@ -172,14 +226,90 @@ const Header = () => {
               )}
               {userData?.role === 0 ? (
                 <button
-                  // onClick={handleSwitchRole}
                   className="text-white border border-solid border-[#309255] border-opacity-20 rounded-lg bg-[#309255] py-1 px-3"
+                  onClick={showModal}
                 >
-                  Create Account for staff {role === 3 ? "mentor" : "student"}
+                  Create Account for staff
                 </button>
               ) : (
                 <></>
               )}
+              <Modal
+                title="Create Account for Staff"
+                visible={isModalVisible}
+                onCancel={() => setIsModalVisible(false)}
+                footer={false}
+              >
+                {/* Form inside the modal */}
+                <Form
+                  autoComplete="off"
+                  form={form}
+                  labelCol={{ span: 6 }}
+                  labelAlign={"left"}
+                  wrapperCol={{ span: 18 }}
+                  layout="horizontal"
+                  className="mt-5"
+                  style={{ width: "100%" }}
+                  onFinish={handleFormSubmit}
+                >
+                  <Form.Item
+                    label="Full Name"
+                    name="fullName"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please enter your full name!",
+                      },
+                    ]}
+                  >
+                    <Input placeholder="Full Name" />
+                  </Form.Item>
+                  <Form.Item
+                    label="Email"
+                    name="email"
+                    rules={[
+                      { required: true, message: "Please enter your email!" },
+                    ]}
+                  >
+                    <Input type="email" placeholder="Email" />
+                  </Form.Item>
+                  <Form.Item
+                    label="Password"
+                    name="password"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please enter your password!",
+                      },
+                    ]}
+                  >
+                    <Input.Password placeholder="Password" />
+                  </Form.Item>
+
+                  <Space className="justify-end w-full">
+                    <Form.Item className="mb-0">
+                      <Space>
+                        <Button onClick={handleCancel}>Cancel</Button>
+                        <Button type="submit" style={{ color: "black" }}>
+                          Create
+                        </Button>
+                      </Space>
+                    </Form.Item>
+                  </Space>
+
+                  {/* <Space>
+                    <Button onClick={handleCancel}>Cancel</Button>
+                    <Button
+                      key="submit"
+                      type="primary"
+                      onClick={handleFormSubmit}
+                      style={{ color: "black" }}
+                    >
+                      Submit
+                    </Button>
+                  </Space> */}
+                </Form>
+              </Modal>
               <li className={`${headerStyles.header_notification}`}>
                 <button onClick={toggleDropdownNotification}>
                   <AiFillBell />
@@ -345,43 +475,78 @@ const Header = () => {
           {!userData ? (
             <div className={`${headerStyles.header_main_wrapper}`}>
               <div className={`${headerStyles.header_logo}`}>
-                <Link href="/">
+                <button onClick={() => handleTabChange("")}>
                   <Image
                     width={120}
                     height={100}
                     src="/images/LogoRemoveBG.png"
                     alt="logo"
                   />
-                </Link>
+                </button>
               </div>
               <div className={`${headerStyles.header_menu}`}>
-                <ul className={`${headerStyles.nav_menu}`}>
-                  <li>
-                    <Link href="/">Home</Link>
+                <ul className={`${headerStyles.nav_menu} `}>
+                  <li
+                    className={`${
+                      activeTab === "" &&
+                      !isLogin &&
+                      "border-b-4 border-[#309255]"
+                    }`}
+                  >
+                    <button onClick={() => handleTabChange("")}>Home</button>
                   </li>
-                  <li>
-                    <Link href="/courses">Courses</Link>
+                  <li
+                    className={`${
+                      activeTab === "courses" && "border-b-4 border-[#309255]"
+                    }`}
+                  >
+                    <button onClick={() => handleTabChange("courses")}>
+                      Courses
+                    </button>
                   </li>
-                  <li>
-                    <Link href="/list-mentor">Mentors</Link>
+                  {/* <li
+                    className={`${
+                      activeTab === "my-course" && "border-b-4 border-[#309255]"
+                    }`}
+                  >
+                    <button onClick={() => handleTabChange("my-course")}>
+                      My Courses{" "}
+                    </button>
                   </li>
-                  {/* <li>
-                    <Link href="/about">About </Link>
-                  </li>
-                  <li>
-                    <Link href="/faq">FAQ</Link>
-                  </li>
-                  <li>
-                    <Link href="/contact">Contact</Link>
+                  <li
+                    className={`${
+                      activeTab === "favorites" && "border-b-4 border-[#309255]"
+                    }`}
+                  >
+                    <button onClick={() => handleTabChange("favorites")}>
+                      My Favorites
+                    </button>
                   </li> */}
+                  <li
+                    className={`${
+                      activeTab === "list-mentor" &&
+                      "border-b-4 border-[#309255]"
+                    }`}
+                  >
+                    <button onClick={() => handleTabChange("list-mentor")}>
+                      Mentors
+                    </button>
+                  </li>
                 </ul>
               </div>
               <div className={`${headerStyles.header_sign_in_up}`}>
                 <ul>
                   <li>
-                    <Link className={`${headerStyles.sign_up}`} href="/login">
+                    <button
+                      onClick={() => {
+                        setActiveTab("");
+                        setIsLogin(true);
+                        router.push(`login`);
+                      }}
+                      className={`${headerStyles.sign_up}`}
+                    >
                       Sign In
-                    </Link>
+                    </button>
                   </li>
                   <li>
                     {/* <Link
@@ -401,34 +566,65 @@ const Header = () => {
                   className={`${headerStyles.header_main_wrapper} shadow-lg`}
                 >
                   <div className={`${headerStyles.header_logo}`}>
-                    <Link href="/">
+                    <button onClick={() => handleTabChange("")}>
                       <Image
                         width={100}
                         height={60}
                         src="/images/LogoRemoveBG.png"
                         alt="logo"
                       />
-                    </Link>
+                    </button>
                   </div>
                   <div className={`${headerStyles.header_menu}`}>
-                    <ul className={`${headerStyles.nav_menu}`}>
-                      <li>
-                        <Link href="/">Home</Link>
+                    <ul className={`${headerStyles.nav_menu} `}>
+                      <li
+                        className={`${
+                          activeTab === "" && "border-b-4 border-[#309255]"
+                        }`}
+                      >
+                        <button onClick={() => handleTabChange("")}>
+                          Home
+                        </button>
                       </li>
-                      <li>
-                        <Link href="/courses">Courses</Link>
+                      <li
+                        className={`${
+                          activeTab === "courses" &&
+                          "border-b-4 border-[#309255]"
+                        }`}
+                      >
+                        <button onClick={() => handleTabChange("courses")}>
+                          Courses
+                        </button>
                       </li>
-                      <li>
-                        <Link href="/my-course">My Courses </Link>
+                      <li
+                        className={`${
+                          activeTab === "my-course" &&
+                          "border-b-4 border-[#309255]"
+                        }`}
+                      >
+                        <button onClick={() => handleTabChange("my-course")}>
+                          My Courses{" "}
+                        </button>
                       </li>
-                      <li>
-                        <Link href="/favorites">My Favorites</Link>
+                      <li
+                        className={`${
+                          activeTab === "favorites" &&
+                          "border-b-4 border-[#309255]"
+                        }`}
+                      >
+                        <button onClick={() => handleTabChange("favorites")}>
+                          My Favorites
+                        </button>
                       </li>
-                      {/* <li>
-                        <Link href="/contact">Contact</Link>
-                      </li> */}
-                      <li>
-                        <Link href="/list-mentor">Mentors</Link>
+                      <li
+                        className={`${
+                          activeTab === "list-mentor" &&
+                          "border-b-4 border-[#309255]"
+                        }`}
+                      >
+                        <button onClick={() => handleTabChange("list-mentor")}>
+                          Mentors
+                        </button>
                       </li>
                     </ul>
                   </div>

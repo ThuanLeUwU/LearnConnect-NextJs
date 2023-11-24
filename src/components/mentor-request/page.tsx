@@ -257,16 +257,16 @@ const MentorRequest = () => {
   return (
     <>
       <div className="min-h-[1000px] w-full">
+        <Typography variant="h3" className="px-3">
+          Become mentor request
+        </Typography>
         <Box
           component="main"
           sx={{
             flexGrow: 1,
-            py: 5,
-            p: 5,
           }}
+          className="shadow-[5px_10px_20px_15px_rgba(0,0,0,0.15)] rounded-lg mx-5 my-5"
         >
-          <Typography variant="h3">Request Become Mentor</Typography>
-          <p className="mb-3"></p>
           <Card>
             <Paper sx={{ width: "100%" }}>
               {isLoading ? (
