@@ -51,7 +51,7 @@ const Header = () => {
 
   const { role, user, googleSignIn, logOut } = UserAuth();
 
-  console.log("userrole", userData?.role);
+  // console.log("userrole", userData?.role);
   // const handleSignIn = async () => {
   //   try {
   //     await googleSignIn();
@@ -75,7 +75,7 @@ const Header = () => {
   };
 
   const handleClickBecomeMentor = () => {
-    router.push(`/become-mentor`);
+    router.push("/become-mentor");
   };
 
   const returnHome = () => {
@@ -549,7 +549,7 @@ const Header = () => {
                       onClick={() => {
                         setActiveTab("");
                         setIsLogin(true);
-                        router.push(`login`);
+                        router.push("/login");
                       }}
                       className={`${headerStyles.sign_up}`}
                     >

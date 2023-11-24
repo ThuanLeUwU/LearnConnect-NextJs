@@ -26,7 +26,7 @@ import { Specialization } from "@/components/mentor-request/page";
 import { toast } from "sonner";
 import { DeleteOutlined } from "@ant-design/icons";
 
-const ModerationLecture = () => {
+const MajorSepcialize = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const { id, userData } = UserAuth();
 
@@ -42,6 +42,8 @@ const ModerationLecture = () => {
   const [majorName, setMajorName] = useState<string>("");
 
   const [statusMajor, setStatusMajor] = useState<number>(0);
+
+  // console.log("stats", setStatusMajor);
 
   const [specializations, setSpecializations] = useState<Specialization[]>([]);
 
@@ -96,6 +98,7 @@ const ModerationLecture = () => {
       title: "No.",
       dataIndex: "index",
       key: "index",
+      width: 50,
       render: (text, record, index) => {
         const currentIndex =
           (pagination.current - 1) * pagination.pageSize + index + 1;
@@ -106,16 +109,19 @@ const ModerationLecture = () => {
       title: "Name",
       dataIndex: "name",
       key: "name",
+      width: 300,
     },
     {
       title: "Description",
       dataIndex: "description",
       key: "description",
+      width: 1000,
     },
     {
       title: "Status",
       dataIndex: "isActive",
       key: "isActive",
+      width: 200,
       render: (isActive) => (
         <Tag color={isActive ? "green" : "red"}>
           {isActive ? "Active" : "Inactive"}
@@ -125,6 +131,7 @@ const ModerationLecture = () => {
     {
       title: <div className="flex justify-center">Action</div>,
       key: "actions",
+      width: 200,
       render: (text, record) => (
         <Space>
           <Button onClick={() => handleUpdateMajor(record)}>Update</Button>
@@ -133,9 +140,9 @@ const ModerationLecture = () => {
             //   Disable
             // </Button>
             <Popconfirm
-              title="Are you sure you want to delete this item?"
+              title="Do you want to Disable this Major?"
               onConfirm={() => {
-                handleDisableMajor(record), setStatusMajor(1);
+                handleDisableMajor(record);
               }}
               okText="Yes"
               okButtonProps={{
@@ -148,35 +155,63 @@ const ModerationLecture = () => {
               cancelText="No"
             >
               <button
-                className="bg-white text-black border rounded-lg border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-6 py-2"
+                className="bg-white text-black border rounded-md border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-2 py-1"
                 // onClick={handleBan}
               >
-                Ban
+                Disable
               </button>
             </Popconfirm>
           ) : (
-            <button
-              onClick={() => handleEnableMajor(record)}
-              className="transition duration-300 ease-in-out bg-white text-black px-2 py-1 rounded-md border-2 border-solid border-green-500 hover:bg-green-500"
+            <Popconfirm
+              title="Do you want to Enable this Major?"
+              onConfirm={() => {
+                handleEnableMajor(record);
+              }}
+              okText="Yes"
+              okButtonProps={{
+                style: {
+                  background: "red",
+                  borderColor: "red",
+                  color: "#fff",
+                },
+              }}
+              cancelText="No"
             >
-              Enable
-            </button>
+              <button className="bg-white text-black border rounded-md border-green-500 hover:bg-green-500 hover:text-white transition duration-300 px-2 py-1">
+                Enable
+              </button>
+            </Popconfirm>
           )}
 
-          {/* <Button danger>Delete</Button> */}
-          <button
-            onClick={() => handleDeleteMajor(record)}
-            // className="flex items-end"
-            style={{
-              backgroundColor: "red",
-              color: "black",
-              width: "40px", // Thiết lập chiều rộng mong muốn
-              height: "30px",
-              borderRadius: "5px", // Thiết lập chiều cao mong muốn
+          <Popconfirm
+            title="Do you want to Delete this Major? "
+            onConfirm={() => {
+              handleDeleteMajor(record);
             }}
+            okText="Yes"
+            okButtonProps={{
+              style: {
+                background: "red",
+                borderColor: "red",
+                color: "#fff",
+              },
+            }}
+            cancelText="No"
           >
-            <DeleteOutlined />
-          </button>
+            <button
+              // className="flex items-end"
+              style={{
+                backgroundColor: "red",
+                color: "black",
+                width: "40px", // Thiết lập chiều rộng mong muốn
+                height: "30px",
+                borderRadius: "5px", // Thiết lập chiều cao mong muốn
+              }}
+            >
+              <DeleteOutlined />
+            </button>
+          </Popconfirm>
+          {/* <Button danger>Delete</Button> */}
         </Space>
       ),
     },
@@ -202,6 +237,7 @@ const ModerationLecture = () => {
       title: "Description",
       dataIndex: "description",
       key: "description",
+      width: 300,
     },
     {
       title: "Status",
@@ -307,11 +343,78 @@ const ModerationLecture = () => {
     }
   };
 
-  const handleDisableMajor = (data: any) => {};
+  const handleDisableMajor = (data: any) => {
+    try {
+      http
+        .put(
+          `https://learnconnectapitest.azurewebsites.net/api/major/update-major-status?MajorId=${data.id}&status=0`
+        )
+        .then(() => {
+          toast.success("Disable Major Successfully!!!");
+          http
+            .get(`https://learnconnectapitest.azurewebsites.net/api/major`)
+            .then((response) => {
+              setMajors(response.data);
+              setLoading(false);
+            })
+            .catch((error) => {
+              console.error("Error fetching user data:", error);
+              setLoading(false);
+            });
+        });
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
-  const handleEnableMajor = (data: any) => {};
+  const handleEnableMajor = (data: any) => {
+    try {
+      http
+        .put(
+          `https://learnconnectapitest.azurewebsites.net/api/major/update-major-status?MajorId=${data.id}&status=1`
+        )
+        .then(() => {
+          toast.success("Enable Major Successfully!!!");
+          http
+            .get(`https://learnconnectapitest.azurewebsites.net/api/major`)
+            .then((response) => {
+              setMajors(response.data);
+              setLoading(false);
+            })
+            .catch((error) => {
+              console.error("Error fetching user data:", error);
+              setLoading(false);
+            });
+        });
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
-  const handleDeleteMajor = (data: any) => {};
+  const handleDeleteMajor = (data: any) => {
+    try {
+      http
+        .delete(
+          `https://learnconnectapitest.azurewebsites.net/api/major/${data.id}`
+        )
+        .then(() => {
+          toast.success("Enable Major Successfully!!!");
+          setTableSpecialize(false);
+          http
+            .get(`https://learnconnectapitest.azurewebsites.net/api/major`)
+            .then((response) => {
+              setMajors(response.data);
+              setLoading(false);
+            })
+            .catch((error) => {
+              console.error("Error fetching user data:", error);
+              setLoading(false);
+            });
+        });
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const handleUpdateSpecialize = (data: any) => {
     setFormUpdateMajor(true);
@@ -363,7 +466,7 @@ const ModerationLecture = () => {
           <Spin size="large" />
         ) : (
           <Table
-            dataSource={majors}
+            dataSource={majors.reverse()}
             columns={columns}
             pagination={{ ...pagination, onChange: handlePageChange }}
             onRow={(record, rowIndex) => {
@@ -390,7 +493,7 @@ const ModerationLecture = () => {
                 <Empty />
               ) : (
                 <Table
-                  dataSource={specializations}
+                  dataSource={specializations.reverse()}
                   columns={columns}
                   pagination={{ ...pagination, onChange: handlePageChange }}
                 />
@@ -512,4 +615,4 @@ const ModerationLecture = () => {
   );
 };
 
-export default ModerationLecture;
+export default MajorSepcialize;

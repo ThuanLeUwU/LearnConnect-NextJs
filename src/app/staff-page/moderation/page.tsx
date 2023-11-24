@@ -28,6 +28,8 @@ const ModerationContent = () => {
     refetchList,
   } = useDataModeration(activeTab);
 
+  console.log("má nó", listCourseModeration);
+
   // useEffect(() => {
   //   setPage(currentPage);
   //   console.log("page", currentPage);
