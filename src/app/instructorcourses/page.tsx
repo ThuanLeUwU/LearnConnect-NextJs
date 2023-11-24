@@ -398,6 +398,7 @@ const InstructorCourse = () => {
                           >
                             <h2>
                               <button
+                                className="text-left hover:text-green-500 hover:underline "
                                 onClick={() => {
                                   handleClick(item);
                                 }}

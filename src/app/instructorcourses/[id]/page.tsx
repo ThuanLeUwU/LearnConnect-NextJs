@@ -9,6 +9,7 @@ import {
   Form,
   Input,
   Modal,
+  Popconfirm,
   Select,
   Space,
   Spin,
@@ -37,6 +38,7 @@ import {
 import { toast } from "sonner";
 import { Course } from "@/components/courses/courses";
 import { Test } from "@/app/test/[id]/page";
+import { DeleteOutlined } from "@ant-design/icons";
 // import { Rating } from "@/app/course-detail/[id]/page";
 
 export type TestTitle = {
@@ -606,6 +608,7 @@ const Dashboard = ({ params }: any) => {
     setmano(data);
   };
   const [questionId, setQuestionId] = useState<number>(0);
+  console.log("question", questionId);
   // useEffect(() => {
   //   if (showAnswerForm && questionId !== 0) {
   //     http.get(
@@ -616,6 +619,15 @@ const Dashboard = ({ params }: any) => {
   const [showUpdateQuestion, setShowUpdateQuestion] = useState(false);
   const handleUpdateQuestionClick = (data: any) => {
     setShowUpdateQuestion(true);
+    setmano(data);
+  };
+
+  const [showUpdateAnswer, setShowUpdateAnswer] = useState(false);
+  const [AnswerId, setAnswerId] = useState<number>(0);
+  // console.log("answer", AnswerId);
+
+  const handleUpdateAnswerClick = (data: any) => {
+    setShowUpdateAnswer(true);
     setmano(data);
   };
 
@@ -710,6 +722,7 @@ const Dashboard = ({ params }: any) => {
     const formData = new FormData();
     formData.append("answerText", data.answer);
     formData.append("isCorrect", isChecked.toString());
+    console.log("nani2", isChecked.toString());
 
     try {
       http
@@ -751,9 +764,19 @@ const Dashboard = ({ params }: any) => {
   const handleInputChange = (event) => {
     // Xử lý sự kiện khi có sự thay đổi trong ô input
     setUpdateQuestion(event.target.value);
-    console.log("tehje", event.target.value);
+    // console.log("tehje", event.target.value);
     setHasChanged(true);
   };
+
+  const handleAnswerChange = (event) => {
+    setUpdateAnswer(event.target.value);
+
+    console.log("tehje", event.target.value);
+    setHasChanged2(true);
+  };
+
+  const [updateAnswer, setUpdateAnswer] = useState<string>("");
+  const [hasChanged2, setHasChanged2] = useState(false);
 
   const handleSaveData = (data: any) => {
     console.log("tui nè má", data);
@@ -789,12 +812,59 @@ const Dashboard = ({ params }: any) => {
     }
   };
 
+  const handleSaveData2 = (data: any) => {
+    console.log("tui nè má", data);
+    // setAnswerId(0);
+    const formData = new FormData();
+    formData.append("answerText", updateAnswer);
+    formData.append("isCorrect", isChecked.toString());
+    console.log("nani", isChecked.toString());
+    try {
+      http
+        .put(
+          `https://learnconnectapitest.azurewebsites.net/api/answer/${data}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        )
+        .then(() => {
+          http
+            .get(`/test/get-tests-by-course?courseId=${idCourse}`)
+            .then((response) => {
+              setListQuestion(response.data);
+              setAllQuestions(response.data[0].questions);
+              setIdTest(response.data[0].test.id);
+              // setShowAnswerForm(false);
+              setQuestionId(0);
+              setAnswerId(0);
+              setHasChanged2(false);
+              Modal.destroyAll();
+              // setIsChecked(false);
+            });
+        });
+    } catch (err) {
+      toast.error("Update Fail !!!");
+    }
+    // setHasChanged(false);
+    // Modal.destroyAll();
+  };
+
   const handleBlur = (data: any) => {
     console.log("tao nè", data);
     if (hasChanged) {
       Modal.confirm({
         title: "Confirm",
-        content: "Bạn có muốn lưu những thay đổi không?",
+        content: "Do you want to save these changes?",
+        okButtonProps: {
+          style: {
+            background: "#4caf50", // Màu nền của nút "OK"
+            borderColor: "#4caf50", // Màu viền của nút "OK"
+            color: "#fff", // Màu chữ của nút "OK"
+          },
+        },
         onOk: () => {
           handleSaveData(data);
         },
@@ -807,7 +877,110 @@ const Dashboard = ({ params }: any) => {
     }
     setShowUpdateQuestion(false);
   };
+  const handleBlur2 = (data: any) => {
+    console.log("tao nè", data);
+    if (hasChanged2) {
+      Modal.confirm({
+        title: "Do you want to save these changes?",
+        content: (
+          <div>
+            <p>Do you want to change option for this answer?</p>
+            <Checkbox checked={isChecked} onChange={handleCheckboxChange}>
+              Correct
+            </Checkbox>
+          </div>
+        ),
+        okButtonProps: {
+          style: {
+            background: "#4caf50", // Màu nền của nút "OK"
+            borderColor: "#4caf50", // Màu viền của nút "OK"
+            color: "#fff", // Màu chữ của nút "OK"
+          },
+        },
+        onOk: () => {
+          handleSaveData2(data);
+        },
+        onCancel: () => {
+          setHasChanged2(false);
+          setQuestionId(0);
+          setAnswerId(0);
+          // setUpdateQuestion("");
+          // setIsChecked(false);
+        },
+      });
+    }
+    setShowUpdateAnswer(false);
+  };
 
+  const handleDeleteAnswer = (data: any) => {
+    console.log("hehe", data);
+    try {
+      http
+        .delete(
+          `https://learnconnectapitest.azurewebsites.net/api/answer/${data}`
+        )
+        .then(() => {
+          toast.success("Delete Successfully!!");
+          http
+            .get(`/test/get-tests-by-course?courseId=${idCourse}`)
+            .then((response) => {
+              setListQuestion(response.data);
+              setAllQuestions(response.data[0].questions);
+              setIdTest(response.data[0].test.id);
+              // setShowAnswerForm(false);
+              // setIsChecked(false);
+            });
+        });
+    } catch (err) {
+      toast.error("Delete Fails !!!");
+    }
+  };
+
+  const handleDeleteQuestion = (data: any) => {
+    try {
+      http
+        .delete(
+          `https://learnconnectapitest.azurewebsites.net/api/question/${data}`
+        )
+        .then(() => {
+          toast.success("Delete Successfully!!");
+          http
+            .get(`/test/get-tests-by-course?courseId=${idCourse}`)
+            .then((response) => {
+              setListQuestion(response.data);
+              setAllQuestions(response.data[0].questions);
+              setIdTest(response.data[0].test.id);
+              // setShowAnswerForm(false);
+              // setIsChecked(false);
+            });
+        });
+    } catch (err) {
+      toast.error("Delete Fails !!!");
+    }
+  };
+
+  const handleDeleteTest = (data: any) => {
+    try {
+      http
+        .delete(
+          `https://learnconnectapitest.azurewebsites.net/api/test/${data}`
+        )
+        .then(() => {
+          toast.success("Delete Successfully !!!");
+          http
+            .get(`/test/get-tests-by-course?courseId=${idCourse}`)
+            .then((response) => {
+              setListQuestion(response.data);
+              // setAllQuestions(response.data[0].questions);
+              // setIdTest(response.data[0].test.id);
+              // setShowAnswerForm(false);
+              // setIsChecked(false);
+            });
+        });
+    } catch (err) {
+      toast.error("Delete Fails !!!");
+    }
+  };
   return (
     <div className={`${InstructorCourseStyle.content_wrapper}`}>
       <div className={`${InstructorCourseStyle.sidebar_wrapper}`}>
@@ -963,7 +1136,11 @@ const Dashboard = ({ params }: any) => {
             {loading ? (
               <Spin size="large" />
             ) : (
-              <Table dataSource={lectures} columns={columns} />
+              <Table
+                className="shadow-[5px_15px_25px_10px_rgba(0,0,0,0.15)] m-5 rounded-lg"
+                dataSource={lectures}
+                columns={columns}
+              />
             )}
           </div>
         )}
@@ -987,19 +1164,52 @@ const Dashboard = ({ params }: any) => {
                   <>
                     {listQuestion.map((item) => (
                       <div key={item.test.id} className="mb-4 mt-6">
-                        <h3 className="text-xl font-semibold mb-2 ">
-                          <div className="flex flex-col justify-center items-center">
-                            <div>Title: {item.test.title}</div>
-
-                            <br />
-                            <div>Description: {item.test.description}</div>
+                        <div className="flex flex-col">
+                          <div className="flex justify-end">
+                            <Popconfirm
+                              title="Are you sure you want to delete this item?"
+                              onConfirm={() => {
+                                handleDeleteTest(item.test.id);
+                              }}
+                              okText="Yes"
+                              okButtonProps={{
+                                style: {
+                                  background: "red",
+                                  borderColor: "red",
+                                  color: "#fff",
+                                },
+                              }}
+                              cancelText="No"
+                            >
+                              <button
+                                // className="flex items-end"
+                                style={{
+                                  backgroundColor: "red",
+                                  color: "black",
+                                  width: "40px", // Thiết lập chiều rộng mong muốn
+                                  height: "24px",
+                                  borderRadius: "5px", // Thiết lập chiều cao mong muốn
+                                }}
+                              >
+                                <DeleteOutlined />
+                              </button>
+                            </Popconfirm>
                           </div>
-                        </h3>
+                          <h3 className="text-xl font-semibold mt-2 text-center ">
+                            <div className=" flex flex-col items-center justify-center mb-2">
+                              <div>Title: {item.test.title}</div>
+
+                              <br />
+                              <div>Description: {item.test.description}</div>
+                            </div>
+                          </h3>
+                        </div>
+
                         {/* {item.questions.length == 0 ? <></> : <></>} */}
                         {item.questions.map((q, index) => (
                           <div
                             key={q.question.id}
-                            className="mb-2 mt-6 p-6 border-2 rounded-lg border-gray-200"
+                            className="mb-2 mt-6 p-4 border-2 rounded-lg border-gray-200"
                           >
                             <div className="mb-1 font-medium text-[18px] flex flex-row justify-between bott">
                               <div className="flex flex-row gap-2">
@@ -1027,14 +1237,43 @@ const Dashboard = ({ params }: any) => {
                                   </div>
                                 )}
                               </div>
-                              <Button
-                                onClick={() => {
-                                  handleNewAnswerClick(q.question.id);
-                                  setQuestionId(q.question.id);
-                                }}
-                              >
-                                Add Answer
-                              </Button>
+                              <div className="gap-2 flex items-center">
+                                <Button
+                                  onClick={() => {
+                                    handleNewAnswerClick(q.question.id);
+                                    setQuestionId(q.question.id);
+                                  }}
+                                >
+                                  Add Answer
+                                </Button>
+                                <Popconfirm
+                                  title="Are you sure you want to delete this Question?"
+                                  onConfirm={() => {
+                                    handleDeleteQuestion(q.question.id);
+                                  }}
+                                  okText="Yes"
+                                  okButtonProps={{
+                                    style: {
+                                      background: "red",
+                                      borderColor: "red",
+                                      color: "#fff",
+                                    },
+                                  }}
+                                  cancelText="No"
+                                >
+                                  <button
+                                    style={{
+                                      backgroundColor: "red",
+                                      color: "black",
+                                      width: "40px", // Thiết lập chiều rộng mong muốn
+                                      height: "24px",
+                                      borderRadius: "5px", // Thiết lập chiều cao mong muốn
+                                    }}
+                                  >
+                                    <DeleteOutlined />
+                                  </button>
+                                </Popconfirm>
+                              </div>
                             </div>
                             {showAnswerForm && questionId === q.question.id && (
                               <Form
@@ -1084,27 +1323,99 @@ const Dashboard = ({ params }: any) => {
                                 </div>
                               </Form>
                             )}
-                            <div className="pl-4 grid grid-cols-2 gap-4">
+                            <div className="px-4 grid grid-cols-2 gap-4">
                               {q.answers.map((answer, ansIndex) => (
-                                <Input
-                                  defaultValue={answer.answerText}
-                                  key={answer.id}
-                                  className={`mt-3 border-2 p-2 text-left rounded-lg ${
-                                    answer.isCorrect === true
-                                      ? "border-green-500 bg-green-100"
-                                      : ""
-                                  }`}
-                                />
+                                <>
+                                  {showUpdateAnswer &&
+                                  AnswerId === answer.id ? (
+                                    <Input
+                                      // autoFocus
+                                      defaultValue={answer.answerText}
+                                      value={updateAnswer}
+                                      onChange={handleAnswerChange}
+                                      onBlur={() => handleBlur2(answer.id)}
+                                      key={answer.id}
+                                      className={`mt-3 border-2 p-2 text-left rounded-lg ${
+                                        answer.isCorrect === true
+                                          ? "border-green-500 bg-green-100"
+                                          : ""
+                                      }`}
+                                    />
+                                  ) : (
+                                    <div className="flex gap-2 justify-center align-middle items-center mt-3">
+                                      <div
+                                        className={` border-2 p-2 flex-auto text-left rounded-lg ${
+                                          answer.isCorrect === true
+                                            ? "border-green-500 bg-green-100"
+                                            : ""
+                                        }`}
+                                        onClick={() => {
+                                          handleUpdateAnswerClick(answer.id);
+                                          setAnswerId(answer.id);
+                                          setQuestionId(q.question.id);
+                                          setUpdateAnswer(answer.answerText);
+                                          setIsChecked(answer.isCorrect);
+                                        }}
+                                      >
+                                        {answer.answerText}
+                                      </div>
+                                      <Popconfirm
+                                        title="Are you sure you want to delete this item?"
+                                        onConfirm={() => {
+                                          handleDeleteAnswer(answer.id);
+                                        }}
+                                        okText="Yes"
+                                        okButtonProps={{
+                                          style: {
+                                            background: "red",
+                                            borderColor: "red",
+                                            color: "#fff",
+                                          },
+                                        }}
+                                        cancelText="No"
+                                      >
+                                        <button
+                                          style={{
+                                            backgroundColor: "red",
+                                            color: "black",
+                                            width: "24px", // Thiết lập chiều rộng mong muốn
+                                            height: "24px",
+                                            borderRadius: "5px", // Thiết lập chiều cao mong muốn
+                                          }}
+                                        >
+                                          <DeleteOutlined />
+                                        </button>
+                                      </Popconfirm>
+                                    </div>
+                                  )}
+                                </>
                               ))}
                             </div>
                           </div>
                         ))}
                         <>
-                          <div className="flex justify-between mb-5">
-                            <Button onClick={handleNewQuestionClick}>
-                              New Question
-                            </Button>
-                          </div>
+                          {allQuestions.length === 0 ? (
+                            <>
+                              <p className="font-medium text-lg text-center">
+                                Oh, it looks like you don&apos;t have any
+                                questions yet. Let&apos;s{" "}
+                                <button
+                                  className="text-green-500 underline"
+                                  onClick={handleNewQuestionClick}
+                                >
+                                  create
+                                </button>{" "}
+                                a set of questions for your test
+                              </p>
+                            </>
+                          ) : (
+                            <div className="flex justify-between mb-5">
+                              <Button onClick={handleNewQuestionClick}>
+                                New Question
+                              </Button>
+                            </div>
+                          )}
+
                           <div className=" flex justify-center">
                             {showQuestionForm && (
                               <Form
@@ -1123,128 +1434,6 @@ const Dashboard = ({ params }: any) => {
                                 >
                                   <Input />
                                 </Form.Item>
-                                {/* <div className="grid grid-cols-2 gap-4 p-10">
-                                  <Form.Item
-                                    name="answerA"
-                                    label="A"
-                                    rules={[
-                                      {
-                                        required: true,
-                                        message: "Please input your question!",
-                                      },
-                                    ]}
-                                  >
-                                    <Input
-                                      className={
-                                        answerA
-                                          ? "border-green-500 bg-green-500"
-                                          : ""
-                                      }
-                                    />
-                                    <Checkbox
-                                      checked={answerA}
-                                      onChange={(e) =>
-                                        handleCheckboxChange(
-                                          e.target.checked,
-                                          setAnswerA
-                                        )
-                                      }
-                                      disabled={answerA}
-                                    >
-                                      Correct Answer
-                                    </Checkbox>
-                                  </Form.Item>
-                                  <Form.Item
-                                    name="answerB"
-                                    label="B"
-                                    rules={[
-                                      {
-                                        required: true,
-                                        message: "Please input your question!",
-                                      },
-                                    ]}
-                                  >
-                                    <Input
-                                      className={
-                                        answerB
-                                          ? "border-green-500 bg-green-500"
-                                          : ""
-                                      }
-                                    />
-                                    <Checkbox
-                                      checked={answerB}
-                                      onChange={(e) =>
-                                        handleCheckboxChange(
-                                          e.target.checked,
-                                          setAnswerB
-                                        )
-                                      }
-                                      disabled={answerB}
-                                    >
-                                      Correct Answer
-                                    </Checkbox>
-                                  </Form.Item>
-                                  <Form.Item
-                                    name="answerC"
-                                    label="C"
-                                    rules={[
-                                      {
-                                        required: true,
-                                        message: "Please input your question!",
-                                      },
-                                    ]}
-                                  >
-                                    <Input
-                                      className={
-                                        answerC
-                                          ? "border-green-500 bg-green-500"
-                                          : ""
-                                      }
-                                    />
-                                    <Checkbox
-                                      checked={answerC}
-                                      onChange={(e) =>
-                                        handleCheckboxChange(
-                                          e.target.checked,
-                                          setAnswerC
-                                        )
-                                      }
-                                      disabled={answerC}
-                                    >
-                                      Correct Answer
-                                    </Checkbox>
-                                  </Form.Item>
-                                  <Form.Item
-                                    name="answerD"
-                                    label="D"
-                                    rules={[
-                                      {
-                                        required: true,
-                                        message: "Please input your question!",
-                                      },
-                                    ]}
-                                  >
-                                    <Input
-                                      className={
-                                        answerD
-                                          ? "border-green-500 bg-green-500"
-                                          : ""
-                                      }
-                                    />
-                                    <Checkbox
-                                      checked={answerD}
-                                      onChange={(e) =>
-                                        handleCheckboxChange(
-                                          e.target.checked,
-                                          setAnswerD
-                                        )
-                                      }
-                                      disabled={answerD}
-                                    >
-                                      Correct Answer
-                                    </Checkbox>
-                                  </Form.Item>
-                                </div> */}
                                 <div className="flex gap-5 justify-end">
                                   {/* Thêm các trường dữ liệu khác cần thiết vào đây */}
                                   <Button onClick={handleCancel}>Cancel</Button>
