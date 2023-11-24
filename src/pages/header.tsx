@@ -289,10 +289,18 @@ const Header = () => {
                   <Space className="justify-end w-full">
                     <Form.Item className="mb-0">
                       <Space>
-                        <Button onClick={handleCancel}>Cancel</Button>
-                        <Button type="submit" style={{ color: "black" }}>
+                        <button
+                          onClick={handleCancel}
+                          className="px-5 py-2 bg-red-400 rounded-lg text-white"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          type="submit"
+                          className="px-5 py-2 bg-[#309255] rounded-lg text-white"
+                        >
                           Create
-                        </Button>
+                        </button>
                       </Space>
                     </Form.Item>
                   </Space>
