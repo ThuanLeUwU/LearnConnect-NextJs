@@ -5,6 +5,8 @@ import axios from "axios";
 import { UserAuth } from "@/app/context/AuthContext";
 import { Empty, Modal } from "antd";
 import { useRouter } from "next/navigation";
+import { Console } from "console";
+import { toast } from "sonner";
 
 export type Test = {
   test: {
@@ -60,7 +62,7 @@ export default function Quiz({ params }: any) {
   });
   const [questionsTest, setQuestionsTest] = useState<Test[]>([]);
   const [selectedAnswers, setSelectedAnswers] = useState<{
-    [key: number]: { answer: string; isCorrect: boolean };
+    [key: number]: { answerId: number; answer: string; isCorrect: boolean };
   }>({});
   const idCourse = params.id;
   const [correctAnswers, setCorrectAnswers] = useState<number>(0);
@@ -68,6 +70,10 @@ export default function Quiz({ params }: any) {
   axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
   const [submitted, setSubmitted] = useState(false); // Track whether the quiz has been submitted
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [userAnswers, setUserAnswers] = useState<
+    Array<{ questionId: number; answer: string }>
+  >([]);
+
   const handleCancel = () => {
     console.log("Modal has been canceled.");
   };
@@ -78,7 +84,6 @@ export default function Quiz({ params }: any) {
           `https://learnconnectapitest.azurewebsites.net/api/test/get-tests-by-course?courseId=${idCourse}`
         );
         setQuestionsTest(response.data);
-        // console.log("Total Questions:", response.data);
         questionsTest.forEach((item) => {
           const totalQuestion = item.test.totalQuestion;
           // console.log("Total Questions:", totalQuestion);
@@ -92,14 +97,16 @@ export default function Quiz({ params }: any) {
 
   const handleAnswerSelect = (
     questionId: number,
+    answerId: number,
     answer: string,
     isCorrect: boolean
   ) => {
     if (!submitted) {
       setSelectedAnswers((prevAnswers) => ({
         ...prevAnswers,
-        [questionId]: { answer, isCorrect },
+        [questionId]: { answerId, answer, isCorrect },
       }));
+      console.log(`Selected Answer ID for question ${questionId}: ${answerId}`);
     }
   };
 
@@ -108,17 +115,45 @@ export default function Quiz({ params }: any) {
     let count = 0;
     let totalQuestions = 0;
     const updatedSelectedAnswers = { ...selectedAnswers };
+    const userSelectedAnswers: number[] = [];
 
     questionsTest.forEach((item) => {
       totalQuestions += item.test.totalQuestion;
       item.questions.forEach((q) => {
-        const selectedAnswer = selectedAnswers[q.question.id]?.answer;
+        const selectedAnswer = selectedAnswers[q.question.id];
+        const answerId = selectedAnswer ? selectedAnswer.answerId : -1;
+
+        userSelectedAnswers.push(answerId);
+
         const correctAnswer = q.answers.find((answer) => answer.isCorrect);
-        if (correctAnswer && selectedAnswer === correctAnswer.answerText) {
+        if (
+          correctAnswer &&
+          selectedAnswer &&
+          selectedAnswer.answer === correctAnswer.answerText
+        ) {
           count++;
         }
       });
     });
+
+    console.log("User selected answers:", userSelectedAnswers);
+
+    const urlAPI = `https://learnconnectapitest.azurewebsites.net/api/user-answer?userId=${userData?.id}&courseId=${idCourse}`;
+
+    try {
+      const response = await axios.post(urlAPI, userSelectedAnswers);
+      console.log("User answers posted successfully:", response.data);
+
+      setTimeout(() => {
+        toast.success("Save Answer successful");
+      });
+    } catch (error) {
+      console.error("Error posting user answers:", error);
+
+      setTimeout(() => {
+        toast.error(error.response.data);
+      });
+    }
 
     let averageScore = 0;
     if (count > 0) {
@@ -141,14 +176,10 @@ export default function Quiz({ params }: any) {
             <p>Average Score: {averageScore}</p>
           </div>
         ),
-        okText: "Go to Course",
+        okText: "Close",
         okButtonProps: { style: { backgroundColor: "#309255", color: "#fff" } },
-        onOk: handleClickGotoCourse,
-        cancelText: "Cancel",
-        cancelButtonProps: {
-          style: { backgroundColor: "#309255", color: "#fff" },
-        },
-        onCancel: handleCancel,
+        onOk: handleCancel,
+        cancelButtonProps: { style: { display: "none" } }, // To hide the Cancel button
       });
     } catch (error) {
       console.error("Error in PUT request:", error);
@@ -197,20 +228,21 @@ export default function Quiz({ params }: any) {
                         key={answer.id}
                         className={`mt-3 border-2 p-2 text-left rounded-lg ${
                           submitted
-                            ? selectedAnswers[q.question.id]?.answer ===
-                              answer.answerText
+                            ? selectedAnswers[q.question.id]?.answerId ===
+                              answer.id
                               ? selectedAnswers[q.question.id]?.isCorrect
                                 ? "border-green-500 bg-green-100"
                                 : "border-red-500 bg-red-100"
                               : "border-gray-300"
-                            : selectedAnswers[q.question.id]?.answer ===
-                              answer.answerText
+                            : selectedAnswers[q.question.id]?.answerId ===
+                              answer.id
                             ? "border-blue-500 bg-blue-100"
                             : "border-gray-100"
                         }`}
                         onClick={() =>
                           handleAnswerSelect(
                             q.question.id,
+                            answer.id, // Pass answerId to the function
                             answer.answerText,
                             answer.isCorrect
                           )
