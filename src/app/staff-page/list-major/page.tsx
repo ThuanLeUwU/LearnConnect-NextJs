@@ -46,6 +46,8 @@ const MajorSepcialize = () => {
   // console.log("stats", setStatusMajor);
 
   const [specializations, setSpecializations] = useState<Specialization[]>([]);
+  const [specialization, setSpecialization] = useState<Specialization>();
+  const [specializeId, setSpecializeId] = useState<number>(0);
 
   const [tableSpecialize, setTableSpecialize] = useState(false);
 
@@ -53,6 +55,9 @@ const MajorSepcialize = () => {
 
   const [formCreateMajor, setFormCreateMajor] = useState(false);
   const [formUpdateMajor, setFormUpdateMajor] = useState(false);
+
+  const [formCreateSpecialize, setFormCreateSpecialize] = useState(false);
+  const [formUpdateSpecialize, setFormUpdateSpecialize] = useState(false);
 
   const [pagination, setPagination] = useState({
     current: 1,
@@ -222,6 +227,7 @@ const MajorSepcialize = () => {
       title: "No.",
       dataIndex: "index",
       key: "index",
+      width: 50,
       render: (text, record, index) => {
         const currentIndex =
           (pagination.current - 1) * pagination.pageSize + index + 1;
@@ -232,17 +238,19 @@ const MajorSepcialize = () => {
       title: "Name",
       dataIndex: "name",
       key: "name",
+      width: 300,
     },
     {
       title: "Description",
       dataIndex: "description",
       key: "description",
-      width: 300,
+      width: 1000,
     },
     {
       title: "Status",
       dataIndex: "isActive",
       key: "isActive",
+      width: 200,
       render: (isActive) => (
         <Tag color={isActive ? "green" : "red"}>
           {isActive ? "Active" : "Inactive"}
@@ -252,12 +260,87 @@ const MajorSepcialize = () => {
     {
       title: <div className="flex justify-center">Action</div>,
       key: "actions",
+      width: 200,
       render: (text, record) => (
         <Space>
           <Button onClick={() => handleUpdateSpecialize(record)}>Update</Button>
-          <Button danger onClick={() => handleDeleteSpecialize(record)}>
-            Delete
-          </Button>
+          {record.isActive === true ? (
+            // <Button danger onClick={() => handleDisableMajor(record)}>
+            //   Disable
+            // </Button>
+            <Popconfirm
+              title="Do you want to Disable this Major?"
+              onConfirm={() => {
+                handleDisableSpecialize(record);
+              }}
+              okText="Yes"
+              okButtonProps={{
+                style: {
+                  background: "red",
+                  borderColor: "red",
+                  color: "#fff",
+                },
+              }}
+              cancelText="No"
+            >
+              <button
+                className="bg-white text-black border rounded-md border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-2 py-1"
+                // onClick={handleBan}
+              >
+                Disable
+              </button>
+            </Popconfirm>
+          ) : (
+            <Popconfirm
+              title="Do you want to Enable this Major?"
+              onConfirm={() => {
+                handleEnableSpecialize(record);
+              }}
+              okText="Yes"
+              okButtonProps={{
+                style: {
+                  background: "green",
+                  borderColor: "green",
+                  color: "#fff",
+                },
+              }}
+              cancelText="No"
+            >
+              <button className="bg-white text-black border rounded-md border-green-500 hover:bg-green-500 hover:text-white transition duration-300 px-2 py-1">
+                Enable
+              </button>
+            </Popconfirm>
+          )}
+
+          <Popconfirm
+            title="Do you want to Delete this Major? "
+            onConfirm={() => {
+              handleDeleteSpecialize(record);
+            }}
+            okText="Yes"
+            okButtonProps={{
+              style: {
+                background: "red",
+                borderColor: "red",
+                color: "#fff",
+              },
+            }}
+            cancelText="No"
+          >
+            <button
+              // className="flex items-end"
+              style={{
+                backgroundColor: "red",
+                color: "black",
+                width: "40px", // Thiết lập chiều rộng mong muốn
+                height: "30px",
+                borderRadius: "5px", // Thiết lập chiều cao mong muốn
+              }}
+            >
+              <DeleteOutlined />
+            </button>
+          </Popconfirm>
+          {/* <Button danger>Delete</Button> */}
         </Space>
       ),
     },
@@ -416,11 +499,175 @@ const MajorSepcialize = () => {
     }
   };
 
-  const handleUpdateSpecialize = (data: any) => {
-    setFormUpdateMajor(true);
+  const handleCreateSpecialize = () => {
+    setFormCreateSpecialize(true);
   };
 
-  const handleDeleteSpecialize = (data: any) => {};
+  const handleCreateSpecializeClick = (data: any) => {
+    try {
+      http
+        .post(
+          "https://learnconnectapitest.azurewebsites.net/api/specialization",
+          {
+            majorId: majorId,
+            name: data.name,
+            description: data.description,
+          },
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        )
+        .then(() => {
+          toast.success("Create Specialization Successfully!!!");
+          setFormCreateSpecialize(false);
+          form.resetFields();
+          http
+            .get(
+              `https://learnconnectapitest.azurewebsites.net/api/specialization/by-major/${majorId}`
+            )
+            .then((response) => {
+              setSpecializations(response.data);
+              setLoading(false);
+            })
+            .catch((error) => {
+              console.error("Error fetching user data:", error);
+              setLoading(false);
+            });
+        });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleUpdateSpecialize = (data: any) => {
+    setFormUpdateSpecialize(true);
+    setSpecialization(data);
+    setSpecializeId(data.id);
+    console.log("t", data);
+  };
+
+  const handleUpdateSpecializeClick = (data: any) => {
+    // console.log("nani", data);
+    // setFormUpdateSpecialize(false);
+    try {
+      http
+        .put(
+          `https://learnconnectapitest.azurewebsites.net/api/specialization/${specializeId}`,
+          {
+            majordId: majorId,
+            name: data.name || specialization?.name,
+            description: data.description || specialization?.description,
+          },
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        )
+        .then(() => {
+          toast.success("Update Specialization Successfully!!!");
+          setFormUpdateSpecialize(false);
+          form.resetFields();
+          http
+            .get(
+              `https://learnconnectapitest.azurewebsites.net/api/specialization/by-major/${majorId}`
+            )
+            .then((response) => {
+              setSpecializations(response.data);
+              setLoading(false);
+            })
+            .catch((error) => {
+              console.error("Error fetching user data:", error);
+              setLoading(false);
+            });
+        });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // const handleDeleteSpecialize = (data: any) => {};
+
+  const handleDisableSpecialize = (data: any) => {
+    try {
+      http
+        .put(
+          `https://learnconnectapitest.azurewebsites.net/api/specialization/update-specialization-status?specializationId=${data.id}&status=0`
+        )
+        .then(() => {
+          toast.success("Disable Specialization Successfully!!!");
+          http
+            .get(
+              `https://learnconnectapitest.azurewebsites.net/api/specialization/by-major/${majorId}`
+            )
+            .then((response) => {
+              setSpecializations(response.data);
+              setLoading(false);
+            })
+            .catch((error) => {
+              console.error("Error fetching user data:", error);
+              setLoading(false);
+            });
+        });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleEnableSpecialize = (data: any) => {
+    try {
+      http
+        .put(
+          `https://learnconnectapitest.azurewebsites.net/api/specialization/update-specialization-status?specializationId=${data.id}&status=1`
+        )
+        .then(() => {
+          toast.success("Enable Specialization Successfully!!!");
+          http
+            .get(
+              `https://learnconnectapitest.azurewebsites.net/api/specialization/by-major/${majorId}`
+            )
+            .then((response) => {
+              setSpecializations(response.data);
+              setLoading(false);
+            })
+            .catch((error) => {
+              console.error("Error fetching user data:", error);
+              setLoading(false);
+            });
+        });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleDeleteSpecialize = (data: any) => {
+    try {
+      http
+        .delete(
+          `https://learnconnectapitest.azurewebsites.net/api/specialization/${data.id}`
+        )
+        .then(() => {
+          toast.success("Delete Specialization Successfully!!!");
+          // setTableSpecialize(false);
+          http
+            .get(
+              `https://learnconnectapitest.azurewebsites.net/api/specialization/by-major/${majorId}`
+            )
+            .then((response) => {
+              setSpecializations(response.data);
+              setLoading(false);
+            })
+            .catch((error) => {
+              console.error("Error fetching user data:", error);
+              setLoading(false);
+            });
+        });
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const handleRowClick = (record) => {
     setMajorId(record.id);
@@ -434,6 +681,8 @@ const MajorSepcialize = () => {
   const handleCancel = () => {
     setFormCreateMajor(false);
     setFormUpdateMajor(false);
+    setFormCreateSpecialize(false);
+    setFormUpdateSpecialize(false);
     form.resetFields();
   };
 
@@ -484,7 +733,10 @@ const MajorSepcialize = () => {
                   All Specialization of {majorName}
                 </div>
                 <div className="flex justify-end ">
-                  <button className="border-2 rounded-lg px-3 py-1">
+                  <button
+                    className="border-2 rounded-lg px-3 py-1"
+                    onClick={handleCreateSpecialize}
+                  >
                     Add More
                   </button>
                 </div>
@@ -494,7 +746,7 @@ const MajorSepcialize = () => {
               ) : (
                 <Table
                   dataSource={specializations.reverse()}
-                  columns={columns}
+                  columns={columns2}
                   pagination={{ ...pagination, onChange: handlePageChange }}
                 />
               )}
@@ -511,6 +763,7 @@ const MajorSepcialize = () => {
       </div> */}
       </div>
 
+      {/* create Modal */}
       <Modal
         destroyOnClose={true}
         title={`Create New Major`}
@@ -570,6 +823,7 @@ const MajorSepcialize = () => {
         </Form>
       </Modal>
 
+      {/* Update Modal */}
       <Modal
         destroyOnClose={true}
         title={`Create New Major`}
@@ -592,6 +846,112 @@ const MajorSepcialize = () => {
           </Form.Item>
           <Form.Item name="description" label="Description">
             <Input.TextArea rows={4} defaultValue={major?.description} />
+          </Form.Item>
+
+          <div className="flex gap-5 justify-end">
+            {/* Thêm các trường dữ liệu khác cần thiết vào đây */}
+            <Button onClick={handleCancel}>Cancel</Button>
+            <Button
+              style={{
+                backgroundColor: "#4caf50",
+                borderColor: "#4caf50",
+                color: "#fff",
+              }}
+              type="primary"
+              htmlType="submit"
+            >
+              Submit
+            </Button>
+          </div>
+        </Form>
+      </Modal>
+
+      {/* Create Specialize  */}
+      <Modal
+        destroyOnClose={true}
+        title={`Create New Major`}
+        open={formCreateSpecialize}
+        // onOk={handleOk}
+        width="40%"
+        onCancel={handleCancel}
+        footer={false}
+      >
+        <Form
+          autoComplete="off"
+          form={form}
+          labelCol={{ span: 6 }}
+          wrapperCol={{ span: 20 }}
+          onFinish={handleCreateSpecializeClick}
+          style={{ width: "100%", alignItems: "center", marginTop: 20 }}
+        >
+          <Form.Item
+            name="name"
+            label="Name"
+            rules={[
+              {
+                required: true,
+                message: "Please input Major name!",
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="description"
+            label="Description"
+            rules={[
+              {
+                required: true,
+                message: "Please input Major description!",
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <div className="flex gap-5 justify-end">
+            {/* Thêm các trường dữ liệu khác cần thiết vào đây */}
+            <Button onClick={handleCancel}>Cancel</Button>
+            <Button
+              style={{
+                backgroundColor: "#4caf50",
+                borderColor: "#4caf50",
+                color: "#fff",
+              }}
+              type="primary"
+              htmlType="submit"
+            >
+              Submit
+            </Button>
+          </div>
+        </Form>
+      </Modal>
+
+      {/* Update Specialize */}
+      <Modal
+        destroyOnClose={true}
+        title={`Create New Major`}
+        open={formUpdateSpecialize}
+        // onOk={handleOk}
+        width="40%"
+        onCancel={handleCancel}
+        footer={false}
+      >
+        <Form
+          autoComplete="off"
+          form={form}
+          labelCol={{ span: 6 }}
+          wrapperCol={{ span: 20 }}
+          onFinish={handleUpdateSpecializeClick}
+          style={{ width: "100%", alignItems: "center", marginTop: 20 }}
+        >
+          <Form.Item name="name" label="Name">
+            <Input defaultValue={specialization?.name} />
+          </Form.Item>
+          <Form.Item name="description" label="Description">
+            <Input.TextArea
+              rows={4}
+              defaultValue={specialization?.description}
+            />
           </Form.Item>
 
           <div className="flex gap-5 justify-end">

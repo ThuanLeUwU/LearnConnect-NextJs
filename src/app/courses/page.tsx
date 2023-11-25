@@ -101,9 +101,9 @@ export default function ListCourse() {
       price: "Free",
       value: 0,
     },
-    { price: "Under 200000", value: 1 },
-    { price: "200000 - 1000000", value: 200001 },
-    { price: "Above 1000000", value: 1000001 },
+    { price: "Under 200,000", value: 1 },
+    { price: "200000 - 1,000,000", value: 200001 },
+    { price: "Above 1,000,000", value: 1000001 },
   ];
 
   const minRateOption = [
@@ -111,9 +111,9 @@ export default function ListCourse() {
       price: "1",
       value: 1,
     },
-    { price: "Under 200000", value: 1 },
-    { price: "200000 - 1000000", value: 200001 },
-    { price: "Above 1000000", value: 1000001 },
+    { price: "Under 200,000", value: 1 },
+    { price: "200,000 - 1,000,000", value: 200001 },
+    { price: "Above 1,000,000", value: 1000001 },
   ];
 
   // const selectMinPriceRef = useRef<Select>(null);
@@ -208,41 +208,6 @@ export default function ListCourse() {
                   );
                 })}
               </div>
-              {/* {!selected ? (
-                <div className="grid cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 py-[30px] gap-5">
-                  {courses.map((item) => {
-                    return (
-                      <Courses
-                        enrolled={false}
-                        totalRatingCount={0}
-                        favorite={item.isFavorite}
-                        mentorProfilePictureUrl={""}
-                        mentorId={0}
-                        lectureCount={""}
-                        categoryName={""}
-                        key={item.id}
-                        {...item}
-                      />
-                    );
-                  })}
-                </div>
-              ) : (
-                <div className="grid cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 py-[30px] gap-5">
-                  {courseFilter.map((item) => (
-                    <Courses
-                      enrolled={false}
-                      totalRatingCount={0}
-                      favorite={item.isFavorite}
-                      mentorProfilePictureUrl={""}
-                      mentorId={0}
-                      lectureCount={""}
-                      categoryName={""}
-                      key={item.id}
-                      {...item}
-                    />
-                  ))}
-                </div>
-              )} */}
             </>
           )}
         </div>
