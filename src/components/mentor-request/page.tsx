@@ -16,6 +16,7 @@ import {
   Typography,
 } from "@mui/material";
 import Modal from "@mui/material/Modal";
+import { Form, Modal as ModalAntd, Space, Button as ButtonAntd } from "antd";
 import Button from "@mui/material/Button";
 import InstructorCourseStyle from "./styles.module.scss";
 import { toast } from "sonner";
@@ -83,7 +84,9 @@ const MentorRequest = () => {
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("tab1");
   const [selectedType, setSelectedType] = useState("mentor");
-
+  const [form] = Form.useForm();
+  const [isConfirmationModalOpen, setConfirmationModalOpen] = useState(false);
+  const [action, setAction] = useState("");
   const [selectedDocuments, setSelectedDocuments] = useState<
     VerificationDocument[]
   >([]);
@@ -136,6 +139,8 @@ const MentorRequest = () => {
   }, [page, rowsPerPage, selectedType]);
 
   const handleApprove = (mentorUserId: number, specializationId: number) => {
+    setConfirmationModalOpen(true);
+    setAction("approve");
     setConfirmationData({
       isOpen: true,
       actionType: "approve",
@@ -145,6 +150,8 @@ const MentorRequest = () => {
   };
 
   const handleReject = (mentorUserId: number, specializationId: number) => {
+    setConfirmationModalOpen(true);
+    setAction("reject");
     setConfirmationData({
       isOpen: true,
       actionType: "reject",
@@ -258,11 +265,45 @@ const MentorRequest = () => {
     setPage(0);
   };
 
+  const handleCancelBan = () => {
+    setConfirmationModalOpen(false);
+    form.resetFields();
+    setConfirmationData({
+      isOpen: false,
+      actionType: "",
+      mentorUserId: null,
+      specializationId: null,
+    });
+  };
+
+  const handleConfirmBan = async () => {
+    if (confirmationData.actionType === "approve") {
+      handleApproveConfirmation(
+        confirmationData.mentorUserId,
+        noteInput,
+        confirmationData.specializationId
+      );
+    } else {
+      handleRejectConfirmation(
+        confirmationData.mentorUserId,
+        noteInput,
+        confirmationData.specializationId
+      );
+    }
+    setConfirmationData({
+      isOpen: false,
+      actionType: "",
+      mentorUserId: null,
+      specializationId: null,
+    });
+    setConfirmationModalOpen(false);
+  };
+
   return (
     <>
       <div className="w-full mt-4">
         <div className="text-start font-semibold text-5xl pb-5 pl-5">
-          Ratings
+          Request
         </div>
         <div className="flex justify-center bg-[#e7f8ee] py-4 rounded-md">
           <ul className="tabs flex space-x-5">
@@ -393,7 +434,7 @@ const MentorRequest = () => {
                                           {data.specializationOfMentor
                                             .status !== 2 && (
                                             <Button
-                                              className="w-full my-1 bg-green-500 text-white"
+                                              className="w-full my-1 bg-[#309255] text-white"
                                               color="success"
                                               variant="contained"
                                               onClick={() =>
@@ -411,7 +452,7 @@ const MentorRequest = () => {
                                             <Button
                                               variant="contained"
                                               color="error"
-                                              className="w-full my-1 bg-red-500 text-white"
+                                              className="w-full my-1 bg-red-400 text-white"
                                               onClick={() =>
                                                 handleReject(
                                                   data.user.id,
@@ -502,7 +543,60 @@ const MentorRequest = () => {
                   )}
                 </Box>
               </Modal>
-              <Modal
+              <ModalAntd
+                destroyOnClose={true}
+                title={
+                  <div className="text-lg">
+                    Are you sure you want to {action} this mentor ?
+                  </div>
+                }
+                open={isConfirmationModalOpen}
+                width="35%"
+                onCancel={handleCancelBan}
+                footer={false}
+                style={{
+                  top: "30%",
+                }}
+              >
+                <Form
+                  autoComplete="off"
+                  form={form}
+                  labelCol={{ span: 4 }}
+                  wrapperCol={{ span: 16 }}
+                  layout="horizontal"
+                  className="mt-5"
+                  style={{ width: "100%" }}
+                  onFinish={handleConfirmBan}
+                >
+                  <Space className="justify-end w-full">
+                    <Form.Item className="mb-0">
+                      <Space>
+                        <ButtonAntd
+                          className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                          onClick={handleCancelBan}
+                          style={{
+                            border: "2px solid #E0E0E0",
+                            color: "black",
+                          }}
+                        >
+                          Cancel
+                        </ButtonAntd>
+                        <ButtonAntd
+                          className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                          htmlType="submit"
+                          style={{
+                            border: "2px solid #4caf50",
+                            color: "#fff",
+                          }}
+                        >
+                          Confirm
+                        </ButtonAntd>
+                      </Space>
+                    </Form.Item>
+                  </Space>
+                </Form>
+              </ModalAntd>
+              {/* <Modal
                 open={confirmationData.isOpen}
                 onClose={() =>
                   setConfirmationData({
@@ -586,7 +680,7 @@ const MentorRequest = () => {
                     </div>
                   </div>
                 </div>
-              </Modal>
+              </Modal> */}
             </div>
           )}
           {activeTab === "tab2" && (
@@ -689,7 +783,7 @@ const MentorRequest = () => {
                                           {data.specializationOfMentor
                                             .status !== 2 && (
                                             <Button
-                                              className="w-full my-1 bg-green-500 text-white"
+                                              className="w-full my-1 bg-[#309255] text-white"
                                               color="success"
                                               variant="contained"
                                               onClick={() =>
@@ -707,7 +801,7 @@ const MentorRequest = () => {
                                             <Button
                                               variant="contained"
                                               color="error"
-                                              className="w-full my-1 bg-red-500 text-white"
+                                              className="w-full my-1 bg-red-400 text-white"
                                               onClick={() =>
                                                 handleReject(
                                                   data.user.id,
@@ -803,7 +897,60 @@ const MentorRequest = () => {
                   )}
                 </Box>
               </Modal>
-              <Modal
+              <ModalAntd
+                destroyOnClose={true}
+                title={
+                  <div className="text-lg">
+                    Are you sure you want to ban this course ?
+                  </div>
+                }
+                open={isConfirmationModalOpen}
+                width="35%"
+                onCancel={handleCancelBan}
+                footer={false}
+                style={{
+                  top: "30%",
+                }}
+              >
+                <Form
+                  autoComplete="off"
+                  form={form}
+                  labelCol={{ span: 4 }}
+                  wrapperCol={{ span: 16 }}
+                  layout="horizontal"
+                  className="mt-5"
+                  style={{ width: "100%" }}
+                  onFinish={handleConfirmBan}
+                >
+                  <Space className="justify-end w-full">
+                    <Form.Item className="mb-0">
+                      <Space>
+                        <ButtonAntd
+                          className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                          onClick={handleCancelBan}
+                          style={{
+                            border: "2px solid #E0E0E0",
+                            color: "black",
+                          }}
+                        >
+                          Cancel
+                        </ButtonAntd>
+                        <ButtonAntd
+                          className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                          htmlType="submit"
+                          style={{
+                            border: "2px solid #4caf50",
+                            color: "#fff",
+                          }}
+                        >
+                          Confirm
+                        </ButtonAntd>
+                      </Space>
+                    </Form.Item>
+                  </Space>
+                </Form>
+              </ModalAntd>
+              {/* <Modal
                 open={confirmationData.isOpen}
                 onClose={() =>
                   setConfirmationData({
@@ -887,7 +1034,7 @@ const MentorRequest = () => {
                     </div>
                   </div>
                 </div>
-              </Modal>
+              </Modal> */}
             </div>
           )}
         </div>

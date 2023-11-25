@@ -5,8 +5,9 @@ import axios from "axios";
 import { UserAuth } from "@/app/context/AuthContext";
 import { Empty, Modal } from "antd";
 import { useRouter } from "next/navigation";
-import { Console } from "console";
+import { http } from "@/api/http";
 import { toast } from "sonner";
+import { resetWarned } from "antd/es/_util/warning";
 
 export type Test = {
   test: {
@@ -14,7 +15,6 @@ export type Test = {
     title: string;
     description: string;
     totalQuestion: number;
-    createDate: string;
     status: number;
     courseId: number;
     questions: any;
@@ -61,33 +61,32 @@ export default function Quiz({ params }: any) {
     }
   });
   const [questionsTest, setQuestionsTest] = useState<Test[]>([]);
-  const [selectedAnswers, setSelectedAnswers] = useState<{
-    [key: number]: { answerId: number; answer: string; isCorrect: boolean };
-  }>({});
+  const [selectedAnswers, setSelectedAnswers] = useState<number[]>([]);
   const idCourse = params.id;
-  const [correctAnswers, setCorrectAnswers] = useState<number>(0);
-  const { userData, jwtToken } = UserAuth();
-  axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
+  const { userData } = UserAuth();
   const [submitted, setSubmitted] = useState(false); // Track whether the quiz has been submitted
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [userAnswers, setUserAnswers] = useState<
-    Array<{ questionId: number; answer: string }>
-  >([]);
-
   const handleCancel = () => {
     console.log("Modal has been canceled.");
   };
+
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const response = await axios.get(
+        const response = await http.get(
           `https://learnconnectapitest.azurewebsites.net/api/test/get-tests-by-course?courseId=${idCourse}`
         );
         setQuestionsTest(response.data);
-        questionsTest.forEach((item) => {
-          const totalQuestion = item.test.totalQuestion;
-          // console.log("Total Questions:", totalQuestion);
-        });
+        console.log("asad", questionsTest);
+        const userAnswersResponse = await http.get(
+          `https://learnconnectapitest.azurewebsites.net/api/user-answer/get-list-answer-by-course?userId=${userData?.id}&courseId=${idCourse}`
+        );
+        console.log("userAnswersResponse", userAnswersResponse.data.length);
+        if (userAnswersResponse.data.length !== 0) {
+          setSelectedAnswers(
+            userAnswersResponse.data.map((answer) => answer.answerId)
+          );
+          setSubmitted(true);
+        }
       } catch (error) {
         console.error("Error fetching questions:", error);
       }
@@ -95,18 +94,11 @@ export default function Quiz({ params }: any) {
     fetchQuestions();
   }, []);
 
-  const handleAnswerSelect = (
-    questionId: number,
-    answerId: number,
-    answer: string,
-    isCorrect: boolean
-  ) => {
+  const handleAnswerSelect = (answerId) => {
     if (!submitted) {
-      setSelectedAnswers((prevAnswers) => ({
-        ...prevAnswers,
-        [questionId]: { answerId, answer, isCorrect },
-      }));
-      console.log(`Selected Answer ID for question ${questionId}: ${answerId}`);
+      setSelectedAnswers((prevAnswers) => {
+        return [...prevAnswers, answerId];
+      });
     }
   };
 
@@ -114,34 +106,25 @@ export default function Quiz({ params }: any) {
     setSubmitted(true);
     let count = 0;
     let totalQuestions = 0;
-    const updatedSelectedAnswers = { ...selectedAnswers };
-    const userSelectedAnswers: number[] = [];
 
     questionsTest.forEach((item) => {
       totalQuestions += item.test.totalQuestion;
       item.questions.forEach((q) => {
-        const selectedAnswer = selectedAnswers[q.question.id];
-        const answerId = selectedAnswer ? selectedAnswer.answerId : -1;
-
-        userSelectedAnswers.push(answerId);
-
         const correctAnswer = q.answers.find((answer) => answer.isCorrect);
         if (
           correctAnswer &&
-          selectedAnswer &&
-          selectedAnswer.answer === correctAnswer.answerText
+          selectedAnswers &&
+          selectedAnswers.includes(correctAnswer.id)
         ) {
           count++;
         }
       });
     });
 
-    console.log("User selected answers:", userSelectedAnswers);
-
     const urlAPI = `https://learnconnectapitest.azurewebsites.net/api/user-answer?userId=${userData?.id}&courseId=${idCourse}`;
 
     try {
-      const response = await axios.post(urlAPI, userSelectedAnswers);
+      const response = await axios.post(urlAPI, selectedAnswers);
       console.log("User answers posted successfully:", response.data);
 
       setTimeout(() => {
@@ -162,7 +145,7 @@ export default function Quiz({ params }: any) {
     const userId = userData?.id;
     const url = `https://learnconnectapitest.azurewebsites.net/api/learning-performance/user/${userId}/course/${idCourse}`;
     try {
-      const response = await axios.put(url, {
+      const response = await http.put(url, {
         score: averageScore,
         userId: userId,
         courseId: idCourse,
@@ -178,17 +161,28 @@ export default function Quiz({ params }: any) {
         ),
         okText: "Close",
         okButtonProps: { style: { backgroundColor: "#309255", color: "#fff" } },
-        onOk: handleCancel,
-        cancelButtonProps: { style: { display: "none" } }, // To hide the Cancel button
+        cancelText: "Cancel",
+        cancelButtonProps: {
+          style: { backgroundColor: "#309255", color: "#fff" },
+        },
+        onCancel: handleCancel,
       });
     } catch (error) {
       console.error("Error in PUT request:", error);
     }
   };
 
+  const handleDoAgain = () => {
+    setSubmitted(false);
+    setSelectedAnswers([]);
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
   const handleClickGotoCourse = () => {
     router.push(`/my-course/${idCourse}`);
-    setIsModalVisible(false);
   };
 
   const answerOptions = ["A.", "B.", "C.", "D."];
@@ -217,7 +211,7 @@ export default function Quiz({ params }: any) {
               {item.questions.map((q, index) => (
                 <div
                   key={q.question.id}
-                  className="mb-2 mt-6 p-6 border-2 rounded-lg border-gray-200"
+                  className="mb-2 mt-6 p-6 border-2 rounded-lg border-gray-200 shadow-lg"
                 >
                   <p className="mb-1 font-medium text-[18px]">
                     {index + 1}. {q.question.questionText}
@@ -228,25 +222,16 @@ export default function Quiz({ params }: any) {
                         key={answer.id}
                         className={`mt-3 border-2 p-2 text-left rounded-lg ${
                           submitted
-                            ? selectedAnswers[q.question.id]?.answerId ===
-                              answer.id
-                              ? selectedAnswers[q.question.id]?.isCorrect
+                            ? selectedAnswers?.includes(answer.id)
+                              ? answer.isCorrect
                                 ? "border-green-500 bg-green-100"
                                 : "border-red-500 bg-red-100"
                               : "border-gray-300"
-                            : selectedAnswers[q.question.id]?.answerId ===
-                              answer.id
+                            : selectedAnswers?.includes(answer.id)
                             ? "border-blue-500 bg-blue-100"
                             : "border-gray-100"
                         }`}
-                        onClick={() =>
-                          handleAnswerSelect(
-                            q.question.id,
-                            answer.id, // Pass answerId to the function
-                            answer.answerText,
-                            answer.isCorrect
-                          )
-                        }
+                        onClick={() => handleAnswerSelect(answer.id)}
                       >
                         <span className="mr-2">{answerOptions[ansIndex]}</span>
                         {answer.answerText}
@@ -261,15 +246,23 @@ export default function Quiz({ params }: any) {
         {questionsTest.length > 0 && ( // Conditionally render submit button
           <div className="flex justify-end">
             {submitted ? (
-              <button
-                className="bg-[#309255] text-white font-bold py-2 px-4 mt-4 rounded"
-                onClick={handleClickGotoCourse}
-              >
-                Go to Course
-              </button>
+              <>
+                <button
+                  className="bg-[#309255] text-white font-bold py-2 px-4 mt-4 rounded mx-2 hover:bg-[#309256da]"
+                  onClick={handleDoAgain}
+                >
+                  Try it again
+                </button>
+                <button
+                  className="bg-[#309255] text-white font-bold py-2 px-4 mt-4 rounded mx-2 hover:bg-[#309256da]"
+                  onClick={handleClickGotoCourse}
+                >
+                  Go to Course
+                </button>
+              </>
             ) : (
               <button
-                className="bg-[#309255] text-white font-bold py-2 px-4 mt-4 rounded"
+                className="bg-[#309255] text-white font-bold py-2 px-4 mt-4 rounded mx-2 hover:bg-[#309256da]"
                 onClick={handleSubmit}
               >
                 Submit

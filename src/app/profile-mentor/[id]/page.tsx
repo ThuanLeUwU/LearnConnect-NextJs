@@ -102,12 +102,12 @@ export default function ProfileUser({ params }: any) {
     setSelected(value);
   };
   const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
     if (!jwtToken) {
-      toast.error("You Must Login To add Favorites");
+      toast.error("You Must Login To Do This Action");
       router.push("/login");
       return;
     }
+    setIsDropdownOpen(!isDropdownOpen);
   };
 
   const handleClickMoveToCourse = (courseId: string | number) => {
@@ -336,10 +336,7 @@ export default function ProfileUser({ params }: any) {
                     </div>
                     <div className="ml-auto">
                       <button onClick={toggleDropdown}>
-                        <AiOutlineBars
-                          className="border border-opacity-20 border-[#fff] rounded-lg text-4xl"
-                          onClick={toggleDropdown}
-                        />
+                        <AiOutlineBars className="border border-opacity-20 border-[#fff] rounded-lg text-4xl" />
                       </button>
                       {isDropdownOpen && (
                         <div
