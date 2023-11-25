@@ -109,12 +109,10 @@ const Reviews = () => {
       ) : (
         <div className={`${InstructorCourseStyle.body_wrapper}`}>
           {/* DashBoard */}
+          <div className="text-start font-semibold text-5xl pb-5 pl-5">
+            Ratings
+          </div>
           <div className={`${InstructorCourseStyle.featured}`}>
-            <div className={`${InstructorCourseStyle.featured_top}`}>
-              <h1 className={`${InstructorCourseStyle.featured_top_title}`}>
-                Reviews About Me
-              </h1>
-            </div>
             {reviews.length === 0 ? (
               <div className="text-center">
                 <Empty description="No Reviews" className="text-4xl" />
@@ -124,14 +122,14 @@ const Reviews = () => {
                 {reviews.map((item) => {
                   return (
                     <>
-                      <div className="single-review mt-3.5 border-4 border-opacity-10 border-black p-7 rounded-md hover:border-[#48b544]">
+                      <div className="single-review mt-3.5 border border-opacity-10 border-black p-7 rounded-md hover:border-[#309255] shadow-lg">
                         <div className="review-author flex justify-between">
                           <div className="flex flex-row">
                             <div className="author-thumb p-2">
                               <img
                                 src={item.userRatingInfo.imageUser}
                                 alt="Author"
-                                className="w-24 h-24 rounded-full"
+                                className="w-24 h-24 rounded-full border border-opacity-10 border-[#309255]"
                               />
                               <i className="icofont-quote-left"></i>
                             </div>

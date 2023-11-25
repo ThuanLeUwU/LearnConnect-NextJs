@@ -356,9 +356,9 @@ const InstructorCourse = () => {
       </div>
       <div className={`${InstructorCourseStyle.body_wrapper}`}>
         <div className={`${InstructorCourseStyle.course_tab}`}>
-          <h3 className={`${InstructorCourseStyle.course_tab_title}`}>
+          <div className="text-start font-semibold text-5xl pb-5 pl-5">
             Course
-          </h3>
+          </div>
           <div className={`${InstructorCourseStyle.course_tab_btn}`}>
             <Button
               type="default"

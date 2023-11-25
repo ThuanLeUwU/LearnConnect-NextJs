@@ -448,14 +448,14 @@ const MajorSepcialize = () => {
       />
       {/* <StaffRatingTable />
        */}
-      <div className="container mt-4">
+      <div className="w-full mt-4">
         <div className="flex flex-col pb-5 gap-2">
-          <div className="text-center font-semibold text-5xl ">
+          <div className="text-start font-semibold text-5xl pl-5">
             List of Majors
           </div>
           <div className="flex justify-end ">
             <button
-              className="border-2 rounded-lg px-4 py-2"
+              className="border-2 rounded-lg px-4 py-2 mr-5"
               onClick={handleCreateMajor}
             >
               New Major
@@ -474,6 +474,7 @@ const MajorSepcialize = () => {
                 onClick: () => handleRowClick(record), // Xử lý sự kiện click
               };
             }}
+            className="mx-5"
           />
         )}
         <div>
@@ -526,7 +527,12 @@ const MajorSepcialize = () => {
           labelCol={{ span: 6 }}
           wrapperCol={{ span: 20 }}
           onFinish={handleCreateMajorClick}
-          style={{ width: "100%", alignItems: "center", marginTop: 20 }}
+          style={{
+            width: "100%",
+            alignItems: "center",
+            marginTop: 20,
+            marginLeft: 20,
+          }}
         >
           <Form.Item
             name="name"

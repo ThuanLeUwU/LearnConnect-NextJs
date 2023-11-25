@@ -371,9 +371,8 @@ const DetailsContent = ({ params }: any) => {
         page4={"/staff-page/moderation"}
         page5={"/staff-page/list-major"}
       />
-      {/* <StaffRatingTable />áhkfjaskf */}
-      <div className="container mt-4">
-        <Breadcrumb className="font-semibold text-xl ">
+      <div className="w-full mt-4">
+        <Breadcrumb className="font-semibold text-xl pl-5">
           <Breadcrumb.Item>
             <button onClick={breadcrumbNavigation}>Courses</button>
           </Breadcrumb.Item>
@@ -389,7 +388,7 @@ const DetailsContent = ({ params }: any) => {
             </div>
           )}
         </>
-        <div className={`${InstructorCourseStyle.featured}`}>
+        <div className={`${InstructorCourseStyle.featured} mx-5`}>
           <div className={`${InstructorCourseStyle.featured_top}`}>
             <h1 className={`${InstructorCourseStyle.featured_top_title}`}>
               About Course
@@ -462,7 +461,7 @@ const DetailsContent = ({ params }: any) => {
             </div>
           </div>
         </div>
-        <div className="mt-5">
+        <div className="mt-5 mx-5">
           <div className="text-xl">List Of Lectures</div>
           {loading ? (
             <Spin size="large" />
@@ -507,7 +506,7 @@ const DetailsContent = ({ params }: any) => {
           )} */}
           {course?.status === 0 ? (
             <button
-              className="bg-white text-black border rounded-lg border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-6 py-2"
+              className="bg-white text-black border rounded-lg border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-6 py-2 mr-5"
               onClick={handleBan}
             >
               Ban
@@ -516,13 +515,13 @@ const DetailsContent = ({ params }: any) => {
             <>
               {" "}
               <button
-                className="bg-white text-black border rounded-lg border-[#24ee00] hover:bg-[#24ee00] hover:text-white transition duration-300 px-4 py-2"
+                className="bg-white text-black border rounded-lg border-[#24ee00] hover:bg-[#24ee00] hover:text-white transition duration-300 px-4 py-2 mr-5"
                 onClick={handleApprove}
               >
                 Approve
               </button>
               <button
-                className="bg-white text-black border rounded-lg border-[#ffa04e] hover:bg-[#ffa04e] hover:text-white transition duration-300 px-5 py-2"
+                className="bg-white text-black border rounded-lg border-[#ffa04e] hover:bg-[#ffa04e] hover:text-white transition duration-300 px-5 py-2 mr-5"
                 // style={{
                 //   backgroundColor: "#ffa04e",
                 //   borderColor: "#ffa04e",

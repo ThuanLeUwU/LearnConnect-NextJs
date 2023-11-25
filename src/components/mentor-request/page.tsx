@@ -260,7 +260,10 @@ const MentorRequest = () => {
 
   return (
     <>
-      <div className="w-full">
+      <div className="w-full mt-4">
+        <div className="text-start font-semibold text-5xl pb-5 pl-5">
+          Ratings
+        </div>
         <div className="flex justify-center bg-[#e7f8ee] py-4 rounded-md">
           <ul className="tabs flex space-x-5">
             <li
@@ -289,9 +292,9 @@ const MentorRequest = () => {
         <div className="tab-content">
           {activeTab === "tab1" && (
             <div className="min-h-[1000px] w-full">
-              <Typography variant="h3" className="px-3">
+              {/* <Typography variant="h3" className="px-3">
                 Become mentor request
-              </Typography>
+              </Typography> */}
               <Box
                 component="main"
                 sx={{
@@ -588,9 +591,6 @@ const MentorRequest = () => {
           )}
           {activeTab === "tab2" && (
             <div className="min-h-[1000px] w-full">
-              <Typography variant="h3" className="px-3">
-                Specialization request
-              </Typography>
               <Box
                 component="main"
                 sx={{

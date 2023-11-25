@@ -473,6 +473,11 @@ const Reviews = () => {
           </Form>
         </Modal>
         <div className="w-full">
+          <div className="flex justify-start">
+            <p className="text-start font-semibold text-5xl pl-5 py-5">
+              Request History
+            </p>
+          </div>
           <div className="flex justify-center bg-[#e7f8ee] py-4 rounded-md">
             <ul className="tabs flex space-x-5">
               <li
@@ -482,7 +487,7 @@ const Reviews = () => {
                 onClick={() => handleTabClick("tab1", "1")}
               >
                 <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#309255]">
-                  Pending request
+                  Pending
                 </button>
               </li>
               <li
@@ -492,7 +497,7 @@ const Reviews = () => {
                 onClick={() => handleTabClick("tab2", "0")}
               >
                 <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#309255]">
-                  Approve request
+                  Approve
                 </button>
               </li>
               <li
@@ -502,14 +507,15 @@ const Reviews = () => {
                 onClick={() => handleTabClick("tab3", "2")}
               >
                 <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#309255]">
-                  Reject request
+                  Reject
                 </button>
               </li>
             </ul>
           </div>
-          <div className="flex justify-end">
+
+          <div className="flex justify-end mt-4">
             <button
-              className="mx-5 my-3 px-5 py-3 bg-[#309255] rounded-lg text-white"
+              className="mx-5 my-3 px-5 py-3 bg-[#309255] rounded-lg text-white flex justify-end"
               onClick={showModal}
             >
               Register new specialization

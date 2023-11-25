@@ -28,8 +28,6 @@ const ModerationContent = () => {
     refetchList,
   } = useDataModeration(activeTab);
 
-  console.log("má nó", listCourseModeration);
-
   // useEffect(() => {
   //   setPage(currentPage);
   //   console.log("page", currentPage);
@@ -52,12 +50,12 @@ const ModerationContent = () => {
       />
       {/* <StaffRatingTable />
        */}
-      <div className="container mt-4">
-        <div className="text-center font-semibold text-5xl pb-5">
+      <div className="w-full mt-4">
+        <div className="text-start font-semibold text-5xl pb-5 pl-5">
           List Course{" "}
         </div>
-        <div className="flex justify-evenly bg-[#e7f8ee] py-4 rounded-md mb-5 ">
-          <ul className="tabs flex space-x-5 ">
+        <div className="flex justify-evenly bg-[#e7f8ee] py-4 rounded-md mb-5">
+          <ul className="tabs flex space-x-5">
             <li
               className={`cursor-pointer rounded-md ${
                 activeTab === 0 ? "bg-[#309255] text-white" : "bg-white"
@@ -114,7 +112,7 @@ const ModerationContent = () => {
           <Empty />
         ) : (
           <>
-            <div className="flex flex-col gap-5">
+            <div className="flex flex-col gap-5 mx-5">
               {listCourseModeration.map((item) => (
                 <>
                   <div className="rounded-lg border-solid border-2 flex flex-row justify-between p-5 gap-5 hover:border-[#48b544]">
