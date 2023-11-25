@@ -2,10 +2,11 @@
 import React, { useEffect, useState } from "react";
 import LeftNavbar from "@/components/left-navbar/page";
 import axios from "axios";
-import Modal from "@mui/material/Modal";
+// import Modal from "@mui/material/Modal";
 import { useRouter, useSearchParams } from "next/navigation";
 import { GrFormPrevious } from "react-icons/gr";
 import { toast } from "sonner";
+import { Button, Form, Modal, Space } from "antd";
 
 interface Report {
   id: number;
@@ -27,6 +28,7 @@ const StaffReportID = ({ params }: any) => {
   const [selectedReportId, setSelectedReportId] = useState<number | null>(null);
   const router = useRouter();
   const [isConfirmationModalOpen, setConfirmationModalOpen] = useState(false);
+  const [form] = Form.useForm();
 
   const handleBanClick = () => {
     setConfirmationModalOpen(true);
@@ -34,6 +36,7 @@ const StaffReportID = ({ params }: any) => {
 
   const handleCancelBan = () => {
     setConfirmationModalOpen(false);
+    form.resetFields();
   };
 
   useEffect(() => {
@@ -111,37 +114,61 @@ const StaffReportID = ({ params }: any) => {
               Ban this {target}
             </button>
           </div>
+
           <Modal
+            destroyOnClose={true}
+            title={
+              <div className="text-lg">
+                Are you sure you want to ban this {target}?
+              </div>
+            }
             open={isConfirmationModalOpen}
-            onClose={handleCancelBan}
+            width="35%"
+            onCancel={handleCancelBan}
+            footer={false}
             style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
+              top: "30%",
             }}
           >
-            <div className="bg-white p-8 w-96 rounded-md">
-              <p className="text-xl mb-4">
-                Are you sure you want to ban this {target}?
-              </p>
-              <div className="flex justify-end">
-                <button
-                  className="mx-2 px-4 py-2 bg-red-500 text-white rounded-lg"
-                  onClick={handleConfirmBan}
-                >
-                  Confirm
-                </button>
-                <button
-                  className="mx-2 px-4 py-2 bg-gray-300 rounded-lg"
-                  onClick={handleCancelBan}
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
+            <Form
+              autoComplete="off"
+              form={form}
+              labelCol={{ span: 4 }}
+              wrapperCol={{ span: 16 }}
+              layout="horizontal"
+              className="mt-5"
+              style={{ width: "100%" }}
+              onFinish={handleConfirmBan}
+            >
+              <Space className="justify-end w-full">
+                <Form.Item className="mb-0">
+                  <Space>
+                    <Button
+                      className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                      onClick={handleCancelBan}
+                      style={{
+                        border: "2px solid #E0E0E0",
+                        color: "black",
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                      htmlType="submit"
+                      style={{
+                        border: "2px solid #4caf50",
+                        color: "#fff",
+                      }}
+                    >
+                      Confirm
+                    </Button>
+                  </Space>
+                </Form.Item>
+              </Space>
+            </Form>
           </Modal>
         </div>
-
         {Array.isArray(reportData) && reportData.length > 0 ? (
           reportData.map((report) => (
             <div
@@ -183,15 +210,16 @@ const StaffReportID = ({ params }: any) => {
                   </div>
                 </div>
                 <Modal
-                  open={selectedReportId !== null}
-                  onClose={() => setSelectedReportId(null)}
+                  visible={selectedReportId !== null}
+                  onCancel={() => setSelectedReportId(null)}
                   style={{
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                   }}
+                  width="80%"
                 >
-                  <div className="bg-white p-8 w-3/4 h-3/4 max-w-full max-h-full overflow-auto">
+                  <div className="bg-white p-8 w-3/4 h-3/4 max-w-full max-h-full overflow-auto flex items-center justify-center mx-auto">
                     {selectedReportId !== null && (
                       <img
                         src={
@@ -200,7 +228,7 @@ const StaffReportID = ({ params }: any) => {
                           )?.imageUrl || ""
                         }
                         alt="Larger Report img"
-                        className="w-full h-auto"
+                        className="max-w-full max-h-full"
                       />
                     )}
                   </div>

@@ -5,7 +5,6 @@ import { Rating } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { UserAuth } from "@/app/context/AuthContext";
-import Modal from "@mui/material/Modal";
 import axios from "axios";
 import {
   Box,
@@ -21,7 +20,9 @@ import {
   TableSortLabel,
   Typography,
 } from "@mui/material";
-import { Spin } from "antd";
+import { Button, Form, Modal, Space, Spin } from "antd";
+import form from "antd/es/form";
+import { toast } from "sonner";
 
 export type Rating = {
   ratingInfo: any;
@@ -58,6 +59,7 @@ const StaffRatingTable = () => {
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState<"asc" | "desc">("asc");
   const [orderBy, setOrderBy] = useState<string>("verificationDate");
+  const [form] = Form.useForm();
 
   const fetchData = async () => {
     let token;
@@ -86,8 +88,11 @@ const StaffRatingTable = () => {
         `https://learnconnectapitest.azurewebsites.net/api/rating/update-rating-status?id=${id}&status=${status}`
       );
       fetchData();
+      setTimeout(() => {
+        toast.success("Display successful");
+      });
     } catch (error) {
-      console.error("Error updating rating status:", error);
+      console.error(error.response.data);
     }
   };
 
@@ -100,8 +105,14 @@ const StaffRatingTable = () => {
           `https://learnconnectapitest.azurewebsites.net/api/rating/update-rating-status?id=${selectedRatingId}&status=0`
         );
         fetchData();
+        setTimeout(() => {
+          toast.success("Hidden successful");
+        });
       } catch (error) {
         console.error("Error updating rating status:", error);
+        setTimeout(() => {
+          toast.error(error.response.data);
+        });
       }
     }
   };
@@ -129,6 +140,15 @@ const StaffRatingTable = () => {
       }
     };
   }
+
+  const handleCancel = () => {
+    setIsConfirmationModalOpen(false);
+    form.resetFields();
+  };
+
+  const handleUnBanCourseClick = () => {
+    handleBanConfirmation(true);
+  };
   return (
     <div className="w-full mt-4">
       <div className="text-start font-semibold text-5xl pb-5 pl-5">Ratings</div>
@@ -467,7 +487,7 @@ const StaffRatingTable = () => {
           </div>
         </div>
       </div>
-      <Modal
+      {/* <Modal
         open={isConfirmationModalOpen}
         onClose={() => setIsConfirmationModalOpen(false)}
       >
@@ -492,6 +512,59 @@ const StaffRatingTable = () => {
             </div>
           </div>
         </div>
+      </Modal> */}
+      <Modal
+        destroyOnClose={true}
+        title={
+          <div className="text-lg">
+            Are you sure you want to Hidden this Rating?
+          </div>
+        }
+        open={isConfirmationModalOpen}
+        width="35%"
+        onCancel={handleCancel}
+        footer={false}
+        style={{
+          top: "30%",
+        }}
+      >
+        <Form
+          autoComplete="off"
+          form={form}
+          labelCol={{ span: 4 }}
+          wrapperCol={{ span: 16 }}
+          layout="horizontal"
+          className="mt-5"
+          style={{ width: "100%" }}
+          onFinish={handleUnBanCourseClick}
+        >
+          <Space className="justify-end w-full">
+            <Form.Item className="mb-0">
+              <Space>
+                <Button
+                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                  onClick={handleCancel}
+                  style={{
+                    border: "2px solid #E0E0E0",
+                    color: "black",
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                  htmlType="submit"
+                  style={{
+                    border: "2px solid #4caf50",
+                    color: "#fff",
+                  }}
+                >
+                  Confirm
+                </Button>
+              </Space>
+            </Form.Item>
+          </Space>
+        </Form>
       </Modal>
     </div>
   );

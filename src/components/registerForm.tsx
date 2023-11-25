@@ -57,6 +57,14 @@ interface IProps {
   // setSuccess: (e: boolean) => void;
 }
 
+interface Bank {
+  id: number;
+  shortName: string;
+  code: string;
+  name: string;
+  logo: string;
+}
+
 export const RegisterForm = () => {
   const router = useRouter();
   const { role } = UserAuth();
@@ -95,6 +103,8 @@ export const RegisterForm = () => {
   const [specialization, setSpecialization] = useState<Specialization[]>([]);
   const [major, setMajor] = useState<Major[]>([]);
   const [selectedMajor, setSelectedMajor] = useState<number | null>(null);
+
+  const [banks, setBanks] = useState<Bank[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -192,7 +202,7 @@ export const RegisterForm = () => {
     formData.append("IssueDate", values.IssueDate);
     formData.append("BankNumber", values.BankNumber);
     formData.append("BankName", values.BankName);
-    formData.append("BankName", values.reason);
+    formData.append("reason", values.reason);
     formData.append("CardFront", CardFront);
     formData.append("CardBack", CardBack);
     formData.append("DescriptionDocument", DescriptionDocument);
@@ -228,6 +238,8 @@ export const RegisterForm = () => {
       });
       setTimeout(() => {
         toast.success("Form submitted successful");
+        form.resetFields();
+        router.push(`/`);
       }, 0);
       // console.log("url", url);
     } catch (error) {
@@ -254,8 +266,12 @@ export const RegisterForm = () => {
     fetchMajor();
   }, []);
 
+  const handleCancel = () => {
+    form.resetFields();
+    router.back();
+  };
+
   useEffect(() => {
-    // Fetch specialization data based on the selected major
     if (selectedMajor !== null) {
       const fetchSpecializations = async () => {
         try {
@@ -271,6 +287,19 @@ export const RegisterForm = () => {
       fetchSpecializations();
     }
   }, [selectedMajor]);
+  useEffect(() => {
+    const fetchBanks = async () => {
+      try {
+        const response = await axios.get("https://api.vietqr.io/v2/banks");
+        setBanks(response.data.data);
+        console.log("Bank Name", response.data);
+      } catch (error) {
+        console.error("Error fetching banks:", error);
+      }
+    };
+
+    fetchBanks();
+  }, []);
 
   return (
     <div className="">
@@ -303,16 +332,29 @@ export const RegisterForm = () => {
             className=""
             labelAlign="left"
           >
-            <Input />
+            <Input placeholder="Input Introduction " />
           </Form.Item>
 
           <Form.Item
-            rules={[{ required: true, message: "Please input Bank" }]}
-            label="Bank"
             name="BankName"
+            label="Bank"
+            rules={[{ required: true, message: "Please select a bank" }]}
             labelAlign="left"
           >
-            <Input />
+            <Select placeholder="Select a bank">
+              {banks.map((bank) => (
+                <Select.Option key={bank.id} value={bank.shortName}>
+                  <div className="flex items-center">
+                    <img
+                      src={bank.logo}
+                      alt="logoBank"
+                      className="w-[80px] h-[30px]"
+                    />{" "}
+                    {bank.name}({bank.code})
+                  </div>
+                </Select.Option>
+              ))}
+            </Select>
           </Form.Item>
 
           <Form.Item
@@ -321,7 +363,7 @@ export const RegisterForm = () => {
             name="BankNumber"
             labelAlign="left"
           >
-            <Input />
+            <Input type="number" placeholder="Input Account Number" />
           </Form.Item>
 
           <Form.Item
@@ -381,7 +423,10 @@ export const RegisterForm = () => {
             className="text-start"
             labelAlign="left"
           >
-            <Select onChange={(value) => setSelectedMajor(value)}>
+            <Select
+              onChange={(value) => setSelectedMajor(value)}
+              placeholder="Select major"
+            >
               {major.map((major) => (
                 <Option key={major.id} value={major.id}>
                   {major.name}
@@ -400,7 +445,7 @@ export const RegisterForm = () => {
             className="text-start"
             labelAlign="left"
           >
-            <Select>
+            <Select placeholder="Select specialization">
               {specialization.map((specialization) => (
                 <Option key={specialization.id} value={specialization.id}>
                   {specialization.name}
@@ -416,7 +461,7 @@ export const RegisterForm = () => {
             className=""
             labelAlign="left"
           >
-            <Input />
+            <Input placeholder="Input description" />
           </Form.Item>
 
           <Form.Item
@@ -444,12 +489,20 @@ export const RegisterForm = () => {
               Document
             </Upload>
           </Form.Item>
-          <button
-            type="submit"
-            className="text-white text-lg w-full mb-3 mt-2 bg-[#309255] rounded-lg py-2"
-          >
-            Send
-          </button>
+          <div className="flex justify-center">
+            <button
+              onClick={handleCancel}
+              className="text-lg w-1/3 mb-3 mt-2 rounded-lg py-2 border border-[#309255] mx-5 hover:bg-gray-100"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="text-white text-lg w-1/3 mb-3 mt-2 bg-[#309255] rounded-lg py-2 mx-5 hover:bg-[#309256d6]"
+            >
+              Send
+            </button>
+          </div>
         </Form>
       </div>
     </div>

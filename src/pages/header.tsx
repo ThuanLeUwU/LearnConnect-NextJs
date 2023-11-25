@@ -5,9 +5,8 @@ import "../app/./globals.css";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { UserAuth, UserRole } from "@/app/context/AuthContext";
-import { Button } from "react-bootstrap";
 import { RegisterForm } from "@/components/registerForm";
-import { Empty, Modal, Space } from "antd";
+import { Empty, Modal, Space, Button } from "antd";
 import { useRouter } from "next/navigation";
 import { AiFillBell } from "react-icons/ai";
 import axios from "axios";
@@ -75,6 +74,7 @@ const Header = () => {
   };
 
   const handleClickBecomeMentor = () => {
+    setActiveTab("alo");
     router.push("/become-mentor");
   };
 
@@ -289,7 +289,27 @@ const Header = () => {
                   <Space className="justify-end w-full">
                     <Form.Item className="mb-0">
                       <Space>
-                        <button
+                        <Button
+                          className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                          onClick={handleCancel}
+                          style={{
+                            border: "2px solid #E0E0E0",
+                            color: "black",
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                          htmlType="submit"
+                          style={{
+                            border: "2px solid #4caf50",
+                            color: "#fff",
+                          }}
+                        >
+                          Confirm
+                        </Button>
+                        {/* <button
                           onClick={handleCancel}
                           className="px-5 py-2 bg-red-400 rounded-lg text-white"
                         >
@@ -300,7 +320,7 @@ const Header = () => {
                           className="px-5 py-2 bg-[#309255] rounded-lg text-white"
                         >
                           Create
-                        </button>
+                        </button> */}
                       </Space>
                     </Form.Item>
                   </Space>

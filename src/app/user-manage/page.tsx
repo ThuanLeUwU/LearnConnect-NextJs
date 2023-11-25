@@ -196,16 +196,15 @@ export default function UserManagePage() {
         </div>
         <div className={`${InstructorCourseStyle.body_wrapper}`}>
           <div className="ml-3">
-            <Typography variant="h3">Table Of all user</Typography>
+            <Typography variant="h3">User Manager</Typography>
           </div>
           <div className={`${InstructorCourseStyle.body_container}`}>
             <Box
               component="main"
               sx={{
                 flexGrow: 1,
-                py: 5,
-                p: 5,
               }}
+              className="mx-5 shadow-[5px_15px_25px_10px_rgba(0,0,0,0.15)] mt-2 rounded-lg"
             >
               <Card>
                 <Paper sx={{ width: "100%" }}>
