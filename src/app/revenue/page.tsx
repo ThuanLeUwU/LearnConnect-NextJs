@@ -90,6 +90,7 @@ const Revenue = () => {
       },
     ],
   });
+  const moment = require("moment-timezone");
 
   useEffect(() => {
     // Fetch data from your API using Axios
@@ -99,7 +100,8 @@ const Revenue = () => {
       )
       .then((response) => {
         const data = response.data;
-        // console.log("response");
+
+        console.log("response", data);
         setToday(data[0].date);
         setListDate(data);
         // console.log("listdate", data);
@@ -109,11 +111,18 @@ const Revenue = () => {
 
         // setToday()
         // Extract data from the API response
+
         const labels = sortedData.map((entry) => {
-          const entryDate = new Date(entry.date).toISOString().slice(0, 10);
-          return entryDate === new Date().toISOString().slice(0, 10)
+          const entryDateInVN = moment(entry.date).tz("Asia/Ho_Chi_Minh");
+          const currentDateInVN = moment().tz("Asia/Ho_Chi_Minh");
+          return entryDateInVN.format("YYYY-MM-DD") ===
+            currentDateInVN.format("YYYY-MM-DD")
             ? "Today"
-            : entryDate;
+            : entryDateInVN.format("YYYY-MM-DD");
+          // const entryDate = new Date(entry.date).toISOString().slice(0, 10);
+          // return entryDate === new Date().toISOString().slice(0, 10)
+          //   ? "Today"
+          //   : entryDate;
         });
         const values = sortedData.map((entry) => entry.revenueDate);
 
@@ -146,7 +155,7 @@ const Revenue = () => {
     ],
     datasets: [
       {
-        label: "VND",
+        label: "VNĐ",
         data: [1000, 5000, 2000, 6000, 3000, 7000, 8000],
         backgroundColor: "#309255d9",
         borderColor: "black",
@@ -308,11 +317,11 @@ const Revenue = () => {
           <Spin size="large" />
         </div>
       ) : (
-        <div className={`${InstructorCourseStyle.body_wrapper}`}>
+        <div className={`${InstructorCourseStyle.body_wrapper} `}>
           <div className="text-start font-semibold text-5xl pb-5 pl-5">
             Revenue
           </div>
-          <div className="mt-10 rounded-lg border-solid border-2 mx-10 p-20">
+          <div className="mt-10 rounded-lg border-solid border-2 mx-10 p-20 shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)]">
             <div className="flex">
               <div className="text-2xl font-semibold mb-0 pt-4 leading-5">
                 Total Revenue
@@ -328,7 +337,7 @@ const Revenue = () => {
         <div className="mx-10">
           <div className="bg-[#e5f4eb] rounded-[10px] px-10 ">
             <div className="flex justify-between p-5 items-center text-center ">
-              <div className="w-[300px]">Courses</div>
+              <div className="w-[350px]">Courses</div>
               {/* <div className="flex gap-[100px] justify-between"> */}
               <div className="w-[100px]">Revenue</div>
               <div>Enrollment</div>
@@ -354,7 +363,7 @@ const Revenue = () => {
           <div className=" flex flex-col">
             {eachCourse.map((item, index) => (
               <>
-                <div className="flex mt-5 rounded-[10px] py-5 border-solid border-2 px-[60px] justify-between items-center text-center">
+                <div className="flex mt-5 rounded-[10px] py-5 border-solid border px-[60px] hover:border-[#309255] justify-between items-center text-center shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)]">
                   <div className="w-[300px]">{item.courseName}</div>
                   <div className="w-[100px]">{item.totalRevenueCourse}</div>
                   <div className="">{item.totalEnroll}</div>

@@ -133,7 +133,7 @@ const MentorRequest = () => {
 
   useEffect(() => {
     fetchData();
-  }, [page, rowsPerPage, selectedType]);
+  }, [page, rowsPerPage, selectedType, userData]);
 
   const handleApprove = (mentorUserId: number, specializationId: number) => {
     setConfirmationData({
@@ -262,7 +262,7 @@ const MentorRequest = () => {
     <>
       <div className="w-full mt-4">
         <div className="text-start font-semibold text-5xl pb-5 pl-5">
-          Ratings
+          Requests
         </div>
         <div className="flex justify-center bg-[#e7f8ee] py-4 rounded-md">
           <ul className="tabs flex space-x-5">

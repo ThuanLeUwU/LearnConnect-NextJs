@@ -395,7 +395,7 @@ const DetailsContent = ({ params }: any) => {
         page5={"/staff-page/list-major"}
       />
       <div className="w-full my-4">
-        <Breadcrumb className="font-semibold text-xl pl-5">
+        <Breadcrumb className="font-semibold text-2xl pl-5">
           <Breadcrumb.Item>
             <button onClick={breadcrumbNavigation}>Courses</button>
           </Breadcrumb.Item>
@@ -412,7 +412,7 @@ const DetailsContent = ({ params }: any) => {
           )}
         </>
         <div className={`${InstructorCourseStyle.featured} mx-5`}>
-          <div className={`${InstructorCourseStyle.featured_top}`}>
+          <div className={`${InstructorCourseStyle.featured_top} `}>
             <h1 className={`${InstructorCourseStyle.featured_top_title}`}>
               About Course
             </h1>
@@ -485,7 +485,7 @@ const DetailsContent = ({ params }: any) => {
           </div>
         </div>
         <div className="mt-5 mx-5">
-          <div className="text-xl">List Of Lectures</div>
+          <div className="text-3xl my-5">List Of Lectures</div>
           {loading ? (
             <Spin size="large" />
           ) : (
@@ -496,7 +496,7 @@ const DetailsContent = ({ params }: any) => {
             />
           )}
         </div>
-        <div className="flex justify-end gap-2 mt-10">
+        <div className="flex justify-end gap-2 mt-10 pr-5">
           {/* {course?.status === 0 ? (
             <>
               <Button
@@ -529,7 +529,7 @@ const DetailsContent = ({ params }: any) => {
           )} */}
           {course?.status === 0 ? (
             <button
-              className="bg-white text-black border rounded-lg border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-6 py-2 mr-5"
+              className="bg-white text-black border rounded-lg border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-6 py-2"
               onClick={handleBan}
             >
               Ban
@@ -538,13 +538,13 @@ const DetailsContent = ({ params }: any) => {
             <>
               {" "}
               <button
-                className="bg-white text-black border rounded-lg border-[#24ee00] hover:bg-[#24ee00] hover:text-white transition duration-300 px-4 py-2"
+                className="bg-white text-black border rounded-lg border-[#4caf50] hover:bg-[#4caf50] hover:text-white transition duration-300 px-4 py-2"
                 onClick={handleApprove}
               >
                 Approve
               </button>
               <button
-                className="bg-white text-black border rounded-lg border-[#ffa04e] hover:bg-[#ffa04e] hover:text-white transition duration-300 px-5 py-2 mr-5"
+                className="bg-white text-black border rounded-lg border-[#ffa04e] hover:bg-[#ffa04e] hover:text-white transition duration-300 px-5 py-2"
                 // style={{
                 //   backgroundColor: "#ffa04e",
                 //   borderColor: "#ffa04e",
@@ -569,7 +569,7 @@ const DetailsContent = ({ params }: any) => {
             </>
           ) : course?.status === 3 ? (
             <button
-              className="bg-white text-black border rounded-lg border-red-500 hover:border-red-500 hover:text-white transition duration-300 px-4 py-2"
+              className="bg-white text-black border rounded-lg border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-6 py-2 mr-5"
               onClick={handleUnBan}
             >
               Unban
@@ -591,18 +591,25 @@ const DetailsContent = ({ params }: any) => {
 
       <Modal
         destroyOnClose={true}
-        title={`Are you sure you want to Approve this Course?`}
+        title={
+          <div className="text-lg">
+            Are you sure you want to Approve this Course?
+          </div>
+        }
         open={approveCourse}
         // onOk={handleOk}
         width="35%"
         onCancel={handleModalCancel}
         footer={false}
+        style={{
+          top: "30%",
+        }}
       >
         <Form
           autoComplete="off"
           form={form}
           labelCol={{ span: 4 }}
-          wrapperCol={{ span: 16 }}
+          wrapperCol={{ span: 20 }}
           layout="horizontal"
           className="mt-5"
           style={{ width: "100%" }}
@@ -611,13 +618,25 @@ const DetailsContent = ({ params }: any) => {
           <Space className="justify-end w-full">
             <Form.Item className="mb-0">
               <Space>
-                <Button onClick={handleModalCancel}>Cancel</Button>
                 <Button
-                  type="primary"
+                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                  onClick={handleModalCancel}
+                  style={{
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #E0E0E0",
+                    color: "black",
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
                   htmlType="submit"
                   style={{
-                    backgroundColor: "#4caf50",
-                    borderColor: "#4caf50",
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #4caf50",
                     color: "#fff",
                   }}
                 >
@@ -631,12 +650,19 @@ const DetailsContent = ({ params }: any) => {
 
       <Modal
         destroyOnClose={true}
-        title={`Are you sure you want to Approve this Lecture?`}
+        title={
+          <div className="text-lg">
+            Are you sure you want to Approve this Lecture?
+          </div>
+        }
         open={acceptModal}
         // onOk={handleOk}
         width="35%"
         onCancel={handleModalCancel}
         footer={false}
+        style={{
+          top: "30%",
+        }}
       >
         <Form
           autoComplete="off"
@@ -651,11 +677,27 @@ const DetailsContent = ({ params }: any) => {
           <Space className="justify-end w-full">
             <Form.Item className="mb-0">
               <Space>
-                <Button onClick={handleModalCancel}>Cancel</Button>
                 <Button
-                  type="primary"
+                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                  onClick={handleModalCancel}
+                  style={{
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #E0E0E0",
+                    color: "black",
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
                   htmlType="submit"
-                  style={{ color: "black" }}
+                  style={{
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #4caf50",
+                    color: "#fff",
+                  }}
                 >
                   Confirm
                 </Button>
@@ -665,88 +707,27 @@ const DetailsContent = ({ params }: any) => {
         </Form>
       </Modal>
 
-      {/* <Dialog
-        open={acceptModal}
-        onClose={handleModalCancel}
-        aria-describedby="alert-dialog-slide-description"
-      >
-        <DialogTitle
-          sx={{ backgroundColor: "Green", fontSize: "20px", color: "white" }}
-        >
-          {" "}
-          Confirm!!!{" "}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            <Typography>
-              Do you want to Accept Lecture {oneLecture?.title}?
-            </Typography>
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleModalCancel}>cancel</Button>
-
-          <Button
-            style={{
-              backgroundColor: "#4caf50",
-              borderColor: "#4caf50",
-              color: "#fff",
-            }}
-            onClick={() => handleAcceptClick(oneLecture)}
-            type="primary"
-          >
-            Accept
-          </Button>
-        </DialogActions>
-      </Dialog> */}
-
-      {/* <Dialog
-        open={approveCourse}
-        onClose={handleModalCancel}
-        aria-describedby="alert-dialog-slide-description"
-      >
-        <DialogTitle
-          sx={{ backgroundColor: "Green", fontSize: "20px", color: "white" }}
-        >
-          {" "}
-          Confirm!!!{" "}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            <Typography>Do you want to Approve Course ?</Typography>
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleModalCancel}>cancel</Button>
-
-          <Button
-            style={{
-              backgroundColor: "#4caf50",
-              borderColor: "#4caf50",
-              color: "#fff",
-            }}
-            onClick={() => handleApproveClick()}
-            type="primary"
-          >
-            Confirm
-          </Button>
-        </DialogActions>
-      </Dialog> */}
-
       <Modal
         destroyOnClose={true}
-        title={`Are you sure you want to Ban this Course?`}
+        title={
+          <div className="text-lg">
+            Are you sure you want to Ban this Course?
+          </div>
+        }
         open={banCourse}
         // onOk={handleOk}
         width="35%"
         onCancel={handleModalCancel}
         footer={false}
+        style={{
+          top: "30%",
+        }}
       >
         <Form
           autoComplete="off"
           form={form}
           labelCol={{ span: 4 }}
-          wrapperCol={{ span: 16 }}
+          wrapperCol={{ span: 20 }}
           layout="horizontal"
           className="mt-5"
           style={{ width: "100%" }}
@@ -755,11 +736,27 @@ const DetailsContent = ({ params }: any) => {
           <Space className="justify-end w-full">
             <Form.Item className="mb-0">
               <Space>
-                <Button onClick={handleModalCancel}>Cancel</Button>
                 <Button
-                  type="primary"
+                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                  onClick={handleModalCancel}
+                  style={{
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #E0E0E0",
+                    color: "black",
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
                   htmlType="submit"
-                  style={{ color: "black" }}
+                  style={{
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #4caf50",
+                    color: "#fff",
+                  }}
                 >
                   Confirm
                 </Button>
@@ -771,18 +768,25 @@ const DetailsContent = ({ params }: any) => {
 
       <Modal
         destroyOnClose={true}
-        title={`Are you sure you want to Unban this Course?`}
+        title={
+          <div className="text-lg">
+            Are you sure you want to UnBan this Course?
+          </div>
+        }
         open={unBanCourse}
         // onOk={handleOk}
         width="35%"
         onCancel={handleModalCancel}
         footer={false}
+        style={{
+          top: "30%",
+        }}
       >
         <Form
           autoComplete="off"
           form={form}
           labelCol={{ span: 4 }}
-          wrapperCol={{ span: 16 }}
+          wrapperCol={{ span: 20 }}
           layout="horizontal"
           className="mt-5"
           style={{ width: "100%" }}
@@ -791,11 +795,27 @@ const DetailsContent = ({ params }: any) => {
           <Space className="justify-end w-full">
             <Form.Item className="mb-0">
               <Space>
-                <Button onClick={handleModalCancel}>Cancel</Button>
                 <Button
-                  type="primary"
+                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                  onClick={handleModalCancel}
+                  style={{
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #E0E0E0",
+                    color: "black",
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
                   htmlType="submit"
-                  style={{ color: "black" }}
+                  style={{
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #4caf50",
+                    color: "#fff",
+                  }}
                 >
                   Confirm
                 </Button>
@@ -872,18 +892,25 @@ const DetailsContent = ({ params }: any) => {
 
       <Modal
         destroyOnClose={true}
-        title={`Are you sure you want to Reject this Lecture?`}
+        title={
+          <div className="text-lg">
+            Are you sure you want to Reject this Course?
+          </div>
+        }
         open={RejectModal}
         // onOk={handleOk}
         width="35%"
         onCancel={handleModalCancel}
         footer={false}
+        style={{
+          top: "30%",
+        }}
       >
         <Form
           autoComplete="off"
           form={form}
           labelCol={{ span: 4 }}
-          wrapperCol={{ span: 16 }}
+          wrapperCol={{ span: 20 }}
           layout="horizontal"
           className="mt-5"
           style={{ width: "100%" }}
@@ -900,11 +927,27 @@ const DetailsContent = ({ params }: any) => {
           <Space className="justify-end w-full">
             <Form.Item className="mb-0">
               <Space>
-                <Button onClick={handleModalCancel}>Cancel</Button>
                 <Button
-                  type="primary"
+                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                  onClick={handleModalCancel}
+                  style={{
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #E0E0E0",
+                    color: "black",
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
                   htmlType="submit"
-                  style={{ color: "black" }}
+                  style={{
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #4caf50",
+                    color: "#fff",
+                  }}
                 >
                   Confirm
                 </Button>
@@ -916,18 +959,25 @@ const DetailsContent = ({ params }: any) => {
 
       <Modal
         destroyOnClose={true}
-        title={`Are you sure you want to Reject this Course?`}
+        title={
+          <div className="text-lg">
+            Are you sure you want to Reject this Course?
+          </div>
+        }
         open={rejectCourse}
         // onOk={handleOk}
         width="35%"
         onCancel={handleModalCancel}
         footer={false}
+        style={{
+          top: "30%",
+        }}
       >
         <Form
           autoComplete="off"
           form={form}
           labelCol={{ span: 4 }}
-          wrapperCol={{ span: 16 }}
+          wrapperCol={{ span: 20 }}
           layout="horizontal"
           className="mt-5"
           style={{ width: "100%" }}
@@ -944,11 +994,27 @@ const DetailsContent = ({ params }: any) => {
           <Space className="justify-end w-full">
             <Form.Item className="mb-0">
               <Space>
-                <Button onClick={handleModalCancel}>Cancel</Button>
                 <Button
-                  type="primary"
+                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                  onClick={handleModalCancel}
+                  style={{
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #E0E0E0",
+                    color: "black",
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
                   htmlType="submit"
-                  style={{ color: "black" }}
+                  style={{
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #4caf50",
+                    color: "#fff",
+                  }}
                 >
                   Confirm
                 </Button>

@@ -151,6 +151,16 @@ const useDataFetcher = (
         );
         setCourses(result?.data.listCourse);
         setTotalPages(result?.data.paginationData.totalPages);
+      } else if (rate !== null || specializationId !== null) {
+        const result = await axios.get(
+          `${API_URL}currentPage=${page}&pageSize=${pagesize}&specializationId=${
+            specializationId === null ? "" : specializationId
+          }&priceMin=${minPrice === null ? "" : minPrice}&minAverageRating=${
+            rate === null ? "" : rate
+          }&orderByLatestCreationDate=true&orderByEnrollmentCount=true`
+        );
+        setCourses(result?.data.listCourse);
+        setTotalPages(result?.data.paginationData.totalPages);
       }
 
       // console.log("result", result);
@@ -210,7 +220,7 @@ const useDataFetcher = (
       // console.log("totalPages", result);
     };
     fetchData();
-  }, [rate, specializationId]);
+  }, []);
   useEffect(() => {
     // setCurrentPage(0);
     const fetchData = async () => {

@@ -131,7 +131,7 @@ const StaffRatingTable = () => {
   }
   return (
     <div className="w-full mt-4">
-      <div className="text-start font-semibold text-5xl pb-5 pl-5">Request</div>
+      <div className="text-start font-semibold text-5xl pb-5 pl-5">Ratings</div>
       <div>
         <div className=" text-[#212832] ">
           <div className="flex justify-center bg-[#e7f8ee] py-4 rounded-md">

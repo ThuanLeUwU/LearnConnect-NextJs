@@ -146,7 +146,8 @@ const InstructorCourse = () => {
   const handleCancel = () => {
     setUpdateModal(false);
     setIsModal(false);
-    form.resetFields();
+    setSelected(0);
+    // form.resetFields();
     setImage(undefined);
     setUpdateImage(course?.imageUrl);
   };
@@ -155,7 +156,9 @@ const InstructorCourse = () => {
 
   const handleSubmit = async (data: any) => {
     if (formDataImage === undefined) {
-      setErrorMessage("Please Input Image");
+      toast.error("Please Input Image");
+    } else if (selected === 0) {
+      toast.error("Please Choose Specialization");
     } else {
       setIsModal(false);
       const formData = new FormData();
@@ -163,6 +166,7 @@ const InstructorCourse = () => {
       formData.append("description", data.description);
       formData.append("shortDescription", data.shortDes);
       formData.append("price", data.price);
+      formData.append("contentLength", data.length);
       formData.append("lectureCount", data.lecture);
       formData.append("specializationId", selected.toString());
       if (formDataImage !== undefined) {
@@ -174,6 +178,7 @@ const InstructorCourse = () => {
             "Content-Type": "multipart/form-data",
           },
         });
+        form.resetFields();
         handleCancel();
         refetchList();
         setTimeout(() => {
@@ -184,7 +189,6 @@ const InstructorCourse = () => {
           toast.error("Create Course fail");
         });
       }
-      form.resetFields();
     }
   };
 
@@ -296,11 +300,11 @@ const InstructorCourse = () => {
       handleCancel();
       refetchList();
       setTimeout(() => {
-        toast.success("Update Course successful");
+        toast.success("Update Course Successfully!!!");
       });
     } catch (err) {
       setTimeout(() => {
-        toast.error("Update Course fail");
+        toast.error("Update Course Fail!!!");
       });
     }
   };
@@ -364,7 +368,7 @@ const InstructorCourse = () => {
       <div className={`${InstructorCourseStyle.body_wrapper}`}>
         <div className={`${InstructorCourseStyle.course_tab}`}>
           <div className="text-start font-semibold text-5xl pb-5 pl-5">
-            Course
+            Courses
           </div>
           <div className={`${InstructorCourseStyle.course_tab_btn}`}>
             <Button
@@ -389,7 +393,7 @@ const InstructorCourse = () => {
                 {listCourseInstructor.map((item, index) => {
                   return (
                     <div key={index}>
-                      <div className={`${InstructorCourseStyle.course_item}`}>
+                      <div className={`${InstructorCourseStyle.course_item} `}>
                         <div className="flex">
                           <div>
                             <button
@@ -397,7 +401,11 @@ const InstructorCourse = () => {
                                 handleClick(item);
                               }}
                             >
-                              <img src={item.imageUrl} alt="Image" />
+                              <img
+                                className="h-[120px] w-[120px] rounded-lg"
+                                src={item.imageUrl}
+                                alt="Image"
+                              />
                             </button>
                           </div>
                           <div
@@ -507,7 +515,7 @@ const InstructorCourse = () => {
         title="Create New Course Form"
         open={isModal}
         // style={{ width: 800 }}
-        width="35%"
+        width="40%"
         // onOk={handleOk}
         onCancel={handleCancel}
         footer={false}
@@ -543,8 +551,8 @@ const InstructorCourse = () => {
               action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
             >
               <Button>Upload</Button>
-              <span>{errorMassage}</span>
             </Upload>
+            {/* <span>{errorMassage}</span> */}
           </div>
           <Form.Item
             rules={[{ required: true, message: "Please input Name!" }]}
@@ -620,13 +628,29 @@ const InstructorCourse = () => {
           <Space className="justify-end w-full">
             <Form.Item className="mb-0">
               <Space>
-                <Button onClick={handleCancel}>Cancel</Button>
                 <Button
-                  type="primary"
-                  htmlType="submit"
-                  style={{ color: "black" }}
+                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                  onClick={handleCancel}
+                  style={{
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #E0E0E0",
+                    color: "black",
+                  }}
                 >
-                  Create
+                  Cancel
+                </Button>
+                <Button
+                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                  htmlType="submit"
+                  style={{
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #4caf50",
+                    color: "#fff",
+                  }}
+                >
+                  Confirm
                 </Button>
               </Space>
             </Form.Item>
@@ -641,7 +665,7 @@ const InstructorCourse = () => {
         // onOk={handleOk}
         onCancel={handleCancel}
         footer={false}
-        width="35%"
+        width="40%"
       >
         <Form
           autoComplete="off"
@@ -734,13 +758,29 @@ const InstructorCourse = () => {
           <Space className="justify-end w-full">
             <Form.Item className="mb-0">
               <Space>
-                <Button onClick={handleCancel}>Cancel</Button>
                 <Button
-                  type="primary"
-                  htmlType="submit"
-                  style={{ color: "black" }}
+                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                  onClick={handleCancel}
+                  style={{
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #E0E0E0",
+                    color: "black",
+                  }}
                 >
-                  Update
+                  Cancel
+                </Button>
+                <Button
+                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                  htmlType="submit"
+                  style={{
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #4caf50",
+                    color: "#fff",
+                  }}
+                >
+                  Confirm
                 </Button>
               </Space>
             </Form.Item>
@@ -749,7 +789,7 @@ const InstructorCourse = () => {
       </Modal>
 
       {/* Dialog */}
-      <Dialog
+      {/* <Dialog
         open={open}
         onClose={handleClose}
         aria-describedby="alert-dialog-slide-description"
@@ -785,7 +825,66 @@ const InstructorCourse = () => {
             Remove
           </Button>
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
+
+      <Modal
+        destroyOnClose={true}
+        title={
+          <div className="text-lg">
+            Do you want to Delete {`${course?.name}`} course?
+          </div>
+        }
+        open={open}
+        // onOk={handleOk}
+        width="35%"
+        onCancel={handleCancel}
+        footer={false}
+        style={{
+          top: "30%",
+        }}
+      >
+        <Form
+          autoComplete="off"
+          form={form}
+          labelCol={{ span: 4 }}
+          wrapperCol={{ span: 20 }}
+          layout="horizontal"
+          className="mt-5"
+          style={{ width: "100%" }}
+          onFinish={() => handleDelete(course)}
+        >
+          <Space className="justify-end w-full">
+            <Form.Item className="mb-0">
+              <Space>
+                <Button
+                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                  onClick={handleClose}
+                  style={{
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #E0E0E0",
+                    color: "black",
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                  htmlType="submit"
+                  style={{
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #4caf50",
+                    color: "#fff",
+                  }}
+                >
+                  Confirm
+                </Button>
+              </Space>
+            </Form.Item>
+          </Space>
+        </Form>
+      </Modal>
     </div>
   );
 };

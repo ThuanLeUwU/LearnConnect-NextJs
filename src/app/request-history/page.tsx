@@ -486,7 +486,7 @@ const Reviews = () => {
             </p>
           </div>
           <div className="flex justify-center bg-[#e7f8ee] py-4 rounded-md">
-            <ul className="tabs flex space-x-5">
+            <ul className="tabs flex space-x-20">
               <li
                 className={`cursor-pointer rounded-md ${
                   activeTab === "tab1" ? "bg-[#309255] text-white" : "bg-white"
@@ -551,7 +551,7 @@ const Reviews = () => {
                           sx={{
                             flexGrow: 1,
                           }}
-                          className="shadow-[50px_20px_20px_10px_rgba(0,0,0,0.15)] m-5"
+                          className="shadow-[10px_10px_20px_10px_rgba(0,0,0,0.15)] m-5 rounded-lg"
                         >
                           <Card>
                             <Paper sx={{ width: "100%" }}>
@@ -714,7 +714,7 @@ const Reviews = () => {
                           sx={{
                             flexGrow: 1,
                           }}
-                          className="shadow-[50px_20px_20px_10px_rgba(0,0,0,0.15)] m-5 rounded-lg"
+                          className="shadow-[10px_10px_20px_10px_rgba(0,0,0,0.15)] m-5 rounded-lg"
                         >
                           <Card>
                             <Paper sx={{ width: "100%" }}>
@@ -910,7 +910,7 @@ const Reviews = () => {
                           sx={{
                             flexGrow: 1,
                           }}
-                          className="shadow-[50px_20px_20px_10px_rgba(0,0,0,0.15)] m-5 rounded-lg"
+                          className="shadow-[10px_10px_20px_10px_rgba(0,0,0,0.15)] m-5 rounded-lg"
                         >
                           <Card>
                             <Paper sx={{ width: "100%" }}>

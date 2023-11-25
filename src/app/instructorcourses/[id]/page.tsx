@@ -39,7 +39,7 @@ import {
 import { toast } from "sonner";
 import { Course } from "@/components/courses/courses";
 import { Test } from "@/app/test/[id]/page";
-import { DeleteOutlined } from "@ant-design/icons";
+import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 // import { Rating } from "@/app/course-detail/[id]/page";
 
 export type TestTitle = {
@@ -137,7 +137,10 @@ const Dashboard = ({ params }: any) => {
     setTestTitleModal(false);
     setShowQuestionForm(false);
     setShowAnswerForm(false);
-    setIsChecked(false);
+    handleSetIsChecked(false);
+    setDeleteTestModal(false);
+    setDeleteQuestionModal(false);
+    setDeleteAnswerModal(false);
     setSource("");
   };
 
@@ -381,9 +384,9 @@ const Dashboard = ({ params }: any) => {
   // console.log("test", infoTest);
   const [listQuestion, setListQuestion] = useState<Test[]>([]);
   const [allQuestions, setAllQuestions] = useState<Test[]>([]);
-  console.log("all", allQuestions);
+  // console.log("all", allQuestions);
   const [idTest, setIdTest] = useState<Test>();
-  console.log("list", idTest);
+  // console.log("list", idTest);
   const [submitted, setSubmitted] = useState(false);
   const [selectedAnswers, setSelectedAnswers] = useState<{
     [key: number]: { answer: string; isCorrect: boolean };
@@ -398,7 +401,7 @@ const Dashboard = ({ params }: any) => {
         setListQuestion(response.data);
         setAllQuestions(response.data[0].questions);
         setIdTest(response.data[0].test.id);
-        console.log("vải ò", response.data);
+        // console.log("vải ò", response.data);
         listQuestion.forEach((item) => {
           const totalQuestion = item.test.totalQuestion;
           // console.log("Total Questions:", totalQuestion);
@@ -454,6 +457,7 @@ const Dashboard = ({ params }: any) => {
         return text === 1 ? "Video" : "Document";
       },
     },
+
     {
       title: "Actions",
       key: "actions",
@@ -465,6 +469,11 @@ const Dashboard = ({ params }: any) => {
           </Button>
         </Space>
       ),
+    },
+    {
+      title: "Note",
+      dataIndex: "rejectReason",
+      key: "rejectReason",
     },
     {
       title: "Status",
@@ -515,7 +524,7 @@ const Dashboard = ({ params }: any) => {
       .then((response) => {
         // setInfoTest(response.data.questions);
         setListRating(response.data);
-        console.log("rating", response.data);
+        // console.log("rating", response.data);
         setLoading(false);
       })
       .catch((error) => {
@@ -608,14 +617,14 @@ const Dashboard = ({ params }: any) => {
 
   const [showAnswerForm, setShowAnswerForm] = useState(false);
   const [mano, setmano] = useState<number>(0);
-  console.log("mano", mano);
+  // console.log("mano", mano);
 
   const handleNewAnswerClick = (data: any) => {
     setShowAnswerForm(true);
     setmano(data);
   };
   const [questionId, setQuestionId] = useState<number>(0);
-  console.log("question", questionId);
+  // console.log("question", questionId);
   // useEffect(() => {
   //   if (showAnswerForm && questionId !== 0) {
   //     http.get(
@@ -677,59 +686,18 @@ const Dashboard = ({ params }: any) => {
     // Đóng form sau khi xử lý
   };
 
-  const [isChecked, setIsChecked] = useState(false);
-  console.log("check", isChecked);
-  // const [answerA, setAnswerA] = useState(false);
-  // const [answerB, setAnswerB] = useState(false);
-  // const [answerC, setAnswerC] = useState(false);
-  // const [answerD, setAnswerD] = useState(false);
-  // console.log("A", answerA);
-  // console.log("B", answerB);
-  // console.log("C", answerC);
-  // console.log("D", answerD);
-
-  // const handleCheckboxAChange = (e) => {
-  //   setAnswerA(e.target.checked);
-  //   if (e.target.checked) {
-  //     // Nếu ô A được chọn, tắt (disable) các ô khác
-  //     setAnswerB(false);
-  //     setAnswerC(false);
-  //     setAnswerD(false);
-  //   }
-  // };
-  // const handleCheckboxBChange = (e) => {
-  //   setAnswerB(e.target.checked);
-  //   if (e.target.checked) {
-  //     // Nếu ô B được chọn, tắt (disable) các ô khác
-  //     setAnswerA(false);
-  //     setAnswerC(false);
-  //     setAnswerD(false);
-  //   }
-  // };
-  // const handleCheckboxCChange = (e) => {
-  //   setAnswerC(e.target.checked);
-  //   if (e.target.checked) {
-  //     // Nếu ô C được chọn, tắt (disable) các ô khác
-  //     setAnswerB(false);
-  //     setAnswerA(false);
-  //     setAnswerD(false);
-  //   }
-  // };
-  // const handleCheckboxDChange = (e) => {
-  //   setAnswerD(e.target.checked);
-  //   if (e.target.checked) {
-  //     // Nếu ô D được chọn, tắt (disable) các ô khác
-  //     setAnswerB(false);
-  //     setAnswerC(false);
-  //     setAnswerA(false);
-  //   }
-  // };
+  const [isChecked, setIsChecked] = useState<boolean>(false);
+  const handleSetIsChecked = (value: boolean) => {
+    console.log("CALL: ", value);
+    setIsChecked(value);
+  };
+  // console.log("check", isChecked);
 
   const handleFormAnswerSubmit = (data: any) => {
     const formData = new FormData();
     formData.append("answerText", data.answer);
     formData.append("isCorrect", isChecked.toString());
-    console.log("nani2", isChecked.toString());
+    // console.log("nani2", isChecked.toString());
 
     try {
       http
@@ -753,7 +721,7 @@ const Dashboard = ({ params }: any) => {
             });
           // http.get();
           form.resetFields();
-          setIsChecked(false);
+          handleSetIsChecked(false);
           toast.success("Create Answer successfully!!!");
         });
     } catch (err) {
@@ -762,7 +730,7 @@ const Dashboard = ({ params }: any) => {
   };
 
   const handleCheckboxChange = (e) => {
-    setIsChecked(e.target.checked);
+    handleSetIsChecked(e.target.checked);
   };
 
   const [updateQuestion, setUpdateQuestion] = useState<string>("");
@@ -778,7 +746,7 @@ const Dashboard = ({ params }: any) => {
   const handleAnswerChange = (event) => {
     setUpdateAnswer(event.target.value);
 
-    console.log("tehje", event.target.value);
+    // console.log("tehje", event.target.value);
     setHasChanged2(true);
   };
 
@@ -786,8 +754,8 @@ const Dashboard = ({ params }: any) => {
   const [hasChanged2, setHasChanged2] = useState(false);
 
   const handleSaveData = (data: any) => {
-    console.log("tui nè má", data);
-    console.log("Data saved successfully:", updateQuestion);
+    // console.log("tui nè má", data);
+    // console.log("Data saved successfully:", updateQuestion);
     const formData = new FormData();
     formData.append("questionText", updateQuestion);
     try {
@@ -819,13 +787,13 @@ const Dashboard = ({ params }: any) => {
     }
   };
 
-  const handleSaveData2 = (data: any) => {
-    console.log("tui nè má", data);
+  const handleSaveData2 = (data: any, isCheckedCustom: boolean) => {
+    // console.log("tui nè má", data);
     // setAnswerId(0);
+    console.log("nani", isCheckedCustom);
     const formData = new FormData();
     formData.append("answerText", updateAnswer);
-    formData.append("isCorrect", isChecked.toString());
-    console.log("nani", isChecked.toString());
+    formData.append("isCorrect", isCheckedCustom.toString());
     try {
       http
         .put(
@@ -849,7 +817,7 @@ const Dashboard = ({ params }: any) => {
               setAnswerId(0);
               setHasChanged2(false);
               Modal.destroyAll();
-              // setIsChecked(false);
+              // handleSetIsChecked(false);
             });
         });
     } catch (err) {
@@ -860,7 +828,7 @@ const Dashboard = ({ params }: any) => {
   };
 
   const handleBlur = (data: any) => {
-    console.log("tao nè", data);
+    // console.log("tao nè", data);
     if (hasChanged) {
       Modal.confirm({
         title: "Confirm",
@@ -884,15 +852,26 @@ const Dashboard = ({ params }: any) => {
     }
     setShowUpdateQuestion(false);
   };
+  useEffect(() => {
+    console.log("check", isChecked);
+  }, [isChecked]);
+
   const handleBlur2 = (data: any) => {
-    console.log("tao nè", data);
+    console.log("DÈAULT: ", isChecked);
+    let isCheckVal = isChecked;
     if (hasChanged2) {
       Modal.confirm({
         title: "Do you want to save these changes?",
         content: (
           <div>
             <p>Do you want to change option for this answer?</p>
-            <Checkbox checked={isChecked} onChange={handleCheckboxChange}>
+            <Checkbox
+              defaultChecked={isChecked}
+              onChange={(e) => {
+                handleCheckboxChange(e);
+                isCheckVal = e.target.checked;
+              }}
+            >
               Correct
             </Checkbox>
           </div>
@@ -904,30 +883,40 @@ const Dashboard = ({ params }: any) => {
             color: "#fff", // Màu chữ của nút "OK"
           },
         },
-        onOk: () => {
-          handleSaveData2(data);
+        onOk: (...args: any[]) => {
+          console.log("SEND: ", isCheckVal);
+          handleSaveData2(data, isCheckVal);
         },
         onCancel: () => {
           setHasChanged2(false);
           setQuestionId(0);
           setAnswerId(0);
           // setUpdateQuestion("");
-          // setIsChecked(false);
+          // handleSetIsChecked(false);
         },
       });
     }
     setShowUpdateAnswer(false);
   };
 
+  const [deleteAnswerModal, setDeleteAnswerModal] = useState(false);
+  const [aId, setAId] = useState<number>(0);
+
+  const showDeleteAnswerModal = (data: any) => {
+    setDeleteAnswerModal(true);
+    setAId(data);
+  };
+
   const handleDeleteAnswer = (data: any) => {
-    console.log("hehe", data);
+    // console.log("hehe", data);
     try {
       http
         .delete(
-          `https://learnconnectapitest.azurewebsites.net/api/answer/${data}`
+          `https://learnconnectapitest.azurewebsites.net/api/answer/${aId}`
         )
         .then(() => {
           toast.success("Delete Successfully!!");
+          setDeleteAnswerModal(false);
           http
             .get(`/test/get-tests-by-course?courseId=${idCourse}`)
             .then((response) => {
@@ -935,22 +924,31 @@ const Dashboard = ({ params }: any) => {
               setAllQuestions(response.data[0].questions);
               setIdTest(response.data[0].test.id);
               // setShowAnswerForm(false);
-              // setIsChecked(false);
+              // handleSetIsChecked(false);
             });
         });
     } catch (err) {
       toast.error("Delete Fails !!!");
     }
+  };
+
+  const [deleteQuestionModal, setDeleteQuestionModal] = useState(false);
+  const [qId, setQId] = useState<number>(0);
+
+  const showDeleteQuestionModal = (data: any) => {
+    setDeleteQuestionModal(true);
+    setQId(data);
   };
 
   const handleDeleteQuestion = (data: any) => {
     try {
       http
         .delete(
-          `https://learnconnectapitest.azurewebsites.net/api/question/${data}`
+          `https://learnconnectapitest.azurewebsites.net/api/question/${qId}`
         )
         .then(() => {
           toast.success("Delete Successfully!!");
+          setDeleteQuestionModal(false);
           http
             .get(`/test/get-tests-by-course?courseId=${idCourse}`)
             .then((response) => {
@@ -958,7 +956,7 @@ const Dashboard = ({ params }: any) => {
               setAllQuestions(response.data[0].questions);
               setIdTest(response.data[0].test.id);
               // setShowAnswerForm(false);
-              // setIsChecked(false);
+              // handleSetIsChecked(false);
             });
         });
     } catch (err) {
@@ -966,14 +964,23 @@ const Dashboard = ({ params }: any) => {
     }
   };
 
+  const [deleteTestModal, setDeleteTestModal] = useState(false);
+  const [testId, setTestId] = useState<number>(0);
+
+  const showDeleteTestModal = (data: any) => {
+    setDeleteTestModal(true);
+    setTestId(data);
+  };
+
   const handleDeleteTest = (data: any) => {
     try {
       http
         .delete(
-          `https://learnconnectapitest.azurewebsites.net/api/test/${data}`
+          `https://learnconnectapitest.azurewebsites.net/api/test/${testId}`
         )
         .then(() => {
           toast.success("Delete Successfully !!!");
+          setDeleteTestModal(false);
           http
             .get(`/test/get-tests-by-course?courseId=${idCourse}`)
             .then((response) => {
@@ -981,7 +988,7 @@ const Dashboard = ({ params }: any) => {
               // setAllQuestions(response.data[0].questions);
               // setIdTest(response.data[0].test.id);
               // setShowAnswerForm(false);
-              // setIsChecked(false);
+              // handleSetIsChecked(false);
             });
         });
     } catch (err) {
@@ -991,12 +998,12 @@ const Dashboard = ({ params }: any) => {
 
   const handleRowClick = (record) => {
     // Xử lý khi click vào một hàng (item)
-    // console.log("Clicked item:", record);
+    console.log("Clicked item:", record);
     // Thực hiện các hành động khác cần thiết
   };
 
   const handleDeleteLecture = (data: any) => {
-    console.log("má m", data.id);
+    // console.log("má m", data.id);
     try {
       http
         .delete(
@@ -1127,7 +1134,7 @@ const Dashboard = ({ params }: any) => {
           </div>
         </div>
         <div className="flex justify-center bg-[#e7f8ee] py-4 rounded-md m-5">
-          <ul className="tabs flex space-x-5 ">
+          <ul className="tabs flex space-x-10 ">
             <li
               className={`cursor-pointer rounded-md ${
                 activeTab === "tab1" ? "bg-[#309255] text-white" : "bg-white"
@@ -1210,34 +1217,21 @@ const Dashboard = ({ params }: any) => {
                       <div key={item.test.id} className="mb-4 mt-6">
                         <div className="flex flex-col">
                           <div className="flex justify-end">
-                            <Popconfirm
-                              title="Are you sure you want to delete this item?"
-                              onConfirm={() => {
-                                handleDeleteTest(item.test.id);
+                            <button
+                              // className="flex items-end"
+                              style={{
+                                backgroundColor: "#fdc6c6",
+                                color: "black",
+                                width: "40px", // Thiết lập chiều rộng mong muốn
+                                height: "24px",
+                                borderRadius: "5px", // Thiết lập chiều cao mong muốn
                               }}
-                              okText="Yes"
-                              okButtonProps={{
-                                style: {
-                                  background: "red",
-                                  borderColor: "red",
-                                  color: "#fff",
-                                },
+                              onClick={() => {
+                                showDeleteTestModal(item.test.id);
                               }}
-                              cancelText="No"
                             >
-                              <button
-                                // className="flex items-end"
-                                style={{
-                                  backgroundColor: "red",
-                                  color: "black",
-                                  width: "40px", // Thiết lập chiều rộng mong muốn
-                                  height: "24px",
-                                  borderRadius: "5px", // Thiết lập chiều cao mong muốn
-                                }}
-                              >
-                                <DeleteOutlined />
-                              </button>
-                            </Popconfirm>
+                              <DeleteOutlined />
+                            </button>
                           </div>
                           <h3 className="text-xl font-semibold mt-2 text-center ">
                             <div className=" flex flex-col items-center justify-center mb-2">
@@ -1253,7 +1247,7 @@ const Dashboard = ({ params }: any) => {
                         {item.questions.map((q, index) => (
                           <div
                             key={q.question.id}
-                            className="mb-2 mt-6 p-4 border-2 rounded-lg border-gray-200"
+                            className="mb-2 my-8 p-4 border-2 rounded-lg border-gray-200 shadow-[10px_10px_20px_10px_rgba(0,0,0,0.15)] "
                           >
                             <div className="mb-1 font-medium text-[18px] flex flex-row justify-between">
                               <div className="flex flex-row gap-2">
@@ -1291,36 +1285,27 @@ const Dashboard = ({ params }: any) => {
                                     handleNewAnswerClick(q.question.id);
                                     setQuestionId(q.question.id);
                                   }}
+                                  className="flex flex-row items-center"
                                 >
-                                  Add Answer
+                                  {/* <div></div> */}
+                                  <PlusOutlined /> Add Answer
                                 </Button>
-                                <Popconfirm
-                                  title="Are you sure you want to delete this Question?"
-                                  onConfirm={() => {
-                                    handleDeleteQuestion(q.question.id);
+
+                                <button
+                                  style={{
+                                    backgroundColor: "#fdc6c6",
+                                    color: "black",
+                                    width: "40px", // Thiết lập chiều rộng mong muốn
+                                    height: "24px",
+                                    borderRadius: "5px",
+                                    // Thiết lập chiều cao mong muốn
                                   }}
-                                  okText="Yes"
-                                  okButtonProps={{
-                                    style: {
-                                      background: "red",
-                                      borderColor: "red",
-                                      color: "#fff",
-                                    },
-                                  }}
-                                  cancelText="No"
+                                  onClick={() =>
+                                    showDeleteQuestionModal(q.question.id)
+                                  }
                                 >
-                                  <button
-                                    style={{
-                                      backgroundColor: "red",
-                                      color: "black",
-                                      width: "40px", // Thiết lập chiều rộng mong muốn
-                                      height: "24px",
-                                      borderRadius: "5px", // Thiết lập chiều cao mong muốn
-                                    }}
-                                  >
-                                    <DeleteOutlined />
-                                  </button>
-                                </Popconfirm>
+                                  <DeleteOutlined />
+                                </button>
                               </div>
                             </div>
                             {showAnswerForm && questionId === q.question.id && (
@@ -1402,38 +1387,26 @@ const Dashboard = ({ params }: any) => {
                                           setAnswerId(answer.id);
                                           setQuestionId(q.question.id);
                                           setUpdateAnswer(answer.answerText);
-                                          setIsChecked(answer.isCorrect);
+                                          handleSetIsChecked(answer.isCorrect);
                                         }}
                                       >
                                         {answer.answerText}
                                       </div>
-                                      <Popconfirm
-                                        title="Are you sure you want to delete this item?"
-                                        onConfirm={() => {
-                                          handleDeleteAnswer(answer.id);
+
+                                      <button
+                                        style={{
+                                          backgroundColor: "#fdc6c6",
+                                          color: "black",
+                                          width: "24px", // Thiết lập chiều rộng mong muốn
+                                          height: "24px",
+                                          borderRadius: "5px", // Thiết lập chiều cao mong muốn
                                         }}
-                                        okText="Yes"
-                                        okButtonProps={{
-                                          style: {
-                                            background: "red",
-                                            borderColor: "red",
-                                            color: "#fff",
-                                          },
-                                        }}
-                                        cancelText="No"
+                                        onClick={() =>
+                                          showDeleteAnswerModal(answer.id)
+                                        }
                                       >
-                                        <button
-                                          style={{
-                                            backgroundColor: "red",
-                                            color: "black",
-                                            width: "24px", // Thiết lập chiều rộng mong muốn
-                                            height: "24px",
-                                            borderRadius: "5px", // Thiết lập chiều cao mong muốn
-                                          }}
-                                        >
-                                          <DeleteOutlined />
-                                        </button>
-                                      </Popconfirm>
+                                        <DeleteOutlined size={16} />
+                                      </button>
                                     </div>
                                   )}
                                 </>
@@ -1457,9 +1430,9 @@ const Dashboard = ({ params }: any) => {
                               </p>
                             </>
                           ) : (
-                            <div className="flex justify-between mb-5">
+                            <div className="flex justify-between mb-5 mt-10">
                               <Button onClick={handleNewQuestionClick}>
-                                New Question
+                                Add Question
                               </Button>
                             </div>
                           )}
@@ -1484,15 +1457,27 @@ const Dashboard = ({ params }: any) => {
                                 </Form.Item>
                                 <div className="flex gap-5 justify-end">
                                   {/* Thêm các trường dữ liệu khác cần thiết vào đây */}
-                                  <Button onClick={handleCancel}>Cancel</Button>
                                   <Button
+                                    className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                                    onClick={handleCancel}
                                     style={{
-                                      backgroundColor: "#4caf50",
-                                      borderColor: "#4caf50",
+                                      // backgroundColor: "#4caf50",
+                                      // borderColor: "#4caf50",
+                                      border: "2px solid #E0E0E0",
+                                      color: "black",
+                                    }}
+                                  >
+                                    Cancel
+                                  </Button>
+                                  <Button
+                                    className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                                    htmlType="submit"
+                                    style={{
+                                      // backgroundColor: "#4caf50",
+                                      // borderColor: "#4caf50",
+                                      border: "2px solid #4caf50",
                                       color: "#fff",
                                     }}
-                                    type="primary"
-                                    htmlType="submit"
                                   >
                                     Submit
                                   </Button>
@@ -1608,6 +1593,9 @@ const Dashboard = ({ params }: any) => {
         width={600}
         onCancel={handleCancel}
         footer={false}
+        style={{
+          top: "30%",
+        }}
       >
         <Form
           autoComplete="off"
@@ -1690,13 +1678,29 @@ const Dashboard = ({ params }: any) => {
           <Space className="justify-end w-full pr-[90px]">
             <Form.Item className="mb-0">
               <Space>
-                <Button onClick={handleCancel}>Cancel</Button>
                 <Button
-                  type="primary"
-                  htmlType="submit"
-                  style={{ color: "black" }}
+                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                  onClick={handleCancel}
+                  style={{
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #E0E0E0",
+                    color: "black",
+                  }}
                 >
-                  Create
+                  Cancel
+                </Button>
+                <Button
+                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                  htmlType="submit"
+                  style={{
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #4caf50",
+                    color: "#fff",
+                  }}
+                >
+                  Confirm
                 </Button>
               </Space>
             </Form.Item>
@@ -1712,6 +1716,9 @@ const Dashboard = ({ params }: any) => {
         width={600}
         onCancel={handleUpdateCancel}
         footer={false}
+        style={{
+          top: "30%",
+        }}
       >
         {/* Add your update form here */}
         <Form
@@ -1796,13 +1803,29 @@ const Dashboard = ({ params }: any) => {
           <Space className="justify-end w-full pr-[90px]">
             <Form.Item className="mb-0">
               <Space>
-                <Button onClick={handleUpdateCancel}>Cancel</Button>
                 <Button
-                  type="primary"
-                  htmlType="submit"
-                  style={{ color: "black" }}
+                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                  onClick={handleUpdateCancel}
+                  style={{
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #E0E0E0",
+                    color: "black",
+                  }}
                 >
-                  Update
+                  Cancel
+                </Button>
+                <Button
+                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                  htmlType="submit"
+                  style={{
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #4caf50",
+                    color: "#fff",
+                  }}
+                >
+                  Confirm
                 </Button>
               </Space>
             </Form.Item>
@@ -1829,6 +1852,9 @@ const Dashboard = ({ params }: any) => {
         width="40%"
         onCancel={handleDeleteCancel}
         footer={false}
+        style={{
+          top: "30%",
+        }}
         // style={{ background: "#FFCCCC" }}
       >
         {/* Add your update form here */}
@@ -1845,11 +1871,27 @@ const Dashboard = ({ params }: any) => {
           <Space className="justify-end w-full">
             <Form.Item className="mb-0">
               <Space>
-                <Button onClick={handleDeleteCancel}>Cancel</Button>
                 <Button
-                  type="primary"
+                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                  onClick={handleDeleteCancel}
+                  style={{
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #E0E0E0",
+                    color: "black",
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
                   htmlType="submit"
-                  style={{ color: "black" }}
+                  style={{
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #4caf50",
+                    color: "#fff",
+                  }}
                 >
                   Confirm
                 </Button>
@@ -1898,6 +1940,9 @@ const Dashboard = ({ params }: any) => {
         width="40%"
         onCancel={handleCancel}
         footer={false}
+        style={{
+          top: "30%",
+        }}
         // style={{ background: "#FFCCCC" }}
       >
         {/* Add your update form here */}
@@ -1936,13 +1981,209 @@ const Dashboard = ({ params }: any) => {
           <Space className="justify-end w-full">
             <Form.Item className="mb-0">
               <Space>
-                <Button onClick={handleCancel}>Cancel</Button>
                 <Button
-                  type="primary"
-                  htmlType="submit"
-                  style={{ color: "black" }}
+                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                  onClick={handleCancel}
+                  style={{
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #E0E0E0",
+                    color: "black",
+                  }}
                 >
-                  Create
+                  Cancel
+                </Button>
+                <Button
+                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                  htmlType="submit"
+                  style={{
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #4caf50",
+                    color: "#fff",
+                  }}
+                >
+                  Confirm
+                </Button>
+              </Space>
+            </Form.Item>
+          </Space>
+        </Form>
+      </Modal>
+
+      {/* Delete Test */}
+      <Modal
+        destroyOnClose={true}
+        title={
+          <div className="text-lg">
+            Are you sure you want to Delete this Test?
+          </div>
+        }
+        open={deleteTestModal}
+        // onOk={handleOk}
+        width="35%"
+        onCancel={handleCancel}
+        footer={false}
+        style={{
+          top: "30%",
+        }}
+      >
+        <Form
+          autoComplete="off"
+          form={form}
+          labelCol={{ span: 4 }}
+          wrapperCol={{ span: 20 }}
+          layout="horizontal"
+          className="mt-5"
+          style={{ width: "100%" }}
+          onFinish={handleDeleteTest}
+        >
+          <Space className="justify-end w-full">
+            <Form.Item className="mb-0">
+              <Space>
+                <Button
+                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                  onClick={handleCancel}
+                  style={{
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #E0E0E0",
+                    color: "black",
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                  htmlType="submit"
+                  style={{
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #4caf50",
+                    color: "#fff",
+                  }}
+                >
+                  Confirm
+                </Button>
+              </Space>
+            </Form.Item>
+          </Space>
+        </Form>
+      </Modal>
+
+      {/* Delete Question */}
+      <Modal
+        destroyOnClose={true}
+        title={
+          <div className="text-lg">
+            Are you sure you want to Delete this Question?
+          </div>
+        }
+        open={deleteQuestionModal}
+        // onOk={handleOk}
+        width="35%"
+        onCancel={handleCancel}
+        footer={false}
+        style={{
+          top: "30%",
+        }}
+      >
+        <Form
+          autoComplete="off"
+          form={form}
+          labelCol={{ span: 4 }}
+          wrapperCol={{ span: 20 }}
+          layout="horizontal"
+          className="mt-5"
+          style={{ width: "100%" }}
+          onFinish={handleDeleteQuestion}
+        >
+          <Space className="justify-end w-full">
+            <Form.Item className="mb-0">
+              <Space>
+                <Button
+                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                  onClick={handleCancel}
+                  style={{
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #E0E0E0",
+                    color: "black",
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                  htmlType="submit"
+                  style={{
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #4caf50",
+                    color: "#fff",
+                  }}
+                >
+                  Confirm
+                </Button>
+              </Space>
+            </Form.Item>
+          </Space>
+        </Form>
+      </Modal>
+
+      {/* Delete Answer */}
+      <Modal
+        destroyOnClose={true}
+        title={
+          <div className="text-lg">
+            Are you sure you want to Delete this Answer?
+          </div>
+        }
+        open={deleteAnswerModal}
+        // onOk={handleOk}
+        width="35%"
+        onCancel={handleCancel}
+        footer={false}
+        style={{
+          top: "30%",
+        }}
+      >
+        <Form
+          autoComplete="off"
+          form={form}
+          labelCol={{ span: 4 }}
+          wrapperCol={{ span: 20 }}
+          layout="horizontal"
+          className="mt-5"
+          style={{ width: "100%" }}
+          onFinish={handleDeleteAnswer}
+        >
+          <Space className="justify-end w-full">
+            <Form.Item className="mb-0">
+              <Space>
+                <Button
+                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                  onClick={handleCancel}
+                  style={{
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #E0E0E0",
+                    color: "black",
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                  htmlType="submit"
+                  style={{
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #4caf50",
+                    color: "#fff",
+                  }}
+                >
+                  Confirm
                 </Button>
               </Space>
             </Form.Item>

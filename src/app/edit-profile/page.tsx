@@ -136,11 +136,11 @@ export default function EditProfile() {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (!fullName || !phoneNumber || !bioDescription) {
-      toast.error("Please fill in all required fields.");
+      toast.error("Please Fill In All Required Fields.");
       return;
     }
     if (phoneNumber.length !== 10) {
-      toast.error("Phone number must be 10 digits.");
+      toast.error("Phone Number Must Be 10 Digits.");
       return;
     }
     const updatedUserData = {
@@ -164,13 +164,13 @@ export default function EditProfile() {
       .then((response) => {
         refetchUser();
         setTimeout(() => {
-          toast.success("Edit successful");
+          toast.success("Edit Successfully!!!");
         });
         router.push("/profile");
       })
       .catch((error) => {
         setTimeout(() => {
-          toast.error("Edit not successful");
+          toast.error("Edit Unsuccessfully!!!");
         });
         router.push("/profile");
         if (error.response) {

@@ -1,8 +1,11 @@
+"use client";
 import Link from "next/link";
 import InstructorCourseStyle from "./styles.module.scss";
 import { Tooltip } from "antd";
+import { useState } from "react";
 
 const LeftNavbar = ({ page1, page2, page3, page4, page5 }) => {
+  const [activeMenu, setActiveMenu] = useState<number>();
   const menuItem = [
     {
       image: "/menu-icon/form.png",

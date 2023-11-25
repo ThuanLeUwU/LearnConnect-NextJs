@@ -128,7 +128,7 @@ const Reviews = () => {
                 {reviews.map((item) => {
                   return (
                     <>
-                      <div className="single-review mt-3.5 border border-opacity-10 border-black p-7 rounded-md hover:border-[#309255] shadow-lg">
+                      <div className="single-review mt-3.5 border border-opacity-10 border-black p-7 rounded-md hover:border-[#309255] shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)]">
                         <div className="review-author flex justify-between">
                           <div className="flex flex-row">
                             <div className="author-thumb p-2">

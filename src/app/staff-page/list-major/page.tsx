@@ -12,7 +12,6 @@ import {
   Form,
   Input,
   Modal,
-  Popconfirm,
   Space,
   Spin,
   Table,
@@ -27,22 +26,14 @@ import { toast } from "sonner";
 import { DeleteOutlined } from "@ant-design/icons";
 
 const MajorSepcialize = () => {
-  const [courses, setCourses] = useState<Course[]>([]);
   const { id, userData } = UserAuth();
 
-  const router = useRouter();
-
   const [loading, setLoading] = useState(true);
-
-  const [lectures, setLectures] = useState<Lecture[]>([]);
 
   const [majors, setMajors] = useState<Category[]>([]);
   const [major, setMajor] = useState<Category>();
   const [majorId, setMajorId] = useState<number>(0);
   const [majorName, setMajorName] = useState<string>("");
-
-  const [statusMajor, setStatusMajor] = useState<number>(0);
-
   // console.log("stats", setStatusMajor);
 
   const [specializations, setSpecializations] = useState<Specialization[]>([]);
@@ -144,78 +135,39 @@ const MajorSepcialize = () => {
             // <Button danger onClick={() => handleDisableMajor(record)}>
             //   Disable
             // </Button>
-            <Popconfirm
-              title="Do you want to Disable this Major?"
-              onConfirm={() => {
-                handleDisableMajor(record);
+
+            <button
+              className="bg-white text-black border rounded-md border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-2 py-1"
+              onClick={() => {
+                handleDisableMajorModal(record);
               }}
-              okText="Yes"
-              okButtonProps={{
-                style: {
-                  background: "red",
-                  borderColor: "red",
-                  color: "#fff",
-                },
-              }}
-              cancelText="No"
             >
-              <button
-                className="bg-white text-black border rounded-md border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-2 py-1"
-                // onClick={handleBan}
-              >
-                Disable
-              </button>
-            </Popconfirm>
+              Disable
+            </button>
           ) : (
-            <Popconfirm
-              title="Do you want to Enable this Major?"
-              onConfirm={() => {
-                handleEnableMajor(record);
-              }}
-              okText="Yes"
-              okButtonProps={{
-                style: {
-                  background: "red",
-                  borderColor: "red",
-                  color: "#fff",
-                },
-              }}
-              cancelText="No"
+            <button
+              onClick={() => handleEnableMajorModal(record)}
+              className="bg-white text-black border rounded-md border-green-500 hover:bg-green-500 hover:text-white transition duration-300 px-2 py-1"
             >
-              <button className="bg-white text-black border rounded-md border-green-500 hover:bg-green-500 hover:text-white transition duration-300 px-2 py-1">
-                Enable
-              </button>
-            </Popconfirm>
+              Enable
+            </button>
           )}
 
-          <Popconfirm
-            title="Do you want to Delete this Major? "
-            onConfirm={() => {
-              handleDeleteMajor(record);
+          <button
+            // className="flex items-end"
+            style={{
+              backgroundColor: "red",
+              color: "black",
+              width: "40px", // Thiết lập chiều rộng mong muốn
+              height: "30px",
+              borderRadius: "5px", // Thiết lập chiều cao mong muốn
             }}
-            okText="Yes"
-            okButtonProps={{
-              style: {
-                background: "red",
-                borderColor: "red",
-                color: "#fff",
-              },
+            onClick={() => {
+              handleDeleteMajorModal(record);
             }}
-            cancelText="No"
           >
-            <button
-              // className="flex items-end"
-              style={{
-                backgroundColor: "red",
-                color: "black",
-                width: "40px", // Thiết lập chiều rộng mong muốn
-                height: "30px",
-                borderRadius: "5px", // Thiết lập chiều cao mong muốn
-              }}
-            >
-              <DeleteOutlined />
-            </button>
-          </Popconfirm>
+            <DeleteOutlined />
+          </button>
           {/* <Button danger>Delete</Button> */}
         </Space>
       ),
@@ -268,78 +220,34 @@ const MajorSepcialize = () => {
             // <Button danger onClick={() => handleDisableMajor(record)}>
             //   Disable
             // </Button>
-            <Popconfirm
-              title="Do you want to Disable this Major?"
-              onConfirm={() => {
-                handleDisableSpecialize(record);
-              }}
-              okText="Yes"
-              okButtonProps={{
-                style: {
-                  background: "red",
-                  borderColor: "red",
-                  color: "#fff",
-                },
-              }}
-              cancelText="No"
-            >
-              <button
-                className="bg-white text-black border rounded-md border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-2 py-1"
-                // onClick={handleBan}
-              >
-                Disable
-              </button>
-            </Popconfirm>
-          ) : (
-            <Popconfirm
-              title="Do you want to Enable this Major?"
-              onConfirm={() => {
-                handleEnableSpecialize(record);
-              }}
-              okText="Yes"
-              okButtonProps={{
-                style: {
-                  background: "green",
-                  borderColor: "green",
-                  color: "#fff",
-                },
-              }}
-              cancelText="No"
-            >
-              <button className="bg-white text-black border rounded-md border-green-500 hover:bg-green-500 hover:text-white transition duration-300 px-2 py-1">
-                Enable
-              </button>
-            </Popconfirm>
-          )}
 
-          <Popconfirm
-            title="Do you want to Delete this Major? "
-            onConfirm={() => {
-              handleDeleteSpecialize(record);
-            }}
-            okText="Yes"
-            okButtonProps={{
-              style: {
-                background: "red",
-                borderColor: "red",
-                color: "#fff",
-              },
-            }}
-            cancelText="No"
-          >
             <button
-              // className="flex items-end"
-              style={{
-                backgroundColor: "red",
-                color: "black",
-                width: "40px", // Thiết lập chiều rộng mong muốn
-                height: "30px",
-                borderRadius: "5px", // Thiết lập chiều cao mong muốn
-              }}
+              className="bg-white text-black border rounded-md border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-2 py-1"
+              onClick={() => handleDisableSpecializeModal(record)}
             >
-              <DeleteOutlined />
+              Disable
             </button>
-          </Popconfirm>
+          ) : (
+            <button
+              onClick={() => handleEnableSpecializeModal(record)}
+              className="bg-white text-black border rounded-md border-green-500 hover:bg-green-500 hover:text-white transition duration-300 px-2 py-1"
+            >
+              Enable
+            </button>
+          )}
+          <button
+            // className="flex items-end"\
+            onClick={() => handleDeleteSpecializeModal(record)}
+            style={{
+              backgroundColor: "red",
+              color: "black",
+              width: "40px", // Thiết lập chiều rộng mong muốn
+              height: "30px",
+              borderRadius: "5px", // Thiết lập chiều cao mong muốn
+            }}
+          >
+            <DeleteOutlined />
+          </button>
           {/* <Button danger>Delete</Button> */}
         </Space>
       ),
@@ -426,14 +334,22 @@ const MajorSepcialize = () => {
     }
   };
 
+  const [disableMajorModal, setDisableMajorModal] = useState(false);
+
+  const handleDisableMajorModal = (data: any) => {
+    setMajorId(data.id);
+    setDisableMajorModal(true);
+  };
+
   const handleDisableMajor = (data: any) => {
     try {
       http
         .put(
-          `https://learnconnectapitest.azurewebsites.net/api/major/update-major-status?MajorId=${data.id}&status=0`
+          `https://learnconnectapitest.azurewebsites.net/api/major/update-major-status?MajorId=${majorId}&status=0`
         )
         .then(() => {
           toast.success("Disable Major Successfully!!!");
+          setDisableMajorModal(false);
           http
             .get(`https://learnconnectapitest.azurewebsites.net/api/major`)
             .then((response) => {
@@ -450,14 +366,22 @@ const MajorSepcialize = () => {
     }
   };
 
+  const [enableMajorModal, setEnableMajorModal] = useState(false);
+
+  const handleEnableMajorModal = (data: any) => {
+    setMajorId(data.id);
+    setEnableMajorModal(true);
+  };
+
   const handleEnableMajor = (data: any) => {
     try {
       http
         .put(
-          `https://learnconnectapitest.azurewebsites.net/api/major/update-major-status?MajorId=${data.id}&status=1`
+          `https://learnconnectapitest.azurewebsites.net/api/major/update-major-status?MajorId=${majorId}&status=1`
         )
         .then(() => {
           toast.success("Enable Major Successfully!!!");
+          setEnableMajorModal(false);
           http
             .get(`https://learnconnectapitest.azurewebsites.net/api/major`)
             .then((response) => {
@@ -472,6 +396,13 @@ const MajorSepcialize = () => {
     } catch (err) {
       console.error(err);
     }
+  };
+
+  const [deleteMajorModal, setDeleteMajorModal] = useState(false);
+
+  const handleDeleteMajorModal = (data: any) => {
+    setMajorId(data.id);
+    setDeleteMajorModal(true);
   };
 
   const handleDeleteMajor = (data: any) => {
@@ -482,6 +413,7 @@ const MajorSepcialize = () => {
         )
         .then(() => {
           toast.success("Delete Major Successfully!!!");
+          setDeleteMajorModal(false);
           setTableSpecialize(false);
           http
             .get(`https://learnconnectapitest.azurewebsites.net/api/major`)
@@ -590,14 +522,22 @@ const MajorSepcialize = () => {
 
   // const handleDeleteSpecialize = (data: any) => {};
 
+  const [disableSpecializeModal, setDisableSpecializeModal] = useState(false);
+
+  const handleDisableSpecializeModal = (data: any) => {
+    setSpecializeId(data.id);
+    setDisableSpecializeModal(true);
+  };
+
   const handleDisableSpecialize = (data: any) => {
     try {
       http
         .put(
-          `https://learnconnectapitest.azurewebsites.net/api/specialization/update-specialization-status?specializationId=${data.id}&status=0`
+          `https://learnconnectapitest.azurewebsites.net/api/specialization/update-specialization-status?specializationId=${specializeId}&status=0`
         )
         .then(() => {
           toast.success("Disable Specialization Successfully!!!");
+          setDisableSpecializeModal(false);
           http
             .get(
               `https://learnconnectapitest.azurewebsites.net/api/specialization/by-major/${majorId}`
@@ -616,14 +556,22 @@ const MajorSepcialize = () => {
     }
   };
 
+  const [EnableSpecializeModal, setEnableSpecializeModal] = useState(false);
+
+  const handleEnableSpecializeModal = (data: any) => {
+    setSpecializeId(data.id);
+    setEnableSpecializeModal(true);
+  };
+
   const handleEnableSpecialize = (data: any) => {
     try {
       http
         .put(
-          `https://learnconnectapitest.azurewebsites.net/api/specialization/update-specialization-status?specializationId=${data.id}&status=1`
+          `https://learnconnectapitest.azurewebsites.net/api/specialization/update-specialization-status?specializationId=${specializeId}&status=1`
         )
         .then(() => {
           toast.success("Enable Specialization Successfully!!!");
+          setEnableSpecializeModal(false);
           http
             .get(
               `https://learnconnectapitest.azurewebsites.net/api/specialization/by-major/${majorId}`
@@ -640,6 +588,13 @@ const MajorSepcialize = () => {
     } catch (err) {
       console.error(err);
     }
+  };
+
+  const [deleteSpecializeModal, setDeleteSpecializeModal] = useState(false);
+
+  const handleDeleteSpecializeModal = (data: any) => {
+    setSpecializeId(data.id);
+    setDeleteSpecializeModal(true);
   };
 
   const handleDeleteSpecialize = (data: any) => {
@@ -651,6 +606,7 @@ const MajorSepcialize = () => {
         .then(() => {
           toast.success("Delete Specialization Successfully!!!");
           // setTableSpecialize(false);
+          setDeleteSpecializeModal(false);
           http
             .get(
               `https://learnconnectapitest.azurewebsites.net/api/specialization/by-major/${majorId}`
@@ -683,6 +639,12 @@ const MajorSepcialize = () => {
     setFormUpdateMajor(false);
     setFormCreateSpecialize(false);
     setFormUpdateSpecialize(false);
+    setDisableMajorModal(false);
+    setEnableMajorModal(false);
+    setDeleteMajorModal(false);
+    setDisableSpecializeModal(false);
+    setEnableSpecializeModal(false);
+    setDeleteSpecializeModal(false);
     form.resetFields();
   };
 
@@ -702,13 +664,12 @@ const MajorSepcialize = () => {
           <div className="text-start font-semibold text-5xl pl-5">
             List of Majors
           </div>
-          <div className="flex justify-end ">
-            <button
-              className="border-2 rounded-lg px-4 py-2 mr-5"
-              onClick={handleCreateMajor}
-            >
-              New Major
-            </button>
+          <div className="flex justify-end bg-[#e7f8ee] py-4 rounded-md mb-5">
+            <div className="flex justify-end ">
+              <Button className=" mr-5" onClick={handleCreateMajor}>
+                New Major
+              </Button>
+            </div>
           </div>
         </div>
         {loading ? (
@@ -723,23 +684,20 @@ const MajorSepcialize = () => {
                 onClick: () => handleRowClick(record), // Xử lý sự kiện click
               };
             }}
-            className="mx-5"
+            className="mx-5 shadow-[5px_15px_25px_10px_rgba(0,0,0,0.15)] mt-2 rounded-lg"
           />
         )}
         <div>
           {tableSpecialize && (
             <>
-              <div className="flex flex-col pb-5 gap-2">
+              <div className="flex flex-col pb-5 gap-2 mt-16">
                 <div className="text-center font-semibold text-3xl ">
-                  All Specialization of {majorName}
+                  All Specializations of {majorName}
                 </div>
                 <div className="flex justify-end ">
-                  <button
-                    className="border-2 rounded-lg px-3 py-1"
-                    onClick={handleCreateSpecialize}
-                  >
+                  <Button className="mr-5" onClick={handleCreateSpecialize}>
                     Add More
-                  </button>
+                  </Button>
                 </div>
               </div>
               {specializations.length === 0 ? (
@@ -749,6 +707,7 @@ const MajorSepcialize = () => {
                   dataSource={specializations.reverse()}
                   columns={columns2}
                   pagination={{ ...pagination, onChange: handlePageChange }}
+                  className="mx-5 shadow-[5px_15px_25px_10px_rgba(0,0,0,0.15)] mt-2 rounded-lg  mb-20"
                 />
               )}
             </>
@@ -764,10 +723,10 @@ const MajorSepcialize = () => {
       </div> */}
       </div>
 
-      {/* create Modal */}
+      {/* create Major */}
       <Modal
         destroyOnClose={true}
-        title={`Create New Major`}
+        title={<div className="text-lg">Create Major Form</div>}
         open={formCreateMajor}
         // onOk={handleOk}
         width="40%"
@@ -783,8 +742,6 @@ const MajorSepcialize = () => {
           style={{
             width: "100%",
             alignItems: "center",
-            marginTop: 20,
-            marginLeft: 20,
           }}
         >
           <Form.Item
@@ -829,10 +786,10 @@ const MajorSepcialize = () => {
         </Form>
       </Modal>
 
-      {/* Update Modal */}
+      {/* Update Major */}
       <Modal
         destroyOnClose={true}
-        title={`Create New Major`}
+        title={<div className="text-lg">Update Major Form</div>}
         open={formUpdateMajor}
         // onOk={handleOk}
         width="40%"
@@ -872,10 +829,190 @@ const MajorSepcialize = () => {
         </Form>
       </Modal>
 
+      {/* Disable major */}
+      <Modal
+        destroyOnClose={true}
+        title={
+          <div className="text-lg">
+            Are you sure you want to Disable this Major?
+          </div>
+        }
+        open={disableMajorModal}
+        // onOk={handleOk}
+        width="35%"
+        onCancel={handleCancel}
+        footer={false}
+        style={{
+          top: "30%",
+        }}
+      >
+        <Form
+          autoComplete="off"
+          form={form}
+          labelCol={{ span: 4 }}
+          wrapperCol={{ span: 20 }}
+          layout="horizontal"
+          className="mt-5"
+          style={{ width: "100%" }}
+          onFinish={handleDisableMajor}
+        >
+          <Space className="justify-end w-full">
+            <Form.Item className="mb-0">
+              <Space>
+                <Button
+                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                  onClick={handleCancel}
+                  style={{
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #E0E0E0",
+                    color: "black",
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                  htmlType="submit"
+                  style={{
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #4caf50",
+                    color: "#fff",
+                  }}
+                >
+                  Confirm
+                </Button>
+              </Space>
+            </Form.Item>
+          </Space>
+        </Form>
+      </Modal>
+
+      {/* enable major  */}
+      <Modal
+        destroyOnClose={true}
+        title={
+          <div className="text-lg">
+            Are you sure you want to Enable this Major?
+          </div>
+        }
+        open={enableMajorModal}
+        // onOk={handleOk}
+        width="35%"
+        onCancel={handleCancel}
+        footer={false}
+        style={{
+          top: "30%",
+        }}
+      >
+        <Form
+          autoComplete="off"
+          form={form}
+          labelCol={{ span: 4 }}
+          wrapperCol={{ span: 20 }}
+          layout="horizontal"
+          className="mt-5"
+          style={{ width: "100%" }}
+          onFinish={handleEnableMajor}
+        >
+          <Space className="justify-end w-full">
+            <Form.Item className="mb-0">
+              <Space>
+                <Button
+                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                  onClick={handleCancel}
+                  style={{
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #E0E0E0",
+                    color: "black",
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                  htmlType="submit"
+                  style={{
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #4caf50",
+                    color: "#fff",
+                  }}
+                >
+                  Confirm
+                </Button>
+              </Space>
+            </Form.Item>
+          </Space>
+        </Form>
+      </Modal>
+
+      {/* delete major  */}
+      <Modal
+        destroyOnClose={true}
+        title={
+          <div className="text-lg">
+            Are you sure you want to Delete this Major?
+          </div>
+        }
+        open={deleteMajorModal}
+        // onOk={handleOk}
+        width="35%"
+        onCancel={handleCancel}
+        footer={false}
+        style={{
+          top: "30%",
+        }}
+      >
+        <Form
+          autoComplete="off"
+          form={form}
+          labelCol={{ span: 4 }}
+          wrapperCol={{ span: 20 }}
+          layout="horizontal"
+          className="mt-5"
+          style={{ width: "100%" }}
+          onFinish={handleDeleteMajor}
+        >
+          <Space className="justify-end w-full">
+            <Form.Item className="mb-0">
+              <Space>
+                <Button
+                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                  onClick={handleCancel}
+                  style={{
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #E0E0E0",
+                    color: "black",
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                  htmlType="submit"
+                  style={{
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #4caf50",
+                    color: "#fff",
+                  }}
+                >
+                  Confirm
+                </Button>
+              </Space>
+            </Form.Item>
+          </Space>
+        </Form>
+      </Modal>
+
       {/* Create Specialize  */}
       <Modal
         destroyOnClose={true}
-        title={`Create New Major`}
+        title={<div className="text-lg">Create Specialization Form</div>}
         open={formCreateSpecialize}
         // onOk={handleOk}
         width="40%"
@@ -935,7 +1072,7 @@ const MajorSepcialize = () => {
       {/* Update Specialize */}
       <Modal
         destroyOnClose={true}
-        title={`Create New Major`}
+        title={<div className="text-lg">Update Specialization Form</div>}
         open={formUpdateSpecialize}
         // onOk={handleOk}
         width="40%"
@@ -975,6 +1112,186 @@ const MajorSepcialize = () => {
               Submit
             </Button>
           </div>
+        </Form>
+      </Modal>
+
+      {/* Disable Specialize */}
+      <Modal
+        destroyOnClose={true}
+        title={
+          <div className="text-lg">
+            Are you sure you want to Delete this Major?
+          </div>
+        }
+        open={disableSpecializeModal}
+        // onOk={handleOk}
+        width="35%"
+        onCancel={handleCancel}
+        footer={false}
+        style={{
+          top: "30%",
+        }}
+      >
+        <Form
+          autoComplete="off"
+          form={form}
+          labelCol={{ span: 4 }}
+          wrapperCol={{ span: 20 }}
+          layout="horizontal"
+          className="mt-5"
+          style={{ width: "100%" }}
+          onFinish={handleDisableSpecialize}
+        >
+          <Space className="justify-end w-full">
+            <Form.Item className="mb-0">
+              <Space>
+                <Button
+                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                  onClick={handleCancel}
+                  style={{
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #E0E0E0",
+                    color: "black",
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                  htmlType="submit"
+                  style={{
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #4caf50",
+                    color: "#fff",
+                  }}
+                >
+                  Confirm
+                </Button>
+              </Space>
+            </Form.Item>
+          </Space>
+        </Form>
+      </Modal>
+
+      {/* Enable Specialize */}
+      <Modal
+        destroyOnClose={true}
+        title={
+          <div className="text-lg">
+            Are you sure you want to Enable this Specialization?
+          </div>
+        }
+        open={EnableSpecializeModal}
+        // onOk={handleOk}
+        width="35%"
+        onCancel={handleCancel}
+        footer={false}
+        style={{
+          top: "30%",
+        }}
+      >
+        <Form
+          autoComplete="off"
+          form={form}
+          labelCol={{ span: 4 }}
+          wrapperCol={{ span: 20 }}
+          layout="horizontal"
+          className="mt-5"
+          style={{ width: "100%" }}
+          onFinish={handleEnableSpecialize}
+        >
+          <Space className="justify-end w-full">
+            <Form.Item className="mb-0">
+              <Space>
+                <Button
+                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                  onClick={handleCancel}
+                  style={{
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #E0E0E0",
+                    color: "black",
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                  htmlType="submit"
+                  style={{
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #4caf50",
+                    color: "#fff",
+                  }}
+                >
+                  Confirm
+                </Button>
+              </Space>
+            </Form.Item>
+          </Space>
+        </Form>
+      </Modal>
+
+      {/* Delete Specialize */}
+      <Modal
+        destroyOnClose={true}
+        title={
+          <div className="text-lg">
+            Are you sure you want to Delete this Specialization?
+          </div>
+        }
+        open={deleteSpecializeModal}
+        // onOk={handleOk}
+        width="35%"
+        onCancel={handleCancel}
+        footer={false}
+        style={{
+          top: "30%",
+        }}
+      >
+        <Form
+          autoComplete="off"
+          form={form}
+          labelCol={{ span: 4 }}
+          wrapperCol={{ span: 20 }}
+          layout="horizontal"
+          className="mt-5"
+          style={{ width: "100%" }}
+          onFinish={handleDeleteSpecialize}
+        >
+          <Space className="justify-end w-full">
+            <Form.Item className="mb-0">
+              <Space>
+                <Button
+                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                  onClick={handleCancel}
+                  style={{
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #E0E0E0",
+                    color: "black",
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                  htmlType="submit"
+                  style={{
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #4caf50",
+                    color: "#fff",
+                  }}
+                >
+                  Confirm
+                </Button>
+              </Space>
+            </Form.Item>
+          </Space>
         </Form>
       </Modal>
     </div>

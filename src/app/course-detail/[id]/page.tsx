@@ -313,7 +313,7 @@ export default function CourseDetailPage({ params }: any) {
                                             :
                                           </td>
                                           <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-normal">
-                                            {/* {courses?.specialization} */}
+                                            {courses?.specializationName}
                                           </td>
                                         </tr>
                                         <tr className="border-b border-b-[#e7f8ee]">

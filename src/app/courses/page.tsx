@@ -12,6 +12,7 @@ import { http } from "@/api/http";
 import { Category } from "../instructorcourses/page";
 import { useRouter } from "next/navigation";
 import { UserAuth } from "../context/AuthContext";
+import { RedoOutlined } from "@ant-design/icons";
 // import { CourseItem } from "@/components/pagination/useDataFavoritesFetcher";
 export type Filter = {
   minPrice: number;
@@ -47,6 +48,7 @@ export default function ListCourse() {
   console.log("rate", rate);
   const [specialized, setSpecialized] = useState<Category[]>([]);
   const [filterBySpecialized, setFilterBySpecialized] = useState<any>(null);
+  const [filterByRating, setFilterByRating] = useState<any>(null);
 
   // console.log("spe", specialized[0].id);
 
@@ -93,27 +95,26 @@ export default function ListCourse() {
   };
 
   const handleFilterMaxPrice = (selected: any) => {};
-  const handleRateChange = (newValue: number) => {
+  const handleRateChange = (newValue: any) => {
     setRate(newValue);
+    setSelected(true);
   };
   const minPriceOption = [
     {
       price: "Free",
       value: 0,
     },
-    { price: "Under 200,000", value: 1 },
-    { price: "200000 - 1,000,000", value: 200001 },
-    { price: "Above 1,000,000", value: 1000001 },
+    { price: "Under 200,000 VNĐ", value: 1 },
+    { price: "200000 - 1,000,000 VNĐ", value: 200001 },
+    { price: "Above 1,000,000 VNĐ", value: 1000001 },
   ];
 
   const minRateOption = [
-    {
-      price: "1",
-      value: 1,
-    },
-    { price: "Under 200,000", value: 1 },
-    { price: "200,000 - 1,000,000", value: 200001 },
-    { price: "Above 1,000,000", value: 1000001 },
+    { rate: "1", value: 1 },
+    { rate: "2", value: 2 },
+    { rate: "3", value: 3 },
+    { rate: "4", value: 4 },
+    { rate: "5", value: 5 },
   ];
 
   // const selectMinPriceRef = useRef<Select>(null);
@@ -137,7 +138,7 @@ export default function ListCourse() {
   return (
     <div className="container">
       <Search searchQueryData={""} />
-      <div className="bg-[#e5f4eb] rounded-[10px] px-10 mt-5 shadow-lg">
+      <div className="bg-[#e5f4eb] rounded-[10px] pl-10 pr-2 mt-5 shadow-lg">
         <div className="flex justify-between p-5 items-center text-center ">
           <span>Price: </span>
           <Select
@@ -169,12 +170,27 @@ export default function ListCourse() {
             ))}
           </Select>
 
-          <Rate onChange={handleRateChange} value={rate} />
+          <span>Rating: </span>
+          <Select
+            defaultValue=""
+            onChange={handleRateChange}
+            style={{ width: 100 }}
+            value={rate === null ? <></> : rate}
+          >
+            {minRateOption.map((option, index) => (
+              // <div key={index}>hahaha {option.date}</div>
+              <Option key={option.value} value={option.value}>
+                {option.rate}
+              </Option>
+            ))}
+          </Select>
+
+          {/* <Rate onChange={handleRateChange} value={rate} /> */}
           <button
             onClick={removeFilterClick}
-            className="border-2 rounded-lg px-2 bg-[#309255] text-slate-100"
+            className="border-2 rounded-lg px-2 bg-[#fff] text-[#000]"
           >
-            Reset
+            <RedoOutlined />
           </button>
         </div>
       </div>

@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation";
 const ModerationContent = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [activeTab, setActiveTab] = useState(0);
-  console.log("hhhhha", activeTab);
+  // console.log("hhhhha", activeTab);
   const handleTabClick = (tabName: number) => {
     setActiveTab(tabName);
   };
@@ -52,10 +52,10 @@ const ModerationContent = () => {
        */}
       <div className="w-full mt-4">
         <div className="text-start font-semibold text-5xl pb-5 pl-5">
-          List Course{" "}
+          List Courses{" "}
         </div>
         <div className="flex justify-evenly bg-[#e7f8ee] py-4 rounded-md mb-5">
-          <ul className="tabs flex space-x-5">
+          <ul className="tabs flex space-x-24">
             <li
               className={`cursor-pointer rounded-md ${
                 activeTab === 0 ? "bg-[#309255] text-white" : "bg-white"
@@ -115,7 +115,7 @@ const ModerationContent = () => {
             <div className="flex flex-col gap-5 mx-5">
               {listCourseModeration.map((item) => (
                 <>
-                  <div className="rounded-lg border-solid border-2 flex flex-row justify-between p-5 gap-5 hover:border-[#48b544]">
+                  <div className="rounded-lg border-solid border-2 flex flex-row justify-between p-5 gap-5 hover:border-[#48b544] shadow-[10px_10px_20px_10px_rgba(0,0,0,0.15)] m-3">
                     <div className="">
                       <img
                         src={item.imageUrl}

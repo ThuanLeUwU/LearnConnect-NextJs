@@ -19,6 +19,8 @@ import { message } from "antd";
 import { toast } from "sonner";
 import { http } from "@/api/http";
 import axios from "axios";
+import useLocalStorage from "use-local-storage";
+import jwt from "jsonwebtoken";
 
 interface AuthContextProps {
   children: ReactNode;
@@ -73,12 +75,14 @@ const AuthContext = createContext<AuthContextValue>({
 export const AuthContextProvider: React.FC<AuthContextProps> = ({
   children,
 }) => {
+  // const [authToken, _] = useLocalStorage("token", "neasdasd");
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [jwtToken, setJwtToken] = useState("");
   const [id, setId] = useState("");
   const [role, setRole] = useState(-1);
   const [userData, setUserData] = useState<User | null>(null);
   const router = useRouter();
+  const [isDidMount, setIsDidMount] = useState<boolean>(false);
 
   const resetUserData = () => {
     setUser(null);
@@ -93,21 +97,24 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
     await signInWithPopup(auth, provider);
 
     setTimeout(() => {
-      toast.success("Login successful");
+      toast.success("Login Successful");
     });
   };
 
   const logOut = () => {
     signOut(auth);
     setUser(null);
+    console.log("logOut");
     localStorage.removeItem("token");
     setJwtToken("");
     setId("");
     setUserData(null);
     setRole(-1);
   };
+
   const setUserLogin = (user, token) => {
     setUser(null);
+    console.log("setUserLogin");
     localStorage.setItem("token", token);
     setJwtToken(token);
     setId(user?.id);
@@ -145,6 +152,28 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
   //   };
   // }, [user, jwtToken, id, role, userData]);
 
+  React.useEffect(() => {
+    // if (!isDidMount) {
+    //   setIsDidMount(true);
+    //   return;
+    // }
+
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      const decodedToken = jwt.decode(token);
+      console.log("token 12312", decodedToken);
+
+      http
+        .get(`user/${decodedToken?.Id}`)
+        .then((res) => {
+          setUserLogin(res, token);
+          setUserData(res.data);
+        })
+        .catch((e) => console.log(e));
+    }
+  }, []);
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
@@ -164,6 +193,7 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
             );
             // setJwtToken(responseData?.data);
             localStorage.setItem("token", responseData?.data.data);
+            console.log("useEffect");
             const api_token = responseData?.data.data;
             var jwt = require("jsonwebtoken");
             var decoded = jwt.decode(api_token);
