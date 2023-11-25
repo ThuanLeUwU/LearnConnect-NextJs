@@ -309,6 +309,9 @@ const Revenue = () => {
         </div>
       ) : (
         <div className={`${InstructorCourseStyle.body_wrapper}`}>
+          <div className="text-start font-semibold text-5xl pb-5 pl-5">
+            Revenue
+          </div>
           <div className="mt-10 rounded-lg border-solid border-2 mx-10 p-20">
             <div className="flex">
               <div className="text-2xl font-semibold mb-0 pt-4 leading-5">

@@ -130,7 +130,8 @@ const StaffRatingTable = () => {
     };
   }
   return (
-    <div className="w-full">
+    <div className="w-full mt-4">
+      <div className="text-start font-semibold text-5xl pb-5 pl-5">Request</div>
       <div>
         <div className=" text-[#212832] ">
           <div className="flex justify-center bg-[#e7f8ee] py-4 rounded-md">
@@ -161,12 +162,6 @@ const StaffRatingTable = () => {
           <div className="tab-content">
             {activeTab === "tab2" && (
               <div className="min-h-[1000px] w-full">
-                <div className="px-3 py-3">
-                  <Typography variant="h3">FeedBack</Typography>
-                  <p>
-                    All reviews, starting with the most recent, are listed here
-                  </p>
-                </div>
                 <Box
                   component="main"
                   sx={{
@@ -319,12 +314,6 @@ const StaffRatingTable = () => {
             )}
             {activeTab === "tab3" && (
               <div className="min-h-[1000px] w-full">
-                <div className="px-3 py-3">
-                  <Typography variant="h3">FeedBack</Typography>
-                  <p className="pb-5">
-                    All reviews, starting with the most recent, are listed here
-                  </p>
-                </div>
                 <Box
                   component="main"
                   sx={{
