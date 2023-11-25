@@ -74,17 +74,19 @@ const DetailsContent = ({ params }: any) => {
 
   const [oneLecture, setOneLecture] = useState<Lecture>();
   const [acceptModal, setAcceptModal] = useState(false);
+  const [lectureId, setLectureId] = useState<number>(0);
 
   const handleAcceptLecture = (data: any) => {
     setAcceptModal(true);
     setOneLecture(data);
+    setLectureId(data.id);
   };
 
   const handleAcceptClick = (data: any) => {
     try {
       http
         .post(
-          `https://learnconnectapitest.azurewebsites.net/api/lecture/process-lecture-request?lectureId=${data.id}&acceptRequest=true`
+          `https://learnconnectapitest.azurewebsites.net/api/lecture/process-lecture-request?lectureId=${lectureId}&acceptRequest=true`
         )
         .then(() => {
           {
@@ -144,6 +146,8 @@ const DetailsContent = ({ params }: any) => {
   const [approveCourse, setApproveCourse] = useState(false);
   const [rejectCourse, setRejectCourse] = useState(false);
   const [banCourse, setBanCourse] = useState(false);
+  const [unBanCourse, setUnBanCourse] = useState(false);
+
   const handleApprove = (data: any) => {
     setApproveCourse(true);
   };
@@ -153,12 +157,37 @@ const DetailsContent = ({ params }: any) => {
   };
 
   const handleBan = (data: any) => {
+    setBanCourse(true);
+  };
+
+  const handleBanCourseClick = () => {
     try {
       http
         .post(
           `https://learnconnectapitest.azurewebsites.net/api/course/ban-course?courseId=${idCourse}&status=true`
         )
         .then(() => {
+          handleModalCancel();
+          toast.success("Ban Course Successfully !!!");
+          router.push("/staff-page/moderation");
+        });
+    } catch (err) {
+      toast.error("Ban course Fails !!!");
+    }
+  };
+
+  const handleUnBan = (data: any) => {
+    setUnBanCourse(true);
+  };
+
+  const handleUnBanCourseClick = () => {
+    try {
+      http
+        .post(
+          `https://learnconnectapitest.azurewebsites.net/api/course/ban-course?courseId=${idCourse}&status=false`
+        )
+        .then(() => {
+          handleModalCancel();
           toast.success("Ban Course Successfully !!!");
           router.push("/staff-page/moderation");
         });
@@ -229,6 +258,8 @@ const DetailsContent = ({ params }: any) => {
     setRejectModal(false);
     setApproveCourse(false);
     setRejectCourse(false);
+    setBanCourse(false);
+    setUnBanCourse(false);
   };
 
   const columns = [
@@ -287,11 +318,12 @@ const DetailsContent = ({ params }: any) => {
       // align: "center",
       render: (text, record) => (
         <Space>
-          {record.status === 0 ? (
+          {record.status === 0 && (
             <Button danger onClick={() => handleBanLecture(record)}>
               Ban
             </Button>
-          ) : (
+          )}
+          {record.status === 1 && (
             <>
               <Button onClick={() => handleAcceptLecture(record)}>
                 Accept
@@ -314,7 +346,7 @@ const DetailsContent = ({ params }: any) => {
       ),
     },
     {
-      title: "Reason",
+      title: "Note",
       dataIndex: "rejectReason",
       key: "rejectReason",
     },
@@ -372,7 +404,7 @@ const DetailsContent = ({ params }: any) => {
         page5={"/staff-page/list-major"}
       />
       {/* <StaffRatingTable />áhkfjaskf */}
-      <div className="container mt-4">
+      <div className="container my-4">
         <Breadcrumb className="font-semibold text-xl ">
           <Breadcrumb.Item>
             <button onClick={breadcrumbNavigation}>Courses</button>
@@ -516,7 +548,7 @@ const DetailsContent = ({ params }: any) => {
             <>
               {" "}
               <button
-                className="bg-white text-black border rounded-lg border-[#24ee00] hover:bg-[#24ee00] hover:text-white transition duration-300 px-4 py-2"
+                className="bg-white text-black border rounded-lg border-[#4caf50] hover:bg-[#4caf50] hover:text-white transition duration-300 px-4 py-2"
                 onClick={handleApprove}
               >
                 Approve
@@ -538,31 +570,17 @@ const DetailsContent = ({ params }: any) => {
               >
                 Ban
               </button> */}
-              <Popconfirm
-                title="Are you sure you want to delete this item?"
-                onConfirm={handleBan}
-                okText="Yes"
-                okButtonProps={{
-                  style: {
-                    background: "red",
-                    borderColor: "red",
-                    color: "#fff",
-                  },
-                }}
-                cancelText="No"
+              <button
+                className="bg-white text-black border rounded-lg border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-6 py-2"
+                onClick={handleBan}
               >
-                <button
-                  className="bg-white text-black border rounded-lg border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-6 py-2"
-                  // onClick={handleBan}
-                >
-                  Ban
-                </button>
-              </Popconfirm>
+                Ban
+              </button>
             </>
           ) : course?.status === 3 ? (
             <button
-              className="bg-white text-black border rounded-lg border-[#ffa04e] hover:bg-[#ffa04e] hover:text-white transition duration-300 px-4 py-2"
-              // onClick={}
+              className="bg-white text-black border rounded-lg border-red-500 hover:border-red-500 hover:text-white transition duration-300 px-4 py-2"
+              onClick={handleUnBan}
             >
               Unban
             </button>
@@ -581,7 +599,83 @@ const DetailsContent = ({ params }: any) => {
         <p>{selectedContent}</p>
       </Modal>
 
-      <Dialog
+      <Modal
+        destroyOnClose={true}
+        title={`Are you sure you want to Approve this Course?`}
+        open={approveCourse}
+        // onOk={handleOk}
+        width="35%"
+        onCancel={handleModalCancel}
+        footer={false}
+      >
+        <Form
+          autoComplete="off"
+          form={form}
+          labelCol={{ span: 4 }}
+          wrapperCol={{ span: 16 }}
+          layout="horizontal"
+          className="mt-5"
+          style={{ width: "100%" }}
+          onFinish={handleApproveClick}
+        >
+          <Space className="justify-end w-full">
+            <Form.Item className="mb-0">
+              <Space>
+                <Button onClick={handleModalCancel}>Cancel</Button>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  style={{
+                    backgroundColor: "#4caf50",
+                    borderColor: "#4caf50",
+                    color: "#fff",
+                  }}
+                >
+                  Confirm
+                </Button>
+              </Space>
+            </Form.Item>
+          </Space>
+        </Form>
+      </Modal>
+
+      <Modal
+        destroyOnClose={true}
+        title={`Are you sure you want to Approve this Lecture?`}
+        open={acceptModal}
+        // onOk={handleOk}
+        width="35%"
+        onCancel={handleModalCancel}
+        footer={false}
+      >
+        <Form
+          autoComplete="off"
+          form={form}
+          labelCol={{ span: 4 }}
+          wrapperCol={{ span: 16 }}
+          layout="horizontal"
+          className="mt-5"
+          style={{ width: "100%" }}
+          onFinish={handleAcceptClick}
+        >
+          <Space className="justify-end w-full">
+            <Form.Item className="mb-0">
+              <Space>
+                <Button onClick={handleModalCancel}>Cancel</Button>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  style={{ color: "black" }}
+                >
+                  Confirm
+                </Button>
+              </Space>
+            </Form.Item>
+          </Space>
+        </Form>
+      </Modal>
+
+      {/* <Dialog
         open={acceptModal}
         onClose={handleModalCancel}
         aria-describedby="alert-dialog-slide-description"
@@ -595,7 +689,7 @@ const DetailsContent = ({ params }: any) => {
         <DialogContent>
           <DialogContentText>
             <Typography>
-              Do you want to Accept Lecture {oneLecture?.id}?
+              Do you want to Accept Lecture {oneLecture?.title}?
             </Typography>
           </DialogContentText>
         </DialogContent>
@@ -614,9 +708,9 @@ const DetailsContent = ({ params }: any) => {
             Accept
           </Button>
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
 
-      <Dialog
+      {/* <Dialog
         open={approveCourse}
         onClose={handleModalCancel}
         aria-describedby="alert-dialog-slide-description"
@@ -647,8 +741,112 @@ const DetailsContent = ({ params }: any) => {
             Confirm
           </Button>
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
 
+      <Modal
+        destroyOnClose={true}
+        title={`Are you sure you want to Ban this Course?`}
+        open={banCourse}
+        // onOk={handleOk}
+        width="35%"
+        onCancel={handleModalCancel}
+        footer={false}
+      >
+        <Form
+          autoComplete="off"
+          form={form}
+          labelCol={{ span: 4 }}
+          wrapperCol={{ span: 16 }}
+          layout="horizontal"
+          className="mt-5"
+          style={{ width: "100%" }}
+          onFinish={handleBanCourseClick}
+        >
+          <Space className="justify-end w-full">
+            <Form.Item className="mb-0">
+              <Space>
+                <Button onClick={handleModalCancel}>Cancel</Button>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  style={{ color: "black" }}
+                >
+                  Confirm
+                </Button>
+              </Space>
+            </Form.Item>
+          </Space>
+        </Form>
+      </Modal>
+
+      <Modal
+        destroyOnClose={true}
+        title={`Are you sure you want to Unban this Course?`}
+        open={unBanCourse}
+        // onOk={handleOk}
+        width="35%"
+        onCancel={handleModalCancel}
+        footer={false}
+      >
+        <Form
+          autoComplete="off"
+          form={form}
+          labelCol={{ span: 4 }}
+          wrapperCol={{ span: 16 }}
+          layout="horizontal"
+          className="mt-5"
+          style={{ width: "100%" }}
+          onFinish={handleUnBanCourseClick}
+        >
+          <Space className="justify-end w-full">
+            <Form.Item className="mb-0">
+              <Space>
+                <Button onClick={handleModalCancel}>Cancel</Button>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  style={{ color: "black" }}
+                >
+                  Confirm
+                </Button>
+              </Space>
+            </Form.Item>
+          </Space>
+        </Form>
+      </Modal>
+
+      {/* <Dialog
+        open={banCourse}
+        onClose={handleModalCancel}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle
+          sx={{ backgroundColor: "Red", fontSize: "20px", color: "white" }}
+        >
+          {" "}
+          Warning!!!{" "}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            <Typography>Do you want to Ban this Course ?</Typography>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleModalCancel}>cancel</Button>
+
+          <Button
+            style={{
+              backgroundColor: "#4caf50",
+              borderColor: "#4caf50",
+              color: "#fff",
+            }}
+            onClick={() => handleBanCourseClick()}
+            type="primary"
+          >
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog> */}
       {/* <Dialog
         open={rejectCourse}
         onClose={handleModalCancel}
@@ -684,7 +882,7 @@ const DetailsContent = ({ params }: any) => {
 
       <Modal
         destroyOnClose={true}
-        title={`Are you sure you want to reject this Lecture?`}
+        title={`Are you sure you want to Reject this Lecture?`}
         open={RejectModal}
         // onOk={handleOk}
         width="35%"
@@ -728,7 +926,7 @@ const DetailsContent = ({ params }: any) => {
 
       <Modal
         destroyOnClose={true}
-        title={`Are you sure you want to reject this Course?`}
+        title={`Are you sure you want to Reject this Course?`}
         open={rejectCourse}
         // onOk={handleOk}
         width="35%"

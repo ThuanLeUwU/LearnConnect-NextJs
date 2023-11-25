@@ -481,7 +481,7 @@ const MajorSepcialize = () => {
           `https://learnconnectapitest.azurewebsites.net/api/major/${data.id}`
         )
         .then(() => {
-          toast.success("Enable Major Successfully!!!");
+          toast.success("Delete Major Successfully!!!");
           setTableSpecialize(false);
           http
             .get(`https://learnconnectapitest.azurewebsites.net/api/major`)

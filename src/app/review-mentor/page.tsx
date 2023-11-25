@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import ReactStars from "react-stars";
 import { Button } from "react-bootstrap";
-import { Empty, Modal, Space, Spin } from "antd";
+import { Empty, Modal, Space, Spin, Tooltip } from "antd";
 import InstructorCourseStyle from "./styles/style.module.scss";
 import Link from "next/link";
 import { Rating } from "@mui/material";
@@ -47,7 +47,8 @@ const Reviews = () => {
 
   const menuItem = [
     {
-      image: "/menu-icon/icon-1.png",
+      image: "/menu-icon/book-alt.png",
+      title: "Courses",
       href: "/instructorcourses",
     },
     // {
@@ -55,15 +56,18 @@ const Reviews = () => {
     //   href: "/dashboard",
     // },
     {
-      image: "/menu-icon/icon-3.png",
+      image: "/menu-icon/feedback-review.png",
+      title: "Reviews",
       href: "/review-mentor",
     },
     {
-      image: "/menu-icon/icon1.png",
+      image: "/menu-icon/money-check-edit.png",
+      title: "Revenues",
       href: "/revenue",
     },
     {
-      image: "/menu-icon/icon2.png",
+      image: "/menu-icon/file-edit.png",
+      title: "Requests",
       href: "/request-history",
     },
   ];
@@ -91,13 +95,15 @@ const Reviews = () => {
         <div className={`${InstructorCourseStyle.sidebar_list}`}>
           {menuItem.map((item, index) => {
             return (
-              <Link
-                key={index}
-                href={item.href}
-                className={`${InstructorCourseStyle.sidebar_active}`}
-              >
-                <img src={item.image} alt="image"></img>
-              </Link>
+              <Tooltip key={index} title={item.title}>
+                <Link
+                  key={index}
+                  href={item.href}
+                  className={`${InstructorCourseStyle.sidebar_active} mt-5`}
+                >
+                  <img src={item.image} alt="image"></img>
+                </Link>
+              </Tooltip>
             );
           })}
         </div>

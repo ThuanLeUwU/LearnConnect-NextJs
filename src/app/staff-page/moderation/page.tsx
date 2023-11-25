@@ -70,31 +70,31 @@ const ModerationContent = () => {
             </li>
             <li
               className={`cursor-pointer rounded-md ${
-                activeTab === 1 ? "bg-[#9faaa8] text-white" : "bg-white"
+                activeTab === 1 ? "bg-gray-500 text-white" : "bg-white"
               }`}
               onClick={() => handleTabClick(1)}
             >
-              <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#9faaa8]">
+              <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-gray-500">
                 Pending
               </button>
             </li>
             <li
               className={`cursor-pointer rounded-md ${
-                activeTab === 2 ? "bg-[#b8ba5a] text-white" : "bg-white"
+                activeTab === 2 ? "bg-[#ffa04e] text-white" : "bg-white"
               }`}
               onClick={() => handleTabClick(2)}
             >
-              <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#b8ba5a]">
+              <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#ffa04e]">
                 Reject
               </button>
             </li>
             <li
               className={`cursor-pointer rounded-md ${
-                activeTab === 3 ? "bg-[#d94242] text-white" : "bg-white"
+                activeTab === 3 ? "bg-red-500 text-white" : "bg-white"
               }`}
               onClick={() => handleTabClick(3)}
             >
-              <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#d94242]">
+              <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-red-500">
                 Banned
               </button>
             </li>
@@ -141,8 +141,8 @@ const ModerationContent = () => {
                     <div className="items-center flex">
                       {item.status === 0 && (
                         <Tag
-                          color="green"
-                          style={{ border: "2px solid green" }}
+                          color="#389E0D"
+                          style={{ border: "2px solid #389E0D" }}
                         >
                           Active
                         </Tag>
@@ -153,14 +153,17 @@ const ModerationContent = () => {
                         </Tag>
                       )}
                       {item.status === 2 && (
-                        <Tag color="red" style={{ border: "2px solid red" }}>
+                        <Tag
+                          color="#FFA04E"
+                          style={{ border: "2px solid rbg(255,160,78)" }}
+                        >
                           Reject
                         </Tag>
                       )}
                       {item.status === 3 && (
                         <Tag
-                          color="black"
-                          style={{ border: "2px solid black" }}
+                          color="#cf1322"
+                          style={{ border: "2px solid #cf1322" }}
                         >
                           Banned
                         </Tag>

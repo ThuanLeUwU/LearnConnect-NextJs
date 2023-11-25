@@ -15,6 +15,7 @@ import {
   Select,
   Space,
   Spin,
+  Tooltip,
   Upload,
   message,
 } from "antd";
@@ -89,7 +90,8 @@ const InstructorCourse = () => {
 
   const menuItem = [
     {
-      image: "/menu-icon/icon-1.png",
+      image: "/menu-icon/book-alt.png",
+      title: "Courses",
       href: "/instructorcourses",
     },
     // {
@@ -97,15 +99,18 @@ const InstructorCourse = () => {
     //   href: "/dashboard",
     // },
     {
-      image: "/menu-icon/icon-3.png",
+      image: "/menu-icon/feedback-review.png",
+      title: "Reviews",
       href: "/review-mentor",
     },
     {
-      image: "/menu-icon/icon1.png",
+      image: "/menu-icon/money-check-edit.png",
+      title: "Revenues",
       href: "/revenue",
     },
     {
-      image: "/menu-icon/icon2.png",
+      image: "/menu-icon/file-edit.png",
+      title: "Requests",
       href: "/request-history",
     },
   ];
@@ -343,13 +348,15 @@ const InstructorCourse = () => {
         <div className={`${InstructorCourseStyle.sidebar_list}`}>
           {menuItem.map((item, index) => {
             return (
-              <Link
-                key={index}
-                href={item.href}
-                className={`${InstructorCourseStyle.sidebar_active}`}
-              >
-                <img src={item.image} alt="image"></img>
-              </Link>
+              <Tooltip key={index} title={item.title}>
+                <Link
+                  key={index}
+                  href={item.href}
+                  className={`${InstructorCourseStyle.sidebar_active} mt-5`}
+                >
+                  <img src={item.image} alt="image"></img>
+                </Link>
+              </Tooltip>
             );
           })}
         </div>
@@ -556,9 +563,6 @@ const InstructorCourse = () => {
                 );
               })}
             </Select>
-          </Form.Item>
-          <Form.Item label="Mentor" name="mentor">
-            {`${user?.displayName}`}
           </Form.Item>
           <Form.Item
             rules={[{ required: true, message: "Please estimate the time!" }]}

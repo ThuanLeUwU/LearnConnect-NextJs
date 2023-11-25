@@ -15,6 +15,7 @@ import {
   Spin,
   Table,
   Tag,
+  Tooltip,
   Typography,
   Upload,
 } from "antd";
@@ -146,7 +147,7 @@ const Dashboard = ({ params }: any) => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [oneLecture, setOneLecture] = useState<Lecture>();
   const [updateType, setUpdateType] = useState(oneLecture?.contentType);
-  const [updateSrc, setUpdateSrc] = useState(oneLecture?.contentUrl);
+  const [updateSrc, setUpdateSrc] = useState<string>("");
 
   const handleUpdateModal = (record: any) => {
     setSelectedItem(record);
@@ -192,9 +193,10 @@ const Dashboard = ({ params }: any) => {
     formData.append("title", data.title || oneLecture?.title);
     formData.append("content", data.content || oneLecture?.content);
     formData.append("contentType", type.toString());
-    if (formDataSource !== undefined) {
-      formData.append("contentUrl", formDataSource);
-    }
+    formData.append("contentUrl", updateSrc);
+    // if (formDataSource !== undefined) {
+    //   formData.append("contentUrl", formDataSource);
+    // }
 
     try {
       await http
@@ -308,7 +310,7 @@ const Dashboard = ({ params }: any) => {
 
   const Type = [
     { id: 1, title: "Video" },
-    { id: 2, title: "Document" },
+    { id: 0, title: "Document" },
   ];
 
   const handleChangeType = (value: number) => {
@@ -573,7 +575,8 @@ const Dashboard = ({ params }: any) => {
 
   const menuItem = [
     {
-      image: "/menu-icon/icon-1.png",
+      image: "/menu-icon/book-alt.png",
+      title: "Courses",
       href: "/instructorcourses",
     },
     // {
@@ -581,15 +584,18 @@ const Dashboard = ({ params }: any) => {
     //   href: "/dashboard",
     // },
     {
-      image: "/menu-icon/icon-3.png",
+      image: "/menu-icon/feedback-review.png",
+      title: "Reviews",
       href: "/review-mentor",
     },
     {
-      image: "/menu-icon/icon1.png",
+      image: "/menu-icon/money-check-edit.png",
+      title: "Revenues",
       href: "/revenue",
     },
     {
-      image: "/menu-icon/icon2.png",
+      image: "/menu-icon/file-edit.png",
+      title: "Requests",
       href: "/request-history",
     },
   ];
@@ -985,8 +991,32 @@ const Dashboard = ({ params }: any) => {
 
   const handleRowClick = (record) => {
     // Xử lý khi click vào một hàng (item)
-    console.log("Clicked item:", record);
+    // console.log("Clicked item:", record);
     // Thực hiện các hành động khác cần thiết
+  };
+
+  const handleDeleteLecture = (data: any) => {
+    console.log("má m", data.id);
+    try {
+      http
+        .delete(
+          `https://learnconnectapitest.azurewebsites.net/api/lecture/${data.id}`
+        )
+        .then(() => {
+          handleDeleteCancel();
+          toast.success("Delete Lecture Successfully !!!");
+          http
+            .get(
+              `https://learnconnectapitest.azurewebsites.net/api/lecture/by-course/${idCourse}`
+            )
+            .then((response) => {
+              setLectures(response.data);
+              setLoading(false);
+            });
+        });
+    } catch (err) {
+      console.log(err);
+    }
   };
   return (
     <div className={`${InstructorCourseStyle.content_wrapper}`}>
@@ -994,13 +1024,15 @@ const Dashboard = ({ params }: any) => {
         <div className={`${InstructorCourseStyle.sidebar_list}`}>
           {menuItem.map((item, index) => {
             return (
-              <Link
-                key={index}
-                href={item.href}
-                className={`${InstructorCourseStyle.sidebar_active}`}
-              >
-                <img src={item.image} alt="image"></img>
-              </Link>
+              <Tooltip key={index} title={item.title}>
+                <Link
+                  key={index}
+                  href={item.href}
+                  className={`${InstructorCourseStyle.sidebar_active} mt-5`}
+                >
+                  <img src={item.image} alt="image"></img>
+                </Link>
+              </Tooltip>
             );
           })}
         </div>
@@ -1223,20 +1255,24 @@ const Dashboard = ({ params }: any) => {
                             key={q.question.id}
                             className="mb-2 mt-6 p-4 border-2 rounded-lg border-gray-200"
                           >
-                            <div className="mb-1 font-medium text-[18px] flex flex-row justify-between bott">
+                            <div className="mb-1 font-medium text-[18px] flex flex-row justify-between">
                               <div className="flex flex-row gap-2">
                                 {index + 1}.{" "}
                                 {showUpdateQuestion &&
                                 questionId === q.question.id ? (
-                                  <Input
+                                  <Input.TextArea
+                                    autoSize={{ minRows: 1 }}
+                                    cols={120}
                                     autoFocus
                                     defaultValue={q.question.questionText}
                                     value={updateQuestion}
                                     onChange={handleInputChange}
                                     onBlur={() => handleBlur(q.question.id)}
+                                    className="w-full"
                                   />
                                 ) : (
                                   <div
+                                    className="w-full"
                                     onClick={() => {
                                       handleUpdateQuestionClick(q.question.id);
                                       setQuestionId(q.question.id);
@@ -1324,7 +1360,7 @@ const Dashboard = ({ params }: any) => {
                                   <Button
                                     style={{
                                       backgroundColor: "#4caf50",
-                                      borderColor: "#4caf50",
+                                      // borderColor: "#4caf50",
                                       color: "#fff",
                                     }}
                                     type="primary"
@@ -1702,7 +1738,7 @@ const Dashboard = ({ params }: any) => {
           >
             <Input.TextArea rows={4} defaultValue={oneLecture?.content} />
           </Form.Item>
-          <Form.Item label="Category">
+          <Form.Item label="Type">
             <Select onChange={handleUpdateType} defaultValue={updateType}>
               {Type.map((option) => {
                 return (
@@ -1717,9 +1753,27 @@ const Dashboard = ({ params }: any) => {
             // <Form.Item label="Video">
             <div>
               <div style={{ display: "flex" }} className="flex justify-center">
-                {/* <video width={200} height={200} src={source} /> */}
-                <video width={400} height={300} src={updateSrc} controls />
+                {updateSrc && (
+                  <video width={400} height={300} src={updateSrc} controls />
+                )}
               </div>
+              <div
+                className="flex justify-center pt-2 pb-2"
+                style={{ display: "flex" }}
+              >
+                <UploadFirebase
+                  fileName={`Course${idCourse}_Lecture${
+                    lectures.length + 1
+                  }_${Math.floor(
+                    new Date().getTime() - new Date(2020, 0, 1).getSeconds()
+                  )}`}
+                  returnUrl={setUpdateSrc}
+                />
+              </div>
+            </div>
+          ) : (
+            // </Form.Item>
+            <Form.Item label="Document">
               <div
                 className="flex justify-center pt-2 pb-2"
                 style={{ display: "flex" }}
@@ -1727,8 +1781,8 @@ const Dashboard = ({ params }: any) => {
                 <Upload
                   // accept="image/png, image/jpeg"
                   // ref={inputRef}
-                  accept=".mov,.mp4"
-                  // accept=".docx"
+                  // accept=".mov,.mp4"
+                  accept=".pdf"
                   onChange={handleFileChange}
                   // beforeUpload={beforeUpload}
                   // headers={{ Authorization: authorization }}
@@ -1737,27 +1791,6 @@ const Dashboard = ({ params }: any) => {
                   <Button>Upload</Button>
                 </Upload>
               </div>
-            </div>
-          ) : (
-            // </Form.Item>
-            <Form.Item label="Document">
-              {/* <div
-                className="flex justify-center pt-2 pb-2"
-                style={{ display: "flex" }}
-              >
-                <Upload
-                  // accept="image/png, image/jpeg"
-                  // ref={inputRef}
-                  // accept=".mov,.mp4"
-                  accept=".docx"
-                  onChange={handleFileChange}
-                  // beforeUpload={beforeUpload}
-                  // headers={{ Authorization: authorization }}
-                  action="https://learnconnectapitest.azurewebsites.net/api/Upload/video"
-                >
-                  <Button>Upload</Button>
-                </Upload>
-              </div> */}
             </Form.Item>
           )}
           <Space className="justify-end w-full pr-[90px]">
@@ -1787,7 +1820,45 @@ const Dashboard = ({ params }: any) => {
       </Modal> */}
 
       {/* Dialog */}
-      <Dialog
+
+      <Modal
+        destroyOnClose={true}
+        title={`Do you want to Delete the Lecture ${oneLecture?.title}?`}
+        open={deleteVisible}
+        // onOk={handleUpdateOk}
+        width="40%"
+        onCancel={handleDeleteCancel}
+        footer={false}
+        // style={{ background: "#FFCCCC" }}
+      >
+        {/* Add your update form here */}
+        <Form
+          autoComplete="off"
+          form={form}
+          labelCol={{ span: 5 }}
+          wrapperCol={{ span: 18 }}
+          layout="horizontal"
+          className="mt-5"
+          style={{ width: "100%" }}
+          onFinish={() => handleDeleteLecture(oneLecture)}
+        >
+          <Space className="justify-end w-full">
+            <Form.Item className="mb-0">
+              <Space>
+                <Button onClick={handleDeleteCancel}>Cancel</Button>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  style={{ color: "black" }}
+                >
+                  Confirm
+                </Button>
+              </Space>
+            </Form.Item>
+          </Space>
+        </Form>
+      </Modal>
+      {/* <Dialog
         open={deleteVisible}
         onClose={handleDeleteCancel}
         aria-describedby="alert-dialog-slide-description"
@@ -1816,7 +1887,7 @@ const Dashboard = ({ params }: any) => {
             Remove
           </Button>
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
 
       {/* Test Title Modal */}
       <Modal
