@@ -367,6 +367,7 @@ export default function AfterEnroll({ params }: any) {
     setCurrentTime(e.target.currentTime);
     if (videoRef.current && e.target.currentTime > maxTime) {
       setMaxTime(videoRef.current.played.end(0));
+      setTotalTime(Math.floor(videoRef.current.duration));
     }
     console.log("djt me thg thuan", e.target.currentTime);
     if (
@@ -374,7 +375,7 @@ export default function AfterEnroll({ params }: any) {
         Math.floor(e.target.currentTime) % 5 == 0) ||
       Math.floor(e.target.currentTime) === totalTime
     ) {
-      setMaxTime(totalTime);
+      // setMaxTime(totalTime);
       http.post(
         `https://learnconnectapitest.azurewebsites.net/api/learning-process/save_process?userId=${id}&lectureId=${
           testVideo[activeVideoIndex].id
