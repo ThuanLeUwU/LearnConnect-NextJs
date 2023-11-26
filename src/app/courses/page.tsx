@@ -110,11 +110,11 @@ export default function ListCourse() {
   ];
 
   const minRateOption = [
-    { rate: "1", value: 1 },
-    { rate: "2", value: 2 },
-    { rate: "3", value: 3 },
-    { rate: "4", value: 4 },
-    { rate: "5", value: 5 },
+    { rate: "⭐", value: 1 },
+    { rate: "⭐⭐", value: 2 },
+    { rate: "⭐⭐⭐", value: 3 },
+    { rate: "⭐⭐⭐⭐", value: 4 },
+    { rate: "⭐⭐⭐⭐⭐", value: 5 },
   ];
 
   // const selectMinPriceRef = useRef<Select>(null);
@@ -131,6 +131,21 @@ export default function ListCourse() {
     // setCurrentPage(1);
     // window.location.reload();
     // router.push("/courses");
+  };
+
+  const resetPrice = () => {
+    setMinPrice("");
+    // setReload(true);
+  };
+
+  const resetSpe = () => {
+    setFilterBySpecialized("");
+    // setReload(true);
+  };
+
+  const resetRate = () => {
+    setRate("");
+    // setReload(true);
   };
 
   // const maxPrice = [{}];
@@ -155,6 +170,12 @@ export default function ListCourse() {
               </Option>
             ))}
           </Select>
+          {/* <button
+            onClick={resetPrice}
+            className="border-2 rounded-lg px-2 bg-[#fff] text-[#000]"
+          >
+            <RedoOutlined />
+          </button> */}
           <span>Specialize: </span>
           <Select
             defaultValue=""
@@ -169,12 +190,17 @@ export default function ListCourse() {
               </Option>
             ))}
           </Select>
-
+          {/* <button
+            onClick={resetSpe}
+            className="border-2 rounded-lg px-2 bg-[#fff] text-[#000]"
+          >
+            <RedoOutlined />
+          </button> */}
           <span>Rating: </span>
           <Select
             defaultValue=""
             onChange={handleRateChange}
-            style={{ width: 100 }}
+            style={{ width: 200 }}
             value={rate === null ? <></> : rate}
           >
             {minRateOption.map((option, index) => (
@@ -184,6 +210,12 @@ export default function ListCourse() {
               </Option>
             ))}
           </Select>
+          {/* <button
+            onClick={resetRate}
+            className="border-2 rounded-lg px-2 bg-[#fff] text-[#000]"
+          >
+            <RedoOutlined />
+          </button> */}
 
           {/* <Rate onChange={handleRateChange} value={rate} /> */}
           <button
