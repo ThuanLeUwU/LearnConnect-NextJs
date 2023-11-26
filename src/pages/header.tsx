@@ -6,13 +6,14 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { UserAuth, UserRole } from "@/app/context/AuthContext";
 import { RegisterForm } from "@/components/registerForm";
-import { Empty, Modal, Space, Button } from "antd";
+import { Empty, Modal, Space, Button as ButtonAntd } from "antd";
 import { useRouter } from "next/navigation";
 import { AiFillBell } from "react-icons/ai";
 import axios from "axios";
 import { http } from "@/api/http";
 import { Form, Input } from "antd";
 import { toast } from "sonner";
+import { Button } from "react-bootstrap";
 
 export type Notification = {
   id: string | number;
@@ -289,7 +290,7 @@ const Header = () => {
                   <Space className="justify-end w-full">
                     <Form.Item className="mb-0">
                       <Space>
-                        <Button
+                        <ButtonAntd
                           className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
                           onClick={handleCancel}
                           style={{
@@ -298,8 +299,8 @@ const Header = () => {
                           }}
                         >
                           Cancel
-                        </Button>
-                        <Button
+                        </ButtonAntd>
+                        <ButtonAntd
                           className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
                           htmlType="submit"
                           style={{
@@ -308,7 +309,7 @@ const Header = () => {
                           }}
                         >
                           Confirm
-                        </Button>
+                        </ButtonAntd>
                         {/* <button
                           onClick={handleCancel}
                           className="px-5 py-2 bg-red-400 rounded-lg text-white"
