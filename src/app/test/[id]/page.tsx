@@ -97,7 +97,10 @@ export default function Quiz({ params }: any) {
   const handleAnswerSelect = (answerId) => {
     if (!submitted) {
       setSelectedAnswers((prevAnswers) => {
-        return [...prevAnswers, answerId];
+        const isSelected = prevAnswers.includes(answerId);
+        return isSelected
+          ? prevAnswers.filter((id) => id !== answerId)
+          : [...prevAnswers, answerId];
       });
     }
   };
