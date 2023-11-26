@@ -21,9 +21,9 @@ export default function EditProfile() {
     // if (role === 3) {
     //   router.push(`/`);
     // }
-    if (role === -1) {
-      router.push(`/`);
-    }
+    // if (role === -1) {
+    //   router.push(`/`);
+    // }
   });
   return (
     <>

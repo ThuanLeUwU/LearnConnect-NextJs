@@ -105,9 +105,9 @@ const Reviews = () => {
     if (role === 3) {
       router.push(`/`);
     }
-    if (role === -1) {
-      router.push(`/`);
-    }
+    // if (role === -1) {
+    //   router.push(`/`);
+    // }
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form] = Form.useForm();

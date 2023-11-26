@@ -41,9 +41,9 @@ export default function EditProfile() {
     // if (role === 3) {
     //   router.push(`/`);
     // }
-    if (role === -1) {
-      router.push(`/`);
-    }
+    // if (role === -1) {
+    //   router.push(`/`);
+    // }
   });
   const { id, userData, refetchUser, jwtToken } = UserAuth();
   axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;

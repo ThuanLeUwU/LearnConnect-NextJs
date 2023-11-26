@@ -81,9 +81,9 @@ export const RegisterForm = () => {
     // if (role === 3) {
     //   router.push(`/`);
     // }
-    if (role === -1) {
-      router.push(`/`);
-    }
+    // if (role === -1) {
+    //   router.push(`/`);
+    // }
   });
   const [show, setShow] = useState(false);
   const { id, userData } = UserAuth();
