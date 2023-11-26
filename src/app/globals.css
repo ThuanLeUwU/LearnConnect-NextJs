@@ -22,6 +22,11 @@
   /* padding-bottom: 40px;     */
 }
 
+.page-banner {
+  height: 200px;
+  background-color: #e7f8ee;
+  overflow: hidden;
+}
 .overlay {
   position: fixed;
   top: 0;

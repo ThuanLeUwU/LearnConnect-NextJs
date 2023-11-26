@@ -198,11 +198,11 @@ const Header = () => {
   };
 
   return (
-    <div className={`${headerStyles.header_section}`}>
+    <div className={`${headerStyles.header_section} page-banner`}>
       {!userData ? (
         <div className={`${headerStyles.header_top}`}></div>
       ) : (
-        <div className={`${headerStyles.header_login}`}>
+        <div className={`${headerStyles.header_login} page-banner`}>
           <div className={`${headerStyles.header_navbar}`}>
             <div className={`${headerStyles.header_login_left}`}>
               <button onClick={returnHome}>

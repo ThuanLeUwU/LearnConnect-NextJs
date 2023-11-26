@@ -386,118 +386,134 @@ const DetailsContent = ({ params }: any) => {
   };
 
   return (
-    <div className="flex">
-      <LeftNavbar
-        page1={"/staff-page"}
-        page2={"/staff-page/staff-rating"}
-        page3={"/staff-page/staff-report"}
-        page4={"/staff-page/moderation"}
-        page5={"/staff-page/list-major"}
-      />
-      <div className="w-full my-4">
-        <Breadcrumb className="font-semibold text-2xl pl-5">
-          <Breadcrumb.Item>
-            <button onClick={breadcrumbNavigation}>Courses</button>
-          </Breadcrumb.Item>
-          <Breadcrumb.Item>
-            {course?.name} ({getStatusText(course?.status)})
-          </Breadcrumb.Item>
-          {/* <Breadcrumb.Item>React</Breadcrumb.Item> */}
-        </Breadcrumb>
-        <>
-          {course?.status === 2 && (
-            <div className="text-3xl mt-4 underline">
-              Reasons for reject the course : {course?.note}
-            </div>
-          )}
-        </>
-        <div className={`${InstructorCourseStyle.featured} mx-5`}>
-          <div className={`${InstructorCourseStyle.featured_top} `}>
-            <h1 className={`${InstructorCourseStyle.featured_top_title}`}>
-              About Course
-            </h1>
-          </div>
-          {/* <div className={`${InstructorCourseStyle.featured_bottom}`}> */}
-          <div className="p-5 flex gap-5">
-            <div className="flex-1">
-              <img
-                width="400px"
-                className="h-[300px] w-[400px] rounded-lg"
-                src={`${course?.imageUrl}`}
-                alt=""
-              />
-            </div>
-            <div className="flex-auto w-[36rem]">
-              <p className={`${InstructorCourseStyle.featured_bottom_title}`}>
-                {course?.name}
-              </p>
-              <p className={`${InstructorCourseStyle.featured_bottom_cate}`}>
-                {course?.specializationName}
-              </p>
-              <div className="flex flex-row justify-between">
-                <div>
+    <>
+      {!userData ? (
+        <div className="text-center text-5xl mt-5">
+          <Spin size="large" />
+        </div>
+      ) : (
+        <div className="flex">
+          <LeftNavbar
+            page1={"/staff-page"}
+            page2={"/staff-page/staff-rating"}
+            page3={"/staff-page/staff-report"}
+            page4={"/staff-page/moderation"}
+            page5={"/staff-page/list-major"}
+            page6={"/staff-page/staff-revenue"}
+          />
+          <div className="w-full my-4">
+            <Breadcrumb className="font-semibold text-2xl pl-5">
+              <Breadcrumb.Item>
+                <button onClick={breadcrumbNavigation}>Courses</button>
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {course?.name} ({getStatusText(course?.status)})
+              </Breadcrumb.Item>
+              {/* <Breadcrumb.Item>React</Breadcrumb.Item> */}
+            </Breadcrumb>
+            <>
+              {course?.status === 2 && (
+                <div className="text-3xl mt-4 underline">
+                  Reasons for reject the course : {course?.note}
+                </div>
+              )}
+            </>
+            <div className={`${InstructorCourseStyle.featured} mx-5`}>
+              <div className={`${InstructorCourseStyle.featured_top} `}>
+                <h1 className={`${InstructorCourseStyle.featured_top_title}`}>
+                  About Course
+                </h1>
+              </div>
+              {/* <div className={`${InstructorCourseStyle.featured_bottom}`}> */}
+              <div className="p-5 flex gap-5">
+                <div className="flex-1">
+                  <img
+                    width="400px"
+                    className="h-[300px] w-[400px] rounded-lg"
+                    src={`${course?.imageUrl}`}
+                    alt=""
+                  />
+                </div>
+                <div className="flex-auto w-[36rem]">
                   <p
-                    className={`${InstructorCourseStyle.featured_bottom_amount}`}
+                    className={`${InstructorCourseStyle.featured_bottom_title}`}
                   >
-                    Author: {course?.mentorName}
+                    {course?.name}
                   </p>
                   <p
+                    className={`${InstructorCourseStyle.featured_bottom_cate}`}
+                  >
+                    {course?.specializationName}
+                  </p>
+                  <div className="flex flex-row justify-between">
+                    <div>
+                      <p
+                        className={`${InstructorCourseStyle.featured_bottom_amount}`}
+                      >
+                        Author: {course?.mentorName}
+                      </p>
+                      <p
+                        className={`${InstructorCourseStyle.featured_bottom_amount}`}
+                      >
+                        Lectures: {course?.lectureCount}
+                      </p>
+                      <p
+                        className={`${InstructorCourseStyle.featured_bottom_amount}`}
+                      >
+                        Price:
+                        {course?.price === 0 ? (
+                          <> Free</>
+                        ) : (
+                          <> {course?.price} VND</>
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                  <div
                     className={`${InstructorCourseStyle.featured_bottom_amount}`}
                   >
-                    Lectures: {course?.lectureCount}
-                  </p>
-                  <p
-                    className={`${InstructorCourseStyle.featured_bottom_amount}`}
-                  >
-                    Price:
-                    {course?.price === 0 ? (
-                      <> Free</>
-                    ) : (
-                      <> {course?.price} VND</>
-                    )}
-                  </p>
+                    <p>
+                      <span className="text-green-500">Create Date: </span>
+                      {course?.createDate
+                        ? new Date(course?.createDate).toLocaleTimeString(
+                            "en-US"
+                          )
+                        : ""}{" "}
+                      {course?.createDate
+                        ? new Date(course?.createDate).toLocaleDateString(
+                            "en-GB",
+                            {
+                              day: "numeric",
+                              month: "long",
+                              year: "numeric",
+                            }
+                          )
+                        : ""}{" "}
+                    </p>
+                    <div className="bg-[#e5f4eb] rounded-[10px] px-10 h-[5px]"></div>
+                    <div>
+                      <span>Description:</span>
+                      <br />
+                      {course?.description}
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div
-                className={`${InstructorCourseStyle.featured_bottom_amount}`}
-              >
-                <p>
-                  <span className="text-green-500">Create Date: </span>
-                  {course?.createDate
-                    ? new Date(course?.createDate).toLocaleTimeString("en-US")
-                    : ""}{" "}
-                  {course?.createDate
-                    ? new Date(course?.createDate).toLocaleDateString("en-GB", {
-                        day: "numeric",
-                        month: "long",
-                        year: "numeric",
-                      })
-                    : ""}{" "}
-                </p>
-                <div className="bg-[#e5f4eb] rounded-[10px] px-10 h-[5px]"></div>
-                <div>
-                  <span>Description:</span>
-                  <br />
-                  {course?.description}
-                </div>
-              </div>
             </div>
-          </div>
-        </div>
-        <div className="mt-5 mx-5">
-          <div className="text-3xl my-5">List Of Lectures</div>
-          {loading ? (
-            <Spin size="large" />
-          ) : (
-            <Table
-              className="shadow-[5px_15px_25px_10px_rgba(0,0,0,0.15)] mt-2 rounded-lg"
-              dataSource={lectures}
-              columns={columns}
-            />
-          )}
-        </div>
-        <div className="flex justify-end gap-2 mt-10 pr-5">
-          {/* {course?.status === 0 ? (
+            <div className="mt-5 mx-5">
+              <div className="text-3xl my-5">List Of Lectures</div>
+              {loading ? (
+                <Spin size="large" />
+              ) : (
+                <Table
+                  className="shadow-[5px_15px_25px_10px_rgba(0,0,0,0.15)] mt-2 rounded-lg"
+                  dataSource={lectures}
+                  columns={columns}
+                />
+              )}
+            </div>
+            <div className="flex justify-end gap-2 mt-10 pr-5">
+              {/* {course?.status === 0 ? (
             <>
               <Button
                 className="bg-white text-black border rounded-lg border-[#24ee00] hover:bg-[#24ee00] hover:text-white transition duration-300 px-4 py-2"
@@ -527,305 +543,305 @@ const DetailsContent = ({ params }: any) => {
               </button>
             </>
           )} */}
-          {course?.status === 0 ? (
-            <button
-              className="bg-white text-black border rounded-lg border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-6 py-2"
-              onClick={handleBan}
-            >
-              Ban
-            </button>
-          ) : course?.status === 1 ? (
-            <>
-              {" "}
-              <button
-                className="bg-white text-black border rounded-lg border-[#4caf50] hover:bg-[#4caf50] hover:text-white transition duration-300 px-4 py-2"
-                onClick={handleApprove}
-              >
-                Approve
-              </button>
-              <button
-                className="bg-white text-black border rounded-lg border-[#ffa04e] hover:bg-[#ffa04e] hover:text-white transition duration-300 px-5 py-2"
-                // style={{
-                //   backgroundColor: "#ffa04e",
-                //   borderColor: "#ffa04e",
-                //   color: "#fff",
-                // }}
-                onClick={handleReject}
-              >
-                Reject
-              </button>
-              {/* <button
+              {course?.status === 0 ? (
+                <button
+                  className="bg-white text-black border rounded-lg border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-6 py-2"
+                  onClick={handleBan}
+                >
+                  Ban
+                </button>
+              ) : course?.status === 1 ? (
+                <>
+                  {" "}
+                  <button
+                    className="bg-white text-black border rounded-lg border-[#4caf50] hover:bg-[#4caf50] hover:text-white transition duration-300 px-4 py-2"
+                    onClick={handleApprove}
+                  >
+                    Approve
+                  </button>
+                  <button
+                    className="bg-white text-black border rounded-lg border-[#ffa04e] hover:bg-[#ffa04e] hover:text-white transition duration-300 px-5 py-2"
+                    // style={{
+                    //   backgroundColor: "#ffa04e",
+                    //   borderColor: "#ffa04e",
+                    //   color: "#fff",
+                    // }}
+                    onClick={handleReject}
+                  >
+                    Reject
+                  </button>
+                  {/* <button
                 className="bg-white text-black border rounded-lg border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-6 py-2"
                 onClick={handleBan}
               >
                 Ban
               </button> */}
-              <button
-                className="bg-white text-black border rounded-lg border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-6 py-2"
-                onClick={handleBan}
-              >
-                Ban
-              </button>
-            </>
-          ) : course?.status === 3 ? (
-            <button
-              className="bg-white text-black border rounded-lg border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-6 py-2 mr-5"
-              onClick={handleUnBan}
+                  <button
+                    className="bg-white text-black border rounded-lg border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-6 py-2"
+                    onClick={handleBan}
+                  >
+                    Ban
+                  </button>
+                </>
+              ) : course?.status === 3 ? (
+                <button
+                  className="bg-white text-black border rounded-lg border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-6 py-2 mr-5"
+                  onClick={handleUnBan}
+                >
+                  Unban
+                </button>
+              ) : (
+                <></>
+              )}
+            </div>
+          </div>
+
+          <Modal
+            title="Content Details"
+            open={modalVisible}
+            onCancel={handleModalCancel}
+            footer={null}
+          >
+            <p>{selectedContent}</p>
+          </Modal>
+
+          <Modal
+            destroyOnClose={true}
+            title={
+              <div className="text-lg">
+                Are you sure you want to Approve this Course?
+              </div>
+            }
+            open={approveCourse}
+            // onOk={handleOk}
+            width="35%"
+            onCancel={handleModalCancel}
+            footer={false}
+            style={{
+              top: "30%",
+            }}
+          >
+            <Form
+              autoComplete="off"
+              form={form}
+              labelCol={{ span: 4 }}
+              wrapperCol={{ span: 20 }}
+              layout="horizontal"
+              className="mt-5"
+              style={{ width: "100%" }}
+              onFinish={handleApproveClick}
             >
-              Unban
-            </button>
-          ) : (
-            <></>
-          )}
-        </div>
-      </div>
-
-      <Modal
-        title="Content Details"
-        open={modalVisible}
-        onCancel={handleModalCancel}
-        footer={null}
-      >
-        <p>{selectedContent}</p>
-      </Modal>
-
-      <Modal
-        destroyOnClose={true}
-        title={
-          <div className="text-lg">
-            Are you sure you want to Approve this Course?
-          </div>
-        }
-        open={approveCourse}
-        // onOk={handleOk}
-        width="35%"
-        onCancel={handleModalCancel}
-        footer={false}
-        style={{
-          top: "30%",
-        }}
-      >
-        <Form
-          autoComplete="off"
-          form={form}
-          labelCol={{ span: 4 }}
-          wrapperCol={{ span: 20 }}
-          layout="horizontal"
-          className="mt-5"
-          style={{ width: "100%" }}
-          onFinish={handleApproveClick}
-        >
-          <Space className="justify-end w-full">
-            <Form.Item className="mb-0">
-              <Space>
-                <Button
-                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
-                  onClick={handleModalCancel}
-                  style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
-                    border: "2px solid #E0E0E0",
-                    color: "black",
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
-                  htmlType="submit"
-                  style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
-                    border: "2px solid #4caf50",
-                    color: "#fff",
-                  }}
-                >
-                  Confirm
-                </Button>
+              <Space className="justify-end w-full">
+                <Form.Item className="mb-0">
+                  <Space>
+                    <Button
+                      className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                      onClick={handleModalCancel}
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #E0E0E0",
+                        color: "black",
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                      htmlType="submit"
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #4caf50",
+                        color: "#fff",
+                      }}
+                    >
+                      Confirm
+                    </Button>
+                  </Space>
+                </Form.Item>
               </Space>
-            </Form.Item>
-          </Space>
-        </Form>
-      </Modal>
+            </Form>
+          </Modal>
 
-      <Modal
-        destroyOnClose={true}
-        title={
-          <div className="text-lg">
-            Are you sure you want to Approve this Lecture?
-          </div>
-        }
-        open={acceptModal}
-        // onOk={handleOk}
-        width="35%"
-        onCancel={handleModalCancel}
-        footer={false}
-        style={{
-          top: "30%",
-        }}
-      >
-        <Form
-          autoComplete="off"
-          form={form}
-          labelCol={{ span: 4 }}
-          wrapperCol={{ span: 16 }}
-          layout="horizontal"
-          className="mt-5"
-          style={{ width: "100%" }}
-          onFinish={handleAcceptClick}
-        >
-          <Space className="justify-end w-full">
-            <Form.Item className="mb-0">
-              <Space>
-                <Button
-                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
-                  onClick={handleModalCancel}
-                  style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
-                    border: "2px solid #E0E0E0",
-                    color: "black",
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
-                  htmlType="submit"
-                  style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
-                    border: "2px solid #4caf50",
-                    color: "#fff",
-                  }}
-                >
-                  Confirm
-                </Button>
+          <Modal
+            destroyOnClose={true}
+            title={
+              <div className="text-lg">
+                Are you sure you want to Approve this Lecture?
+              </div>
+            }
+            open={acceptModal}
+            // onOk={handleOk}
+            width="35%"
+            onCancel={handleModalCancel}
+            footer={false}
+            style={{
+              top: "30%",
+            }}
+          >
+            <Form
+              autoComplete="off"
+              form={form}
+              labelCol={{ span: 4 }}
+              wrapperCol={{ span: 16 }}
+              layout="horizontal"
+              className="mt-5"
+              style={{ width: "100%" }}
+              onFinish={handleAcceptClick}
+            >
+              <Space className="justify-end w-full">
+                <Form.Item className="mb-0">
+                  <Space>
+                    <Button
+                      className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                      onClick={handleModalCancel}
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #E0E0E0",
+                        color: "black",
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                      htmlType="submit"
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #4caf50",
+                        color: "#fff",
+                      }}
+                    >
+                      Confirm
+                    </Button>
+                  </Space>
+                </Form.Item>
               </Space>
-            </Form.Item>
-          </Space>
-        </Form>
-      </Modal>
+            </Form>
+          </Modal>
 
-      <Modal
-        destroyOnClose={true}
-        title={
-          <div className="text-lg">
-            Are you sure you want to Ban this Course?
-          </div>
-        }
-        open={banCourse}
-        // onOk={handleOk}
-        width="35%"
-        onCancel={handleModalCancel}
-        footer={false}
-        style={{
-          top: "30%",
-        }}
-      >
-        <Form
-          autoComplete="off"
-          form={form}
-          labelCol={{ span: 4 }}
-          wrapperCol={{ span: 20 }}
-          layout="horizontal"
-          className="mt-5"
-          style={{ width: "100%" }}
-          onFinish={handleBanCourseClick}
-        >
-          <Space className="justify-end w-full">
-            <Form.Item className="mb-0">
-              <Space>
-                <Button
-                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
-                  onClick={handleModalCancel}
-                  style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
-                    border: "2px solid #E0E0E0",
-                    color: "black",
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
-                  htmlType="submit"
-                  style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
-                    border: "2px solid #4caf50",
-                    color: "#fff",
-                  }}
-                >
-                  Confirm
-                </Button>
+          <Modal
+            destroyOnClose={true}
+            title={
+              <div className="text-lg">
+                Are you sure you want to Ban this Course?
+              </div>
+            }
+            open={banCourse}
+            // onOk={handleOk}
+            width="35%"
+            onCancel={handleModalCancel}
+            footer={false}
+            style={{
+              top: "30%",
+            }}
+          >
+            <Form
+              autoComplete="off"
+              form={form}
+              labelCol={{ span: 4 }}
+              wrapperCol={{ span: 20 }}
+              layout="horizontal"
+              className="mt-5"
+              style={{ width: "100%" }}
+              onFinish={handleBanCourseClick}
+            >
+              <Space className="justify-end w-full">
+                <Form.Item className="mb-0">
+                  <Space>
+                    <Button
+                      className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                      onClick={handleModalCancel}
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #E0E0E0",
+                        color: "black",
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                      htmlType="submit"
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #4caf50",
+                        color: "#fff",
+                      }}
+                    >
+                      Confirm
+                    </Button>
+                  </Space>
+                </Form.Item>
               </Space>
-            </Form.Item>
-          </Space>
-        </Form>
-      </Modal>
+            </Form>
+          </Modal>
 
-      <Modal
-        destroyOnClose={true}
-        title={
-          <div className="text-lg">
-            Are you sure you want to UnBan this Course?
-          </div>
-        }
-        open={unBanCourse}
-        // onOk={handleOk}
-        width="35%"
-        onCancel={handleModalCancel}
-        footer={false}
-        style={{
-          top: "30%",
-        }}
-      >
-        <Form
-          autoComplete="off"
-          form={form}
-          labelCol={{ span: 4 }}
-          wrapperCol={{ span: 20 }}
-          layout="horizontal"
-          className="mt-5"
-          style={{ width: "100%" }}
-          onFinish={handleUnBanCourseClick}
-        >
-          <Space className="justify-end w-full">
-            <Form.Item className="mb-0">
-              <Space>
-                <Button
-                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
-                  onClick={handleModalCancel}
-                  style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
-                    border: "2px solid #E0E0E0",
-                    color: "black",
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
-                  htmlType="submit"
-                  style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
-                    border: "2px solid #4caf50",
-                    color: "#fff",
-                  }}
-                >
-                  Confirm
-                </Button>
+          <Modal
+            destroyOnClose={true}
+            title={
+              <div className="text-lg">
+                Are you sure you want to UnBan this Course?
+              </div>
+            }
+            open={unBanCourse}
+            // onOk={handleOk}
+            width="35%"
+            onCancel={handleModalCancel}
+            footer={false}
+            style={{
+              top: "30%",
+            }}
+          >
+            <Form
+              autoComplete="off"
+              form={form}
+              labelCol={{ span: 4 }}
+              wrapperCol={{ span: 20 }}
+              layout="horizontal"
+              className="mt-5"
+              style={{ width: "100%" }}
+              onFinish={handleUnBanCourseClick}
+            >
+              <Space className="justify-end w-full">
+                <Form.Item className="mb-0">
+                  <Space>
+                    <Button
+                      className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                      onClick={handleModalCancel}
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #E0E0E0",
+                        color: "black",
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                      htmlType="submit"
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #4caf50",
+                        color: "#fff",
+                      }}
+                    >
+                      Confirm
+                    </Button>
+                  </Space>
+                </Form.Item>
               </Space>
-            </Form.Item>
-          </Space>
-        </Form>
-      </Modal>
+            </Form>
+          </Modal>
 
-      {/* <Dialog
+          {/* <Dialog
         open={banCourse}
         onClose={handleModalCancel}
         aria-describedby="alert-dialog-slide-description"
@@ -857,7 +873,7 @@ const DetailsContent = ({ params }: any) => {
           </Button>
         </DialogActions>
       </Dialog> */}
-      {/* <Dialog
+          {/* <Dialog
         open={rejectCourse}
         onClose={handleModalCancel}
         aria-describedby="alert-dialog-slide-description"
@@ -890,140 +906,142 @@ const DetailsContent = ({ params }: any) => {
         </DialogActions>
       </Dialog> */}
 
-      <Modal
-        destroyOnClose={true}
-        title={
-          <div className="text-lg">
-            Are you sure you want to Reject this Course?
-          </div>
-        }
-        open={RejectModal}
-        // onOk={handleOk}
-        width="35%"
-        onCancel={handleModalCancel}
-        footer={false}
-        style={{
-          top: "30%",
-        }}
-      >
-        <Form
-          autoComplete="off"
-          form={form}
-          labelCol={{ span: 4 }}
-          wrapperCol={{ span: 20 }}
-          layout="horizontal"
-          className="mt-5"
-          style={{ width: "100%" }}
-          onFinish={handleRejectClick}
-        >
-          <Form.Item
-            rules={[{ required: true, message: "Please input Reason!" }]}
-            label="Reason"
-            name="reason"
+          <Modal
+            destroyOnClose={true}
+            title={
+              <div className="text-lg">
+                Are you sure you want to Reject this Course?
+              </div>
+            }
+            open={RejectModal}
+            // onOk={handleOk}
+            width="35%"
+            onCancel={handleModalCancel}
+            footer={false}
+            style={{
+              top: "30%",
+            }}
           >
-            <Input.TextArea rows={4} placeholder="Write your Reason" />
-          </Form.Item>
+            <Form
+              autoComplete="off"
+              form={form}
+              labelCol={{ span: 4 }}
+              wrapperCol={{ span: 20 }}
+              layout="horizontal"
+              className="mt-5"
+              style={{ width: "100%" }}
+              onFinish={handleRejectClick}
+            >
+              <Form.Item
+                rules={[{ required: true, message: "Please input Reason!" }]}
+                label="Reason"
+                name="reason"
+              >
+                <Input.TextArea rows={4} placeholder="Write your Reason" />
+              </Form.Item>
 
-          <Space className="justify-end w-full">
-            <Form.Item className="mb-0">
-              <Space>
-                <Button
-                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
-                  onClick={handleModalCancel}
-                  style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
-                    border: "2px solid #E0E0E0",
-                    color: "black",
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
-                  htmlType="submit"
-                  style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
-                    border: "2px solid #4caf50",
-                    color: "#fff",
-                  }}
-                >
-                  Confirm
-                </Button>
+              <Space className="justify-end w-full">
+                <Form.Item className="mb-0">
+                  <Space>
+                    <Button
+                      className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                      onClick={handleModalCancel}
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #E0E0E0",
+                        color: "black",
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                      htmlType="submit"
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #4caf50",
+                        color: "#fff",
+                      }}
+                    >
+                      Confirm
+                    </Button>
+                  </Space>
+                </Form.Item>
               </Space>
-            </Form.Item>
-          </Space>
-        </Form>
-      </Modal>
+            </Form>
+          </Modal>
 
-      <Modal
-        destroyOnClose={true}
-        title={
-          <div className="text-lg">
-            Are you sure you want to Reject this Course?
-          </div>
-        }
-        open={rejectCourse}
-        // onOk={handleOk}
-        width="35%"
-        onCancel={handleModalCancel}
-        footer={false}
-        style={{
-          top: "30%",
-        }}
-      >
-        <Form
-          autoComplete="off"
-          form={form}
-          labelCol={{ span: 4 }}
-          wrapperCol={{ span: 20 }}
-          layout="horizontal"
-          className="mt-5"
-          style={{ width: "100%" }}
-          onFinish={handleRejectCourse}
-        >
-          <Form.Item
-            rules={[{ required: true, message: "Please input Reason!" }]}
-            label="Reason"
-            name="reason"
+          <Modal
+            destroyOnClose={true}
+            title={
+              <div className="text-lg">
+                Are you sure you want to Reject this Course?
+              </div>
+            }
+            open={rejectCourse}
+            // onOk={handleOk}
+            width="35%"
+            onCancel={handleModalCancel}
+            footer={false}
+            style={{
+              top: "30%",
+            }}
           >
-            <Input.TextArea rows={4} placeholder="Write your Reason" />
-          </Form.Item>
+            <Form
+              autoComplete="off"
+              form={form}
+              labelCol={{ span: 4 }}
+              wrapperCol={{ span: 20 }}
+              layout="horizontal"
+              className="mt-5"
+              style={{ width: "100%" }}
+              onFinish={handleRejectCourse}
+            >
+              <Form.Item
+                rules={[{ required: true, message: "Please input Reason!" }]}
+                label="Reason"
+                name="reason"
+              >
+                <Input.TextArea rows={4} placeholder="Write your Reason" />
+              </Form.Item>
 
-          <Space className="justify-end w-full">
-            <Form.Item className="mb-0">
-              <Space>
-                <Button
-                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
-                  onClick={handleModalCancel}
-                  style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
-                    border: "2px solid #E0E0E0",
-                    color: "black",
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
-                  htmlType="submit"
-                  style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
-                    border: "2px solid #4caf50",
-                    color: "#fff",
-                  }}
-                >
-                  Confirm
-                </Button>
+              <Space className="justify-end w-full">
+                <Form.Item className="mb-0">
+                  <Space>
+                    <Button
+                      className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                      onClick={handleModalCancel}
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #E0E0E0",
+                        color: "black",
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                      htmlType="submit"
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #4caf50",
+                        color: "#fff",
+                      }}
+                    >
+                      Confirm
+                    </Button>
+                  </Space>
+                </Form.Item>
               </Space>
-            </Form.Item>
-          </Space>
-        </Form>
-      </Modal>
-    </div>
+            </Form>
+          </Modal>
+        </div>
+      )}
+    </>
   );
 };
 

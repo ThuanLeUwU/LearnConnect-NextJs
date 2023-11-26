@@ -567,8 +567,8 @@ export default function CourseDetailPage({ params }: any) {
                           payment(
                             idUser,
                             idCourse,
-                            // "https://learn-connect-next-js-git-thuan-thuanleuwu.vercel.app/after-payment"
-                            "http://localhost:3000/after-payment"
+                            "https://learn-connect-next-js-git-thuan-thuanleuwu.vercel.app/after-payment"
+                            // "http://localhost:3000/after-payment"
                           );
                           // console.log("Enrollment confirmed");
                           setIsModalVisible(false);

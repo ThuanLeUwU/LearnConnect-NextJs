@@ -4,7 +4,7 @@ import InstructorCourseStyle from "./styles.module.scss";
 import { Tooltip } from "antd";
 import { useState } from "react";
 
-const LeftNavbar = ({ page1, page2, page3, page4, page5 }) => {
+const LeftNavbar = ({ page1, page2, page3, page4, page5, page6 }) => {
   const [activeMenu, setActiveMenu] = useState<number>();
   const menuItem = [
     {
@@ -31,6 +31,11 @@ const LeftNavbar = ({ page1, page2, page3, page4, page5 }) => {
       image: "/menu-icon/book-bookmark.png",
       title: "Major&Specialize",
       href: `${page5}`,
+    },
+    {
+      image: "/menu-icon/stats.png",
+      title: "Revenue",
+      href: `${page6}`,
     },
   ];
 

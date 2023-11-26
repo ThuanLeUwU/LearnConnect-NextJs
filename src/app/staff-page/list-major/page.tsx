@@ -649,71 +649,78 @@ const MajorSepcialize = () => {
   };
 
   return (
-    <div className="flex">
-      <LeftNavbar
-        page1={"/staff-page"}
-        page2={"/staff-page/staff-rating"}
-        page3={"/staff-page/staff-report"}
-        page4={"/staff-page/moderation"}
-        page5={"#"}
-      />
-      {/* <StaffRatingTable />
-       */}
-      <div className="w-full mt-4">
-        <div className="flex flex-col pb-5 gap-2">
-          <div className="text-start font-semibold text-5xl pl-5">
-            List of Majors
-          </div>
-          <div className="flex justify-end bg-[#e7f8ee] py-4 rounded-md mb-5">
-            <div className="flex justify-end ">
-              <Button className=" mr-5" onClick={handleCreateMajor}>
-                New Major
-              </Button>
-            </div>
-          </div>
-        </div>
-        {loading ? (
+    <>
+      {!userData ? (
+        <div className="text-center text-5xl mt-5">
           <Spin size="large" />
-        ) : (
-          <Table
-            dataSource={majors.reverse()}
-            columns={columns}
-            pagination={{ ...pagination, onChange: handlePageChange }}
-            onRow={(record, rowIndex) => {
-              return {
-                onClick: () => handleRowClick(record), // Xử lý sự kiện click
-              };
-            }}
-            className="mx-5 shadow-[5px_15px_25px_10px_rgba(0,0,0,0.15)] mt-2 rounded-lg"
+        </div>
+      ) : (
+        <div className="flex">
+          <LeftNavbar
+            page1={"/staff-page"}
+            page2={"/staff-page/staff-rating"}
+            page3={"/staff-page/staff-report"}
+            page4={"/staff-page/moderation"}
+            page5={"#"}
+            page6={"/staff-page/staff-revenue"}
           />
-        )}
-        <div>
-          {tableSpecialize && (
-            <>
-              <div className="flex flex-col pb-5 gap-2 mt-16">
-                <div className="text-center font-semibold text-3xl ">
-                  All Specializations of {majorName}
-                </div>
+          {/* <StaffRatingTable />
+           */}
+          <div className="w-full mt-4">
+            <div className="flex flex-col pb-5 gap-2">
+              <div className="text-start font-semibold text-5xl pl-5">
+                List of Majors
+              </div>
+              <div className="flex justify-end bg-[#e7f8ee] py-4 rounded-md mb-5">
                 <div className="flex justify-end ">
-                  <Button className="mr-5" onClick={handleCreateSpecialize}>
-                    Add More
+                  <Button className=" mr-5" onClick={handleCreateMajor}>
+                    New Major
                   </Button>
                 </div>
               </div>
-              {specializations.length === 0 ? (
-                <Empty />
-              ) : (
-                <Table
-                  dataSource={specializations.reverse()}
-                  columns={columns2}
-                  pagination={{ ...pagination, onChange: handlePageChange }}
-                  className="mx-5 shadow-[5px_15px_25px_10px_rgba(0,0,0,0.15)] mt-2 rounded-lg  mb-20"
-                />
+            </div>
+            {loading ? (
+              <Spin size="large" />
+            ) : (
+              <Table
+                dataSource={majors.reverse()}
+                columns={columns}
+                pagination={{ ...pagination, onChange: handlePageChange }}
+                onRow={(record, rowIndex) => {
+                  return {
+                    onClick: () => handleRowClick(record), // Xử lý sự kiện click
+                  };
+                }}
+                className="mx-5 shadow-[5px_15px_25px_10px_rgba(0,0,0,0.15)] mt-2 rounded-lg"
+              />
+            )}
+            <div>
+              {tableSpecialize && (
+                <>
+                  <div className="flex flex-col pb-5 gap-2 mt-16">
+                    <div className="text-center font-semibold text-3xl ">
+                      All Specializations of {majorName}
+                    </div>
+                    <div className="flex justify-end ">
+                      <Button className="mr-5" onClick={handleCreateSpecialize}>
+                        Add More
+                      </Button>
+                    </div>
+                  </div>
+                  {specializations.length === 0 ? (
+                    <Empty />
+                  ) : (
+                    <Table
+                      dataSource={specializations.reverse()}
+                      columns={columns2}
+                      pagination={{ ...pagination, onChange: handlePageChange }}
+                      className="mx-5 shadow-[5px_15px_25px_10px_rgba(0,0,0,0.15)] mt-2 rounded-lg  mb-20"
+                    />
+                  )}
+                </>
               )}
-            </>
-          )}
-        </div>
-        {/* <div className="mt-10 rounded-lg border-solid border-2 mx-10 p-20">
+            </div>
+            {/* <div className="mt-10 rounded-lg border-solid border-2 mx-10 p-20">
         <div className="flex">
           <div className="text-2xl font-semibold mb-0 pt-4 leading-5">
             Total Revenue
@@ -721,580 +728,582 @@ const MajorSepcialize = () => {
         </div>
         
       </div> */}
-      </div>
+          </div>
 
-      {/* create Major */}
-      <Modal
-        destroyOnClose={true}
-        title={<div className="text-lg">Create Major Form</div>}
-        open={formCreateMajor}
-        // onOk={handleOk}
-        width="40%"
-        onCancel={handleCancel}
-        footer={false}
-      >
-        <Form
-          autoComplete="off"
-          form={form}
-          labelCol={{ span: 6 }}
-          wrapperCol={{ span: 20 }}
-          onFinish={handleCreateMajorClick}
-          style={{
-            width: "100%",
-            alignItems: "center",
-          }}
-        >
-          <Form.Item
-            name="name"
-            label="Name"
-            rules={[
-              {
-                required: true,
-                message: "Please input Major name!",
-              },
-            ]}
+          {/* create Major */}
+          <Modal
+            destroyOnClose={true}
+            title={<div className="text-lg">Create Major Form</div>}
+            open={formCreateMajor}
+            // onOk={handleOk}
+            width="40%"
+            onCancel={handleCancel}
+            footer={false}
           >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="description"
-            label="Description"
-            rules={[
-              {
-                required: true,
-                message: "Please input Major description!",
-              },
-            ]}
+            <Form
+              autoComplete="off"
+              form={form}
+              labelCol={{ span: 6 }}
+              wrapperCol={{ span: 20 }}
+              onFinish={handleCreateMajorClick}
+              style={{
+                width: "100%",
+                alignItems: "center",
+              }}
+            >
+              <Form.Item
+                name="name"
+                label="Name"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input Major name!",
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                name="description"
+                label="Description"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input Major description!",
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+              <div className="flex gap-5 justify-end">
+                {/* Thêm các trường dữ liệu khác cần thiết vào đây */}
+                <Button onClick={handleCancel}>Cancel</Button>
+                <Button
+                  style={{
+                    backgroundColor: "#4caf50",
+                    borderColor: "#4caf50",
+                    color: "#fff",
+                  }}
+                  type="primary"
+                  htmlType="submit"
+                >
+                  Submit
+                </Button>
+              </div>
+            </Form>
+          </Modal>
+
+          {/* Update Major */}
+          <Modal
+            destroyOnClose={true}
+            title={<div className="text-lg">Update Major Form</div>}
+            open={formUpdateMajor}
+            // onOk={handleOk}
+            width="40%"
+            onCancel={handleCancel}
+            footer={false}
           >
-            <Input />
-          </Form.Item>
-          <div className="flex gap-5 justify-end">
-            {/* Thêm các trường dữ liệu khác cần thiết vào đây */}
-            <Button onClick={handleCancel}>Cancel</Button>
-            <Button
-              style={{
-                backgroundColor: "#4caf50",
-                borderColor: "#4caf50",
-                color: "#fff",
-              }}
-              type="primary"
-              htmlType="submit"
+            <Form
+              autoComplete="off"
+              form={form}
+              labelCol={{ span: 6 }}
+              wrapperCol={{ span: 20 }}
+              onFinish={handleUpdateMajorClick}
+              style={{ width: "100%", alignItems: "center", marginTop: 20 }}
             >
-              Submit
-            </Button>
-          </div>
-        </Form>
-      </Modal>
+              <Form.Item name="name" label="Name">
+                <Input defaultValue={major?.name} />
+              </Form.Item>
+              <Form.Item name="description" label="Description">
+                <Input.TextArea rows={4} defaultValue={major?.description} />
+              </Form.Item>
 
-      {/* Update Major */}
-      <Modal
-        destroyOnClose={true}
-        title={<div className="text-lg">Update Major Form</div>}
-        open={formUpdateMajor}
-        // onOk={handleOk}
-        width="40%"
-        onCancel={handleCancel}
-        footer={false}
-      >
-        <Form
-          autoComplete="off"
-          form={form}
-          labelCol={{ span: 6 }}
-          wrapperCol={{ span: 20 }}
-          onFinish={handleUpdateMajorClick}
-          style={{ width: "100%", alignItems: "center", marginTop: 20 }}
-        >
-          <Form.Item name="name" label="Name">
-            <Input defaultValue={major?.name} />
-          </Form.Item>
-          <Form.Item name="description" label="Description">
-            <Input.TextArea rows={4} defaultValue={major?.description} />
-          </Form.Item>
-
-          <div className="flex gap-5 justify-end">
-            {/* Thêm các trường dữ liệu khác cần thiết vào đây */}
-            <Button onClick={handleCancel}>Cancel</Button>
-            <Button
-              style={{
-                backgroundColor: "#4caf50",
-                borderColor: "#4caf50",
-                color: "#fff",
-              }}
-              type="primary"
-              htmlType="submit"
-            >
-              Submit
-            </Button>
-          </div>
-        </Form>
-      </Modal>
-
-      {/* Disable major */}
-      <Modal
-        destroyOnClose={true}
-        title={
-          <div className="text-lg">
-            Are you sure you want to Disable this Major?
-          </div>
-        }
-        open={disableMajorModal}
-        // onOk={handleOk}
-        width="35%"
-        onCancel={handleCancel}
-        footer={false}
-        style={{
-          top: "30%",
-        }}
-      >
-        <Form
-          autoComplete="off"
-          form={form}
-          labelCol={{ span: 4 }}
-          wrapperCol={{ span: 20 }}
-          layout="horizontal"
-          className="mt-5"
-          style={{ width: "100%" }}
-          onFinish={handleDisableMajor}
-        >
-          <Space className="justify-end w-full">
-            <Form.Item className="mb-0">
-              <Space>
+              <div className="flex gap-5 justify-end">
+                {/* Thêm các trường dữ liệu khác cần thiết vào đây */}
+                <Button onClick={handleCancel}>Cancel</Button>
                 <Button
-                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
-                  onClick={handleCancel}
                   style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
-                    border: "2px solid #E0E0E0",
-                    color: "black",
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
-                  htmlType="submit"
-                  style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
-                    border: "2px solid #4caf50",
+                    backgroundColor: "#4caf50",
+                    borderColor: "#4caf50",
                     color: "#fff",
                   }}
-                >
-                  Confirm
-                </Button>
-              </Space>
-            </Form.Item>
-          </Space>
-        </Form>
-      </Modal>
-
-      {/* enable major  */}
-      <Modal
-        destroyOnClose={true}
-        title={
-          <div className="text-lg">
-            Are you sure you want to Enable this Major?
-          </div>
-        }
-        open={enableMajorModal}
-        // onOk={handleOk}
-        width="35%"
-        onCancel={handleCancel}
-        footer={false}
-        style={{
-          top: "30%",
-        }}
-      >
-        <Form
-          autoComplete="off"
-          form={form}
-          labelCol={{ span: 4 }}
-          wrapperCol={{ span: 20 }}
-          layout="horizontal"
-          className="mt-5"
-          style={{ width: "100%" }}
-          onFinish={handleEnableMajor}
-        >
-          <Space className="justify-end w-full">
-            <Form.Item className="mb-0">
-              <Space>
-                <Button
-                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
-                  onClick={handleCancel}
-                  style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
-                    border: "2px solid #E0E0E0",
-                    color: "black",
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                  type="primary"
                   htmlType="submit"
-                  style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
-                    border: "2px solid #4caf50",
-                    color: "#fff",
-                  }}
                 >
-                  Confirm
+                  Submit
                 </Button>
-              </Space>
-            </Form.Item>
-          </Space>
-        </Form>
-      </Modal>
+              </div>
+            </Form>
+          </Modal>
 
-      {/* delete major  */}
-      <Modal
-        destroyOnClose={true}
-        title={
-          <div className="text-lg">
-            Are you sure you want to Delete this Major?
-          </div>
-        }
-        open={deleteMajorModal}
-        // onOk={handleOk}
-        width="35%"
-        onCancel={handleCancel}
-        footer={false}
-        style={{
-          top: "30%",
-        }}
-      >
-        <Form
-          autoComplete="off"
-          form={form}
-          labelCol={{ span: 4 }}
-          wrapperCol={{ span: 20 }}
-          layout="horizontal"
-          className="mt-5"
-          style={{ width: "100%" }}
-          onFinish={handleDeleteMajor}
-        >
-          <Space className="justify-end w-full">
-            <Form.Item className="mb-0">
-              <Space>
-                <Button
-                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
-                  onClick={handleCancel}
-                  style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
-                    border: "2px solid #E0E0E0",
-                    color: "black",
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
-                  htmlType="submit"
-                  style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
-                    border: "2px solid #4caf50",
-                    color: "#fff",
-                  }}
-                >
-                  Confirm
-                </Button>
-              </Space>
-            </Form.Item>
-          </Space>
-        </Form>
-      </Modal>
-
-      {/* Create Specialize  */}
-      <Modal
-        destroyOnClose={true}
-        title={<div className="text-lg">Create Specialization Form</div>}
-        open={formCreateSpecialize}
-        // onOk={handleOk}
-        width="40%"
-        onCancel={handleCancel}
-        footer={false}
-      >
-        <Form
-          autoComplete="off"
-          form={form}
-          labelCol={{ span: 6 }}
-          wrapperCol={{ span: 20 }}
-          onFinish={handleCreateSpecializeClick}
-          style={{ width: "100%", alignItems: "center", marginTop: 20 }}
-        >
-          <Form.Item
-            name="name"
-            label="Name"
-            rules={[
-              {
-                required: true,
-                message: "Please input Major name!",
-              },
-            ]}
+          {/* Disable major */}
+          <Modal
+            destroyOnClose={true}
+            title={
+              <div className="text-lg">
+                Are you sure you want to Disable this Major?
+              </div>
+            }
+            open={disableMajorModal}
+            // onOk={handleOk}
+            width="35%"
+            onCancel={handleCancel}
+            footer={false}
+            style={{
+              top: "30%",
+            }}
           >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="description"
-            label="Description"
-            rules={[
-              {
-                required: true,
-                message: "Please input Major description!",
-              },
-            ]}
+            <Form
+              autoComplete="off"
+              form={form}
+              labelCol={{ span: 4 }}
+              wrapperCol={{ span: 20 }}
+              layout="horizontal"
+              className="mt-5"
+              style={{ width: "100%" }}
+              onFinish={handleDisableMajor}
+            >
+              <Space className="justify-end w-full">
+                <Form.Item className="mb-0">
+                  <Space>
+                    <Button
+                      className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                      onClick={handleCancel}
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #E0E0E0",
+                        color: "black",
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                      htmlType="submit"
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #4caf50",
+                        color: "#fff",
+                      }}
+                    >
+                      Confirm
+                    </Button>
+                  </Space>
+                </Form.Item>
+              </Space>
+            </Form>
+          </Modal>
+
+          {/* enable major  */}
+          <Modal
+            destroyOnClose={true}
+            title={
+              <div className="text-lg">
+                Are you sure you want to Enable this Major?
+              </div>
+            }
+            open={enableMajorModal}
+            // onOk={handleOk}
+            width="35%"
+            onCancel={handleCancel}
+            footer={false}
+            style={{
+              top: "30%",
+            }}
           >
-            <Input />
-          </Form.Item>
-          <div className="flex gap-5 justify-end">
-            {/* Thêm các trường dữ liệu khác cần thiết vào đây */}
-            <Button onClick={handleCancel}>Cancel</Button>
-            <Button
-              style={{
-                backgroundColor: "#4caf50",
-                borderColor: "#4caf50",
-                color: "#fff",
-              }}
-              type="primary"
-              htmlType="submit"
+            <Form
+              autoComplete="off"
+              form={form}
+              labelCol={{ span: 4 }}
+              wrapperCol={{ span: 20 }}
+              layout="horizontal"
+              className="mt-5"
+              style={{ width: "100%" }}
+              onFinish={handleEnableMajor}
             >
-              Submit
-            </Button>
-          </div>
-        </Form>
-      </Modal>
+              <Space className="justify-end w-full">
+                <Form.Item className="mb-0">
+                  <Space>
+                    <Button
+                      className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                      onClick={handleCancel}
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #E0E0E0",
+                        color: "black",
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                      htmlType="submit"
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #4caf50",
+                        color: "#fff",
+                      }}
+                    >
+                      Confirm
+                    </Button>
+                  </Space>
+                </Form.Item>
+              </Space>
+            </Form>
+          </Modal>
 
-      {/* Update Specialize */}
-      <Modal
-        destroyOnClose={true}
-        title={<div className="text-lg">Update Specialization Form</div>}
-        open={formUpdateSpecialize}
-        // onOk={handleOk}
-        width="40%"
-        onCancel={handleCancel}
-        footer={false}
-      >
-        <Form
-          autoComplete="off"
-          form={form}
-          labelCol={{ span: 6 }}
-          wrapperCol={{ span: 20 }}
-          onFinish={handleUpdateSpecializeClick}
-          style={{ width: "100%", alignItems: "center", marginTop: 20 }}
-        >
-          <Form.Item name="name" label="Name">
-            <Input defaultValue={specialization?.name} />
-          </Form.Item>
-          <Form.Item name="description" label="Description">
-            <Input.TextArea
-              rows={4}
-              defaultValue={specialization?.description}
-            />
-          </Form.Item>
-
-          <div className="flex gap-5 justify-end">
-            {/* Thêm các trường dữ liệu khác cần thiết vào đây */}
-            <Button onClick={handleCancel}>Cancel</Button>
-            <Button
-              style={{
-                backgroundColor: "#4caf50",
-                borderColor: "#4caf50",
-                color: "#fff",
-              }}
-              type="primary"
-              htmlType="submit"
+          {/* delete major  */}
+          <Modal
+            destroyOnClose={true}
+            title={
+              <div className="text-lg">
+                Are you sure you want to Delete this Major?
+              </div>
+            }
+            open={deleteMajorModal}
+            // onOk={handleOk}
+            width="35%"
+            onCancel={handleCancel}
+            footer={false}
+            style={{
+              top: "30%",
+            }}
+          >
+            <Form
+              autoComplete="off"
+              form={form}
+              labelCol={{ span: 4 }}
+              wrapperCol={{ span: 20 }}
+              layout="horizontal"
+              className="mt-5"
+              style={{ width: "100%" }}
+              onFinish={handleDeleteMajor}
             >
-              Submit
-            </Button>
-          </div>
-        </Form>
-      </Modal>
+              <Space className="justify-end w-full">
+                <Form.Item className="mb-0">
+                  <Space>
+                    <Button
+                      className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                      onClick={handleCancel}
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #E0E0E0",
+                        color: "black",
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                      htmlType="submit"
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #4caf50",
+                        color: "#fff",
+                      }}
+                    >
+                      Confirm
+                    </Button>
+                  </Space>
+                </Form.Item>
+              </Space>
+            </Form>
+          </Modal>
 
-      {/* Disable Specialize */}
-      <Modal
-        destroyOnClose={true}
-        title={
-          <div className="text-lg">
-            Are you sure you want to Delete this Major?
-          </div>
-        }
-        open={disableSpecializeModal}
-        // onOk={handleOk}
-        width="35%"
-        onCancel={handleCancel}
-        footer={false}
-        style={{
-          top: "30%",
-        }}
-      >
-        <Form
-          autoComplete="off"
-          form={form}
-          labelCol={{ span: 4 }}
-          wrapperCol={{ span: 20 }}
-          layout="horizontal"
-          className="mt-5"
-          style={{ width: "100%" }}
-          onFinish={handleDisableSpecialize}
-        >
-          <Space className="justify-end w-full">
-            <Form.Item className="mb-0">
-              <Space>
+          {/* Create Specialize  */}
+          <Modal
+            destroyOnClose={true}
+            title={<div className="text-lg">Create Specialization Form</div>}
+            open={formCreateSpecialize}
+            // onOk={handleOk}
+            width="40%"
+            onCancel={handleCancel}
+            footer={false}
+          >
+            <Form
+              autoComplete="off"
+              form={form}
+              labelCol={{ span: 6 }}
+              wrapperCol={{ span: 20 }}
+              onFinish={handleCreateSpecializeClick}
+              style={{ width: "100%", alignItems: "center", marginTop: 20 }}
+            >
+              <Form.Item
+                name="name"
+                label="Name"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input Major name!",
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                name="description"
+                label="Description"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input Major description!",
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+              <div className="flex gap-5 justify-end">
+                {/* Thêm các trường dữ liệu khác cần thiết vào đây */}
+                <Button onClick={handleCancel}>Cancel</Button>
                 <Button
-                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
-                  onClick={handleCancel}
                   style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
-                    border: "2px solid #E0E0E0",
-                    color: "black",
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
-                  htmlType="submit"
-                  style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
-                    border: "2px solid #4caf50",
+                    backgroundColor: "#4caf50",
+                    borderColor: "#4caf50",
                     color: "#fff",
                   }}
-                >
-                  Confirm
-                </Button>
-              </Space>
-            </Form.Item>
-          </Space>
-        </Form>
-      </Modal>
-
-      {/* Enable Specialize */}
-      <Modal
-        destroyOnClose={true}
-        title={
-          <div className="text-lg">
-            Are you sure you want to Enable this Specialization?
-          </div>
-        }
-        open={EnableSpecializeModal}
-        // onOk={handleOk}
-        width="35%"
-        onCancel={handleCancel}
-        footer={false}
-        style={{
-          top: "30%",
-        }}
-      >
-        <Form
-          autoComplete="off"
-          form={form}
-          labelCol={{ span: 4 }}
-          wrapperCol={{ span: 20 }}
-          layout="horizontal"
-          className="mt-5"
-          style={{ width: "100%" }}
-          onFinish={handleEnableSpecialize}
-        >
-          <Space className="justify-end w-full">
-            <Form.Item className="mb-0">
-              <Space>
-                <Button
-                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
-                  onClick={handleCancel}
-                  style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
-                    border: "2px solid #E0E0E0",
-                    color: "black",
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                  type="primary"
                   htmlType="submit"
+                >
+                  Submit
+                </Button>
+              </div>
+            </Form>
+          </Modal>
+
+          {/* Update Specialize */}
+          <Modal
+            destroyOnClose={true}
+            title={<div className="text-lg">Update Specialization Form</div>}
+            open={formUpdateSpecialize}
+            // onOk={handleOk}
+            width="40%"
+            onCancel={handleCancel}
+            footer={false}
+          >
+            <Form
+              autoComplete="off"
+              form={form}
+              labelCol={{ span: 6 }}
+              wrapperCol={{ span: 20 }}
+              onFinish={handleUpdateSpecializeClick}
+              style={{ width: "100%", alignItems: "center", marginTop: 20 }}
+            >
+              <Form.Item name="name" label="Name">
+                <Input defaultValue={specialization?.name} />
+              </Form.Item>
+              <Form.Item name="description" label="Description">
+                <Input.TextArea
+                  rows={4}
+                  defaultValue={specialization?.description}
+                />
+              </Form.Item>
+
+              <div className="flex gap-5 justify-end">
+                {/* Thêm các trường dữ liệu khác cần thiết vào đây */}
+                <Button onClick={handleCancel}>Cancel</Button>
+                <Button
                   style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
-                    border: "2px solid #4caf50",
+                    backgroundColor: "#4caf50",
+                    borderColor: "#4caf50",
                     color: "#fff",
                   }}
-                >
-                  Confirm
-                </Button>
-              </Space>
-            </Form.Item>
-          </Space>
-        </Form>
-      </Modal>
-
-      {/* Delete Specialize */}
-      <Modal
-        destroyOnClose={true}
-        title={
-          <div className="text-lg">
-            Are you sure you want to Delete this Specialization?
-          </div>
-        }
-        open={deleteSpecializeModal}
-        // onOk={handleOk}
-        width="35%"
-        onCancel={handleCancel}
-        footer={false}
-        style={{
-          top: "30%",
-        }}
-      >
-        <Form
-          autoComplete="off"
-          form={form}
-          labelCol={{ span: 4 }}
-          wrapperCol={{ span: 20 }}
-          layout="horizontal"
-          className="mt-5"
-          style={{ width: "100%" }}
-          onFinish={handleDeleteSpecialize}
-        >
-          <Space className="justify-end w-full">
-            <Form.Item className="mb-0">
-              <Space>
-                <Button
-                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
-                  onClick={handleCancel}
-                  style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
-                    border: "2px solid #E0E0E0",
-                    color: "black",
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                  type="primary"
                   htmlType="submit"
-                  style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
-                    border: "2px solid #4caf50",
-                    color: "#fff",
-                  }}
                 >
-                  Confirm
+                  Submit
                 </Button>
+              </div>
+            </Form>
+          </Modal>
+
+          {/* Disable Specialize */}
+          <Modal
+            destroyOnClose={true}
+            title={
+              <div className="text-lg">
+                Are you sure you want to Delete this Major?
+              </div>
+            }
+            open={disableSpecializeModal}
+            // onOk={handleOk}
+            width="35%"
+            onCancel={handleCancel}
+            footer={false}
+            style={{
+              top: "30%",
+            }}
+          >
+            <Form
+              autoComplete="off"
+              form={form}
+              labelCol={{ span: 4 }}
+              wrapperCol={{ span: 20 }}
+              layout="horizontal"
+              className="mt-5"
+              style={{ width: "100%" }}
+              onFinish={handleDisableSpecialize}
+            >
+              <Space className="justify-end w-full">
+                <Form.Item className="mb-0">
+                  <Space>
+                    <Button
+                      className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                      onClick={handleCancel}
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #E0E0E0",
+                        color: "black",
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                      htmlType="submit"
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #4caf50",
+                        color: "#fff",
+                      }}
+                    >
+                      Confirm
+                    </Button>
+                  </Space>
+                </Form.Item>
               </Space>
-            </Form.Item>
-          </Space>
-        </Form>
-      </Modal>
-    </div>
+            </Form>
+          </Modal>
+
+          {/* Enable Specialize */}
+          <Modal
+            destroyOnClose={true}
+            title={
+              <div className="text-lg">
+                Are you sure you want to Enable this Specialization?
+              </div>
+            }
+            open={EnableSpecializeModal}
+            // onOk={handleOk}
+            width="35%"
+            onCancel={handleCancel}
+            footer={false}
+            style={{
+              top: "30%",
+            }}
+          >
+            <Form
+              autoComplete="off"
+              form={form}
+              labelCol={{ span: 4 }}
+              wrapperCol={{ span: 20 }}
+              layout="horizontal"
+              className="mt-5"
+              style={{ width: "100%" }}
+              onFinish={handleEnableSpecialize}
+            >
+              <Space className="justify-end w-full">
+                <Form.Item className="mb-0">
+                  <Space>
+                    <Button
+                      className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                      onClick={handleCancel}
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #E0E0E0",
+                        color: "black",
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                      htmlType="submit"
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #4caf50",
+                        color: "#fff",
+                      }}
+                    >
+                      Confirm
+                    </Button>
+                  </Space>
+                </Form.Item>
+              </Space>
+            </Form>
+          </Modal>
+
+          {/* Delete Specialize */}
+          <Modal
+            destroyOnClose={true}
+            title={
+              <div className="text-lg">
+                Are you sure you want to Delete this Specialization?
+              </div>
+            }
+            open={deleteSpecializeModal}
+            // onOk={handleOk}
+            width="35%"
+            onCancel={handleCancel}
+            footer={false}
+            style={{
+              top: "30%",
+            }}
+          >
+            <Form
+              autoComplete="off"
+              form={form}
+              labelCol={{ span: 4 }}
+              wrapperCol={{ span: 20 }}
+              layout="horizontal"
+              className="mt-5"
+              style={{ width: "100%" }}
+              onFinish={handleDeleteSpecialize}
+            >
+              <Space className="justify-end w-full">
+                <Form.Item className="mb-0">
+                  <Space>
+                    <Button
+                      className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                      onClick={handleCancel}
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #E0E0E0",
+                        color: "black",
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                      htmlType="submit"
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #4caf50",
+                        color: "#fff",
+                      }}
+                    >
+                      Confirm
+                    </Button>
+                  </Space>
+                </Form.Item>
+              </Space>
+            </Form>
+          </Modal>
+        </div>
+      )}
+    </>
   );
 };
 

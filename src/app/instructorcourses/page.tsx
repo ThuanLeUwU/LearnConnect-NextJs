@@ -55,7 +55,7 @@ export type Category = {
 
 const InstructorCourse = () => {
   const router = useRouter();
-  const { id, user, role } = UserAuth();
+  const { id, user, role, userData } = UserAuth();
   useEffect(() => {
     if (role === 0) {
       router.push(`/user-manage`);
@@ -344,452 +344,467 @@ const InstructorCourse = () => {
     setOpen(false);
   };
 
-  if (!id) return <Spin size="large" className="flex justify-center" />;
+  // if (!id) return <Spin size="large" className="flex justify-center" />;
 
   return (
-    <div className={`${InstructorCourseStyle.content_wrapper}`}>
-      <div className={`${InstructorCourseStyle.sidebar_wrapper}`}>
-        <div className={`${InstructorCourseStyle.sidebar_list}`}>
-          {menuItem.map((item, index) => {
-            return (
-              <Tooltip key={index} title={item.title}>
-                <Link
-                  key={index}
-                  href={item.href}
-                  className={`${InstructorCourseStyle.sidebar_active} mt-5`}
-                >
-                  <img src={item.image} alt="image"></img>
-                </Link>
-              </Tooltip>
-            );
-          })}
+    <>
+      {!userData ? (
+        <div className="text-center text-5xl mt-5">
+          <Spin size="large" />
         </div>
-      </div>
-      <div className={`${InstructorCourseStyle.body_wrapper}`}>
-        <div className={`${InstructorCourseStyle.course_tab}`}>
-          <div className="text-start font-semibold text-5xl pb-5 pl-5">
-            Courses
+      ) : (
+        <div className={`${InstructorCourseStyle.content_wrapper}`}>
+          <div className={`${InstructorCourseStyle.sidebar_wrapper}`}>
+            <div className={`${InstructorCourseStyle.sidebar_list}`}>
+              {menuItem.map((item, index) => {
+                return (
+                  <Tooltip key={index} title={item.title}>
+                    <Link
+                      key={index}
+                      href={item.href}
+                      className={`${InstructorCourseStyle.sidebar_active} mt-5`}
+                    >
+                      <img src={item.image} alt="image"></img>
+                    </Link>
+                  </Tooltip>
+                );
+              })}
+            </div>
           </div>
-          <div className={`${InstructorCourseStyle.course_tab_btn}`}>
-            <Button
-              type="default"
-              className={`${InstructorCourseStyle.create_btn}`}
-              onClick={showModal}
-            >
-              New Course
-            </Button>
-          </div>
-        </div>
-        {listCourseInstructor.length === 0 ? (
-          <Empty />
-        ) : (
-          <>
-            {loading ? (
-              <div className="text-center text-5xl mt-5">
-                <Spin size="large" />
+          <div className={`${InstructorCourseStyle.body_wrapper}`}>
+            <div className={`${InstructorCourseStyle.course_tab}`}>
+              <div className="text-start font-semibold text-5xl pb-5 pl-5">
+                Courses
               </div>
+              <div className={`${InstructorCourseStyle.course_tab_btn}`}>
+                <Button
+                  type="default"
+                  className={`${InstructorCourseStyle.create_btn}`}
+                  onClick={showModal}
+                >
+                  New Course
+                </Button>
+              </div>
+            </div>
+            {listCourseInstructor.length === 0 ? (
+              <Empty />
             ) : (
-              <div className={`${InstructorCourseStyle.course_list_wrapper}`}>
-                {listCourseInstructor.map((item, index) => {
-                  return (
-                    <div key={index}>
-                      <div className={`${InstructorCourseStyle.course_item} `}>
-                        <div className="flex">
-                          <div>
-                            <button
-                              onClick={() => {
-                                handleClick(item);
-                              }}
-                            >
-                              <img
-                                className="h-[120px] w-[120px] rounded-lg"
-                                src={item.imageUrl}
-                                alt="Image"
-                              />
-                            </button>
-                          </div>
+              <>
+                {loading ? (
+                  <div className="text-center text-5xl mt-5">
+                    <Spin size="large" />
+                  </div>
+                ) : (
+                  <div
+                    className={`${InstructorCourseStyle.course_list_wrapper}`}
+                  >
+                    {listCourseInstructor.map((item, index) => {
+                      return (
+                        <div key={index}>
                           <div
-                            className={`${InstructorCourseStyle.course_item_title}`}
+                            className={`${InstructorCourseStyle.course_item} `}
                           >
-                            <h2>
-                              <button
-                                className="text-left hover:text-green-500 hover:underline "
-                                onClick={() => {
-                                  handleClick(item);
-                                }}
+                            <div className="flex">
+                              <div>
+                                <button
+                                  onClick={() => {
+                                    handleClick(item);
+                                  }}
+                                >
+                                  <img
+                                    className="h-[120px] w-[120px] rounded-lg"
+                                    src={item.imageUrl}
+                                    alt="Image"
+                                  />
+                                </button>
+                              </div>
+                              <div
+                                className={`${InstructorCourseStyle.course_item_title}`}
                               >
-                                {item.name}
-                              </button>
-                            </h2>
-                          </div>
-                        </div>
-                        <div
-                          className={`${InstructorCourseStyle.course_tracker}`}
-                        >
-                          <div
-                            className={`${InstructorCourseStyle.course_tracker_1}`}
-                          >
-                            <p>Status</p>
-                            <span
-                              className={`${InstructorCourseStyle.course_tracker_count}`}
+                                <h2>
+                                  <button
+                                    className="text-left hover:text-green-500 hover:underline "
+                                    onClick={() => {
+                                      handleClick(item);
+                                    }}
+                                  >
+                                    {item.name}
+                                  </button>
+                                </h2>
+                              </div>
+                            </div>
+                            <div
+                              className={`${InstructorCourseStyle.course_tracker}`}
                             >
-                              <span>{displayActive(item.status)}</span>
-                            </span>
-                          </div>
-                          <div
-                            className={`${InstructorCourseStyle.course_tracker_2}`}
-                          >
-                            <p>Enrollments</p>
-                            <span
-                              className={`${InstructorCourseStyle.course_tracker_count}`}
-                            >
-                              {item.totalEnrollment}
-                            </span>
-                          </div>
-                          <div
-                            className={`${InstructorCourseStyle.course_tracker_3}`}
-                          >
-                            <p>Course Rating</p>
-                            <span
-                              className={`${InstructorCourseStyle.course_tracker_count}`}
-                            >
-                              {item.averageRating}
-                              {/* <ReactStars count={1} color2={"#ffd700"}></ReactStars> */}
-                              <span>
-                                <Rating
-                                  size="small"
-                                  name="half-rating-read"
-                                  precision={0.1}
-                                  readOnly
-                                  value={item.averageRating}
-                                />
-                              </span>
-                            </span>
-                          </div>
-                          <div
-                            className={`${InstructorCourseStyle.course_tracker_4}`}
-                          >
-                            <p className="flex justify-center">Action </p>
-                            <span className="flex  gap-2">
-                              <Button
-                                // type="primary"
-                                style={{ color: "black", backgroundColor: "" }}
-                                onClick={() => {
-                                  showUpdateModal(item);
-                                  // console.log("t nè", user);
-                                }}
+                              <div
+                                className={`${InstructorCourseStyle.course_tracker_1}`}
                               >
-                                Update
-                              </Button>
-                              <Button
-                                danger
-                                type="primary"
-                                style={{ color: "black" }}
-                                onClick={() => handleClickOpen(item)}
+                                <p>Status</p>
+                                <span
+                                  className={`${InstructorCourseStyle.course_tracker_count}`}
+                                >
+                                  <span>{displayActive(item.status)}</span>
+                                </span>
+                              </div>
+                              <div
+                                className={`${InstructorCourseStyle.course_tracker_2}`}
                               >
-                                Delete
-                              </Button>
-                            </span>
-                          </div>
-                          {/* <div>
+                                <p>Enrollments</p>
+                                <span
+                                  className={`${InstructorCourseStyle.course_tracker_count}`}
+                                >
+                                  {item.totalEnrollment}
+                                </span>
+                              </div>
+                              <div
+                                className={`${InstructorCourseStyle.course_tracker_3}`}
+                              >
+                                <p>Course Rating</p>
+                                <span
+                                  className={`${InstructorCourseStyle.course_tracker_count}`}
+                                >
+                                  {item.averageRating}
+                                  {/* <ReactStars count={1} color2={"#ffd700"}></ReactStars> */}
+                                  <span>
+                                    <Rating
+                                      size="small"
+                                      name="half-rating-read"
+                                      precision={0.1}
+                                      readOnly
+                                      value={item.averageRating}
+                                    />
+                                  </span>
+                                </span>
+                              </div>
+                              <div
+                                className={`${InstructorCourseStyle.course_tracker_4}`}
+                              >
+                                <p className="flex justify-center">Action </p>
+                                <span className="flex  gap-2">
+                                  <Button
+                                    // type="primary"
+                                    style={{
+                                      color: "black",
+                                      backgroundColor: "",
+                                    }}
+                                    onClick={() => {
+                                      showUpdateModal(item);
+                                      // console.log("t nè", user);
+                                    }}
+                                  >
+                                    Update
+                                  </Button>
+                                  <Button
+                                    danger
+                                    type="primary"
+                                    style={{ color: "black" }}
+                                    onClick={() => handleClickOpen(item)}
+                                  >
+                                    Delete
+                                  </Button>
+                                </span>
+                              </div>
+                              {/* <div>
                       <p>Status</p>
                       <span>{displayActive(item.status)}</span>
                     </div> */}
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    </div>
-                  );
-                })}
-                <Paginate
-                  totalPages={totalPages}
-                  currentPage={currentPage}
-                  setCurrentPage={setCurrentPage}
+                      );
+                    })}
+                    <Paginate
+                      totalPages={totalPages}
+                      currentPage={currentPage}
+                      setCurrentPage={setCurrentPage}
+                    />
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+          <Modal
+            destroyOnClose={true}
+            title="Create New Course Form"
+            open={isModal}
+            // style={{ width: 800 }}
+            width="40%"
+            // onOk={handleOk}
+            onCancel={handleCancel}
+            footer={false}
+          >
+            <Form
+              autoComplete="off"
+              form={form}
+              labelCol={{ span: 6 }}
+              labelAlign={"left"}
+              wrapperCol={{ span: 18 }}
+              layout="horizontal"
+              className="mt-5"
+              style={{ width: "100%" }}
+              onFinish={handleSubmit}
+            >
+              <div style={{ display: "flex" }} className="flex">
+                <Image
+                  width="100%"
+                  height={300}
+                  src={image}
+                  className="overflow-hidden"
+                />
+
+                {/* <video width={300} height={200} src={image} controls /> */}
+              </div>
+              <div
+                className="flex flex-col items-center pt-2 pb-2"
+                style={{ display: "flex" }}
+              >
+                <Upload
+                  accept="image/png, image/jpeg"
+                  onChange={handleChange}
+                  action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
+                >
+                  <Button>Upload</Button>
+                </Upload>
+                {/* <span>{errorMassage}</span> */}
+              </div>
+              <Form.Item
+                rules={[{ required: true, message: "Please input Name!" }]}
+                label="Name"
+                name="name"
+              >
+                <Input placeholder="Name Course" />
+              </Form.Item>
+              <Form.Item label="Specialize">
+                <Select onChange={handleChangeCate}>
+                  {listCategory.map((option) => {
+                    return (
+                      <Option key={option.specId} value={option.specId}>
+                        {option.specName}
+                      </Option>
+                    );
+                  })}
+                </Select>
+              </Form.Item>
+              <Form.Item
+                rules={[
+                  { required: true, message: "Please estimate the time!" },
+                ]}
+                label="Length(mins)"
+                name="length"
+              >
+                <InputNumber
+                  placeholder="Input estimate the time!"
+                  min={0}
+                  className="w-[290px]"
+                  controls={false}
+                  // formatter={(value) => `${value} mins`}
+                  // parser={(value) => value!.replace("mins", "")}
+                />
+              </Form.Item>
+              <Form.Item
+                rules={[
+                  {
+                    required: true,
+                    message: "Please estimate number of lectures!",
+                  },
+                ]}
+                label="Lectures"
+                name="lecture"
+              >
+                <InputNumber className="w-[200px]" min={0} controls={false} />
+              </Form.Item>
+              <Form.Item
+                rules={[
+                  {
+                    required: true,
+                    message: "Please Input Price",
+                  },
+                ]}
+                label="Price(VND):"
+                name="price"
+              >
+                <InputNumber style={{ width: 200 }} min={0} controls={false} />
+              </Form.Item>
+              <Form.Item
+                rules={[
+                  {
+                    required: true,
+                    message: "Please Type Short Description",
+                  },
+                ]}
+                label="Introduction"
+                name="shortDes"
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item label="Description" name="description">
+                <Input.TextArea rows={4} />
+              </Form.Item>
+              <Space className="justify-end w-full">
+                <Form.Item className="mb-0">
+                  <Space>
+                    <Button
+                      className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                      onClick={handleCancel}
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #E0E0E0",
+                        color: "black",
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                      htmlType="submit"
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #4caf50",
+                        color: "#fff",
+                      }}
+                    >
+                      Confirm
+                    </Button>
+                  </Space>
+                </Form.Item>
+              </Space>
+            </Form>
+          </Modal>
+          {/* Modal update */}
+          <Modal
+            destroyOnClose={true}
+            title={`Update Course Form ${user?.displayName}`}
+            open={updateModal}
+            // onOk={handleOk}
+            onCancel={handleCancel}
+            footer={false}
+            width="40%"
+          >
+            <Form
+              autoComplete="off"
+              form={form}
+              labelCol={{ span: 6 }}
+              wrapperCol={{ span: 18 }}
+              layout="horizontal"
+              className="mt-5"
+              style={{ width: "100%" }}
+              onFinish={handleUpdate}
+            >
+              <div style={{ display: "flex" }} className="flex overflow-hidden">
+                <Image
+                  width="100%"
+                  height={300}
+                  src={updateImage}
+                  className="overflow-hidden"
+                  // defaultValue={course?.imageUrl}
                 />
               </div>
-            )}
-          </>
-        )}
-      </div>
-      <Modal
-        destroyOnClose={true}
-        title="Create New Course Form"
-        open={isModal}
-        // style={{ width: 800 }}
-        width="40%"
-        // onOk={handleOk}
-        onCancel={handleCancel}
-        footer={false}
-      >
-        <Form
-          autoComplete="off"
-          form={form}
-          labelCol={{ span: 6 }}
-          labelAlign={"left"}
-          wrapperCol={{ span: 18 }}
-          layout="horizontal"
-          className="mt-5"
-          style={{ width: "100%" }}
-          onFinish={handleSubmit}
-        >
-          <div style={{ display: "flex" }} className="flex">
-            <Image
-              width="100%"
-              height={300}
-              src={image}
-              className="overflow-hidden"
-            />
-
-            {/* <video width={300} height={200} src={image} controls /> */}
-          </div>
-          <div
-            className="flex flex-col items-center pt-2 pb-2"
-            style={{ display: "flex" }}
-          >
-            <Upload
-              accept="image/png, image/jpeg"
-              onChange={handleChange}
-              action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
-            >
-              <Button>Upload</Button>
-            </Upload>
-            {/* <span>{errorMassage}</span> */}
-          </div>
-          <Form.Item
-            rules={[{ required: true, message: "Please input Name!" }]}
-            label="Name"
-            name="name"
-          >
-            <Input placeholder="Name Course" />
-          </Form.Item>
-          <Form.Item label="Specialize">
-            <Select onChange={handleChangeCate}>
-              {listCategory.map((option) => {
-                return (
-                  <Option key={option.specId} value={option.specId}>
-                    {option.specName}
-                  </Option>
-                );
-              })}
-            </Select>
-          </Form.Item>
-          <Form.Item
-            rules={[{ required: true, message: "Please estimate the time!" }]}
-            label="Length(mins)"
-            name="length"
-          >
-            <InputNumber
-              placeholder="Input estimate the time!"
-              min={0}
-              className="w-[290px]"
-              controls={false}
-              // formatter={(value) => `${value} mins`}
-              // parser={(value) => value!.replace("mins", "")}
-            />
-          </Form.Item>
-          <Form.Item
-            rules={[
-              {
-                required: true,
-                message: "Please estimate number of lectures!",
-              },
-            ]}
-            label="Lectures"
-            name="lecture"
-          >
-            <InputNumber className="w-[200px]" min={0} controls={false} />
-          </Form.Item>
-          <Form.Item
-            rules={[
-              {
-                required: true,
-                message: "Please Input Price",
-              },
-            ]}
-            label="Price(VND):"
-            name="price"
-          >
-            <InputNumber style={{ width: 200 }} min={0} controls={false} />
-          </Form.Item>
-          <Form.Item
-            rules={[
-              {
-                required: true,
-                message: "Please Type Short Description",
-              },
-            ]}
-            label="Introduction"
-            name="shortDes"
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item label="Description" name="description">
-            <Input.TextArea rows={4} />
-          </Form.Item>
-          <Space className="justify-end w-full">
-            <Form.Item className="mb-0">
-              <Space>
-                <Button
-                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
-                  onClick={handleCancel}
-                  style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
-                    border: "2px solid #E0E0E0",
-                    color: "black",
-                  }}
+              <div
+                className="flex justify-center items-center pt-2 pb-2"
+                style={{ display: "flex" }}
+              >
+                <Upload
+                  accept="image/png, image/jpeg"
+                  onChange={handleChange}
+                  beforeUpload={beforeUpload}
+                  // headers={{ Authorization: authorization }}
+                  action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
                 >
-                  Cancel
-                </Button>
-                <Button
-                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
-                  htmlType="submit"
-                  style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
-                    border: "2px solid #4caf50",
-                    color: "#fff",
-                  }}
-                >
-                  Confirm
-                </Button>
-              </Space>
-            </Form.Item>
-          </Space>
-        </Form>
-      </Modal>
-      {/* Modal update */}
-      <Modal
-        destroyOnClose={true}
-        title={`Update Course Form ${user?.displayName}`}
-        open={updateModal}
-        // onOk={handleOk}
-        onCancel={handleCancel}
-        footer={false}
-        width="40%"
-      >
-        <Form
-          autoComplete="off"
-          form={form}
-          labelCol={{ span: 6 }}
-          wrapperCol={{ span: 18 }}
-          layout="horizontal"
-          className="mt-5"
-          style={{ width: "100%" }}
-          onFinish={handleUpdate}
-        >
-          <div style={{ display: "flex" }} className="flex overflow-hidden">
-            <Image
-              width="100%"
-              height={300}
-              src={updateImage}
-              className="overflow-hidden"
-              // defaultValue={course?.imageUrl}
-            />
-          </div>
-          <div
-            className="flex justify-center items-center pt-2 pb-2"
-            style={{ display: "flex" }}
-          >
-            <Upload
-              accept="image/png, image/jpeg"
-              onChange={handleChange}
-              beforeUpload={beforeUpload}
-              // headers={{ Authorization: authorization }}
-              action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
-            >
-              <Button>Upload</Button>
-            </Upload>
-          </div>
-          <Form.Item label="Name" name="name">
-            <Input
-              placeholder="Name Course"
-              value={course?.name}
-              defaultValue={course?.name}
-            />
-          </Form.Item>
-          <Form.Item label="Specialize">
-            <Select onChange={handleUpdateCate} defaultValue={updateCate}>
-              {listCategory.map((option) => {
-                return (
-                  <Option key={option.specId} value={option.specId}>
-                    {option.specName}
-                  </Option>
-                );
-              })}
-            </Select>
-          </Form.Item>
-          {/* <Form.Item label="Mentor" name="mentor">
+                  <Button>Upload</Button>
+                </Upload>
+              </div>
+              <Form.Item label="Name" name="name">
+                <Input
+                  placeholder="Name Course"
+                  value={course?.name}
+                  defaultValue={course?.name}
+                />
+              </Form.Item>
+              <Form.Item label="Specialize">
+                <Select onChange={handleUpdateCate} defaultValue={updateCate}>
+                  {listCategory.map((option) => {
+                    return (
+                      <Option key={option.specId} value={option.specId}>
+                        {option.specName}
+                      </Option>
+                    );
+                  })}
+                </Select>
+              </Form.Item>
+              {/* <Form.Item label="Mentor" name="mentor">
             {`${user?.displayName}`}
           </Form.Item> */}
-          <Form.Item label="Length(mins)" name="length">
-            <InputNumber
-              defaultValue={course?.contentLength}
-              type="number"
-              placeholder="Input estimate the time!"
-              min={0}
-              className="w-[290px]"
-              controls={false}
-              // formatter={(value) => `${value} mins`}
-              // parser={(value) => value!.replace("mins", "")}
-            />
-          </Form.Item>
-          <Form.Item label="Lectures" name="lecture">
-            <InputNumber
-              className="w-[200px]"
-              min={0}
-              controls={false}
-              defaultValue={course?.lectureCount}
-            />
-          </Form.Item>
-          <Form.Item label="Price(VND):" name="price">
-            <InputNumber
-              style={{ width: 200 }}
-              min={0}
-              controls={false}
-              defaultValue={course?.price}
-            />
-          </Form.Item>
-          <Form.Item label="Intro" name="shortDes">
-            <Input defaultValue={course?.shortDescription} />
-          </Form.Item>
-          <Form.Item label="Description" name="description">
-            <Input.TextArea rows={4} defaultValue={course?.description} />
-          </Form.Item>
-          <Space className="justify-end w-full">
-            <Form.Item className="mb-0">
-              <Space>
-                <Button
-                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
-                  onClick={handleCancel}
-                  style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
-                    border: "2px solid #E0E0E0",
-                    color: "black",
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
-                  htmlType="submit"
-                  style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
-                    border: "2px solid #4caf50",
-                    color: "#fff",
-                  }}
-                >
-                  Confirm
-                </Button>
+              <Form.Item label="Length(mins)" name="length">
+                <InputNumber
+                  defaultValue={course?.contentLength}
+                  type="number"
+                  placeholder="Input estimate the time!"
+                  min={0}
+                  className="w-[290px]"
+                  controls={false}
+                  // formatter={(value) => `${value} mins`}
+                  // parser={(value) => value!.replace("mins", "")}
+                />
+              </Form.Item>
+              <Form.Item label="Lectures" name="lecture">
+                <InputNumber
+                  className="w-[200px]"
+                  min={0}
+                  controls={false}
+                  defaultValue={course?.lectureCount}
+                />
+              </Form.Item>
+              <Form.Item label="Price(VND):" name="price">
+                <InputNumber
+                  style={{ width: 200 }}
+                  min={0}
+                  controls={false}
+                  defaultValue={course?.price}
+                />
+              </Form.Item>
+              <Form.Item label="Intro" name="shortDes">
+                <Input defaultValue={course?.shortDescription} />
+              </Form.Item>
+              <Form.Item label="Description" name="description">
+                <Input.TextArea rows={4} defaultValue={course?.description} />
+              </Form.Item>
+              <Space className="justify-end w-full">
+                <Form.Item className="mb-0">
+                  <Space>
+                    <Button
+                      className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                      onClick={handleCancel}
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #E0E0E0",
+                        color: "black",
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                      htmlType="submit"
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #4caf50",
+                        color: "#fff",
+                      }}
+                    >
+                      Confirm
+                    </Button>
+                  </Space>
+                </Form.Item>
               </Space>
-            </Form.Item>
-          </Space>
-        </Form>
-      </Modal>
+            </Form>
+          </Modal>
 
-      {/* Dialog */}
-      {/* <Dialog
+          {/* Dialog */}
+          {/* <Dialog
         open={open}
         onClose={handleClose}
         aria-describedby="alert-dialog-slide-description"
@@ -827,65 +842,67 @@ const InstructorCourse = () => {
         </DialogActions>
       </Dialog> */}
 
-      <Modal
-        destroyOnClose={true}
-        title={
-          <div className="text-lg">
-            Do you want to Delete {`${course?.name}`} course?
-          </div>
-        }
-        open={open}
-        // onOk={handleOk}
-        width="35%"
-        onCancel={handleCancel}
-        footer={false}
-        style={{
-          top: "30%",
-        }}
-      >
-        <Form
-          autoComplete="off"
-          form={form}
-          labelCol={{ span: 4 }}
-          wrapperCol={{ span: 20 }}
-          layout="horizontal"
-          className="mt-5"
-          style={{ width: "100%" }}
-          onFinish={() => handleDelete(course)}
-        >
-          <Space className="justify-end w-full">
-            <Form.Item className="mb-0">
-              <Space>
-                <Button
-                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
-                  onClick={handleClose}
-                  style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
-                    border: "2px solid #E0E0E0",
-                    color: "black",
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
-                  htmlType="submit"
-                  style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
-                    border: "2px solid #4caf50",
-                    color: "#fff",
-                  }}
-                >
-                  Confirm
-                </Button>
+          <Modal
+            destroyOnClose={true}
+            title={
+              <div className="text-lg">
+                Do you want to Delete {`${course?.name}`} course?
+              </div>
+            }
+            open={open}
+            // onOk={handleOk}
+            width="35%"
+            onCancel={handleCancel}
+            footer={false}
+            style={{
+              top: "30%",
+            }}
+          >
+            <Form
+              autoComplete="off"
+              form={form}
+              labelCol={{ span: 4 }}
+              wrapperCol={{ span: 20 }}
+              layout="horizontal"
+              className="mt-5"
+              style={{ width: "100%" }}
+              onFinish={() => handleDelete(course)}
+            >
+              <Space className="justify-end w-full">
+                <Form.Item className="mb-0">
+                  <Space>
+                    <Button
+                      className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                      onClick={handleClose}
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #E0E0E0",
+                        color: "black",
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                      htmlType="submit"
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #4caf50",
+                        color: "#fff",
+                      }}
+                    >
+                      Confirm
+                    </Button>
+                  </Space>
+                </Form.Item>
               </Space>
-            </Form.Item>
-          </Space>
-        </Form>
-      </Modal>
-    </div>
+            </Form>
+          </Modal>
+        </div>
+      )}
+    </>
   );
 };
 

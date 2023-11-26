@@ -12,6 +12,7 @@ import Search from "@/components/search/search";
 import { Spin } from "antd";
 import { UserAuth } from "./context/AuthContext";
 import { useRouter } from "next/navigation";
+import "./globals.css";
 
 export default function Home() {
   const { jwtToken } = UserAuth();
@@ -53,6 +54,11 @@ export default function Home() {
           </div>
         ) : (
           <div>
+            <div className="text-[35px] font-medium leading-5 mt-10">
+              {" "}
+              Top 6 Courses Has{" "}
+              <span className="text-[#309255]"> Highest Enrollments </span>
+            </div>
             <div className="grid cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 py-[30px] gap-5">
               {courses.map((item, index) => {
                 return (
