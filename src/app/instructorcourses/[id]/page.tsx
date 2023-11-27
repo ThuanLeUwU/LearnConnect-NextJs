@@ -1026,814 +1026,871 @@ const Dashboard = ({ params }: any) => {
     }
   };
   return (
-    <div className={`${InstructorCourseStyle.content_wrapper}`}>
-      <div className={`${InstructorCourseStyle.sidebar_wrapper}`}>
-        <div className={`${InstructorCourseStyle.sidebar_list}`}>
-          {menuItem.map((item, index) => {
-            return (
-              <Tooltip key={index} title={item.title}>
-                <Link
-                  key={index}
-                  href={item.href}
-                  className={`${InstructorCourseStyle.sidebar_active} mt-5`}
+    <>
+      {!userData ? (
+        <div className="text-center text-5xl mt-5">
+          <Spin size="large" />
+        </div>
+      ) : (
+        <div className={`${InstructorCourseStyle.content_wrapper}`}>
+          <div className={`${InstructorCourseStyle.sidebar_wrapper}`}>
+            <div className={`${InstructorCourseStyle.sidebar_list}`}>
+              {menuItem.map((item, index) => {
+                return (
+                  <Tooltip key={index} title={item.title}>
+                    <Link
+                      key={index}
+                      href={item.href}
+                      className={`${InstructorCourseStyle.sidebar_active} mt-5`}
+                    >
+                      <img src={item.image} alt="image"></img>
+                    </Link>
+                  </Tooltip>
+                );
+              })}
+            </div>
+          </div>
+          <div className={`${InstructorCourseStyle.body_wrapper}`}>
+            <div className={`${InstructorCourseStyle.featured}`}>
+              <div className={`${InstructorCourseStyle.featured_top}`}>
+                <h1 className={`${InstructorCourseStyle.featured_top_title}`}>
+                  About Course
+                </h1>
+              </div>
+              {/* <div className={`${InstructorCourseStyle.featured_bottom}`}> */}
+              <div className="p-5 flex gap-5">
+                <div className="flex-1">
+                  <img
+                    width="400px"
+                    className="h-[300px] w-[400px] rounded-lg"
+                    src={`${course?.imageUrl}`}
+                    alt=""
+                  />
+                </div>
+                <div className="flex-auto w-[36rem]">
+                  <p
+                    className={`${InstructorCourseStyle.featured_bottom_title}`}
+                  >
+                    {course?.name}
+                  </p>
+                  <p
+                    className={`${InstructorCourseStyle.featured_bottom_cate}`}
+                  >
+                    {course?.categoryName}
+                  </p>
+                  <div className="flex flex-row justify-between">
+                    <div>
+                      <p
+                        className={`${InstructorCourseStyle.featured_bottom_amount}`}
+                      >
+                        Price:
+                        {course?.price === 0 ? (
+                          <> Free</>
+                        ) : (
+                          <> {course?.price} VND</>
+                        )}
+                      </p>
+                      <p
+                        className={`${InstructorCourseStyle.featured_bottom_amount}`}
+                      >
+                        Enrollment: {course?.totalEnrollment}
+                      </p>
+                    </div>
+                    <div>
+                      <p
+                        className={`${InstructorCourseStyle.featured_bottom_amount}`}
+                      >
+                        Total Rating: {course?.totalRatingCount}
+                      </p>
+                      <p
+                        className={`${InstructorCourseStyle.featured_bottom_amount} flex items-center`}
+                      >
+                        Average Rating: {course?.averageRating}{" "}
+                        <Rating
+                          size="medium"
+                          name="half-rating-read"
+                          max={1}
+                          readOnly
+                          value={1}
+                        />
+                      </p>
+                    </div>
+                  </div>
+                  <div
+                    className={`${InstructorCourseStyle.featured_bottom_amount}`}
+                  >
+                    <p>
+                      <span className="text-green-500">Create Date: </span>
+                      {course?.createDate
+                        ? new Date(course?.createDate).toLocaleTimeString(
+                            "en-US"
+                          )
+                        : ""}{" "}
+                      {course?.createDate
+                        ? new Date(course?.createDate).toLocaleDateString(
+                            "en-GB",
+                            {
+                              day: "numeric",
+                              month: "long",
+                              year: "numeric",
+                            }
+                          )
+                        : ""}{" "}
+                    </p>
+                    <div className="bg-[#e5f4eb] rounded-[10px] px-10 h-[5px]"></div>
+                    <div>
+                      <span>Description:</span>
+                      <br />
+                      {course?.description}
+                    </div>
+                  </div>
+                  <div>
+                    {/* <span>Description: {course?.description}</span> */}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="flex justify-center bg-[#e7f8ee] py-4 rounded-md m-5">
+              <ul className="tabs flex space-x-10 ">
+                <li
+                  className={`cursor-pointer rounded-md ${
+                    activeTab === "tab1"
+                      ? "bg-[#309255] text-white"
+                      : "bg-white"
+                  }`}
+                  onClick={() => handleTabClick("tab1")}
                 >
-                  <img src={item.image} alt="image"></img>
-                </Link>
-              </Tooltip>
-            );
-          })}
-        </div>
-      </div>
-      <div className={`${InstructorCourseStyle.body_wrapper}`}>
-        <div className={`${InstructorCourseStyle.featured}`}>
-          <div className={`${InstructorCourseStyle.featured_top}`}>
-            <h1 className={`${InstructorCourseStyle.featured_top_title}`}>
-              About Course
-            </h1>
-          </div>
-          {/* <div className={`${InstructorCourseStyle.featured_bottom}`}> */}
-          <div className="p-5 flex gap-5">
-            <div className="flex-1">
-              <img
-                width="400px"
-                className="h-[300px] w-[400px] rounded-lg"
-                src={`${course?.imageUrl}`}
-                alt=""
-              />
+                  <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#309255]">
+                    Lectures
+                  </button>
+                </li>
+                <li
+                  className={`cursor-pointer rounded-md ${
+                    activeTab === "tab2"
+                      ? "bg-[#309255] text-white"
+                      : "bg-white"
+                  }`}
+                  onClick={() => handleTabClick("tab2")}
+                >
+                  <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#309255]">
+                    Test
+                  </button>
+                </li>
+                <li
+                  className={`cursor-pointer rounded-md ${
+                    activeTab === "tab3"
+                      ? "bg-[#309255] text-white"
+                      : "bg-white"
+                  }`}
+                  onClick={() => handleTabClick("tab3")}
+                >
+                  <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#309255]">
+                    Reviews
+                  </button>
+                </li>
+              </ul>
             </div>
-            <div className="flex-auto w-[36rem]">
-              <p className={`${InstructorCourseStyle.featured_bottom_title}`}>
-                {course?.name}
-              </p>
-              <p className={`${InstructorCourseStyle.featured_bottom_cate}`}>
-                {course?.categoryName}
-              </p>
-              <div className="flex flex-row justify-between">
-                <div>
-                  <p
-                    className={`${InstructorCourseStyle.featured_bottom_amount}`}
-                  >
-                    Price:
-                    {course?.price === 0 ? (
-                      <> Free</>
-                    ) : (
-                      <> {course?.price} VND</>
-                    )}
-                  </p>
-                  <p
-                    className={`${InstructorCourseStyle.featured_bottom_amount}`}
-                  >
-                    Enrollment: {course?.totalEnrollment}
-                  </p>
-                </div>
-                <div>
-                  <p
-                    className={`${InstructorCourseStyle.featured_bottom_amount}`}
-                  >
-                    Total Rating: {course?.totalRatingCount}
-                  </p>
-                  <p
-                    className={`${InstructorCourseStyle.featured_bottom_amount} flex items-center`}
-                  >
-                    Average Rating: {course?.averageRating}{" "}
-                    <Rating
-                      size="medium"
-                      name="half-rating-read"
-                      max={1}
-                      readOnly
-                      value={1}
-                    />
-                  </p>
-                </div>
-              </div>
-              <div
-                className={`${InstructorCourseStyle.featured_bottom_amount}`}
-              >
-                <p>
-                  <span className="text-green-500">Create Date: </span>
-                  {course?.createDate
-                    ? new Date(course?.createDate).toLocaleTimeString("en-US")
-                    : ""}{" "}
-                  {course?.createDate
-                    ? new Date(course?.createDate).toLocaleDateString("en-GB", {
-                        day: "numeric",
-                        month: "long",
-                        year: "numeric",
-                      })
-                    : ""}{" "}
-                </p>
-                <div className="bg-[#e5f4eb] rounded-[10px] px-10 h-[5px]"></div>
-                <div>
-                  <span>Description:</span>
-                  <br />
-                  {course?.description}
-                </div>
-              </div>
-              <div>{/* <span>Description: {course?.description}</span> */}</div>
-            </div>
-          </div>
-        </div>
-        <div className="flex justify-center bg-[#e7f8ee] py-4 rounded-md m-5">
-          <ul className="tabs flex space-x-10 ">
-            <li
-              className={`cursor-pointer rounded-md ${
-                activeTab === "tab1" ? "bg-[#309255] text-white" : "bg-white"
-              }`}
-              onClick={() => handleTabClick("tab1")}
-            >
-              <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#309255]">
-                Lectures
-              </button>
-            </li>
-            <li
-              className={`cursor-pointer rounded-md ${
-                activeTab === "tab2" ? "bg-[#309255] text-white" : "bg-white"
-              }`}
-              onClick={() => handleTabClick("tab2")}
-            >
-              <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#309255]">
-                Test
-              </button>
-            </li>
-            <li
-              className={`cursor-pointer rounded-md ${
-                activeTab === "tab3" ? "bg-[#309255] text-white" : "bg-white"
-              }`}
-              onClick={() => handleTabClick("tab3")}
-            >
-              <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#309255]">
-                Reviews
-              </button>
-            </li>
-          </ul>
-        </div>
-        {activeTab === "tab1" && (
-          <div className={`${InstructorCourseStyle.lecture}`}>
-            {course?.lectureCount !== lectures.length ? (
-              <div className="flex justify-between mb-5">
-                <Button onClick={showModal}> New Lectures</Button>
-              </div>
-            ) : (
-              <div className="flex justify-between mb-5">
-                <Button disabled> New Lectures</Button>
-              </div>
-            )}
+            {activeTab === "tab1" && (
+              <div className={`${InstructorCourseStyle.lecture}`}>
+                {course?.lectureCount !== lectures.length ? (
+                  <div className="flex justify-between mb-5">
+                    <Button onClick={showModal}> New Lectures</Button>
+                  </div>
+                ) : (
+                  <div className="flex justify-between mb-5">
+                    <Button disabled> New Lectures</Button>
+                  </div>
+                )}
 
-            {loading ? (
-              <Spin size="large" />
-            ) : (
-              <Table
-                className="shadow-[5px_15px_25px_10px_rgba(0,0,0,0.15)] m-5 rounded-lg"
-                dataSource={lectures}
-                columns={columns}
-                onRow={(record, rowIndex) => {
-                  return {
-                    onClick: () => handleRowClick(record), // Xử lý sự kiện click
-                  };
-                }}
-              />
-            )}
-          </div>
-        )}
-        {activeTab === "tab2" && (
-          <div className={`${InstructorCourseStyle.lecture}`}>
-            {/* <div className="flex justify-between mb-5">
-              <Button onClick={showModal}> New Question</Button>
-            </div> */}
-            {listQuestion.length === 0 ? (
-              <>
-                <div className="flex justify-between mb-5">
-                  <Button onClick={showTestTitleModal}>Create New Test</Button>
-                </div>
-                <Empty />
-              </>
-            ) : (
-              <>
                 {loading ? (
                   <Spin size="large" />
                 ) : (
+                  <Table
+                    className="shadow-[5px_15px_25px_10px_rgba(0,0,0,0.15)] m-5 rounded-lg"
+                    dataSource={lectures}
+                    columns={columns}
+                    onRow={(record, rowIndex) => {
+                      return {
+                        onClick: () => handleRowClick(record), // Xử lý sự kiện click
+                      };
+                    }}
+                  />
+                )}
+              </div>
+            )}
+            {activeTab === "tab2" && (
+              <div className={`${InstructorCourseStyle.lecture}`}>
+                {/* <div className="flex justify-between mb-5">
+              <Button onClick={showModal}> New Question</Button>
+            </div> */}
+                {listQuestion.length === 0 ? (
                   <>
-                    {listQuestion.map((item) => (
-                      <div key={item.test.id} className="mb-4 mt-6">
-                        <div className="flex flex-col">
-                          <div className="flex justify-end">
-                            <button
-                              // className="flex items-end"
-                              style={{
-                                backgroundColor: "#fdc6c6",
-                                color: "black",
-                                width: "40px", // Thiết lập chiều rộng mong muốn
-                                height: "24px",
-                                borderRadius: "5px", // Thiết lập chiều cao mong muốn
-                              }}
-                              onClick={() => {
-                                showDeleteTestModal(item.test.id);
-                              }}
-                            >
-                              <DeleteOutlined />
-                            </button>
-                          </div>
-                          <h3 className="text-xl font-semibold mt-2 text-center ">
-                            <div className=" flex flex-col items-center justify-center mb-2">
-                              <div>Title: {item.test.title}</div>
-
-                              <br />
-                              <div>Description: {item.test.description}</div>
-                            </div>
-                          </h3>
-                        </div>
-
-                        {/* {item.questions.length == 0 ? <></> : <></>} */}
-                        {item.questions.map((q, index) => (
-                          <div
-                            key={q.question.id}
-                            className="mb-2 my-8 p-4 border-2 rounded-lg border-gray-200 shadow-[10px_10px_20px_10px_rgba(0,0,0,0.15)] "
-                          >
-                            <div className="mb-1 font-medium text-[18px] flex flex-row justify-between">
-                              <div className="flex flex-row gap-2">
-                                {index + 1}.{" "}
-                                {showUpdateQuestion &&
-                                questionId === q.question.id ? (
-                                  <Input.TextArea
-                                    autoSize={{ minRows: 1 }}
-                                    cols={120}
-                                    autoFocus
-                                    defaultValue={q.question.questionText}
-                                    value={updateQuestion}
-                                    onChange={handleInputChange}
-                                    onBlur={() => handleBlur(q.question.id)}
-                                    className="w-full"
-                                  />
-                                ) : (
-                                  <div
-                                    className="w-full"
-                                    onClick={() => {
-                                      handleUpdateQuestionClick(q.question.id);
-                                      setQuestionId(q.question.id);
-                                      setUpdateQuestion(
-                                        q.question.questionText
-                                      );
-                                    }}
-                                  >
-                                    {q.question.questionText}
-                                  </div>
-                                )}
-                              </div>
-                              <div className="gap-2 flex items-center">
-                                <Button
-                                  onClick={() => {
-                                    handleNewAnswerClick(q.question.id);
-                                    setQuestionId(q.question.id);
-                                  }}
-                                  className="flex flex-row items-center"
-                                >
-                                  {/* <div></div> */}
-                                  <PlusOutlined /> Add Answer
-                                </Button>
-
+                    <div className="flex justify-between mb-5">
+                      <Button onClick={showTestTitleModal}>
+                        Create New Test
+                      </Button>
+                    </div>
+                    <Empty />
+                  </>
+                ) : (
+                  <>
+                    {loading ? (
+                      <Spin size="large" />
+                    ) : (
+                      <>
+                        {listQuestion.map((item) => (
+                          <div key={item.test.id} className="mb-4 mt-6">
+                            <div className="flex flex-col">
+                              <div className="flex justify-end">
                                 <button
+                                  // className="flex items-end"
                                   style={{
                                     backgroundColor: "#fdc6c6",
                                     color: "black",
                                     width: "40px", // Thiết lập chiều rộng mong muốn
                                     height: "24px",
-                                    borderRadius: "5px",
-                                    // Thiết lập chiều cao mong muốn
+                                    borderRadius: "5px", // Thiết lập chiều cao mong muốn
                                   }}
-                                  onClick={() =>
-                                    showDeleteQuestionModal(q.question.id)
-                                  }
+                                  onClick={() => {
+                                    showDeleteTestModal(item.test.id);
+                                  }}
                                 >
                                   <DeleteOutlined />
                                 </button>
                               </div>
-                            </div>
-                            {showAnswerForm && questionId === q.question.id && (
-                              <Form
-                                onFinish={handleFormAnswerSubmit}
-                                style={{ width: "80%", alignItems: "start" }}
-                              >
-                                <div className="flex flex-col justify-end">
-                                  <Form.Item
-                                    name="answer"
-                                    label="Answer"
-                                    rules={[
-                                      {
-                                        required: true,
-                                        message: "Please input your question!",
-                                      },
-                                    ]}
-                                  >
-                                    <Input
-                                      className={` border-2 p-2 text-left rounded-lg ${
-                                        isChecked
-                                          ? "border-green-500 bg-green-100"
-                                          : ""
-                                      }`}
-                                    />
-                                  </Form.Item>
-                                  <Checkbox
-                                    className="flex items-end justify-end"
-                                    checked={isChecked}
-                                    onChange={handleCheckboxChange}
-                                  >
-                                    Correct Answer
-                                  </Checkbox>
-                                </div>
-                                <div className="flex justify-end gap-2 mt-2">
-                                  <Button onClick={handleCancel}>Cancel</Button>
-                                  <Button
-                                    style={{
-                                      backgroundColor: "#4caf50",
-                                      // borderColor: "#4caf50",
-                                      color: "#fff",
-                                    }}
-                                    type="primary"
-                                    htmlType="submit"
-                                  >
-                                    Submit
-                                  </Button>
-                                </div>
-                              </Form>
-                            )}
-                            <div className="px-4 grid grid-cols-2 gap-4">
-                              {q.answers.map((answer, ansIndex) => (
-                                <>
-                                  {showUpdateAnswer &&
-                                  AnswerId === answer.id ? (
-                                    <Input
-                                      // autoFocus
-                                      defaultValue={answer.answerText}
-                                      value={updateAnswer}
-                                      onChange={handleAnswerChange}
-                                      onBlur={() => handleBlur2(answer.id)}
-                                      key={answer.id}
-                                      className={`mt-3 border-2 p-2 text-left rounded-lg ${
-                                        answer.isCorrect === true
-                                          ? "border-green-500 bg-green-100"
-                                          : ""
-                                      }`}
-                                    />
-                                  ) : (
-                                    <div className="flex gap-2 justify-center align-middle items-center mt-3">
-                                      <div
-                                        className={` border-2 p-2 flex-auto text-left rounded-lg ${
-                                          answer.isCorrect === true
-                                            ? "border-green-500 bg-green-100"
-                                            : ""
-                                        }`}
-                                        onClick={() => {
-                                          handleUpdateAnswerClick(answer.id);
-                                          setAnswerId(answer.id);
-                                          setQuestionId(q.question.id);
-                                          setUpdateAnswer(answer.answerText);
-                                          handleSetIsChecked(answer.isCorrect);
-                                        }}
-                                      >
-                                        {answer.answerText}
-                                      </div>
+                              <h3 className="text-xl font-semibold mt-2 text-center ">
+                                <div className=" flex flex-col items-center justify-center mb-2">
+                                  <div>Title: {item.test.title}</div>
 
-                                      <button
-                                        style={{
-                                          backgroundColor: "#fdc6c6",
-                                          color: "black",
-                                          width: "24px", // Thiết lập chiều rộng mong muốn
-                                          height: "24px",
-                                          borderRadius: "5px", // Thiết lập chiều cao mong muốn
-                                        }}
-                                        onClick={() =>
-                                          showDeleteAnswerModal(answer.id)
-                                        }
-                                      >
-                                        <DeleteOutlined size={16} />
-                                      </button>
-                                    </div>
-                                  )}
-                                </>
-                              ))}
-                            </div>
-                          </div>
-                        ))}
-                        <>
-                          {allQuestions.length === 0 ? (
-                            <>
-                              <p className="font-medium text-lg text-center">
-                                Oh, it looks like you don&apos;t have any
-                                questions yet. Let&apos;s{" "}
-                                <button
-                                  className="text-green-500 underline"
-                                  onClick={handleNewQuestionClick}
-                                >
-                                  create
-                                </button>{" "}
-                                a set of questions for your test
-                              </p>
-                            </>
-                          ) : (
-                            <div className="flex justify-between mb-5 mt-10">
-                              <Button onClick={handleNewQuestionClick}>
-                                Add Question
-                              </Button>
-                            </div>
-                          )}
-
-                          <div className=" flex justify-center">
-                            {showQuestionForm && (
-                              <Form
-                                onFinish={handleFormQuestionSubmit}
-                                style={{ width: "80%", alignItems: "center" }}
-                              >
-                                <Form.Item
-                                  name="question"
-                                  label="Question"
-                                  rules={[
-                                    {
-                                      required: true,
-                                      message: "Please input your question!",
-                                    },
-                                  ]}
-                                >
-                                  <Input />
-                                </Form.Item>
-                                <div className="flex gap-5 justify-end">
-                                  {/* Thêm các trường dữ liệu khác cần thiết vào đây */}
-                                  <Button
-                                    className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
-                                    onClick={handleCancel}
-                                    style={{
-                                      // backgroundColor: "#4caf50",
-                                      // borderColor: "#4caf50",
-                                      border: "2px solid #E0E0E0",
-                                      color: "black",
-                                    }}
-                                  >
-                                    Cancel
-                                  </Button>
-                                  <Button
-                                    className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
-                                    htmlType="submit"
-                                    style={{
-                                      // backgroundColor: "#4caf50",
-                                      // borderColor: "#4caf50",
-                                      border: "2px solid #4caf50",
-                                      color: "#fff",
-                                    }}
-                                  >
-                                    Submit
-                                  </Button>
+                                  <br />
+                                  <div>
+                                    Description: {item.test.description}
+                                  </div>
                                 </div>
-                              </Form>
-                            )}
-                          </div>
-                        </>
-                      </div>
-                    ))}
-                  </>
-                )}
-              </>
-            )}
-          </div>
-        )}
-        {activeTab === "tab3" && (
-          <div className={`${InstructorCourseStyle.lecture}`}>
-            <div className="flex justify-between mb-5">
-              <span className="text-lg">Rating of Course</span>
-            </div>
-            {listRating.length === 0 ? (
-              <Empty />
-            ) : (
-              <>
-                {loading ? (
-                  <Spin size="large" />
-                ) : (
-                  // <Table dataSource={listRating} columns={rating} />
-                  <div className="reviews-wrapper reviews-active">
-                    <div className="swiper-container">
-                      <div className="swiper-wrapper">
-                        {listRating.map((item) => {
-                          return (
-                            <>
-                              <div className="single-review mt-3.5 border border-opacity-20 border-[#30925533] p-7 rounded-md">
-                                <div className="review-author flex justify-between">
-                                  <div className="flex flex-row">
-                                    <div className="author-thumb p-2">
-                                      <Avatar
-                                        sx={{
-                                          width: "100px",
-                                          height: "100px",
-                                          borderRadius: "100%",
-                                        }}
-                                        src={item.userRatingInfo.imageUser}
-                                        alt="Author"
-                                        // className="w-24 h-24 rounded-full"
+                              </h3>
+                            </div>
+
+                            {/* {item.questions.length == 0 ? <></> : <></>} */}
+                            {item.questions.map((q, index) => (
+                              <div
+                                key={q.question.id}
+                                className="mb-2 my-8 p-4 border-2 rounded-lg border-gray-200 shadow-[10px_10px_20px_10px_rgba(0,0,0,0.15)] "
+                              >
+                                <div className="mb-1 font-medium text-[18px] flex flex-row justify-between">
+                                  <div className="flex flex-row gap-2">
+                                    {index + 1}.{" "}
+                                    {showUpdateQuestion &&
+                                    questionId === q.question.id ? (
+                                      <Input.TextArea
+                                        autoSize={{ minRows: 1 }}
+                                        cols={120}
+                                        autoFocus
+                                        defaultValue={q.question.questionText}
+                                        value={updateQuestion}
+                                        onChange={handleInputChange}
+                                        onBlur={() => handleBlur(q.question.id)}
+                                        className="w-full"
                                       />
-                                      <i className="icofont-quote-left"></i>
-                                    </div>
-                                    <div className="author-content pl-4">
-                                      <h4 className="text-2xl font-medium">
-                                        {item.userRatingInfo.fullName}
-                                      </h4>
-                                      <span className="text-lg text-[#309255] mt-1.5 font-light">
-                                        {item.ratingCourseInfo.timeStamp
-                                          ? new Date(
-                                              item.ratingCourseInfo.timeStamp
-                                            ).toLocaleTimeString("en-US")
-                                          : ""}{" "}
-                                        {item.ratingCourseInfo.timeStamp
-                                          ? new Date(
-                                              item.ratingCourseInfo.timeStamp
-                                            ).toLocaleDateString("en-GB", {
-                                              day: "numeric",
-                                              month: "long",
-                                              year: "numeric",
-                                            })
-                                          : ""}{" "}
-                                      </span>
-                                      {item.ratingCourseInfo.comment ===
-                                      "null" ? (
-                                        <></>
+                                    ) : (
+                                      <div
+                                        className="w-full"
+                                        onClick={() => {
+                                          handleUpdateQuestionClick(
+                                            q.question.id
+                                          );
+                                          setQuestionId(q.question.id);
+                                          setUpdateQuestion(
+                                            q.question.questionText
+                                          );
+                                        }}
+                                      >
+                                        {q.question.questionText}
+                                      </div>
+                                    )}
+                                  </div>
+                                  <div className="gap-2 flex items-center">
+                                    <Button
+                                      onClick={() => {
+                                        handleNewAnswerClick(q.question.id);
+                                        setQuestionId(q.question.id);
+                                      }}
+                                      className="flex flex-row items-center"
+                                    >
+                                      {/* <div></div> */}
+                                      <PlusOutlined /> Add Answer
+                                    </Button>
+
+                                    <button
+                                      style={{
+                                        backgroundColor: "#fdc6c6",
+                                        color: "black",
+                                        width: "40px", // Thiết lập chiều rộng mong muốn
+                                        height: "24px",
+                                        borderRadius: "5px",
+                                        // Thiết lập chiều cao mong muốn
+                                      }}
+                                      onClick={() =>
+                                        showDeleteQuestionModal(q.question.id)
+                                      }
+                                    >
+                                      <DeleteOutlined />
+                                    </button>
+                                  </div>
+                                </div>
+                                {showAnswerForm &&
+                                  questionId === q.question.id && (
+                                    <Form
+                                      onFinish={handleFormAnswerSubmit}
+                                      style={{
+                                        width: "80%",
+                                        alignItems: "start",
+                                      }}
+                                    >
+                                      <div className="flex flex-col justify-end">
+                                        <Form.Item
+                                          name="answer"
+                                          label="Answer"
+                                          rules={[
+                                            {
+                                              required: true,
+                                              message:
+                                                "Please input your question!",
+                                            },
+                                          ]}
+                                        >
+                                          <Input
+                                            className={` border-2 p-2 text-left rounded-lg ${
+                                              isChecked
+                                                ? "border-green-500 bg-green-100"
+                                                : ""
+                                            }`}
+                                          />
+                                        </Form.Item>
+                                        <Checkbox
+                                          className="flex items-end justify-end"
+                                          checked={isChecked}
+                                          onChange={handleCheckboxChange}
+                                        >
+                                          Correct Answer
+                                        </Checkbox>
+                                      </div>
+                                      <div className="flex justify-end gap-2 mt-2">
+                                        <Button onClick={handleCancel}>
+                                          Cancel
+                                        </Button>
+                                        <Button
+                                          style={{
+                                            backgroundColor: "#4caf50",
+                                            // borderColor: "#4caf50",
+                                            color: "#fff",
+                                          }}
+                                          type="primary"
+                                          htmlType="submit"
+                                        >
+                                          Submit
+                                        </Button>
+                                      </div>
+                                    </Form>
+                                  )}
+                                <div className="px-4 grid grid-cols-2 gap-4">
+                                  {q.answers.map((answer, ansIndex) => (
+                                    <>
+                                      {showUpdateAnswer &&
+                                      AnswerId === answer.id ? (
+                                        <Input
+                                          // autoFocus
+                                          defaultValue={answer.answerText}
+                                          value={updateAnswer}
+                                          onChange={handleAnswerChange}
+                                          onBlur={() => handleBlur2(answer.id)}
+                                          key={answer.id}
+                                          className={`mt-3 border-2 p-2 text-left rounded-lg ${
+                                            answer.isCorrect === true
+                                              ? "border-green-500 bg-green-100"
+                                              : ""
+                                          }`}
+                                        />
                                       ) : (
-                                        <p className="mt-3 font-medium text-[#52565b] text-lg">
-                                          {item.ratingCourseInfo.comment}
-                                        </p>
+                                        <div className="flex gap-2 justify-center align-middle items-center mt-3">
+                                          <div
+                                            className={` border-2 p-2 flex-auto text-left rounded-lg ${
+                                              answer.isCorrect === true
+                                                ? "border-green-500 bg-green-100"
+                                                : ""
+                                            }`}
+                                            onClick={() => {
+                                              handleUpdateAnswerClick(
+                                                answer.id
+                                              );
+                                              setAnswerId(answer.id);
+                                              setQuestionId(q.question.id);
+                                              setUpdateAnswer(
+                                                answer.answerText
+                                              );
+                                              handleSetIsChecked(
+                                                answer.isCorrect
+                                              );
+                                            }}
+                                          >
+                                            {answer.answerText}
+                                          </div>
+
+                                          <button
+                                            style={{
+                                              backgroundColor: "#fdc6c6",
+                                              color: "black",
+                                              width: "24px", // Thiết lập chiều rộng mong muốn
+                                              height: "24px",
+                                              borderRadius: "5px", // Thiết lập chiều cao mong muốn
+                                            }}
+                                            onClick={() =>
+                                              showDeleteAnswerModal(answer.id)
+                                            }
+                                          >
+                                            <DeleteOutlined size={16} />
+                                          </button>
+                                        </div>
                                       )}
-                                    </div>
-                                  </div>
-                                  <div className="">
-                                    <Rating
-                                      size="large"
-                                      name="half-rating-read"
-                                      max={5}
-                                      precision={0.1}
-                                      readOnly
-                                      value={item.ratingCourseInfo.rating1}
-                                    />
-                                  </div>
+                                    </>
+                                  ))}
                                 </div>
                               </div>
+                            ))}
+                            <>
+                              {allQuestions.length === 0 ? (
+                                <>
+                                  <p className="font-medium text-lg text-center">
+                                    Oh, it looks like you don&apos;t have any
+                                    questions yet. Let&apos;s{" "}
+                                    <button
+                                      className="text-green-500 underline"
+                                      onClick={handleNewQuestionClick}
+                                    >
+                                      create
+                                    </button>{" "}
+                                    a set of questions for your test
+                                  </p>
+                                </>
+                              ) : (
+                                <div className="flex justify-between mb-5 mt-10">
+                                  <Button onClick={handleNewQuestionClick}>
+                                    Add Question
+                                  </Button>
+                                </div>
+                              )}
+
+                              <div className=" flex justify-center">
+                                {showQuestionForm && (
+                                  <Form
+                                    onFinish={handleFormQuestionSubmit}
+                                    style={{
+                                      width: "80%",
+                                      alignItems: "center",
+                                    }}
+                                  >
+                                    <Form.Item
+                                      name="question"
+                                      label="Question"
+                                      rules={[
+                                        {
+                                          required: true,
+                                          message:
+                                            "Please input your question!",
+                                        },
+                                      ]}
+                                    >
+                                      <Input />
+                                    </Form.Item>
+                                    <div className="flex gap-5 justify-end">
+                                      {/* Thêm các trường dữ liệu khác cần thiết vào đây */}
+                                      <Button
+                                        className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                                        onClick={handleCancel}
+                                        style={{
+                                          // backgroundColor: "#4caf50",
+                                          // borderColor: "#4caf50",
+                                          border: "2px solid #E0E0E0",
+                                          color: "black",
+                                        }}
+                                      >
+                                        Cancel
+                                      </Button>
+                                      <Button
+                                        className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                                        htmlType="submit"
+                                        style={{
+                                          // backgroundColor: "#4caf50",
+                                          // borderColor: "#4caf50",
+                                          border: "2px solid #4caf50",
+                                          color: "#fff",
+                                        }}
+                                      >
+                                        Submit
+                                      </Button>
+                                    </div>
+                                  </Form>
+                                )}
+                              </div>
                             </>
-                          );
-                        })}
-                      </div>
-                      <div className="swiper-pagination"></div>
-                    </div>
-                  </div>
+                          </div>
+                        ))}
+                      </>
+                    )}
+                  </>
                 )}
-              </>
+              </div>
+            )}
+            {activeTab === "tab3" && (
+              <div className={`${InstructorCourseStyle.lecture}`}>
+                <div className="flex justify-between mb-5">
+                  <span className="text-lg">Rating of Course</span>
+                </div>
+                {listRating.length === 0 ? (
+                  <Empty />
+                ) : (
+                  <>
+                    {loading ? (
+                      <Spin size="large" />
+                    ) : (
+                      // <Table dataSource={listRating} columns={rating} />
+                      <div className="reviews-wrapper reviews-active">
+                        <div className="swiper-container">
+                          <div className="swiper-wrapper">
+                            {listRating.map((item) => {
+                              return (
+                                <>
+                                  <div className="single-review mt-3.5 border border-opacity-20 border-[#30925533] p-7 rounded-md">
+                                    <div className="review-author flex justify-between">
+                                      <div className="flex flex-row">
+                                        <div className="author-thumb p-2">
+                                          <Avatar
+                                            sx={{
+                                              width: "100px",
+                                              height: "100px",
+                                              borderRadius: "100%",
+                                            }}
+                                            src={item.userRatingInfo.imageUser}
+                                            alt="Author"
+                                            // className="w-24 h-24 rounded-full"
+                                          />
+                                          <i className="icofont-quote-left"></i>
+                                        </div>
+                                        <div className="author-content pl-4">
+                                          <h4 className="text-2xl font-medium">
+                                            {item.userRatingInfo.fullName}
+                                          </h4>
+                                          <span className="text-lg text-[#309255] mt-1.5 font-light">
+                                            {item.ratingCourseInfo.timeStamp
+                                              ? new Date(
+                                                  item.ratingCourseInfo.timeStamp
+                                                ).toLocaleTimeString("en-US")
+                                              : ""}{" "}
+                                            {item.ratingCourseInfo.timeStamp
+                                              ? new Date(
+                                                  item.ratingCourseInfo.timeStamp
+                                                ).toLocaleDateString("en-GB", {
+                                                  day: "numeric",
+                                                  month: "long",
+                                                  year: "numeric",
+                                                })
+                                              : ""}{" "}
+                                          </span>
+                                          {item.ratingCourseInfo.comment ===
+                                          "null" ? (
+                                            <></>
+                                          ) : (
+                                            <p className="mt-3 font-medium text-[#52565b] text-lg">
+                                              {item.ratingCourseInfo.comment}
+                                            </p>
+                                          )}
+                                        </div>
+                                      </div>
+                                      <div className="">
+                                        <Rating
+                                          size="large"
+                                          name="half-rating-read"
+                                          max={5}
+                                          precision={0.1}
+                                          readOnly
+                                          value={item.ratingCourseInfo.rating1}
+                                        />
+                                      </div>
+                                    </div>
+                                  </div>
+                                </>
+                              );
+                            })}
+                          </div>
+                          <div className="swiper-pagination"></div>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
             )}
           </div>
-        )}
-      </div>
-      {/* create Lecture */}
-      <Modal
-        destroyOnClose={true}
-        title={`Create Lecture for Course by ${userData?.fullName}`}
-        open={isModal}
-        // onOk={handleOk}
-        width={600}
-        onCancel={handleCancel}
-        footer={false}
-        style={{
-          top: "30%",
-        }}
-      >
-        <Form
-          autoComplete="off"
-          form={form}
-          labelCol={{ span: 4 }}
-          wrapperCol={{ span: 16 }}
-          layout="horizontal"
-          className="mt-5"
-          style={{ width: 600 }}
-          onFinish={handleSubmit}
-        >
-          <Form.Item
-            rules={[{ required: true, message: "Please input Name!" }]}
-            label="Title"
-            name="title"
+          {/* create Lecture */}
+          <Modal
+            destroyOnClose={true}
+            title={`Create Lecture for Course by ${userData?.fullName}`}
+            open={isModal}
+            // onOk={handleOk}
+            width={600}
+            onCancel={handleCancel}
+            footer={false}
+            style={{
+              top: "30%",
+            }}
           >
-            <Input placeholder="Input Title" />
-          </Form.Item>
-          <Form.Item
-            rules={[{ required: true, message: "Please input Name!" }]}
-            label="Content"
-            name="content"
-          >
-            <Input.TextArea rows={4} />
-          </Form.Item>
-          <Form.Item label="Type">
-            <Select onChange={handleChangeType} defaultValue={type}>
-              {Type.map((option) => {
-                return (
-                  <Option key={option.id} value={option.id}>
-                    {option.title}
-                  </Option>
-                );
-              })}
-            </Select>
-          </Form.Item>
-          {type === 1 ? (
-            <div>
-              <div style={{ display: "flex" }} className="flex justify-center">
-                {source && (
-                  <video width={400} height={300} src={source} controls />
-                )}
-              </div>
-              <div
-                className="flex justify-center pt-2 pb-2"
-                style={{ display: "flex" }}
+            <Form
+              autoComplete="off"
+              form={form}
+              labelCol={{ span: 4 }}
+              wrapperCol={{ span: 16 }}
+              layout="horizontal"
+              className="mt-5"
+              style={{ width: 600 }}
+              onFinish={handleSubmit}
+            >
+              <Form.Item
+                rules={[{ required: true, message: "Please input Name!" }]}
+                label="Title"
+                name="title"
               >
-                <UploadFirebase
-                  fileName={`Course${idCourse}_Lecture${
-                    lectures.length + 1
-                  }_${Math.floor(
-                    new Date().getTime() - new Date(2020, 0, 1).getSeconds()
-                  )}`}
-                  returnUrl={setSource}
-                />
-              </div>
-            </div>
-          ) : (
-            // </Form.Item>
-            <Form.Item label="Document">
-              <div
-                className="flex justify-center pt-2 pb-2"
-                style={{ display: "flex" }}
+                <Input placeholder="Input Title" />
+              </Form.Item>
+              <Form.Item
+                rules={[{ required: true, message: "Please input Name!" }]}
+                label="Content"
+                name="content"
               >
-                <Upload
-                  // accept="image/png, image/jpeg"
-                  // ref={inputRef}
-                  // accept=".mov,.mp4"
-                  accept=".pdf"
-                  onChange={handleFileChange}
-                  // beforeUpload={beforeUpload}
-                  // headers={{ Authorization: authorization }}
-                  action="https://learnconnectapitest.azurewebsites.net/api/Upload/video"
-                >
-                  <Button>Upload</Button>
-                </Upload>
-              </div>
-            </Form.Item>
-          )}
-          <Space className="justify-end w-full pr-[90px]">
-            <Form.Item className="mb-0">
-              <Space>
-                <Button
-                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
-                  onClick={handleCancel}
-                  style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
-                    border: "2px solid #E0E0E0",
-                    color: "black",
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
-                  htmlType="submit"
-                  style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
-                    border: "2px solid #4caf50",
-                    color: "#fff",
-                  }}
-                >
-                  Confirm
-                </Button>
+                <Input.TextArea rows={4} />
+              </Form.Item>
+              <Form.Item label="Type">
+                <Select onChange={handleChangeType} defaultValue={type}>
+                  {Type.map((option) => {
+                    return (
+                      <Option key={option.id} value={option.id}>
+                        {option.title}
+                      </Option>
+                    );
+                  })}
+                </Select>
+              </Form.Item>
+              {type === 1 ? (
+                <div>
+                  <div
+                    style={{ display: "flex" }}
+                    className="flex justify-center"
+                  >
+                    {source && (
+                      <video width={400} height={300} src={source} controls />
+                    )}
+                  </div>
+                  <div
+                    className="flex justify-center pt-2 pb-2"
+                    style={{ display: "flex" }}
+                  >
+                    <UploadFirebase
+                      fileName={`Course${idCourse}_Lecture${
+                        lectures.length + 1
+                      }_${Math.floor(
+                        new Date().getTime() - new Date(2020, 0, 1).getSeconds()
+                      )}`}
+                      returnUrl={setSource}
+                    />
+                  </div>
+                </div>
+              ) : (
+                // </Form.Item>
+                <Form.Item label="Document">
+                  <div
+                    className="flex justify-center pt-2 pb-2"
+                    style={{ display: "flex" }}
+                  >
+                    <Upload
+                      // accept="image/png, image/jpeg"
+                      // ref={inputRef}
+                      // accept=".mov,.mp4"
+                      accept=".pdf"
+                      onChange={handleFileChange}
+                      // beforeUpload={beforeUpload}
+                      // headers={{ Authorization: authorization }}
+                      action="https://learnconnectapitest.azurewebsites.net/api/Upload/video"
+                    >
+                      <Button>Upload</Button>
+                    </Upload>
+                  </div>
+                </Form.Item>
+              )}
+              <Space className="justify-end w-full pr-[90px]">
+                <Form.Item className="mb-0">
+                  <Space>
+                    <Button
+                      className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                      onClick={handleCancel}
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #E0E0E0",
+                        color: "black",
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                      htmlType="submit"
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #4caf50",
+                        color: "#fff",
+                      }}
+                    >
+                      Confirm
+                    </Button>
+                  </Space>
+                </Form.Item>
               </Space>
-            </Form.Item>
-          </Space>
-        </Form>
-      </Modal>
-      {/* update lecture */}
-      <Modal
-        destroyOnClose={true}
-        title={`Update lecture ${oneLecture?.title} `}
-        open={updateVisible}
-        // onOk={handleUpdateOk}
-        width={600}
-        onCancel={handleUpdateCancel}
-        footer={false}
-        style={{
-          top: "30%",
-        }}
-      >
-        {/* Add your update form here */}
-        <Form
-          autoComplete="off"
-          form={form}
-          labelCol={{ span: 4 }}
-          wrapperCol={{ span: 16 }}
-          layout="horizontal"
-          className="mt-5"
-          style={{ width: 600 }}
-          onFinish={handleUpdate}
-        >
-          <Form.Item
-            // rules={[{ required: true, message: "Please input Name!" }]}
-            label="Title"
-            name="title"
+            </Form>
+          </Modal>
+          {/* update lecture */}
+          <Modal
+            destroyOnClose={true}
+            title={`Update lecture ${oneLecture?.title} `}
+            open={updateVisible}
+            // onOk={handleUpdateOk}
+            width={600}
+            onCancel={handleUpdateCancel}
+            footer={false}
+            style={{
+              top: "30%",
+            }}
           >
-            <Input defaultValue={oneLecture?.title} />
-          </Form.Item>
-          <Form.Item
-            // rules={[{ required: true, message: "Please input Name!" }]}
-            label="Content"
-            name="content"
-          >
-            <Input.TextArea rows={4} defaultValue={oneLecture?.content} />
-          </Form.Item>
-          <Form.Item label="Type">
-            <Select onChange={handleUpdateType} defaultValue={updateType}>
-              {Type.map((option) => {
-                return (
-                  <Option key={option.id} value={option.id}>
-                    {option.title}
-                  </Option>
-                );
-              })}
-            </Select>
-          </Form.Item>
-          {updateType === 1 ? (
-            // <Form.Item label="Video">
-            <div>
-              <div style={{ display: "flex" }} className="flex justify-center">
-                {updateSrc && (
-                  <video width={400} height={300} src={updateSrc} controls />
-                )}
-              </div>
-              <div
-                className="flex justify-center pt-2 pb-2"
-                style={{ display: "flex" }}
+            {/* Add your update form here */}
+            <Form
+              autoComplete="off"
+              form={form}
+              labelCol={{ span: 4 }}
+              wrapperCol={{ span: 16 }}
+              layout="horizontal"
+              className="mt-5"
+              style={{ width: 600 }}
+              onFinish={handleUpdate}
+            >
+              <Form.Item
+                // rules={[{ required: true, message: "Please input Name!" }]}
+                label="Title"
+                name="title"
               >
-                <UploadFirebase
-                  fileName={`Course${idCourse}_Lecture${
-                    lectures.length + 1
-                  }_${Math.floor(
-                    new Date().getTime() - new Date(2020, 0, 1).getSeconds()
-                  )}`}
-                  returnUrl={setUpdateSrc}
-                />
-              </div>
-            </div>
-          ) : (
-            // </Form.Item>
-            <Form.Item label="Document">
-              <div
-                className="flex justify-center pt-2 pb-2"
-                style={{ display: "flex" }}
+                <Input defaultValue={oneLecture?.title} />
+              </Form.Item>
+              <Form.Item
+                // rules={[{ required: true, message: "Please input Name!" }]}
+                label="Content"
+                name="content"
               >
-                <Upload
-                  // accept="image/png, image/jpeg"
-                  // ref={inputRef}
-                  // accept=".mov,.mp4"
-                  accept=".pdf"
-                  onChange={handleFileChange}
-                  // beforeUpload={beforeUpload}
-                  // headers={{ Authorization: authorization }}
-                  action="https://learnconnectapitest.azurewebsites.net/api/Upload/video"
-                >
-                  <Button>Upload</Button>
-                </Upload>
-              </div>
-            </Form.Item>
-          )}
-          <Space className="justify-end w-full pr-[90px]">
-            <Form.Item className="mb-0">
-              <Space>
-                <Button
-                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
-                  onClick={handleUpdateCancel}
-                  style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
-                    border: "2px solid #E0E0E0",
-                    color: "black",
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
-                  htmlType="submit"
-                  style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
-                    border: "2px solid #4caf50",
-                    color: "#fff",
-                  }}
-                >
-                  Confirm
-                </Button>
+                <Input.TextArea rows={4} defaultValue={oneLecture?.content} />
+              </Form.Item>
+              <Form.Item label="Type">
+                <Select onChange={handleUpdateType} defaultValue={updateType}>
+                  {Type.map((option) => {
+                    return (
+                      <Option key={option.id} value={option.id}>
+                        {option.title}
+                      </Option>
+                    );
+                  })}
+                </Select>
+              </Form.Item>
+              {updateType === 1 ? (
+                // <Form.Item label="Video">
+                <div>
+                  <div
+                    style={{ display: "flex" }}
+                    className="flex justify-center"
+                  >
+                    {updateSrc && (
+                      <video
+                        width={400}
+                        height={300}
+                        src={updateSrc}
+                        controls
+                      />
+                    )}
+                  </div>
+                  <div
+                    className="flex justify-center pt-2 pb-2"
+                    style={{ display: "flex" }}
+                  >
+                    <UploadFirebase
+                      fileName={`Course${idCourse}_Lecture${
+                        lectures.length + 1
+                      }_${Math.floor(
+                        new Date().getTime() - new Date(2020, 0, 1).getSeconds()
+                      )}`}
+                      returnUrl={setUpdateSrc}
+                    />
+                  </div>
+                </div>
+              ) : (
+                // </Form.Item>
+                <Form.Item label="Document">
+                  <div
+                    className="flex justify-center pt-2 pb-2"
+                    style={{ display: "flex" }}
+                  >
+                    <Upload
+                      // accept="image/png, image/jpeg"
+                      // ref={inputRef}
+                      // accept=".mov,.mp4"
+                      accept=".pdf"
+                      onChange={handleFileChange}
+                      // beforeUpload={beforeUpload}
+                      // headers={{ Authorization: authorization }}
+                      action="https://learnconnectapitest.azurewebsites.net/api/Upload/video"
+                    >
+                      <Button>Upload</Button>
+                    </Upload>
+                  </div>
+                </Form.Item>
+              )}
+              <Space className="justify-end w-full pr-[90px]">
+                <Form.Item className="mb-0">
+                  <Space>
+                    <Button
+                      className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                      onClick={handleUpdateCancel}
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #E0E0E0",
+                        color: "black",
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                      htmlType="submit"
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #4caf50",
+                        color: "#fff",
+                      }}
+                    >
+                      Confirm
+                    </Button>
+                  </Space>
+                </Form.Item>
               </Space>
-            </Form.Item>
-          </Space>
-        </Form>
-      </Modal>
-      {/* Delete Lecture */}
-      {/* <Modal
+            </Form>
+          </Modal>
+          {/* Delete Lecture */}
+          {/* <Modal
         title="Delete Item"
         open={deleteVisible}
         onOk={handleDeleteOk}
@@ -1842,65 +1899,65 @@ const Dashboard = ({ params }: any) => {
         <p>Are you sure you want to delete this item?</p>
       </Modal> */}
 
-      {/* Dialog */}
+          {/* Dialog */}
 
-      <Modal
-        destroyOnClose={true}
-        title={`Do you want to Delete the Lecture ${oneLecture?.title}?`}
-        open={deleteVisible}
-        // onOk={handleUpdateOk}
-        width="40%"
-        onCancel={handleDeleteCancel}
-        footer={false}
-        style={{
-          top: "30%",
-        }}
-        // style={{ background: "#FFCCCC" }}
-      >
-        {/* Add your update form here */}
-        <Form
-          autoComplete="off"
-          form={form}
-          labelCol={{ span: 5 }}
-          wrapperCol={{ span: 18 }}
-          layout="horizontal"
-          className="mt-5"
-          style={{ width: "100%" }}
-          onFinish={() => handleDeleteLecture(oneLecture)}
-        >
-          <Space className="justify-end w-full">
-            <Form.Item className="mb-0">
-              <Space>
-                <Button
-                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
-                  onClick={handleDeleteCancel}
-                  style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
-                    border: "2px solid #E0E0E0",
-                    color: "black",
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
-                  htmlType="submit"
-                  style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
-                    border: "2px solid #4caf50",
-                    color: "#fff",
-                  }}
-                >
-                  Confirm
-                </Button>
+          <Modal
+            destroyOnClose={true}
+            title={`Do you want to Delete the Lecture ${oneLecture?.title}?`}
+            open={deleteVisible}
+            // onOk={handleUpdateOk}
+            width="40%"
+            onCancel={handleDeleteCancel}
+            footer={false}
+            style={{
+              top: "30%",
+            }}
+            // style={{ background: "#FFCCCC" }}
+          >
+            {/* Add your update form here */}
+            <Form
+              autoComplete="off"
+              form={form}
+              labelCol={{ span: 5 }}
+              wrapperCol={{ span: 18 }}
+              layout="horizontal"
+              className="mt-5"
+              style={{ width: "100%" }}
+              onFinish={() => handleDeleteLecture(oneLecture)}
+            >
+              <Space className="justify-end w-full">
+                <Form.Item className="mb-0">
+                  <Space>
+                    <Button
+                      className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                      onClick={handleDeleteCancel}
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #E0E0E0",
+                        color: "black",
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                      htmlType="submit"
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #4caf50",
+                        color: "#fff",
+                      }}
+                    >
+                      Confirm
+                    </Button>
+                  </Space>
+                </Form.Item>
               </Space>
-            </Form.Item>
-          </Space>
-        </Form>
-      </Modal>
-      {/* <Dialog
+            </Form>
+          </Modal>
+          {/* <Dialog
         open={deleteVisible}
         onClose={handleDeleteCancel}
         aria-describedby="alert-dialog-slide-description"
@@ -1931,266 +1988,268 @@ const Dashboard = ({ params }: any) => {
         </DialogActions>
       </Dialog> */}
 
-      {/* Test Title Modal */}
-      <Modal
-        destroyOnClose={true}
-        title={`Information About Test (Title, Description) `}
-        open={testTitleModal}
-        // onOk={handleUpdateOk}
-        width="40%"
-        onCancel={handleCancel}
-        footer={false}
-        style={{
-          top: "30%",
-        }}
-        // style={{ background: "#FFCCCC" }}
-      >
-        {/* Add your update form here */}
-        <Form
-          autoComplete="off"
-          form={form}
-          labelCol={{ span: 5 }}
-          wrapperCol={{ span: 18 }}
-          layout="horizontal"
-          className="mt-5"
-          style={{ width: "100%" }}
-          onFinish={handleCreateTestTitle}
-        >
-          <Form.Item
-            rules={[
-              { required: true, message: "Please input Name!" },
-              { max: 500, message: "Maximum 500 characters allowed!" },
-            ]}
-            label="Title"
-            name="title"
+          {/* Test Title Modal */}
+          <Modal
+            destroyOnClose={true}
+            title={`Information About Test (Title, Description) `}
+            open={testTitleModal}
+            // onOk={handleUpdateOk}
+            width="40%"
+            onCancel={handleCancel}
+            footer={false}
+            style={{
+              top: "30%",
+            }}
+            // style={{ background: "#FFCCCC" }}
           >
-            <Input placeholder="Put title of Test here !!!" />
-          </Form.Item>
+            {/* Add your update form here */}
+            <Form
+              autoComplete="off"
+              form={form}
+              labelCol={{ span: 5 }}
+              wrapperCol={{ span: 18 }}
+              layout="horizontal"
+              className="mt-5"
+              style={{ width: "100%" }}
+              onFinish={handleCreateTestTitle}
+            >
+              <Form.Item
+                rules={[
+                  { required: true, message: "Please input Name!" },
+                  { max: 500, message: "Maximum 500 characters allowed!" },
+                ]}
+                label="Title"
+                name="title"
+              >
+                <Input placeholder="Put title of Test here !!!" />
+              </Form.Item>
 
-          <Form.Item
-            rules={[
-              { required: true, message: "Please input Name!" },
-              { max: 500, message: "Maximum 500 characters allowed!" },
-            ]}
-            label="Description"
-            name="description"
+              <Form.Item
+                rules={[
+                  { required: true, message: "Please input Name!" },
+                  { max: 500, message: "Maximum 500 characters allowed!" },
+                ]}
+                label="Description"
+                name="description"
+              >
+                <Input.TextArea placeholder="Type some description here !!!" />
+              </Form.Item>
+
+              <Space className="justify-end w-full">
+                <Form.Item className="mb-0">
+                  <Space>
+                    <Button
+                      className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                      onClick={handleCancel}
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #E0E0E0",
+                        color: "black",
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                      htmlType="submit"
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #4caf50",
+                        color: "#fff",
+                      }}
+                    >
+                      Confirm
+                    </Button>
+                  </Space>
+                </Form.Item>
+              </Space>
+            </Form>
+          </Modal>
+
+          {/* Delete Test */}
+          <Modal
+            destroyOnClose={true}
+            title={
+              <div className="text-lg">
+                Are you sure you want to Delete this Test?
+              </div>
+            }
+            open={deleteTestModal}
+            // onOk={handleOk}
+            width="35%"
+            onCancel={handleCancel}
+            footer={false}
+            style={{
+              top: "30%",
+            }}
           >
-            <Input.TextArea placeholder="Type some description here !!!" />
-          </Form.Item>
-
-          <Space className="justify-end w-full">
-            <Form.Item className="mb-0">
-              <Space>
-                <Button
-                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
-                  onClick={handleCancel}
-                  style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
-                    border: "2px solid #E0E0E0",
-                    color: "black",
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
-                  htmlType="submit"
-                  style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
-                    border: "2px solid #4caf50",
-                    color: "#fff",
-                  }}
-                >
-                  Confirm
-                </Button>
+            <Form
+              autoComplete="off"
+              form={form}
+              labelCol={{ span: 4 }}
+              wrapperCol={{ span: 20 }}
+              layout="horizontal"
+              className="mt-5"
+              style={{ width: "100%" }}
+              onFinish={handleDeleteTest}
+            >
+              <Space className="justify-end w-full">
+                <Form.Item className="mb-0">
+                  <Space>
+                    <Button
+                      className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                      onClick={handleCancel}
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #E0E0E0",
+                        color: "black",
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                      htmlType="submit"
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #4caf50",
+                        color: "#fff",
+                      }}
+                    >
+                      Confirm
+                    </Button>
+                  </Space>
+                </Form.Item>
               </Space>
-            </Form.Item>
-          </Space>
-        </Form>
-      </Modal>
+            </Form>
+          </Modal>
 
-      {/* Delete Test */}
-      <Modal
-        destroyOnClose={true}
-        title={
-          <div className="text-lg">
-            Are you sure you want to Delete this Test?
-          </div>
-        }
-        open={deleteTestModal}
-        // onOk={handleOk}
-        width="35%"
-        onCancel={handleCancel}
-        footer={false}
-        style={{
-          top: "30%",
-        }}
-      >
-        <Form
-          autoComplete="off"
-          form={form}
-          labelCol={{ span: 4 }}
-          wrapperCol={{ span: 20 }}
-          layout="horizontal"
-          className="mt-5"
-          style={{ width: "100%" }}
-          onFinish={handleDeleteTest}
-        >
-          <Space className="justify-end w-full">
-            <Form.Item className="mb-0">
-              <Space>
-                <Button
-                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
-                  onClick={handleCancel}
-                  style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
-                    border: "2px solid #E0E0E0",
-                    color: "black",
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
-                  htmlType="submit"
-                  style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
-                    border: "2px solid #4caf50",
-                    color: "#fff",
-                  }}
-                >
-                  Confirm
-                </Button>
+          {/* Delete Question */}
+          <Modal
+            destroyOnClose={true}
+            title={
+              <div className="text-lg">
+                Are you sure you want to Delete this Question?
+              </div>
+            }
+            open={deleteQuestionModal}
+            // onOk={handleOk}
+            width="35%"
+            onCancel={handleCancel}
+            footer={false}
+            style={{
+              top: "30%",
+            }}
+          >
+            <Form
+              autoComplete="off"
+              form={form}
+              labelCol={{ span: 4 }}
+              wrapperCol={{ span: 20 }}
+              layout="horizontal"
+              className="mt-5"
+              style={{ width: "100%" }}
+              onFinish={handleDeleteQuestion}
+            >
+              <Space className="justify-end w-full">
+                <Form.Item className="mb-0">
+                  <Space>
+                    <Button
+                      className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                      onClick={handleCancel}
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #E0E0E0",
+                        color: "black",
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                      htmlType="submit"
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #4caf50",
+                        color: "#fff",
+                      }}
+                    >
+                      Confirm
+                    </Button>
+                  </Space>
+                </Form.Item>
               </Space>
-            </Form.Item>
-          </Space>
-        </Form>
-      </Modal>
+            </Form>
+          </Modal>
 
-      {/* Delete Question */}
-      <Modal
-        destroyOnClose={true}
-        title={
-          <div className="text-lg">
-            Are you sure you want to Delete this Question?
-          </div>
-        }
-        open={deleteQuestionModal}
-        // onOk={handleOk}
-        width="35%"
-        onCancel={handleCancel}
-        footer={false}
-        style={{
-          top: "30%",
-        }}
-      >
-        <Form
-          autoComplete="off"
-          form={form}
-          labelCol={{ span: 4 }}
-          wrapperCol={{ span: 20 }}
-          layout="horizontal"
-          className="mt-5"
-          style={{ width: "100%" }}
-          onFinish={handleDeleteQuestion}
-        >
-          <Space className="justify-end w-full">
-            <Form.Item className="mb-0">
-              <Space>
-                <Button
-                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
-                  onClick={handleCancel}
-                  style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
-                    border: "2px solid #E0E0E0",
-                    color: "black",
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
-                  htmlType="submit"
-                  style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
-                    border: "2px solid #4caf50",
-                    color: "#fff",
-                  }}
-                >
-                  Confirm
-                </Button>
+          {/* Delete Answer */}
+          <Modal
+            destroyOnClose={true}
+            title={
+              <div className="text-lg">
+                Are you sure you want to Delete this Answer?
+              </div>
+            }
+            open={deleteAnswerModal}
+            // onOk={handleOk}
+            width="35%"
+            onCancel={handleCancel}
+            footer={false}
+            style={{
+              top: "30%",
+            }}
+          >
+            <Form
+              autoComplete="off"
+              form={form}
+              labelCol={{ span: 4 }}
+              wrapperCol={{ span: 20 }}
+              layout="horizontal"
+              className="mt-5"
+              style={{ width: "100%" }}
+              onFinish={handleDeleteAnswer}
+            >
+              <Space className="justify-end w-full">
+                <Form.Item className="mb-0">
+                  <Space>
+                    <Button
+                      className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                      onClick={handleCancel}
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #E0E0E0",
+                        color: "black",
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                      htmlType="submit"
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #4caf50",
+                        color: "#fff",
+                      }}
+                    >
+                      Confirm
+                    </Button>
+                  </Space>
+                </Form.Item>
               </Space>
-            </Form.Item>
-          </Space>
-        </Form>
-      </Modal>
-
-      {/* Delete Answer */}
-      <Modal
-        destroyOnClose={true}
-        title={
-          <div className="text-lg">
-            Are you sure you want to Delete this Answer?
-          </div>
-        }
-        open={deleteAnswerModal}
-        // onOk={handleOk}
-        width="35%"
-        onCancel={handleCancel}
-        footer={false}
-        style={{
-          top: "30%",
-        }}
-      >
-        <Form
-          autoComplete="off"
-          form={form}
-          labelCol={{ span: 4 }}
-          wrapperCol={{ span: 20 }}
-          layout="horizontal"
-          className="mt-5"
-          style={{ width: "100%" }}
-          onFinish={handleDeleteAnswer}
-        >
-          <Space className="justify-end w-full">
-            <Form.Item className="mb-0">
-              <Space>
-                <Button
-                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
-                  onClick={handleCancel}
-                  style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
-                    border: "2px solid #E0E0E0",
-                    color: "black",
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
-                  htmlType="submit"
-                  style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
-                    border: "2px solid #4caf50",
-                    color: "#fff",
-                  }}
-                >
-                  Confirm
-                </Button>
-              </Space>
-            </Form.Item>
-          </Space>
-        </Form>
-      </Modal>
-    </div>
+            </Form>
+          </Modal>
+        </div>
+      )}
+    </>
   );
 };
 

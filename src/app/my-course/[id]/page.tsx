@@ -25,6 +25,7 @@ import { toast } from "sonner";
 import { http } from "@/api/http";
 import { maxTime } from "date-fns";
 import { Document, Page } from "react-pdf/dist/esm/entry.webpack";
+import { BsFillFlagFill } from "react-icons/bs";
 
 export type Lecture = {
   id: string | number;
@@ -513,7 +514,7 @@ export default function AfterEnroll({ params }: any) {
                     src="/menu-icon/flag-icon.jpg"
                     alt="flag"
                   /> */}
-                    Report
+                    <BsFillFlagFill />
                   </Button>
                 </div>
                 <Modal

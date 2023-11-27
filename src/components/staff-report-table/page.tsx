@@ -110,6 +110,7 @@ interface ApiResponse {
 }
 
 const StaffReportTable = () => {
+  const { userData } = UserAuth();
   const [data, setData] = useState<ApiResponse[]>([]);
   const [activeTab, setActiveTab] = useState("tab1");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -135,7 +136,7 @@ const StaffReportTable = () => {
     };
 
     fetchData();
-  }, [selectedType]);
+  }, [selectedType, userData]);
 
   return (
     <div className="w-full mt-4">

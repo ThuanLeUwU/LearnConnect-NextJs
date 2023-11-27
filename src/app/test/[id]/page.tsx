@@ -8,6 +8,10 @@ import { useRouter } from "next/navigation";
 import { http } from "@/api/http";
 import { toast } from "sonner";
 import { resetWarned } from "antd/es/_util/warning";
+import { Chart as ChartJs, ArcElement, Tooltip, Legend } from "chart.js";
+import { Doughnut } from "react-chartjs-2";
+
+ChartJs.register(ArcElement, Tooltip, Legend);
 
 export type Test = {
   test: {
@@ -153,13 +157,29 @@ export default function Quiz({ params }: any) {
         userId: userId,
         courseId: idCourse,
       });
+
+      const chartDataFormatted = {
+        labels: ["Correct", "Incorrect"],
+        datasets: [
+          {
+            data: [count, totalQuestions - count],
+            backgroundColor: ["#309255", "rgb(255, 99, 132)"],
+            hoverOffset: 4,
+          },
+        ],
+      };
       Modal.info({
         title: "Quiz Results",
         content: (
-          <div>
-            <p>Total Questions: {totalQuestions}</p>
-            <p>Correct Answers: {count}</p>
-            <p>Average Score: {averageScore}</p>
+          <div className="flex flex-row">
+            <div className="w-40">
+              <Doughnut data={chartDataFormatted} />
+            </div>
+            <div className="text-xl">
+              <p className="text-[#309255]">Correct Answers: {count}</p>
+              <p>Total Questions : {totalQuestions}</p>
+              <p>Average Score : {averageScore}</p>
+            </div>
           </div>
         ),
         okText: "Close",

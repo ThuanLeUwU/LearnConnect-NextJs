@@ -30,8 +30,14 @@ const MyCourse = () => {
     //   router.push(`/`);
     // }
   });
-  const { loading, courses, totalPages, currentPage, setCurrentPage } =
-    useDataFavoritesFetcher();
+  const {
+    loading,
+    courses,
+    totalPages,
+    currentPage,
+    setCurrentPage,
+    setIsFavorites,
+  } = useDataFavoritesFetcher();
   const { jwtToken } = UserAuth();
 
   axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
@@ -52,6 +58,9 @@ const MyCourse = () => {
             <div className="grid cols-2 lg:grid-cols-3 pt-[30px] gap-5">
               {courses.map((item) => (
                 <Courses
+                  setIsFavorites={(isFavorites) => {
+                    setIsFavorites(isFavorites);
+                  }}
                   enrolled={false}
                   mentorId={0}
                   favorite={item.favorite ? true : false}

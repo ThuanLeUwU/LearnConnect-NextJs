@@ -8,7 +8,7 @@ import Link from "next/link";
 import { Rating } from "@mui/material";
 import { http } from "@/api/http";
 import { UserAuth } from "../context/AuthContext";
-import moment from "moment";
+import { useRouter } from "next/navigation";
 import {
   Chart as ChartJs,
   BarElement,
@@ -17,7 +17,7 @@ import {
   Legend,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
-import { useRouter } from "next/navigation";
+
 ChartJs.register(BarElement, CategoryScale, LinearScale, Legend);
 
 // export type Revenue = {
@@ -142,28 +142,6 @@ const Revenue = () => {
         console.error("Error fetching data:", error);
       });
   }, [id]);
-
-  const data = {
-    labels: [
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-      "Sunday",
-    ],
-    datasets: [
-      {
-        label: "VNĐ",
-        data: [1000, 5000, 2000, 6000, 3000, 7000, 8000],
-        backgroundColor: "#309255d9",
-        borderColor: "black",
-        borderWidth: 2,
-        barPercentage: 0.6,
-      },
-    ],
-  };
 
   const options = {
     scales: {
@@ -294,103 +272,111 @@ const Revenue = () => {
   ];
 
   return (
-    <div className={`${InstructorCourseStyle.content_wrapper}`}>
-      <div className={`${InstructorCourseStyle.sidebar_wrapper}`}>
-        <div className={`${InstructorCourseStyle.sidebar_list}`}>
-          {menuItem.map((item, index) => {
-            return (
-              <Tooltip key={index} title={item.title}>
-                <Link
-                  key={index}
-                  href={item.href}
-                  className={`${InstructorCourseStyle.sidebar_active} mt-5`}
-                >
-                  <img src={item.image} alt="image"></img>
-                </Link>
-              </Tooltip>
-            );
-          })}
-        </div>
-      </div>
-      {loading ? (
+    <>
+      {!userData ? (
         <div className="text-center text-5xl mt-5">
           <Spin size="large" />
         </div>
       ) : (
-        <div className={`${InstructorCourseStyle.body_wrapper} `}>
-          <div className="text-start font-semibold text-5xl pb-5 pl-5">
-            Revenue
+        <div className={`${InstructorCourseStyle.content_wrapper}`}>
+          <div className={`${InstructorCourseStyle.sidebar_wrapper}`}>
+            <div className={`${InstructorCourseStyle.sidebar_list}`}>
+              {menuItem.map((item, index) => {
+                return (
+                  <Tooltip key={index} title={item.title}>
+                    <Link
+                      key={index}
+                      href={item.href}
+                      className={`${InstructorCourseStyle.sidebar_active} mt-5`}
+                    >
+                      <img src={item.image} alt="image"></img>
+                    </Link>
+                  </Tooltip>
+                );
+              })}
+            </div>
           </div>
-          <div className="mt-10 rounded-lg border-solid border-2 mx-10 p-20 shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)]">
-            <div className="flex">
-              <div className="text-2xl font-semibold mb-0 pt-4 leading-5">
-                Total Revenue
+          {loading ? (
+            <div className="text-center text-5xl mt-5">
+              <Spin size="large" />
+            </div>
+          ) : (
+            <div className={`${InstructorCourseStyle.body_wrapper} `}>
+              <div className="text-start font-semibold text-5xl pb-5 pl-5">
+                Revenue
+              </div>
+              <div className="mt-10 rounded-lg border-solid border-2 mx-10 p-20 shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)]">
+                <div className="flex">
+                  <div className="text-2xl font-semibold mb-0 pt-4 leading-5">
+                    Total Revenue
+                  </div>
+                </div>
+                <div className="relative">
+                  <Bar data={chartData} options={options}></Bar>
+                </div>
               </div>
             </div>
-            <div className="relative">
-              <Bar data={chartData} options={options}></Bar>
+          )}
+          <div className={`${InstructorCourseStyle.body_wrapper}`}>
+            <div className="mx-10">
+              <div className="bg-[#e5f4eb] rounded-[10px] px-10 ">
+                <div className="flex justify-between p-5 items-center text-center ">
+                  <div className="w-[350px]">Courses</div>
+                  {/* <div className="flex gap-[100px] justify-between"> */}
+                  <div className="w-[100px]">Revenue</div>
+                  <div>Enrollment</div>
+                  {/* </div> */}
+                  {date ? (
+                    <Select
+                      defaultValue={date}
+                      onChange={handleFilterClick}
+                      style={{ width: 120 }}
+                    >
+                      {listDate.map((option, index) => (
+                        // <div key={index}>hahaha {option.date}</div>
+                        <Option key={option.date} value={option.date}>
+                          {new Date(option.date).toISOString().slice(0, 10)}
+                        </Option>
+                      ))}
+                    </Select>
+                  ) : (
+                    <></>
+                  )}
+                </div>{" "}
+              </div>
+              <div className=" flex flex-col">
+                {eachCourse.map((item, index) => (
+                  <>
+                    <div className="flex mt-5 rounded-[10px] py-5 border-solid border px-[60px] hover:border-[#309255] justify-between items-center text-center shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)]">
+                      <div className="w-[300px]">{item.courseName}</div>
+                      <div className="w-[100px]">{item.totalRevenueCourse}</div>
+                      <div className="">{item.totalEnroll}</div>
+                      <button
+                        className="rounded-[10px] border-solid border-2 p-2"
+                        onClick={() => detailsEnroll(item.usersEnroll)}
+                      >
+                        View Details
+                      </button>
+                    </div>
+                  </>
+                ))}
+              </div>
             </div>
           </div>
+          <Modal
+            title="List Enrollment"
+            open={isModal}
+            // style={{ width: 800 }}
+            // width="35%"
+            // onOk={handleOk}
+            onCancel={handleCancel}
+            footer={false}
+          >
+            <Table columns={columns} dataSource={enrollList} />
+          </Modal>
         </div>
       )}
-      <div className={`${InstructorCourseStyle.body_wrapper}`}>
-        <div className="mx-10">
-          <div className="bg-[#e5f4eb] rounded-[10px] px-10 ">
-            <div className="flex justify-between p-5 items-center text-center ">
-              <div className="w-[350px]">Courses</div>
-              {/* <div className="flex gap-[100px] justify-between"> */}
-              <div className="w-[100px]">Revenue</div>
-              <div>Enrollment</div>
-              {/* </div> */}
-              {date ? (
-                <Select
-                  defaultValue={date}
-                  onChange={handleFilterClick}
-                  style={{ width: 120 }}
-                >
-                  {listDate.map((option, index) => (
-                    // <div key={index}>hahaha {option.date}</div>
-                    <Option key={option.date} value={option.date}>
-                      {new Date(option.date).toISOString().slice(0, 10)}
-                    </Option>
-                  ))}
-                </Select>
-              ) : (
-                <></>
-              )}
-            </div>{" "}
-          </div>
-          <div className=" flex flex-col">
-            {eachCourse.map((item, index) => (
-              <>
-                <div className="flex mt-5 rounded-[10px] py-5 border-solid border px-[60px] hover:border-[#309255] justify-between items-center text-center shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)]">
-                  <div className="w-[300px]">{item.courseName}</div>
-                  <div className="w-[100px]">{item.totalRevenueCourse}</div>
-                  <div className="">{item.totalEnroll}</div>
-                  <button
-                    className="rounded-[10px] border-solid border-2 p-2"
-                    onClick={() => detailsEnroll(item.usersEnroll)}
-                  >
-                    View Details
-                  </button>
-                </div>
-              </>
-            ))}
-          </div>
-        </div>
-      </div>
-      <Modal
-        title="List Enrollment"
-        open={isModal}
-        // style={{ width: 800 }}
-        // width="35%"
-        // onOk={handleOk}
-        onCancel={handleCancel}
-        footer={false}
-      >
-        <Table columns={columns} dataSource={enrollList} />
-      </Modal>
-    </div>
+    </>
   );
 };
 

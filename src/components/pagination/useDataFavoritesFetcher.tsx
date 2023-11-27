@@ -48,34 +48,41 @@ const useDataFavoritesFetcher = () => {
   const [totalPages, setTotalPages] = useState(10);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
+  const [isFavorites, setIsFavorites] = useState(false);
+
+  const fetchData = async () => {
+    const page = Math.min(currentPage + 1, totalPages);
+    try {
+      const result = await axios.get(
+        `${API_URL}${id}&currentPage=${page}&pageSize=${pagesize}`
+        // `${API_URL}`
+      );
+      // setCourses(result?.data.listCourse);
+      setCourses(result?.data.listFavoriteCourses);
+      setTotalPages(result?.data.paginationData.totalPages);
+      // setFavorite(
+      //   result?.data.listFavoriteCourses.map((item: any) => item.favorite)
+      // );
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+    }
+    // console.log("Favorite Courses Data:", result?.data.listFavoriteCourses);
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      const page = Math.min(currentPage + 1, totalPages);
-      try {
-        const result = await axios.get(
-          `${API_URL}${id}&currentPage=${page}&pageSize=${pagesize}`
-          // `${API_URL}`
-        );
-        // setCourses(result?.data.listCourse);
-        setCourses(result?.data.listFavoriteCourses);
-        setTotalPages(result?.data.paginationData.totalPages);
-        // setFavorite(
-        //   result?.data.listFavoriteCourses.map((item: any) => item.favorite)
-        // );
-        setLoading(false);
-      } catch (err) {
-        console.log(err);
-      }
-      // console.log("Favorite Courses Data:", result?.data.listFavoriteCourses);
-    };
     fetchData();
-  }, [currentPage, id]);
+    setIsFavorites(false);
+  }, [currentPage, id, isFavorites]);
+
   return {
     loading,
     courses,
     totalPages,
     currentPage,
+    setIsFavorites,
     setCurrentPage,
+    fetchData,
   };
 };
 

@@ -6,22 +6,19 @@ import { useRouter } from "next/navigation";
 import { AiOutlineSearch } from "react-icons/ai";
 interface SearchProps {
   searchQueryData: string | number | readonly string[] | undefined;
+  setData: (data) => void;
 }
 
-const Search: React.FC<SearchProps> = ({ searchQueryData }: SearchProps) => {
+const Search: React.FC<SearchProps> = ({
+  searchQueryData,
+  setData,
+}: SearchProps) => {
   const [searchQuery, setSearchQuery] = useState("");
-
-  useEffect(() => {
-    setSearchQuery(String(searchQueryData || ""));
-  }, [searchQueryData]);
 
   const router = useRouter();
 
   const handleClickSearch = () => {
-    const destination = searchQuery
-      ? `/courses/search/${searchQuery}`
-      : "/courses";
-    router.push(destination);
+    setData(searchQuery);
   };
 
   const handleSearchChange = (e: {

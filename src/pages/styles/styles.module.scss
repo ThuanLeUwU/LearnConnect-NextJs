@@ -149,8 +149,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #e7f8ee;
-  // border: 1px solid rgba($primary, 0.25);
+  // background-color: #e7f8ee;
+  border-radius: 16px;
+  border: 1px solid rgba($primary, 0.4);
   padding: 16px 15px;
   border-radius: 15px;
   margin-left: -15px;
@@ -517,7 +518,9 @@
 .sign_up {
   height: 40px;
   line-height: 40px;
+  display: flex;
   padding: 0 25px;
+  align-items: center;
   border: 1px solid $primary;
   border-radius: 10px;
   background-color: $white;
