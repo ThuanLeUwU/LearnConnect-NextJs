@@ -61,27 +61,6 @@ export default function ProfileUser() {
       fetchUserData();
     }
   }, [id]);
-  // const [DataUser, SetDataUser] = useState<User>();
-  // const [fetchedUserData, setFetchedUserData] = useState<User | null>(null);
-  // useEffect(() => {
-  //   // Fetch updated user data upon component mount
-  //   const fetchUserData = async () => {
-  //     try {
-  //       const response = await axios.get(
-  //         `https://learnconnectapitest.azurewebsites.net/api/user/${id}`
-  //       );
-  //       console.log(
-  //         `https://learnconnectapitest.azurewebsites.net/api/user/${id}`
-  //       );
-  //       setFetchedUserData(response.data);
-  //     } catch (error) {
-  //       // Handle error
-  //       console.error("Error fetching user data:", error);
-  //     }
-  //   };
-  //   fetchUserData();
-  // }, [id]);
-  // console.log("Gender", DataUser?.gender);
 
   const displayGender = (gender: number | undefined) => {
     if (gender === 1) {
@@ -91,7 +70,7 @@ export default function ProfileUser() {
     } else if (gender === 3) {
       return "Other";
     } else {
-      return "Not specified";
+      return null;
     }
   };
 
@@ -157,15 +136,19 @@ export default function ProfileUser() {
                         <h5 className="text-lg my-1">
                           Email: {DataUser?.email}
                         </h5>
-                        <h5 className="text-lg my-1">
-                          Gender: {displayGender(DataUser?.gender)}
-                        </h5>
-                        <p className="text-lg my-1">
-                          Phone: {DataUser?.phoneNumber}
-                        </p>
+                        {DataUser?.gender !== null && (
+                          <h5 className="text-lg my-1">
+                            Gender: {displayGender(DataUser?.gender)}
+                          </h5>
+                        )}
+                        {DataUser?.phoneNumber !== null && (
+                          <p className="text-lg my-1">
+                            Phone: {DataUser?.phoneNumber}
+                          </p>
+                        )}
                       </div>
                     </div>
-                    <div className="card-body p-4 text-black">
+                    <div className="card-body p-4 text-black min-h-[1000px]">
                       <div className="mb-5">
                         <p className="font-semibold text-lg mb-2">Biography</p>
                         <div className="p-4 bg-gray-200">

@@ -78,7 +78,7 @@ const useDataFetcher = (
       console.log("page1", page);
       console.log("total1", totalPages);
       const result = await axios.get(
-        `${API_URL}${page}&pageSize=${pagesize}&specializationId=${specializationId}&priceMin=${minPrice}&priceMax=${maxPrice}&minAverageRating=${rate}&orderByLatestCreationDate=true&orderByEnrollmentCount=false&searchQuery=${searchQuery}`
+        `${API_URL}${page}&pageSize=${pagesize}&specializationId=${specializationId}&priceMin=${minPrice}&priceMax=${maxPrice}&minAverageRating=${rate}&orderByLatestCreationDate=true&orderByEnrollmentCount=true&searchQuery=${searchQuery}`
       );
       setCourses(result?.data.listCourse);
       setTotalPages(result?.data.paginationData?.totalPages);

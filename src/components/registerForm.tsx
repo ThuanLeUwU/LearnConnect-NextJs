@@ -19,6 +19,8 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import ".././app/./globals.css";
 import { useRouter } from "next/navigation";
+import TextArea from "antd/es/input/TextArea";
+import moment from "moment";
 
 export type User = {
   id: string | number;
@@ -106,6 +108,8 @@ export const RegisterForm = () => {
 
   const [banks, setBanks] = useState<Bank[]>([]);
 
+  const [fileList, setFileList] = useState([]);
+
   useEffect(() => {
     const fetchData = async () => {
       const responseData = await http.get(`/user/${id}`);
@@ -128,6 +132,7 @@ export const RegisterForm = () => {
         setIdentifyImage(url);
       });
     }
+    setFileList(info.fileList);
   };
   const handleChangeBackImg = (info: any) => {
     if (info.file.status === "uploading") {
@@ -301,6 +306,15 @@ export const RegisterForm = () => {
     fetchBanks();
   }, []);
 
+  const uploadButtonContent =
+    fileList.length > 0 ? "Choose Other Image" : "Front of ID";
+
+  const uploadButtonBackContent =
+    fileList.length > 0 ? "Choose Other Image" : "Back of ID";
+
+  const uploadButtonDocumentContent =
+    fileList.length > 0 ? "Choose Other Image" : "Document";
+
   return (
     <div className="">
       <div className="container border border-[#309255] my-3 rounded-lg mt-3">
@@ -332,7 +346,7 @@ export const RegisterForm = () => {
             className=""
             labelAlign="left"
           >
-            <Input placeholder="Input Introduction " />
+            <TextArea placeholder="Input Introduction " />
           </Form.Item>
 
           <Form.Item
@@ -356,25 +370,34 @@ export const RegisterForm = () => {
               ))}
             </Select>
           </Form.Item>
-
           <Form.Item
-            rules={[{ required: true, message: "Please input Account Number" }]}
+            rules={[
+              { required: true, message: "Please input Account Number" },
+              {
+                pattern: /^[0-9]{8,15}$/,
+                message:
+                  "Account Number must be a numeric value between 8 and 15 digits",
+              },
+            ]}
             label="Account Number"
             name="BankNumber"
             labelAlign="left"
           >
             <Input type="number" placeholder="Input Account Number" />
           </Form.Item>
-
           <Form.Item
             rules={[
               { required: true, message: "Please input Identify Number" },
+              {
+                pattern: /^[0-9]{12,12}$/,
+                message: "Identity Number must be exactly 12 digits",
+              },
             ]}
             label="Identity Number"
             name="CardFront"
             labelAlign="left"
           >
-            <Input placeholder="Input Identity Number " />
+            <Input type="number" placeholder="Input Identity Number" />
           </Form.Item>
 
           <Form.Item
@@ -383,39 +406,54 @@ export const RegisterForm = () => {
             name="IssueDate"
             labelAlign="left"
           >
-            <DatePicker style={{ width: "100%" }} />
+            <DatePicker
+              style={{ width: "100%" }}
+              disabledDate={(current) =>
+                current && current > moment().endOf("day")
+              }
+            />
           </Form.Item>
-
           <Form.Item
-            rules={[{ required: true, message: "Please input image ID card" }]}
-            label="Image of ID Card"
+            rules={[
+              { required: true, message: "Please input image front ID card" },
+            ]}
+            label="Image front of ID Card"
             getValueFromEvent={normFile}
             labelAlign="left"
+            name="FontCardImage"
+            className="w-full"
           >
-            <Space>
-              <Upload
-                accept="image/png, image/jpeg"
-                onChange={handleChange}
-                beforeUpload={beforeUpload}
-                action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
-                listType="picture-card"
-                maxCount={1}
-              >
-                Font of ID
-              </Upload>
-              <Upload
-                accept="image/png, image/jpeg"
-                onChange={handleChangeBackImg}
-                beforeUpload={beforeUpload}
-                action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
-                listType="picture-card"
-                maxCount={1}
-              >
-                Back of ID
-              </Upload>
-            </Space>
+            <Upload
+              accept="image/png, image/jpeg"
+              onChange={handleChange}
+              beforeUpload={beforeUpload}
+              action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
+              listType="picture-card"
+              maxCount={1}
+            >
+              {uploadButtonContent}
+            </Upload>
           </Form.Item>
-
+          <Form.Item
+            rules={[
+              { required: true, message: "Please input image back ID card" },
+            ]}
+            label="Image back of ID Card"
+            getValueFromEvent={normFile}
+            labelAlign="left"
+            name="CardBack"
+          >
+            <Upload
+              accept="image/png, image/jpeg"
+              onChange={handleChangeBackImg}
+              beforeUpload={beforeUpload}
+              action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
+              listType="picture-card"
+              maxCount={1}
+            >
+              {uploadButtonBackContent}
+            </Upload>
+          </Form.Item>
           <Form.Item
             label="Major"
             name="major"
@@ -434,8 +472,6 @@ export const RegisterForm = () => {
               ))}
             </Select>
           </Form.Item>
-
-          {/* Specialization selection */}
           <Form.Item
             label="Specialization"
             name="specialization"
@@ -453,30 +489,22 @@ export const RegisterForm = () => {
               ))}
             </Select>
           </Form.Item>
-
           <Form.Item
-            rules={[{ required: true, message: "Please input Description" }]}
-            label="Description"
+            rules={[{ required: true, message: "Please input Experience" }]}
+            label="Experience"
             name="reason"
             className=""
             labelAlign="left"
           >
-            <Input placeholder="Input description" />
-          </Form.Item>
-
-          <Form.Item
-            rules={[{ required: true, message: "Please input Document" }]}
-            label="Document"
-            name="DescriptionDocument"
-            labelAlign="left"
-          >
-            <Input placeholder="Input Degree, Diploma, Certificate, Qualification" />
+            <TextArea placeholder="Input your Experience" />
           </Form.Item>
           <Form.Item
             label="Image of ID Document"
-            name="CardBack"
+            name="alo"
             getValueFromEvent={normFile}
-            rules={[{ required: true, message: "Please input CardFront" }]}
+            rules={[
+              { required: true, message: "Please input Image of ID Document" },
+            ]}
             labelAlign="left"
           >
             <Upload
@@ -486,7 +514,7 @@ export const RegisterForm = () => {
               action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
               listType="picture-card"
             >
-              Document
+              {uploadButtonDocumentContent}
             </Upload>
           </Form.Item>
           <div className="flex justify-center">

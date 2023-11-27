@@ -18,7 +18,6 @@ export type Mentor = {
   status: number;
   MentorProfile: {
     id: string;
-    // other properties...
   };
 };
 

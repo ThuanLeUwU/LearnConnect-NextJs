@@ -299,6 +299,19 @@ const MentorRequest = () => {
     setConfirmationModalOpen(false);
   };
 
+  function formatDate(dateString: string): string {
+    const options: Intl.DateTimeFormatOptions = {
+      day: "numeric",
+      month: "numeric",
+      year: "numeric",
+    };
+    const formattedDate = new Date(dateString).toLocaleDateString(
+      undefined,
+      options
+    );
+    return formattedDate || "";
+  }
+
   return (
     <>
       <div className="w-full mt-4">
@@ -522,9 +535,32 @@ const MentorRequest = () => {
                   ) : (
                     <div className="scrollable-container">
                       <div className="grid grid-cols-2 gap-4">
-                        {selectedDocuments.map((doc) => (
+                        {selectedDocuments.map((doc, index) => (
                           <div key={doc.id}>
-                            <p className="text-xl">{doc.description}</p>
+                            {index === 0 && (
+                              <div className="flex">
+                                <p className="text-xl">Font ID Image: </p>
+                                <p className="text-xl font-bold">
+                                  {doc.description}
+                                </p>
+                              </div>
+                            )}
+                            {index === 1 && (
+                              <div className="flex">
+                                <p className="text-xl">Back ID Image:</p>
+                                <p className="text-xl font-bold">
+                                  {formatDate(doc.description)}
+                                </p>
+                              </div>
+                            )}
+                            {index === 2 && (
+                              <div className="flex">
+                                <p className="text-xl">Certificate: </p>
+                                {/* <p className="text-xl font-bold">
+                                  {formatDate(doc.description)}
+                                </p> */}
+                              </div>
+                            )}
                             <img
                               src={doc.documentUrl}
                               alt={doc.description}

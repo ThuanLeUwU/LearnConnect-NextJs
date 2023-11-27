@@ -150,7 +150,7 @@ export default function EditProfile() {
       role: roleUser,
       fullName: fullName,
       phoneNumber: phoneNumber,
-      gender: gender,
+      gender: gender || 3,
       bioDescription: bioDescription,
       profilePictureUrl: profilePictureUrl,
       status: status,
