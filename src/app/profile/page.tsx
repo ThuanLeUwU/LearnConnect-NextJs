@@ -103,31 +103,23 @@ export default function ProfileUser() {
     <>
       <div className="bg-[#e7f8ee]">
         <div
-          className="bg-no-repeat flex flex-row justify-between"
+          className="bg-no-repeat bg-auto flex flex-row justify-between"
           style={{
             backgroundImage: "url('/images/shape-23.png')",
-            backgroundPosition: "bottom left",
           }}
         >
           <div>
-            <div className="-translate-y-9 px-40">
-              <img
-                className="animation-round "
-                src="/images/shape-8.png"
-                alt="Shape"
-              ></img>
-            </div>
-            <Breadcrumb className="font-semibold text-3xl pb-5 pl-36 -translate-y-3">
+            <Breadcrumb className="font-semibold text-3xl py-5 pl-36 flex-auto">
               <Breadcrumb.Item>
                 <button onClick={breadcrumbsHome}>Home</button>
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                <span>My Profile</span>
+                <span>Profile</span>
               </Breadcrumb.Item>
             </Breadcrumb>{" "}
           </div>
           <div
-            className="w-2/5 bg-auto bg-no-repeat bg-right-top"
+            className="w-2/5 bg-auto bg-no-repeat bg-right-top flex-1"
             style={{
               backgroundImage: "url('/images/shape-24.png')",
             }}
@@ -138,7 +130,7 @@ export default function ProfileUser() {
         {userData && (
           <section className="bg-gradient-to-b">
             <div className="py-5">
-              <div className="flex justify-center items-center">
+              <div className=" container">
                 <div className="max-w-[1200px]">
                   <div className="bg-[#fff] rounded-lg shadow-lg">
                     <div className="bg-[#309255] text-white flex flex-col lg:flex-row rounded-t p-4 lg:p-8">
@@ -171,28 +163,8 @@ export default function ProfileUser() {
                         <p className="text-lg my-1">
                           Phone: {DataUser?.phoneNumber}
                         </p>
-                        {/* <p>Role: {userData?.role}</p> */}
-                        {/* <p>Bio: {userData?.bioDescription}</p> */}
-                        {/* <p>Phone: {userData?.status}</p>
-                      <p>Phone: {userData?.profilePictureUrl}</p> */}
                       </div>
                     </div>
-                    {/* <div className="p-4 text-black bg-gray-200">
-                    <div className="flex justify-center lg:justify-end text-center py-2 lg:py-1">
-                      <div className="px-3">
-                        <p className="mb-1 text-lg">253</p>
-                        <p className="text-sm text-gray-500 mb-0">Photos</p>
-                      </div>
-                      <div className="px-3">
-                        <p className="mb-1 text-lg">1026</p>
-                        <p className="text-sm text-gray-500 mb-0">Followers</p>
-                      </div>
-                      <div className="px-3">
-                        <p className="mb-1 text-lg">478</p>
-                        <p className="text-sm text-gray-500 mb-0">Following</p>
-                      </div>
-                    </div>
-                  </div> */}
                     <div className="card-body p-4 text-black">
                       <div className="mb-5">
                         <p className="font-semibold text-lg mb-2">Biography</p>
@@ -200,74 +172,6 @@ export default function ProfileUser() {
                           <p className="italic mb-1">
                             {DataUser?.bioDescription}
                           </p>
-                        </div>
-                      </div>
-                      {/* {/* <div className="flex justify-between items-center mb-4">
-                      <p className="font-semibold text-lg mb-0">
-                        Recent photos
-                      </p>
-                      <p className="mb-0">
-                        <Link href="#!" className="text-gray-500">
-                          Show all
-                        </Link>
-                      </p>
-                    </div> */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
-                        <div className="mb-2">
-                          <img
-                            src="https://mdbcdn.b-cdn.net/img/Photos/Lightbox/Original/img%20(112).webp"
-                            alt="image 1"
-                            className="w-full rounded-lg"
-                          />
-                        </div>
-                        <div className="mb-2">
-                          <img
-                            src="https://mdbcdn.b-cdn.net/img/Photos/Lightbox/Original/img%20(107).webp"
-                            alt="image 1"
-                            className="w-full rounded-lg"
-                          />
-                        </div>
-                        <div className="mb-2">
-                          <img
-                            src="https://mdbcdn.b-cdn.net/img/Photos/Lightbox/Original/img%20(108).webp"
-                            alt="image 1"
-                            className="w-full rounded-lg"
-                          />
-                        </div>
-                        <div className="mb-2">
-                          <img
-                            src="https://mdbcdn.b-cdn.net/img/Photos/Lightbox/Original/img%20(114).webp"
-                            alt="image 1"
-                            className="w-full rounded-lg"
-                          />
-                        </div>
-                        <div className="mb-2">
-                          <img
-                            src="https://mdbcdn.b-cdn.net/img/Photos/Lightbox/Original/img%20(114).webp"
-                            alt="image 1"
-                            className="w-full rounded-lg"
-                          />
-                        </div>
-                        <div className="mb-2">
-                          <img
-                            src="https://mdbcdn.b-cdn.net/img/Photos/Lightbox/Original/img%20(114).webp"
-                            alt="image 1"
-                            className="w-full rounded-lg"
-                          />
-                        </div>
-                        <div className="mb-2">
-                          <img
-                            src="https://mdbcdn.b-cdn.net/img/Photos/Lightbox/Original/img%20(114).webp"
-                            alt="image 1"
-                            className="w-full rounded-lg"
-                          />
-                        </div>
-                        <div className="mb-2">
-                          <img
-                            src="https://mdbcdn.b-cdn.net/img/Photos/Lightbox/Original/img%20(114).webp"
-                            alt="image 1"
-                            className="w-full rounded-lg"
-                          />
                         </div>
                       </div>
                     </div>

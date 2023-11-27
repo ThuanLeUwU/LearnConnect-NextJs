@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import InstructorCourseStyle from ".././styles/style.module.scss";
 import Link from "next/link";
 import {
+  Breadcrumb,
   Button,
   Checkbox,
   Empty,
@@ -40,6 +41,7 @@ import { toast } from "sonner";
 import { Course } from "@/components/courses/courses";
 import { Test } from "@/app/test/[id]/page";
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
+import { useRouter } from "next/navigation";
 // import { Rating } from "@/app/course-detail/[id]/page";
 
 export type TestTitle = {
@@ -1025,6 +1027,12 @@ const Dashboard = ({ params }: any) => {
       console.log(err);
     }
   };
+  const router = useRouter();
+
+  const breadCrumbHome = () => {
+    router.push("/instructorcourses");
+  };
+
   return (
     <>
       {!userData ? (
@@ -1051,17 +1059,20 @@ const Dashboard = ({ params }: any) => {
             </div>
           </div>
           <div className={`${InstructorCourseStyle.body_wrapper}`}>
+            <div className={`${InstructorCourseStyle.course_tab} bg-[#e7f8ee]`}>
+              <Breadcrumb className="text-start font-semibold text-4xl my-5 px-4">
+                <Breadcrumb.Item>
+                  <button onClick={breadCrumbHome}>Courses</button>
+                </Breadcrumb.Item>
+                <Breadcrumb.Item>
+                  <span>{course?.name}</span>
+                </Breadcrumb.Item>
+              </Breadcrumb>
+            </div>
             <div className={`${InstructorCourseStyle.featured}`}>
-              <div className={`${InstructorCourseStyle.featured_top}`}>
-                <h1 className={`${InstructorCourseStyle.featured_top_title}`}>
-                  About Course
-                </h1>
-              </div>
-              {/* <div className={`${InstructorCourseStyle.featured_bottom}`}> */}
               <div className="p-5 flex gap-5">
                 <div className="flex-1">
                   <img
-                    width="400px"
                     className="h-[300px] w-[400px] rounded-lg"
                     src={`${course?.imageUrl}`}
                     alt=""
@@ -1076,7 +1087,7 @@ const Dashboard = ({ params }: any) => {
                   <p
                     className={`${InstructorCourseStyle.featured_bottom_cate}`}
                   >
-                    {course?.categoryName}
+                    {course?.specializationName}
                   </p>
                   <div className="flex flex-row justify-between">
                     <div>
@@ -1206,7 +1217,7 @@ const Dashboard = ({ params }: any) => {
                   <Spin size="large" />
                 ) : (
                   <Table
-                    className="shadow-[5px_15px_25px_10px_rgba(0,0,0,0.15)] m-5 rounded-lg"
+                    className="shadow-[5px_15px_25px_10px_rgba(0,0,0,0.15)] rounded-lg"
                     dataSource={lectures}
                     columns={columns}
                     onRow={(record, rowIndex) => {

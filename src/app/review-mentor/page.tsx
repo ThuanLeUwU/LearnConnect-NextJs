@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import ReactStars from "react-stars";
 import { Button } from "react-bootstrap";
-import { Empty, Modal, Space, Spin, Tooltip } from "antd";
+import { Breadcrumb, Empty, Modal, Space, Spin, Tooltip } from "antd";
 import InstructorCourseStyle from "./styles/style.module.scss";
 import Link from "next/link";
 import { Rating } from "@mui/material";
@@ -121,8 +121,16 @@ const Reviews = () => {
           ) : (
             <div className={`${InstructorCourseStyle.body_wrapper}`}>
               {/* DashBoard */}
-              <div className="text-start font-semibold text-5xl pb-5 pl-5">
-                Ratings
+              <div
+                className={`${InstructorCourseStyle.course_tab} bg-[#e7f8ee]`}
+              >
+                <Breadcrumb>
+                  <Breadcrumb.Item>
+                    <div className="text-start font-semibold text-4xl my-5 px-4">
+                      Reviews About Me
+                    </div>
+                  </Breadcrumb.Item>
+                </Breadcrumb>
               </div>
               <div className={`${InstructorCourseStyle.featured}`}>
                 {reviews.length === 0 ? (

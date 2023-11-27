@@ -5,6 +5,7 @@ import Link from "next/link";
 import { CreateCourse } from "@/components/createCourse";
 // import { Button } from "react-bootstrap";
 import {
+  Breadcrumb,
   Button,
   Empty,
   Form,
@@ -372,14 +373,19 @@ const InstructorCourse = () => {
             </div>
           </div>
           <div className={`${InstructorCourseStyle.body_wrapper}`}>
-            <div className={`${InstructorCourseStyle.course_tab}`}>
-              <div className="text-start font-semibold text-5xl pb-5 pl-5">
-                Courses
-              </div>
+            <div className={`${InstructorCourseStyle.course_tab} bg-[#e7f8ee]`}>
+              <Breadcrumb>
+                <Breadcrumb.Item>
+                  <div className="text-start font-semibold text-4xl my-5 px-4">
+                    Courses
+                  </div>
+                </Breadcrumb.Item>
+              </Breadcrumb>
+
               <div className={`${InstructorCourseStyle.course_tab_btn}`}>
                 <Button
                   type="default"
-                  className={`${InstructorCourseStyle.create_btn}`}
+                  className={`${InstructorCourseStyle.create_btn} z-10`}
                   onClick={showModal}
                 >
                   New Course
@@ -457,15 +463,17 @@ const InstructorCourse = () => {
                                 </span>
                               </div>
                               <div
-                                className={`${InstructorCourseStyle.course_tracker_3}`}
+                                className={`${InstructorCourseStyle.course_tracker_3}  `}
                               >
                                 <p>Course Rating</p>
                                 <span
-                                  className={`${InstructorCourseStyle.course_tracker_count}`}
+                                  className={`${InstructorCourseStyle.course_tracker_count} gap-1`}
                                 >
-                                  {item.averageRating}
+                                  <div className="items-center flex">
+                                    {item.averageRating}
+                                  </div>
                                   {/* <ReactStars count={1} color2={"#ffd700"}></ReactStars> */}
-                                  <span>
+                                  <span className="items-center flex">
                                     <Rating
                                       size="small"
                                       name="half-rating-read"

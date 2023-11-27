@@ -2,7 +2,16 @@
 import React, { useEffect, useState } from "react";
 import ReactStars from "react-stars";
 import { Button } from "react-bootstrap";
-import { Avatar, Modal, Select, Space, Spin, Table, Tooltip } from "antd";
+import {
+  Avatar,
+  Breadcrumb,
+  Modal,
+  Select,
+  Space,
+  Spin,
+  Table,
+  Tooltip as TooltipANT,
+} from "antd";
 import InstructorCourseStyle from "./styles/style.module.scss";
 import Link from "next/link";
 import { Rating } from "@mui/material";
@@ -15,10 +24,11 @@ import {
   CategoryScale,
   LinearScale,
   Legend,
+  Tooltip,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 
-ChartJs.register(BarElement, CategoryScale, LinearScale, Legend);
+ChartJs.register(BarElement, CategoryScale, LinearScale, Legend, Tooltip);
 
 // export type Revenue = {
 //   date: string;
@@ -145,12 +155,40 @@ const Revenue = () => {
 
   const options = {
     scales: {
+      x: {
+        title: {
+          display: true,
+          text: "Day",
+          position: "end", // Đơn vị cho trục x
+        },
+      },
       y: {
         beginAtZero: true,
         max: Math.max(...chartData.datasets[0].data) + 10000, // Adjust max value for better visualization
         ticks: {
           callback: function (value) {
-            return value.toLocaleString(); // Format y-axis ticks as needed
+            return value.toLocaleString(); // Đơn vị cho trục y
+          },
+        },
+        title: {
+          display: true,
+          text: "VNĐ",
+          position: "start", // Đơn vị cho trục y
+        },
+      },
+    },
+    plugins: {
+      legend: {
+        display: false, // Ẩn hiển thị chú giải
+      },
+      tooltip: {
+        callbacks: {
+          label: (context) => {
+            const label = context.dataset.label || "";
+            const value = context.parsed.y || 0;
+
+            // Format giá trị theo nhu cầu của bạn
+            return `${label}: ${value.toLocaleString()} VNĐ`;
           },
         },
       },
@@ -283,7 +321,7 @@ const Revenue = () => {
             <div className={`${InstructorCourseStyle.sidebar_list}`}>
               {menuItem.map((item, index) => {
                 return (
-                  <Tooltip key={index} title={item.title}>
+                  <TooltipANT key={index} title={item.title}>
                     <Link
                       key={index}
                       href={item.href}
@@ -291,7 +329,7 @@ const Revenue = () => {
                     >
                       <img src={item.image} alt="image"></img>
                     </Link>
-                  </Tooltip>
+                  </TooltipANT>
                 );
               })}
             </div>
@@ -302,13 +340,21 @@ const Revenue = () => {
             </div>
           ) : (
             <div className={`${InstructorCourseStyle.body_wrapper} `}>
-              <div className="text-start font-semibold text-5xl pb-5 pl-5">
-                Revenue
+              <div
+                className={`${InstructorCourseStyle.course_tab} bg-[#e7f8ee]`}
+              >
+                <Breadcrumb>
+                  <Breadcrumb.Item>
+                    <div className="text-start font-semibold text-4xl my-5 px-4">
+                      Revenue
+                    </div>
+                  </Breadcrumb.Item>
+                </Breadcrumb>
               </div>
-              <div className="mt-10 rounded-lg border-solid border-2 mx-10 p-20 shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)]">
+              <div className="mt-10 rounded-lg border-solid border-2 mx-10 p-20 shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)] ">
                 <div className="flex">
                   <div className="text-2xl font-semibold mb-0 pt-4 leading-5">
-                    Total Revenue
+                    Total Weekly Income
                   </div>
                 </div>
                 <div className="relative">

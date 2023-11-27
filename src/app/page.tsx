@@ -38,7 +38,7 @@ export default function Home() {
   });
 
   const handleRouter = () => {
-    router.push("/login");
+    router.push("/courses");
   };
 
   const { loading, courses, totalPages, currentPage, setCurrentPage } =
@@ -69,10 +69,10 @@ export default function Home() {
               Now learning from anywhere, and build your{" "}
               <span>bright career.</span>
             </h2>
-            <p className="mt-12 text-lg font-normal pr-28">
+            {/* <p className="mt-12 text-lg font-normal pr-28">
               It has survived not only five centuries but also the leap into
               electronic typesetting.
-            </p>
+            </p> */}
             <button
               className="mt-7 text-white text-2xl border-2 py-4 px-6 rounded-xl bg-[#309255]"
               onClick={handleRouter}

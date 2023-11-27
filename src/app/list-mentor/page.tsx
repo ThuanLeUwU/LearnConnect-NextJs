@@ -42,21 +42,13 @@ export default function ListMentor() {
     <>
       <div className="bg-[#e7f8ee]">
         <div
-          className="bg-no-repeat flex flex-row justify-between"
+          className="bg-no-repeat bg-auto flex flex-row justify-between"
           style={{
             backgroundImage: "url('/images/shape-23.png')",
-            backgroundPosition: "bottom left",
           }}
         >
           <div>
-            <div className="-translate-y-9 px-40">
-              <img
-                className="animation-round "
-                src="/images/shape-8.png"
-                alt="Shape"
-              ></img>
-            </div>
-            <Breadcrumb className="font-semibold text-3xl pb-5 pl-36 -translate-y-3">
+            <Breadcrumb className="font-semibold text-3xl py-5 pl-36 flex-auto">
               <Breadcrumb.Item>
                 <button onClick={breadcrumbsHome}>Home</button>
               </Breadcrumb.Item>
@@ -66,7 +58,7 @@ export default function ListMentor() {
             </Breadcrumb>{" "}
           </div>
           <div
-            className="w-2/5 bg-auto bg-no-repeat bg-right-top"
+            className="w-2/5 bg-auto bg-no-repeat bg-right-top flex-1"
             style={{
               backgroundImage: "url('/images/shape-24.png')",
             }}

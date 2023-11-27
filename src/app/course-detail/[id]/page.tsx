@@ -153,21 +153,6 @@ export default function CourseDetailPage({ params }: any) {
     }
   };
 
-  // const createMenuLectures = (lectures) => {
-  //   return (
-  //     <Menu mode="horizontal" defaultSelectedKeys={["defaultKey"]}>
-  //       {lectures.map((item) => (
-  //         <Menu.Item key={item.title}>
-  //           {item.title}
-  //         </Menu.Item>
-  //       ))}
-  //     </Menu>
-  //   );
-  // };
-  // console.log("course is :", courses?.averageRating);
-  // setAverageRating(courses?.averageRating);
-  // console.log("averageRating 1:", averageRating);
-  // console.log("averageRating 2:", courses?.averageRating);
   const handleClickGotoCourse = () => {
     router.push(`/my-course/${idCourse}`);
     // setIsModalVisible(false);
@@ -189,21 +174,13 @@ export default function CourseDetailPage({ params }: any) {
     <>
       <div className="bg-[#e7f8ee]">
         <div
-          className="bg-no-repeat flex flex-row justify-between"
+          className="bg-no-repeat bg-auto flex flex-row justify-between"
           style={{
             backgroundImage: "url('/images/shape-23.png')",
-            backgroundPosition: "bottom left",
           }}
         >
           <div>
-            <div className="-translate-y-9 px-40">
-              <img
-                className="animation-round "
-                src="/images/shape-8.png"
-                alt="Shape"
-              ></img>
-            </div>
-            <Breadcrumb className="font-semibold text-3xl pb-5 pl-36 -translate-y-3">
+            <Breadcrumb className="font-semibold text-3xl py-5 pl-36 flex-auto">
               <Breadcrumb.Item>
                 <button onClick={breadcrumbsHome}>Home</button>
               </Breadcrumb.Item>
@@ -216,12 +193,13 @@ export default function CourseDetailPage({ params }: any) {
             </Breadcrumb>{" "}
           </div>
           <div
-            className="w-2/5 bg-auto bg-no-repeat bg-right-top"
+            className="w-2/5 bg-auto bg-no-repeat bg-right-top flex-1"
             style={{
               backgroundImage: "url('/images/shape-24.png')",
             }}
           />
         </div>
+        {/* </div> */}
       </div>
       {/* <div className="container"> */}
       {/* <div className="bg-[#fff]"> */}

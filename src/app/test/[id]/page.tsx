@@ -3,13 +3,14 @@ import { useEffect, useState } from "react";
 import "../../globals.css";
 import axios from "axios";
 import { UserAuth } from "@/app/context/AuthContext";
-import { Empty, Modal } from "antd";
+import { Breadcrumb, Empty, Modal } from "antd";
 import { useRouter } from "next/navigation";
 import { http } from "@/api/http";
 import { toast } from "sonner";
 import { resetWarned } from "antd/es/_util/warning";
 import { Chart as ChartJs, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
+import { Course } from "@/components/courses/courses";
 
 ChartJs.register(ArcElement, Tooltip, Legend);
 
@@ -96,6 +97,22 @@ export default function Quiz({ params }: any) {
       }
     };
     fetchQuestions();
+  }, []);
+
+  const [oneCourse, setOneCourse] = useState<Course>();
+
+  useEffect(() => {
+    try {
+      http
+        .get(
+          `https://learnconnectapitest.azurewebsites.net/api/course/${idCourse}`
+        )
+        .then((res) => {
+          setOneCourse(res.data);
+        });
+    } catch (err) {
+      console.error(err);
+    }
   }, []);
 
   const handleAnswerSelect = (answerId) => {
@@ -209,91 +226,141 @@ export default function Quiz({ params }: any) {
   };
 
   const answerOptions = ["A.", "B.", "C.", "D."];
+  const breadcrumbsHome = () => {
+    router.push("/");
+  };
+
+  const breadcrumbsMyCourses = () => {
+    router.push("/my-course");
+  };
+
+  const breadcrumbsDetailsCourse = () => {
+    router.push(`/my-course/${idCourse}`);
+  };
 
   return (
-    <div className="container mx-auto px-4">
-      <div className="p-4">
-        {questionsTest.length === 0 ? (
-          <div className="text-center text-2xl mt-8 items-center justify-center min-h-[60vh]">
-            <Empty description={false} />
-            This Course don&apos;t have any quiz questions available.
-            <div>
-              <button
-                className="bg-[#309255] text-white font-bold py-2 px-4 mt-4 rounded"
-                onClick={handleClickGotoCourse}
-              >
-                Back to Course
-              </button>
-            </div>
-          </div>
-        ) : (
-          questionsTest.map((item) => (
-            <div key={item.test.id} className="mb-4 mt-6">
-              <h3 className="text-xl font-semibold mb-2">{item.test.title}</h3>
-
-              {item.questions.map((q, index) => (
-                <div
-                  key={q.question.id}
-                  className="mb-2 mt-6 p-6 border-2 rounded-lg border-gray-200 shadow-lg"
-                >
-                  <p className="mb-1 font-medium text-[18px]">
-                    {index + 1}. {q.question.questionText}
-                  </p>
-                  <div className="pl-4 grid grid-cols-2 gap-4">
-                    {q.answers.map((answer, ansIndex) => (
-                      <button
-                        key={answer.id}
-                        className={`mt-3 border-2 p-2 text-left rounded-lg ${
-                          submitted
-                            ? selectedAnswers?.includes(answer.id)
-                              ? answer.isCorrect
-                                ? "border-green-500 bg-green-100"
-                                : "border-red-500 bg-red-100"
-                              : "border-gray-300"
-                            : selectedAnswers?.includes(answer.id)
-                            ? "border-blue-500 bg-blue-100"
-                            : "border-gray-100"
-                        }`}
-                        onClick={() => handleAnswerSelect(answer.id)}
-                      >
-                        <span className="mr-2">{answerOptions[ansIndex]}</span>
-                        {answer.answerText}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          ))
-        )}
-        {questionsTest.length > 0 && ( // Conditionally render submit button
-          <div className="flex justify-end">
-            {submitted ? (
-              <>
-                <button
-                  className="bg-[#309255] text-white font-bold py-2 px-4 mt-4 rounded mx-2 hover:bg-[#309256da]"
-                  onClick={handleDoAgain}
-                >
-                  Try it again
+    <>
+      <div className="bg-[#e7f8ee]">
+        <div
+          className="bg-no-repeat bg-auto flex flex-row justify-between"
+          style={{
+            backgroundImage: "url('/images/shape-23.png')",
+          }}
+        >
+          <div>
+            <Breadcrumb className="font-semibold text-3xl py-5 pl-28 -translate-y-3">
+              <Breadcrumb.Item>
+                <button onClick={breadcrumbsHome}>Home</button>
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                <button onClick={breadcrumbsMyCourses}>My Courses</button>
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                <button onClick={breadcrumbsDetailsCourse}>
+                  {oneCourse?.name}
                 </button>
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                <span>Test</span>
+              </Breadcrumb.Item>
+            </Breadcrumb>{" "}
+          </div>
+          <div
+            className="w-2/5 bg-auto bg-no-repeat bg-right-top flex-1"
+            style={{
+              backgroundImage: "url('/images/shape-24.png')",
+            }}
+          />
+        </div>
+      </div>
+      <div className="container mx-auto px-4">
+        <div className="p-4">
+          {questionsTest.length === 0 ? (
+            <div className="text-center text-2xl mt-8 items-center justify-center min-h-[60vh]">
+              <Empty description={false} />
+              This Course don&apos;t have any quiz questions available.
+              <div>
                 <button
-                  className="bg-[#309255] text-white font-bold py-2 px-4 mt-4 rounded mx-2 hover:bg-[#309256da]"
+                  className="bg-[#309255] text-white font-bold py-2 px-4 mt-4 rounded"
                   onClick={handleClickGotoCourse}
                 >
-                  Go to Course
+                  Back to Course
                 </button>
-              </>
-            ) : (
-              <button
-                className="bg-[#309255] text-white font-bold py-2 px-4 mt-4 rounded mx-2 hover:bg-[#309256da]"
-                onClick={handleSubmit}
-              >
-                Submit
-              </button>
-            )}
-          </div>
-        )}
+              </div>
+            </div>
+          ) : (
+            questionsTest.map((item) => (
+              <div key={item.test.id} className="mb-4 mt-6">
+                <h3 className="text-xl font-semibold mb-2">
+                  {item.test.title}
+                </h3>
+
+                {item.questions.map((q, index) => (
+                  <div
+                    key={q.question.id}
+                    className="mb-2 mt-6 p-6 border-2 rounded-lg border-gray-200 shadow-lg"
+                  >
+                    <p className="mb-1 font-medium text-[18px]">
+                      {index + 1}. {q.question.questionText}
+                    </p>
+                    <div className="pl-4 grid grid-cols-2 gap-4">
+                      {q.answers.map((answer, ansIndex) => (
+                        <button
+                          key={answer.id}
+                          className={`mt-3 border-2 p-2 text-left rounded-lg ${
+                            submitted
+                              ? selectedAnswers?.includes(answer.id)
+                                ? answer.isCorrect
+                                  ? "border-green-500 bg-green-100"
+                                  : "border-red-500 bg-red-100"
+                                : "border-gray-300"
+                              : selectedAnswers?.includes(answer.id)
+                              ? "border-blue-500 bg-blue-100"
+                              : "border-gray-100"
+                          }`}
+                          onClick={() => handleAnswerSelect(answer.id)}
+                        >
+                          <span className="mr-2">
+                            {answerOptions[ansIndex]}
+                          </span>
+                          {answer.answerText}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ))
+          )}
+          {questionsTest.length > 0 && ( // Conditionally render submit button
+            <div className="flex justify-end">
+              {submitted ? (
+                <>
+                  <button
+                    className="bg-[#309255] text-white font-bold py-2 px-4 mt-4 rounded mx-2 hover:bg-[#309256da]"
+                    onClick={handleDoAgain}
+                  >
+                    Try it again
+                  </button>
+                  <button
+                    className="bg-[#309255] text-white font-bold py-2 px-4 mt-4 rounded mx-2 hover:bg-[#309256da]"
+                    onClick={handleClickGotoCourse}
+                  >
+                    Go to Course
+                  </button>
+                </>
+              ) : (
+                <button
+                  className="bg-[#309255] text-white font-bold py-2 px-4 mt-4 rounded mx-2 hover:bg-[#309256da]"
+                  onClick={handleSubmit}
+                >
+                  Submit
+                </button>
+              )}
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
