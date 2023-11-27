@@ -144,11 +144,15 @@ const InstructorCourse = () => {
     setIsModal(true);
   };
 
+  const handleCreateCancel = () => {
+    setIsModal(false);
+  };
+
   const handleCancel = () => {
     setUpdateModal(false);
     setIsModal(false);
     setSelected(0);
-    // form.resetFields();
+    form.resetFields();
     setImage(undefined);
     setUpdateImage(course?.imageUrl);
   };
@@ -180,7 +184,7 @@ const InstructorCourse = () => {
           },
         });
         form.resetFields();
-        handleCancel();
+        handleCreateCancel();
         refetchList();
         setTimeout(() => {
           toast.success("Create Course successful");
@@ -246,7 +250,7 @@ const InstructorCourse = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [userData]);
 
   const handleChangeCate = (value: number) => {
     setSelected(value);
@@ -455,7 +459,7 @@ const InstructorCourse = () => {
                               <div
                                 className={`${InstructorCourseStyle.course_tracker_2}`}
                               >
-                                <p>Enrollments</p>
+                                <p>Enrollment</p>
                                 <span
                                   className={`${InstructorCourseStyle.course_tracker_count}`}
                                 >
@@ -502,14 +506,14 @@ const InstructorCourse = () => {
                                   >
                                     Update
                                   </Button>
-                                  <Button
+                                  {/* <Button
                                     danger
                                     type="primary"
                                     style={{ color: "black" }}
                                     onClick={() => handleClickOpen(item)}
                                   >
                                     Delete
-                                  </Button>
+                                  </Button> */}
                                 </span>
                               </div>
                               {/* <div>
@@ -538,7 +542,7 @@ const InstructorCourse = () => {
             // style={{ width: 800 }}
             width="40%"
             // onOk={handleOk}
-            onCancel={handleCancel}
+            onCancel={handleCreateCancel}
             footer={false}
           >
             <Form
@@ -640,10 +644,10 @@ const InstructorCourse = () => {
                     message: "Please Type Short Description",
                   },
                 ]}
-                label="Introduction"
+                label="Short Description"
                 name="shortDes"
               >
-                <Input />
+                <Input placeholder="Input Some Short Description" />
               </Form.Item>
               <Form.Item label="Description" name="description">
                 <Input.TextArea rows={4} />
@@ -653,7 +657,7 @@ const InstructorCourse = () => {
                   <Space>
                     <Button
                       className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
-                      onClick={handleCancel}
+                      onClick={handleCreateCancel}
                       style={{
                         // backgroundColor: "#4caf50",
                         // borderColor: "#4caf50",
@@ -695,6 +699,7 @@ const InstructorCourse = () => {
               form={form}
               labelCol={{ span: 6 }}
               wrapperCol={{ span: 18 }}
+              labelAlign={"left"}
               layout="horizontal"
               className="mt-5"
               style={{ width: "100%" }}
@@ -772,7 +777,7 @@ const InstructorCourse = () => {
                   defaultValue={course?.price}
                 />
               </Form.Item>
-              <Form.Item label="Intro" name="shortDes">
+              <Form.Item label="Short Description" name="shortDes">
                 <Input defaultValue={course?.shortDescription} />
               </Form.Item>
               <Form.Item label="Description" name="description">

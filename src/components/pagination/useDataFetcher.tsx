@@ -62,14 +62,18 @@ const useDataFetcher = (
     setTotalPages(1);
     const fetchData = async () => {
       const page = Math.min(currentPage + 1, totalPages);
-      const result = await axios.get(`${API_URL}${page}&pageSize=${pagesize}`);
+      const result = await axios.get(
+        `${API_URL}${page}&pageSize=${pagesize}&orderByLatestCreationDate=true&orderByEnrollmentCount=false`
+      );
       setCourses(result?.data.listCourse);
       setTotalPages(result?.data.paginationData?.totalPages);
       console.log("page", page);
       setLoading(false);
     };
     fetchData();
-  }, [reload]);
+  }, [reload, id]);
+
+  useEffect(() => {}, [id]);
 
   useEffect(() => {
     setCurrentPage(0);

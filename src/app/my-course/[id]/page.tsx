@@ -17,6 +17,7 @@ import {
   Rate,
   Select,
   Space,
+  Tooltip,
   Upload,
   message,
 } from "antd";
@@ -134,6 +135,7 @@ export default function AfterEnroll({ params }: any) {
   const handleCancel = () => {
     setIsModalOpen(false);
     setModalRatingOpen(false);
+    setValue(0);
     form.resetFields();
   };
 
@@ -297,6 +299,7 @@ export default function AfterEnroll({ params }: any) {
   //rating
   const [modalRating, setModalRatingOpen] = useState(false);
   const [value, setValue] = useState<number>(0);
+  console.log("value", value);
   const desc = ["terrible", "bad", "normal", "good", "wonderful"];
 
   const showModalRating = () => {
@@ -329,7 +332,7 @@ export default function AfterEnroll({ params }: any) {
           },
         }
       );
-      handleCancel();
+      setModalRatingOpen(false);
 
       setTimeout(() => {
         toast.success("Rating successful");
@@ -531,19 +534,32 @@ export default function AfterEnroll({ params }: any) {
                       : courses?.name}
                   </h2>
                   <div className=" flex gap-[10px]">
-                    <Button
-                      style={{ color: "black", background: "lightgreen" }}
-                      type="primary"
-                      onClick={showModalRating}
-                    >
-                      {/* <Image
+                    {value === 0 ? (
+                      <Button
+                        style={{ color: "black", background: "lightgreen" }}
+                        type="primary"
+                        onClick={showModalRating}
+                      >
+                        {/* <Image
                     width={40}
                     height={40}
                     src="/menu-icon/flag-icon.jpg"
                     alt="flag"
                   /> */}
-                      Rating
-                    </Button>
+                        Rating
+                      </Button>
+                    ) : (
+                      <Tooltip title="You have already rated this course !">
+                        <Button
+                          disabled
+                          style={{ color: "black", background: "lightgreen" }}
+                          type="primary"
+                          onClick={showModalRating}
+                        >
+                          Rating
+                        </Button>
+                      </Tooltip>
+                    )}
 
                     <Button danger type="primary" onClick={showModal}>
                       {/* <Image
@@ -555,6 +571,7 @@ export default function AfterEnroll({ params }: any) {
                       <BsFillFlagFill />
                     </Button>
                   </div>
+
                   <Modal
                     destroyOnClose={true}
                     title={`Rating ${courses?.name} by ${user?.displayName}`}

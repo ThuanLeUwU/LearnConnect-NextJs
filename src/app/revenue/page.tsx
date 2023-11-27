@@ -159,7 +159,7 @@ const Revenue = () => {
         title: {
           display: true,
           text: "Day",
-          position: "end", // Đơn vị cho trục x
+          position: "end",
         },
       },
       y: {
@@ -173,10 +173,12 @@ const Revenue = () => {
         title: {
           display: true,
           text: "VNĐ",
-          position: "start", // Đơn vị cho trục y
+          position: "start",
         },
       },
     },
+    responsive: true,
+    // maintainAspectRatio: f,
     plugins: {
       legend: {
         display: false, // Ẩn hiển thị chú giải
@@ -188,7 +190,7 @@ const Revenue = () => {
             const value = context.parsed.y || 0;
 
             // Format giá trị theo nhu cầu của bạn
-            return `${label}: ${value.toLocaleString()} VNĐ`;
+            return value.toLocaleString();
           },
         },
       },
@@ -351,13 +353,13 @@ const Revenue = () => {
                   </Breadcrumb.Item>
                 </Breadcrumb>
               </div>
-              <div className="mt-10 rounded-lg border-solid border-2 mx-10 p-20 shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)] ">
-                <div className="flex">
-                  <div className="text-2xl font-semibold mb-0 pt-4 leading-5">
+              <div className="mt-10 rounded-lg border-solid border-2 mx-10 p-5 shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)] flex flex-col gap-4 ">
+                <div className="flex gap-5">
+                  <div className="text-2xl font-semibold mb-0 leading-5">
                     Total Weekly Income
                   </div>
                 </div>
-                <div className="relative">
+                <div className="relative flex justify-center">
                   <Bar data={chartData} options={options}></Bar>
                 </div>
               </div>

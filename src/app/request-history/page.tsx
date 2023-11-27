@@ -8,6 +8,7 @@ import { http } from "@/api/http";
 import { UserAuth } from "../context/AuthContext";
 import { useRouter } from "next/navigation";
 import {
+  Breadcrumb,
   Button,
   Empty,
   Form,
@@ -383,7 +384,7 @@ const Reviews = () => {
           <div className={`${InstructorCourseStyle.body_wrapper}`}>
             <Modal
               destroyOnClose={true}
-              title={`Register for a new specialization`}
+              title={`Register A New Specialization Form`}
               open={isModalOpen}
               onCancel={handleCancel}
               footer={false}
@@ -492,15 +493,29 @@ const Reviews = () => {
               </Form>
             </Modal>
             <div className="w-full">
-              <div className="flex justify-start">
-                <p className="text-start font-semibold text-5xl pl-5 py-5">
-                  Request History
-                </p>
+              <div
+                className={`${InstructorCourseStyle.course_tab} bg-[#e7f8ee]`}
+              >
+                <Breadcrumb>
+                  <Breadcrumb.Item>
+                    <div className="text-start font-semibold text-4xl my-5 px-4">
+                      Request Histories
+                    </div>
+                  </Breadcrumb.Item>
+                </Breadcrumb>
+                <div className="flex justify-center items-center ">
+                  <button
+                    className=" my-3 px-5 py-3 bg-[#eefbf3] border-[#309255] border rounded-lg text-black flex justify-center  hover:bg-[#309255] hover:border-[#309255] hover:text-[#e5ecff] focus:outline-none transition-all duration-300"
+                    onClick={showModal}
+                  >
+                    Register New Specialization
+                  </button>
+                </div>
               </div>
-              <div className="flex justify-center bg-[#e7f8ee] py-4 rounded-md">
+              <div className="flex justify-center py-4 rounded-md ">
                 <ul className="tabs flex space-x-20">
                   <li
-                    className={`cursor-pointer rounded-md ${
+                    className={`cursor-pointer rounded-md shadow-[5px_5px_20px_10px_rgba(0,0,0,0.15)] ${
                       activeTab === "tab1"
                         ? "bg-[#309255] text-white"
                         : "bg-white"
@@ -512,7 +527,7 @@ const Reviews = () => {
                     </button>
                   </li>
                   <li
-                    className={`cursor-pointer rounded-md ${
+                    className={`cursor-pointer rounded-md shadow-[5px_5px_20px_10px_rgba(0,0,0,0.15)] ${
                       activeTab === "tab2"
                         ? "bg-[#309255] text-white"
                         : "bg-white"
@@ -524,7 +539,7 @@ const Reviews = () => {
                     </button>
                   </li>
                   <li
-                    className={`cursor-pointer rounded-md ${
+                    className={`cursor-pointer rounded-md shadow-[5px_5px_20px_10px_rgba(0,0,0,0.15)] ${
                       activeTab === "tab3"
                         ? "bg-[#309255] text-white"
                         : "bg-white"
@@ -538,14 +553,6 @@ const Reviews = () => {
                 </ul>
               </div>
 
-              <div className="flex justify-end mt-4">
-                <button
-                  className="mx-5 my-3 px-5 py-3 bg-[#309255] rounded-lg text-white flex justify-end"
-                  onClick={showModal}
-                >
-                  Register new specialization
-                </button>
-              </div>
               {isLoading ? (
                 <div className="text-center text-5xl mt-5">
                   <Spin size="large" />
