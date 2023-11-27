@@ -39,7 +39,7 @@ import {
 } from "@mui/material";
 import { toast } from "sonner";
 import { Course } from "@/components/courses/courses";
-import { Test } from "@/app/test/[id]/page";
+import { Test } from "@/app/my-course/test/[id]/page";
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 // import { Rating } from "@/app/course-detail/[id]/page";

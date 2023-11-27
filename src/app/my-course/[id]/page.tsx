@@ -291,7 +291,7 @@ export default function AfterEnroll({ params }: any) {
   }, []);
 
   const handleClick = () => {
-    router.push(`/test/${courses?.id}`);
+    router.push(`test/${courses?.id}`);
   };
 
   //rating

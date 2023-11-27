@@ -6,6 +6,7 @@ import Paginate from "@/components/pagination/pagination";
 import { useRouter } from "next/navigation";
 import { Breadcrumb, Spin } from "antd";
 import { UserAuth } from "../context/AuthContext";
+import Rating from "@mui/material/Rating";
 
 export default function ListMentor() {
   const router = useRouter();
@@ -33,8 +34,6 @@ export default function ListMentor() {
     console.log("id mentor:", IdMentor);
     router.push(`/profile-mentor/${IdMentor}`);
   };
-  console.log("mentor123:", mentor);
-
   const breadcrumbsHome = () => {
     router.push("/");
   };
@@ -87,8 +86,8 @@ export default function ListMentor() {
                             handleSwiperWrapperClick(mentorItem.mentorInfo.id)
                           }
                         >
-                          <div className="single-review border border-opacity-20 border-[#30925533] p-7 rounded-md flex flex-col items-start">
-                            <div className="review-author flex items-center ">
+                          <div className="single-review border border-opacity-20 border-[#30925533] p-7 rounded-md flex flex-col items-start w-full">
+                            <div className="review-author flex flex-rows items-center w-full">
                               <div className="author-thumb border border-[#309255] rounded-full">
                                 <img
                                   src={mentorItem.userInfo.profilePictureUrl}
@@ -96,16 +95,25 @@ export default function ListMentor() {
                                   className="w-24 h-24 rounded-full"
                                 />
                               </div>
-                              <div className="author-content pl-4">
-                                <h4 className="text-2xl font-medium">
-                                  {mentorItem.userInfo.fullName}
-                                </h4>
-                                <span className="text-sm text-[#309255] mt-1.5 font-normal">
-                                  {mentorItem.userInfo.email}
-                                </span>
-                                <span className="rating-star">
-                                  <span className="rating-bar"></span>
-                                </span>
+                              <div className="author-content w-full pl-4 flex justify-between">
+                                <div className="text-start">
+                                  <h4 className="text-2xl font-medium">
+                                    {mentorItem.userInfo.fullName}
+                                  </h4>
+                                  <span className="text-sm text-[#309255] mt-1.5 font-normal">
+                                    {mentorItem.userInfo.email}
+                                  </span>
+                                </div>
+                                <div className="ml-auto">
+                                  <Rating
+                                    size="large"
+                                    name="half-rating-read"
+                                    max={5}
+                                    precision={0.1}
+                                    readOnly
+                                    value={mentorItem.mentorInfo.averageRating}
+                                  />
+                                </div>
                               </div>
                             </div>
                             <p className="mt-3 font-normal text-[#52565b] text-sm text-start">

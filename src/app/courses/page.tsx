@@ -13,7 +13,6 @@ import { Category } from "../instructorcourses/page";
 import { useRouter } from "next/navigation";
 import { UserAuth } from "../context/AuthContext";
 import { RedoOutlined } from "@ant-design/icons";
-// import { CourseItem } from "@/components/pagination/useDataFavoritesFetcher";
 export type Filter = {
   minPrice: number;
   maxPrice: number;
@@ -49,7 +48,7 @@ export default function ListCourse() {
   const [specialized, setSpecialized] = useState<Category[]>([]);
   const [filterBySpecialized, setFilterBySpecialized] = useState<any>("");
   const [priceOption, setPriceOption] = useState("");
-  // console.log("spe", specialized[0].id);
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   const [refresh, setRefresh] = useState(false);
   const {
@@ -58,19 +57,18 @@ export default function ListCourse() {
     totalPages,
     currentPage,
     setCurrentPage,
-    // onPriceChange,
-    // removeFilter,
     setReload,
-    setSearchQuery,
-  } = useDataFetcher(minPrice, maxPrice, filterBySpecialized, refresh, rate);
-  // useDataFetcher();
+  } = useDataFetcher(
+    minPrice,
+    maxPrice,
+    filterBySpecialized,
+    refresh,
+    rate,
+    searchQuery
+  );
 
-  // const {filtercourses} = useFilterCourses();
-
-  // const [courses, setCourse] =useState();
   const [selected, setSelected] = useState(false);
   const [courseFilter, setCourseFilter] = useState<CourseItem[]>([]);
-  // console.log("FilterPrice", price);
   useEffect(() => {
     try {
       http
@@ -85,7 +83,6 @@ export default function ListCourse() {
 
   const { Option } = Select;
   const handleFilterMinPrice = (selectedPrice: any) => {
-    // setMinPrice(selectedPrice);
     setSelected(true);
     if (selectedPrice === 1) {
       setMinPrice("");
@@ -134,7 +131,6 @@ export default function ListCourse() {
     { rate: "⭐⭐⭐⭐⭐", value: 5 },
   ];
 
-  // const selectMinPriceRef = useRef<Select>(null);
   const removeFilterClick = () => {
     setFilterBySpecialized("");
     setMinPrice("");
@@ -142,32 +138,21 @@ export default function ListCourse() {
     setReload(true);
     setPriceOption("");
     setMaxPrice("");
-    // if (selectMinPriceRef.current) {
-    //   selectMinPriceRef.current.state.value = null;
-    // }
-
-    // removeFilter();
-    // setCurrentPage(1);
-    // window.location.reload();
-    // router.push("/courses");
+    setSearchQuery("");
   };
 
   const resetPrice = () => {
     setMinPrice("");
-    // setReload(true);
   };
 
   const resetSpe = () => {
     setFilterBySpecialized("");
-    // setReload(true);
   };
 
   const resetRate = () => {
     setRate("");
-    // setReload(true);
   };
 
-  // const maxPrice = [{}];
   const breadcrumbsHome = () => {
     router.push("/");
   };
@@ -199,10 +184,10 @@ export default function ListCourse() {
           />
         </div>
       </div>
-      <div className="container ">
-        <div className=" mx-20">
+      <div className="container">
+        <div className="">
           <Search
-            searchQueryData={""}
+            searchQueryData={searchQuery}
             setData={(data) => {
               setSearchQuery(data);
             }}
@@ -218,18 +203,11 @@ export default function ListCourse() {
                 // ref={selectMinPriceRef}
               >
                 {minPriceOption.map((option, index) => (
-                  // <div key={index}>hahaha {option.date}</div>
                   <Option key={option.value} value={option.value}>
                     {option.price}
                   </Option>
                 ))}
               </Select>
-              {/* <button
-            onClick={resetPrice}
-            className="border-2 rounded-lg px-2 bg-[#fff] text-[#000]"
-          >
-            <RedoOutlined />
-          </button> */}
               <span>Specialize: </span>
               <Select
                 defaultValue=""
@@ -238,18 +216,11 @@ export default function ListCourse() {
                 value={filterBySpecialized === -1 ? <></> : filterBySpecialized}
               >
                 {specialized.map((option, index) => (
-                  // <div key={index}>hahaha {option.date}</div>
                   <Option key={option.id} value={option.id}>
                     {option.name}
                   </Option>
                 ))}
               </Select>
-              {/* <button
-            onClick={resetSpe}
-            className="border-2 rounded-lg px-2 bg-[#fff] text-[#000]"
-          >
-            <RedoOutlined />
-          </button> */}
               <span>Rating: </span>
               <Select
                 defaultValue=""
@@ -258,20 +229,11 @@ export default function ListCourse() {
                 value={rate === null ? <></> : rate}
               >
                 {minRateOption.map((option, index) => (
-                  // <div key={index}>hahaha {option.date}</div>
                   <Option key={option.value} value={option.value}>
                     {option.rate}
                   </Option>
                 ))}
               </Select>
-              {/* <button
-            onClick={resetRate}
-            className="border-2 rounded-lg px-2 bg-[#fff] text-[#000]"
-          >
-            <RedoOutlined />
-          </button> */}
-
-              {/* <Rate onChange={handleRateChange} value={rate} /> */}
               <button
                 onClick={removeFilterClick}
                 className="border-2 rounded-lg px-2 bg-[#fff] text-[#000]"
@@ -285,7 +247,7 @@ export default function ListCourse() {
               <Spin size="large" />
             </div>
           ) : (
-            <div className="min-h-[60vh]">
+            <div className="min-h-[1000px]">
               {courses?.length === 0 ? (
                 <div className="text-center text-2xl mt-8 items-center justify-center">
                   <Empty description={false} />

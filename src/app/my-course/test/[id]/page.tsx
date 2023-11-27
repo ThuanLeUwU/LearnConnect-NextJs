@@ -1,15 +1,16 @@
 "use client";
 import { useEffect, useState } from "react";
-import "../../globals.css";
+import "../../../globals.css";
 import axios from "axios";
 import { UserAuth } from "@/app/context/AuthContext";
-import { Breadcrumb, Empty, Modal } from "antd";
+import { Empty, Modal } from "antd";
 import { useRouter } from "next/navigation";
 import { http } from "@/api/http";
 import { toast } from "sonner";
 import { resetWarned } from "antd/es/_util/warning";
 import { Chart as ChartJs, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
+import { Breadcrumb, Spin } from "antd";
 import { Course } from "@/components/courses/courses";
 
 ChartJs.register(ArcElement, Tooltip, Legend);
@@ -97,22 +98,6 @@ export default function Quiz({ params }: any) {
       }
     };
     fetchQuestions();
-  }, []);
-
-  const [oneCourse, setOneCourse] = useState<Course>();
-
-  useEffect(() => {
-    try {
-      http
-        .get(
-          `https://learnconnectapitest.azurewebsites.net/api/course/${idCourse}`
-        )
-        .then((res) => {
-          setOneCourse(res.data);
-        });
-    } catch (err) {
-      console.error(err);
-    }
   }, []);
 
   const handleAnswerSelect = (answerId) => {
@@ -226,6 +211,7 @@ export default function Quiz({ params }: any) {
   };
 
   const answerOptions = ["A.", "B.", "C.", "D."];
+
   const breadcrumbsHome = () => {
     router.push("/");
   };
@@ -238,6 +224,21 @@ export default function Quiz({ params }: any) {
     router.push(`/my-course/${idCourse}`);
   };
 
+  const [oneCourse, setOneCourse] = useState<Course>();
+
+  useEffect(() => {
+    try {
+      http
+        .get(
+          `https://learnconnectapitest.azurewebsites.net/api/course/${idCourse}`
+        )
+        .then((res) => {
+          setOneCourse(res.data);
+        });
+    } catch (err) {
+      console.error(err);
+    }
+  }, []);
   return (
     <>
       <div className="bg-[#e7f8ee]">

@@ -37,6 +37,9 @@ const Header = () => {
 
   const [isLogin, setIsLogin] = useState(false);
   const router = useRouter();
+
+  // const currentRoute = router.asPath;
+  // console.log("Current Route:", currentRoute);
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
     setNotification(false);
@@ -48,6 +51,14 @@ const Header = () => {
   const closeDropdownNotification = () => {
     setNotification(false);
   };
+  const [activeTab, setActiveTab] = useState("");
+
+  useEffect(() => {
+    const currentRoute = window.location.href;
+    var contentUrl = currentRoute.split("/").reverse()[0];
+    setActiveTab(contentUrl);
+    console.log("currentRoute", contentUrl);
+  }, []);
 
   const { role, user, googleSignIn, logOut } = UserAuth();
 
@@ -126,6 +137,8 @@ const Header = () => {
   };
 
   useEffect(() => {
+    const currentRoute = window.location.href;
+    console.log("currentRoute", currentRoute);
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
@@ -147,8 +160,6 @@ const Header = () => {
       handleTabChange("");
     }
   };
-
-  const [activeTab, setActiveTab] = useState("");
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);

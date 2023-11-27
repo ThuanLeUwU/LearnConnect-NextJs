@@ -13,7 +13,7 @@ const Search: React.FC<SearchProps> = ({
   searchQueryData,
   setData,
 }: SearchProps) => {
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(searchQueryData);
 
   const router = useRouter();
 
@@ -33,6 +33,9 @@ const Search: React.FC<SearchProps> = ({
       handleClickSearch();
     }
   };
+  useEffect(() => {
+    setSearchQuery(searchQueryData);
+  }, [searchQueryData]);
 
   return (
     <>
