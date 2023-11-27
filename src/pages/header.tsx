@@ -528,9 +528,7 @@ const Header = () => {
                         "border-b-4 border-[#309255]"
                       }`}
                     >
-                      <button text-lg onClick={() => handleTabChange("")}>
-                        Home
-                      </button>
+                      <button onClick={() => handleTabChange("")}>Home</button>
                     </li>
                     <li
                       className={`${

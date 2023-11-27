@@ -75,7 +75,7 @@ const SearchCourse = () => {
   }, [searchQuery, currentPage]);
   return (
     <div className="container">
-      <Search searchQueryData={searchQuery} />
+      {/* <Search searchQueryData={searchQuery} /> */}
       {loading ? (
         <div className="text-center text-2xl mt-5 min-h-[60vh]">
           <Empty description={false} className="text-6xl" />
@@ -86,6 +86,7 @@ const SearchCourse = () => {
           <div className="grid cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 py-[30px] gap-5">
             {courses.map((item) => (
               <Courses
+                setIsFavorites={() => {}}
                 favorite={item.isFavorite}
                 enrolled={false}
                 totalRatingCount={0}

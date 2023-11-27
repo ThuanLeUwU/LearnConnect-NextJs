@@ -71,6 +71,7 @@ const Courses = ({
   totalRatingCount,
   enrolled,
   favorite,
+  setIsFavorites,
 }: {
   imageUrl: string;
   name: string;
@@ -87,6 +88,7 @@ const Courses = ({
   totalRatingCount: number;
   enrolled: boolean;
   favorite: boolean;
+  setIsFavorites: (isFavorites: boolean) => void;
 }) => {
   const router = useRouter();
   const [isLiked, setIsLiked] = useState(favorite);
@@ -121,6 +123,7 @@ const Courses = ({
   // }, [courses, id]);
 
   const handleLike = () => {
+    setIsFavorites(true);
     if (!jwtToken) {
       toast.error("You Must Login To add Favorites");
       router.push("/login");
@@ -136,9 +139,9 @@ const Courses = ({
           setTimeout(() => {
             toast.success("Removed successful");
           });
-          // console.log("Delete request success: ", response.data);
         })
         .catch((error) => {
+          // toast.error(error.response.data);
           console.error("Error making DELETE request: ", error);
         });
     } else {
@@ -158,6 +161,7 @@ const Courses = ({
           // console.log("Post request success: ", response.data);
         })
         .catch((error) => {
+          // toast.error(error.response.data);
           console.error("Error making POST request: ", error);
         });
     }

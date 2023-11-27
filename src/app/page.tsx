@@ -101,6 +101,7 @@ export default function Home() {
                 return (
                   <div key={index}>
                     <Courses
+                      setIsFavorites={() => {}}
                       favorite={item.isFavorite}
                       enrolled={false}
                       totalRatingCount={0}

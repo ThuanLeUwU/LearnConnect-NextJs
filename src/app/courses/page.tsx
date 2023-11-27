@@ -13,7 +13,6 @@ import { Category } from "../instructorcourses/page";
 import { useRouter } from "next/navigation";
 import { UserAuth } from "../context/AuthContext";
 import { RedoOutlined } from "@ant-design/icons";
-import BreadcrumbNavigation from "@/components/breadcrumb/breadcrumbsnavigate";
 // import { CourseItem } from "@/components/pagination/useDataFavoritesFetcher";
 export type Filter = {
   minPrice: number;
@@ -43,14 +42,13 @@ export default function ListCourse() {
   });
 
   const [selectedFilter, setSelectedFilter] = useState<number[]>([]);
-  const [minPrice, setMinPrice] = useState<any>(null);
-  const [maxPrice, setMaxPrice] = useState<any>();
-  const [rate, setRate] = useState<any>(null);
+  const [minPrice, setMinPrice] = useState<any>("");
+  const [maxPrice, setMaxPrice] = useState<any>("");
+  const [rate, setRate] = useState<any>("");
   console.log("rate", rate);
   const [specialized, setSpecialized] = useState<Category[]>([]);
-  const [filterBySpecialized, setFilterBySpecialized] = useState<any>(null);
-  const [filterByRating, setFilterByRating] = useState<any>(null);
-
+  const [filterBySpecialized, setFilterBySpecialized] = useState<any>("");
+  const [priceOption, setPriceOption] = useState("");
   // console.log("spe", specialized[0].id);
 
   const [refresh, setRefresh] = useState(false);
@@ -61,8 +59,9 @@ export default function ListCourse() {
     currentPage,
     setCurrentPage,
     // onPriceChange,
-    removeFilter,
+    // removeFilter,
     setReload,
+    setSearchQuery,
   } = useDataFetcher(minPrice, maxPrice, filterBySpecialized, refresh, rate);
   // useDataFetcher();
 
@@ -86,8 +85,25 @@ export default function ListCourse() {
 
   const { Option } = Select;
   const handleFilterMinPrice = (selectedPrice: any) => {
-    setMinPrice(selectedPrice);
+    // setMinPrice(selectedPrice);
     setSelected(true);
+    if (selectedPrice === 1) {
+      setMinPrice("");
+      setMaxPrice(0);
+      setPriceOption("Free");
+    } else if (selectedPrice === 2) {
+      setPriceOption("1 - 200,000 VNĐ");
+      setMaxPrice(200000);
+      setMinPrice(1);
+    } else if (selectedPrice === 3) {
+      setPriceOption("200,001 - 1,000,000 VNĐ");
+      setMaxPrice(1000000);
+      setMinPrice(200001);
+    } else {
+      setPriceOption("Above 1,000,000 VNĐ");
+      setMinPrice(1000000);
+      setMaxPrice("");
+    }
   };
   const handleFilterSpecialized = (selected: any) => {
     setFilterBySpecialized(selected);
@@ -103,11 +119,11 @@ export default function ListCourse() {
   const minPriceOption = [
     {
       price: "Free",
-      value: 0,
+      value: 1,
     },
-    { price: "Under 200,000 VNĐ", value: 1 },
-    { price: "200000 - 1,000,000 VNĐ", value: 200001 },
-    { price: "Above 1,000,000 VNĐ", value: 1000001 },
+    { price: "1 - 200,000 VNĐ", value: 2 },
+    { price: "200,001 - 1,000,000 VNĐ", value: 3 },
+    { price: "Above 1,000,000 VNĐ", value: 4 },
   ];
 
   const minRateOption = [
@@ -124,6 +140,8 @@ export default function ListCourse() {
     setMinPrice("");
     setRate("");
     setReload(true);
+    setPriceOption("");
+    setMaxPrice("");
     // if (selectMinPriceRef.current) {
     //   selectMinPriceRef.current.state.value = null;
     // }
@@ -150,10 +168,6 @@ export default function ListCourse() {
   };
 
   // const maxPrice = [{}];
-  const breadcrumbNavigation = () => {
-    router.push("/courses");
-  };
-
   const breadcrumbsHome = () => {
     router.push("/");
   };
@@ -180,6 +194,7 @@ export default function ListCourse() {
               <Breadcrumb.Item>
                 <button onClick={breadcrumbsHome}>Home</button>
               </Breadcrumb.Item>
+
               <Breadcrumb.Item>
                 <span>Courses</span>
               </Breadcrumb.Item>
@@ -193,10 +208,14 @@ export default function ListCourse() {
           />
         </div>
       </div>
-      <div className="container ">
-        {/* <BreadcrumbNavigation /> */}
-        <div className="">
-          <Search searchQueryData={""} />
+      <div className="w-full ">
+        <div className=" mx-20">
+          <Search
+            searchQueryData={""}
+            setData={(data) => {
+              setSearchQuery(data);
+            }}
+          />
           <div className="bg-[#e5f4eb] rounded-[10px] pl-10 pr-2 mt-5 shadow-lg">
             <div className="flex justify-between p-5 items-center text-center ">
               <span>Price: </span>
@@ -204,7 +223,7 @@ export default function ListCourse() {
                 defaultValue=""
                 onChange={handleFilterMinPrice}
                 style={{ width: 200 }}
-                value={minPrice === null ? <></> : minPrice}
+                value={priceOption}
                 // ref={selectMinPriceRef}
               >
                 {minPriceOption.map((option, index) => (
@@ -276,7 +295,7 @@ export default function ListCourse() {
             </div>
           ) : (
             <div className="min-h-[60vh]">
-              {courses.length === 0 ? (
+              {courses?.length === 0 ? (
                 <div className="text-center text-2xl mt-8 items-center justify-center">
                   <Empty description={false} />
                   No course with your filter!!!
@@ -284,9 +303,10 @@ export default function ListCourse() {
               ) : (
                 <>
                   <div className="grid cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 py-[30px] gap-5">
-                    {courses.map((item) => {
+                    {courses?.map((item) => {
                       return (
                         <Courses
+                          setIsFavorites={() => {}}
                           enrolled={false}
                           totalRatingCount={0}
                           favorite={item.isFavorite}
@@ -304,7 +324,7 @@ export default function ListCourse() {
               )}
             </div>
           )}
-          {courses.length > 0 && (
+          {courses?.length > 0 && (
             <Paginate
               totalPages={totalPages}
               currentPage={currentPage}
