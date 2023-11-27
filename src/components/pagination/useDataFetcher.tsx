@@ -48,7 +48,7 @@ const useDataFetcher = (
   let API_URL = `https://learnconnectapitest.azurewebsites.net/api/course/courses-with-favorite-and-filter?userId=${id}&currentPage=`;
 
   if (!id) {
-    API_URL = `https://learnconnectapitest.azurewebsites.net/api/course/get-courses-paging-with-filter?currentPage=1&pageSize=6&specializationId=1&priceMin=1&priceMax=9999&minAverageRating=1&orderByLatestCreationDate=false&orderByEnrollmentCount=false&searchQuery=alo`;
+    API_URL = `https://learnconnectapitest.azurewebsites.net/api/course/get-courses-paging-with-filter?currentPage=`;
   }
 
   // "https://learnconnectapitest.azurewebsites.net/api/course/get-courses-paging?";
@@ -77,7 +77,7 @@ const useDataFetcher = (
       const page = Math.min(currentPage + 1, totalPages);
       const result = await axios.get(`${API_URL}${page}&pageSize=${pagesize}`);
       setCourses(result?.data.listCourse);
-      setTotalPages(result?.data.paginationData.totalPages);
+      setTotalPages(result?.data.paginationData?.totalPages);
       // console.log("result", result);
       console.log("page", page);
       // console.log("toalpage", totalPages);

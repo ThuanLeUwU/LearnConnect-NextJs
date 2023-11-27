@@ -141,6 +141,7 @@ export default function ListCourse() {
     setRate("");
     setReload(true);
     setPriceOption("");
+    setMaxPrice("");
     // if (selectMinPriceRef.current) {
     //   selectMinPriceRef.current.state.value = null;
     // }
