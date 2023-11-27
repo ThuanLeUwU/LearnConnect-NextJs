@@ -94,8 +94,8 @@ export default function ListMentor() {
                             handleSwiperWrapperClick(mentorItem.mentorInfo.id)
                           }
                         >
-                          <div className="single-review border border-opacity-20 border-[#30925533] p-7 rounded-md flex flex-col items-start">
-                            <div className="review-author flex flex-rows justify-between items-center ">
+                          <div className="single-review border border-opacity-20 border-[#30925533] p-7 rounded-md flex flex-col items-start w-full">
+                            <div className="review-author flex flex-rows items-center w-full">
                               <div className="author-thumb border border-[#309255] rounded-full">
                                 <img
                                   src={mentorItem.userInfo.profilePictureUrl}
@@ -103,7 +103,7 @@ export default function ListMentor() {
                                   className="w-24 h-24 rounded-full"
                                 />
                               </div>
-                              <div className="author-content pl-4 flex flex-row justify-between">
+                              <div className="author-content w-full pl-4 flex justify-between">
                                 <div className="text-start">
                                   <h4 className="text-2xl font-medium">
                                     {mentorItem.userInfo.fullName}
