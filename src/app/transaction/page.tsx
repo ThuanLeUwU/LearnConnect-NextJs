@@ -4,10 +4,10 @@ import ".././globals.css";
 import useDataPaymentFetcher from "@/components/pagination/useDataPaymentFetcher";
 import Paginate from "@/components/pagination/pagination";
 import axios from "axios";
-import { UserAuth } from "../context/AuthContext";
 import { Spin } from "antd";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { UserAuth } from "../context/AuthContext";
 
 const Transaction = () => {
   const router = useRouter();

@@ -9,7 +9,7 @@ import useDataFetcher from "@/components/pagination/useDataFetcher";
 import Paginate from "@/components/pagination/pagination";
 import useDataHomeFetcher from "@/components/pagination/useDataHomeFetcher";
 import Search from "@/components/search/search";
-import { Spin } from "antd";
+import { Breadcrumb, Spin } from "antd";
 import { UserAuth } from "./context/AuthContext";
 import { useRouter } from "next/navigation";
 import "./globals.css";
@@ -38,7 +38,7 @@ export default function Home() {
   });
 
   const handleRouter = () => {
-    router.push("/courses");
+    router.push("/login");
   };
 
   const { loading, courses, totalPages, currentPage, setCurrentPage } =
@@ -46,6 +46,43 @@ export default function Home() {
   console.log("user token", jwtToken);
   return (
     <>
+      <div className="bg-[#e7f8ee]">
+        <div
+          className="bg-no-repeat flex flex-row justify-between"
+          style={{
+            backgroundImage: "url('/images/shape-23.png')",
+            backgroundPosition: "bottom left",
+          }}
+        >
+          <div className="px-20">
+            <div className="-translate-y-10">
+              <img
+                className="animation-round "
+                src="/images/shape-8.png"
+                alt="Shape"
+              ></img>
+            </div>
+            <h4 className="text-[#309255] font-medium text-lg mb-5">
+              Start your favourite course
+            </h4>
+            <h2 className="leading-tight text-5xl font-medium pr-10">
+              Now learning from anywhere, and build your{" "}
+              <span>bright career.</span>
+            </h2>
+            <p className="mt-12 text-lg font-normal pr-28">
+              It has survived not only five centuries but also the leap into
+              electronic typesetting.
+            </p>
+            <button
+              className="mt-7 text-white text-2xl border-2 py-4 px-6 rounded-xl bg-[#309255]"
+              onClick={handleRouter}
+            >
+              Start A Course
+            </button>
+          </div>
+          <img className="w-3/6" src="/images/slider-1.png" alt="Shape" />
+        </div>
+      </div>
       <div className="container">
         {/* <Search /> */}
         {loading ? (

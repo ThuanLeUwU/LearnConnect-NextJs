@@ -97,31 +97,6 @@ const Courses = ({
   const handleClick = () => {
     router.push(`/course-detail/${id}`);
   };
-  // useEffect(() => {
-  //   console.log("JWT Token Home:", jwtToken);
-  //   axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
-  //   if (userData) {
-  //     const fetchFavoriteCourses = async () => {
-  //       try {
-  //         const response = await http.get(
-  //           `https://learnconnectapitest.azurewebsites.net/api/favorite-course/get-favorite-courses-by-user?userId=${userData?.id}`
-  //         );
-  //         setCourses(response.data);
-  //       } catch (error) {
-  //         console.error("Error fetching favorite courses: ", error);
-  //       }
-  //     };
-  //     fetchFavoriteCourses();
-  //   }
-  // }, [router]);
-
-  // useEffect(() => {
-  //   const isCourseLiked = courses.some(
-  //     (course) => course.favorite.favoriteCourseId === id
-  //   );
-  //   setIsLiked(isCourseLiked);
-  // }, [courses, id]);
-
   const handleLike = () => {
     setIsFavorites(true);
     if (!jwtToken) {

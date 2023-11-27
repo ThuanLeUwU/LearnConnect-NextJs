@@ -37,6 +37,9 @@ const Header = () => {
 
   const [isLogin, setIsLogin] = useState(false);
   const router = useRouter();
+
+  // const currentRoute = router.asPath;
+  // console.log("Current Route:", currentRoute);
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
     setNotification(false);
@@ -48,6 +51,14 @@ const Header = () => {
   const closeDropdownNotification = () => {
     setNotification(false);
   };
+  const [activeTab, setActiveTab] = useState("");
+
+  useEffect(() => {
+    const currentRoute = window.location.href;
+    var contentUrl = currentRoute.split("/").reverse()[0];
+    setActiveTab(contentUrl);
+    console.log("currentRoute", contentUrl);
+  }, []);
 
   const { role, user, googleSignIn, logOut } = UserAuth();
 
@@ -126,6 +137,8 @@ const Header = () => {
   };
 
   useEffect(() => {
+    const currentRoute = window.location.href;
+    console.log("currentRoute", currentRoute);
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
@@ -147,8 +160,6 @@ const Header = () => {
       handleTabChange("");
     }
   };
-
-  const [activeTab, setActiveTab] = useState("");
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
@@ -500,182 +511,180 @@ const Header = () => {
         </div>
       )}
       <div className="header-main ">
-        <div className="container">
-          {!userData ? (
-            <div className={`${headerStyles.header_main_wrapper}`}>
-              <div className={`${headerStyles.header_logo}`}>
-                <button onClick={() => handleTabChange("")}>
-                  <Image
-                    width={120}
-                    height={100}
-                    src="/images/LogoRemoveBG.png"
-                    alt="logo"
-                  />
-                </button>
-              </div>
-              <div className={`${headerStyles.header_menu}`}>
-                <ul className={`${headerStyles.nav_menu} `}>
-                  <li
-                    className={`${
-                      activeTab === "" &&
-                      !isLogin &&
-                      "border-b-4 border-[#309255]"
-                    }`}
+        {/* <div className="container "> */}
+        {!userData ? (
+          <div className="page-banner">
+            <div className="container ">
+              <div
+                className={`${headerStyles.header_main_wrapper} mx-10 shadow-lg`}
+              >
+                <div className={`${headerStyles.header_logo}`}>
+                  <button onClick={() => handleTabChange("")}>
+                    <Image
+                      width={120}
+                      height={100}
+                      src="/images/LogoRemoveBG.png"
+                      alt="logo"
+                    />
+                  </button>
+                </div>
+                <div className={`${headerStyles.header_menu}`}>
+                  <ul
+                    className={`${headerStyles.nav_menu} text-base font-medium `}
                   >
-                    <button onClick={() => handleTabChange("")}>Home</button>
-                  </li>
-                  <li
-                    className={`${
-                      activeTab === "courses" && "border-b-4 border-[#309255]"
-                    }`}
-                  >
-                    <button onClick={() => handleTabChange("courses")}>
-                      Courses
-                    </button>
-                  </li>
-                  {/* <li
-                    className={`${
-                      activeTab === "my-course" && "border-b-4 border-[#309255]"
-                    }`}
-                  >
-                    <button onClick={() => handleTabChange("my-course")}>
-                      My Courses{" "}
-                    </button>
-                  </li>
-                  <li
-                    className={`${
-                      activeTab === "favorites" && "border-b-4 border-[#309255]"
-                    }`}
-                  >
-                    <button onClick={() => handleTabChange("favorites")}>
-                      My Favorites
-                    </button>
-                  </li> */}
-                  <li
-                    className={`${
-                      activeTab === "list-mentor" &&
-                      "border-b-4 border-[#309255]"
-                    }`}
-                  >
-                    <button onClick={() => handleTabChange("list-mentor")}>
-                      Mentors
-                    </button>
-                  </li>
-                </ul>
-              </div>
-              <div className={`${headerStyles.header_sign_in_up}`}>
-                <ul>
-                  <li>
-                    <button
-                      onClick={() => {
-                        setActiveTab("");
-                        setIsLogin(true);
-                        router.push("/login");
-                      }}
-                      className={`${headerStyles.sign_up}`}
+                    <li
+                      className={`${
+                        activeTab === "" &&
+                        !isLogin &&
+                        "border-b-4 border-[#309255]"
+                      }`}
                     >
-                      Sign In
-                    </button>
-                  </li>
-                  <li>
-                    {/* <Link
+                      <button onClick={() => handleTabChange("")}>Home</button>
+                    </li>
+                    <li
+                      className={`${
+                        activeTab === "courses" && "border-b-4 border-[#309255]"
+                      }`}
+                    >
+                      <button onClick={() => handleTabChange("courses")}>
+                        Courses
+                      </button>
+                    </li>
+                    <li
+                      className={`${
+                        activeTab === "list-mentor" &&
+                        "border-b-4 border-[#309255]"
+                      }`}
+                    >
+                      <button onClick={() => handleTabChange("list-mentor")}>
+                        Mentors
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+                <div className={`${headerStyles.header_sign_in_up}`}>
+                  <ul>
+                    <li>
+                      <button
+                        onClick={() => {
+                          setActiveTab("");
+                          setIsLogin(true);
+                          router.push("/login");
+                        }}
+                        className={`${headerStyles.sign_up}`}
+                      >
+                        Sign In
+                      </button>
+                    </li>
+                    <li>
+                      {/* <Link
                       className={`${headerStyles.sign_up}`}
                       href="register.html"
                     >
                       Sign Up
                     </Link> */}
-                  </li>
-                </ul>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
-          ) : (
-            <>
-              {role === 3 ? (
-                <div
-                  className={`${headerStyles.header_main_wrapper} shadow-lg`}
-                >
-                  <div className={`${headerStyles.header_logo}`}>
-                    <button onClick={() => handleTabChange("")}>
-                      <Image
-                        width={100}
-                        height={60}
-                        src="/images/LogoRemoveBG.png"
-                        alt="logo"
-                      />
-                    </button>
-                  </div>
-                  <div className={`${headerStyles.header_menu}`}>
-                    <ul className={`${headerStyles.nav_menu} `}>
-                      <li
-                        className={`${
-                          activeTab === "" && "border-b-4 border-[#309255]"
-                        }`}
+          </div>
+        ) : (
+          <>
+            {role === 3 ? (
+              <div className="page-banner ">
+                <div className="container">
+                  <div
+                    className={`${headerStyles.header_main_wrapper} shadow-lg `}
+                  >
+                    <div className={`${headerStyles.header_logo}`}>
+                      <button onClick={() => handleTabChange("")}>
+                        <Image
+                          width={100}
+                          height={60}
+                          src="/images/LogoRemoveBG.png"
+                          alt="logo"
+                        />
+                      </button>
+                    </div>
+                    <div className={`${headerStyles.header_menu}`}>
+                      <ul
+                        className={`${headerStyles.nav_menu} text-base font-medium`}
                       >
-                        <button onClick={() => handleTabChange("")}>
-                          Home
-                        </button>
-                      </li>
-                      <li
-                        className={`${
-                          activeTab === "courses" &&
-                          "border-b-4 border-[#309255]"
-                        }`}
-                      >
-                        <button onClick={() => handleTabChange("courses")}>
-                          Courses
-                        </button>
-                      </li>
-                      <li
-                        className={`${
-                          activeTab === "my-course" &&
-                          "border-b-4 border-[#309255]"
-                        }`}
-                      >
-                        <button onClick={() => handleTabChange("my-course")}>
-                          My Courses{" "}
-                        </button>
-                      </li>
-                      <li
-                        className={`${
-                          activeTab === "favorites" &&
-                          "border-b-4 border-[#309255]"
-                        }`}
-                      >
-                        <button onClick={() => handleTabChange("favorites")}>
-                          My Favorites
-                        </button>
-                      </li>
-                      <li
-                        className={`${
-                          activeTab === "list-mentor" &&
-                          "border-b-4 border-[#309255]"
-                        }`}
-                      >
-                        <button onClick={() => handleTabChange("list-mentor")}>
-                          Mentors
-                        </button>
-                      </li>
-                    </ul>
-                  </div>
+                        <li
+                          className={`${
+                            activeTab === "" && "border-b-4 border-[#309255]"
+                          }`}
+                        >
+                          <button onClick={() => handleTabChange("")}>
+                            Home
+                          </button>
+                        </li>
+                        <li
+                          className={`${
+                            activeTab === "courses" &&
+                            "border-b-4 border-[#309255]"
+                          }`}
+                        >
+                          <button onClick={() => handleTabChange("courses")}>
+                            Courses
+                          </button>
+                        </li>
+                        <li
+                          className={`${
+                            activeTab === "my-course" &&
+                            "border-b-4 border-[#309255]"
+                          }`}
+                        >
+                          <button onClick={() => handleTabChange("my-course")}>
+                            My Courses{" "}
+                          </button>
+                        </li>
+                        <li
+                          className={`${
+                            activeTab === "favorites" &&
+                            "border-b-4 border-[#309255]"
+                          }`}
+                        >
+                          <button onClick={() => handleTabChange("favorites")}>
+                            My Favorites
+                          </button>
+                        </li>
+                        <li
+                          className={`${
+                            activeTab === "list-mentor" &&
+                            "border-b-4 border-[#309255]"
+                          }`}
+                        >
+                          <button
+                            onClick={() => handleTabChange("list-mentor")}
+                          >
+                            Mentors
+                          </button>
+                        </li>
+                      </ul>
+                    </div>
 
-                  <div>
-                    {userData?.role == 3 ? (
-                      <div className={`${headerStyles.regis_btn}`}>
-                        <Button onClick={handleClickBecomeMentor}>
-                          Become a Mentor
-                        </Button>
-                      </div>
-                    ) : (
-                      <></>
-                    )}
+                    <div>
+                      {userData?.role == 3 ? (
+                        <div className={`${headerStyles.regis_btn}`}>
+                          <Button onClick={handleClickBecomeMentor}>
+                            Become a Mentor
+                          </Button>
+                        </div>
+                      ) : (
+                        <></>
+                      )}
+                    </div>
                   </div>
                 </div>
-              ) : (
-                <></>
-              )}
-            </>
-          )}
-        </div>
+              </div>
+            ) : (
+              <></>
+            )}
+          </>
+        )}
+        {/* </div> */}
       </div>
     </div>
   );

@@ -9,7 +9,7 @@ import {
 import ".././globals.css";
 import { UserAuth } from "../context/AuthContext";
 import axios from "axios";
-import { Modal, message } from "antd";
+import { Breadcrumb, Modal, message } from "antd";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -188,14 +188,57 @@ export default function EditProfile() {
         console.error("Error updating profile:", error);
       });
   };
+  const breadcrumbsHome = () => {
+    router.push("/");
+  };
+  const breadcrumbsProfile = () => {
+    router.push("/profile");
+  };
 
   return (
-    <div className="container">
-      <div className="bg-[#fff]">
-        <div className="container mx-auto max-w-screen-lg py-20">
-          <div className="pt-6 px-10 pb-16 border border-solid border-opacity-20 border-[#30925533] rounded-lg">
-            <form onSubmit={handleSubmit}>
-              {/* <div className="mb-6">
+    <>
+      <div className="bg-[#e7f8ee]">
+        <div
+          className="bg-no-repeat flex flex-row justify-between"
+          style={{
+            backgroundImage: "url('/images/shape-23.png')",
+            backgroundPosition: "bottom left",
+          }}
+        >
+          <div>
+            <div className="-translate-y-9 px-40">
+              <img
+                className="animation-round "
+                src="/images/shape-8.png"
+                alt="Shape"
+              ></img>
+            </div>
+            <Breadcrumb className="font-semibold text-3xl pb-5 pl-36 -translate-y-3">
+              <Breadcrumb.Item>
+                <button onClick={breadcrumbsHome}>Home</button>
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                <button onClick={breadcrumbsProfile}>My Profile</button>
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                <span>Update Profile</span>
+              </Breadcrumb.Item>
+            </Breadcrumb>{" "}
+          </div>
+          <div
+            className="w-2/5 bg-auto bg-no-repeat bg-right-top"
+            style={{
+              backgroundImage: "url('/images/shape-24.png')",
+            }}
+          />
+        </div>
+      </div>
+      <div className="container">
+        <div className="bg-[#fff]">
+          <div className="container mx-auto max-w-screen-lg py-20">
+            <div className="pt-6 px-10 pb-16 border border-solid border-opacity-20 border-[#30925533] rounded-lg">
+              <form onSubmit={handleSubmit}>
+                {/* <div className="mb-6">
                 <label
                   htmlFor="first_name"
                   className="block mb-2 text-base font-medium text-[#000]"
@@ -212,85 +255,70 @@ export default function EditProfile() {
                   required
                 />
               </div> */}
-              <div className="mb-6">
-                <label
-                  htmlFor="gender"
-                  className="block mb-2 text-base font-medium text-[#000]"
-                >
-                  Gender
-                </label>
-                <select
-                  id="gender"
-                  value={gender}
-                  onChange={handleGenderChange}
-                  className="bg-[#fff] border border-[#30925533] text-[#000] text-base rounded-lg block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-[#309255]"
-                  required
-                >
-                  <option value="1">Male</option>
-                  <option value="2">Female</option>
-                  <option value="3">Other</option>
-                </select>
-              </div>
+                <div className="mb-6">
+                  <label
+                    htmlFor="gender"
+                    className="block mb-2 text-base font-medium text-[#000]"
+                  >
+                    Gender
+                  </label>
+                  <select
+                    id="gender"
+                    value={gender}
+                    onChange={handleGenderChange}
+                    className="bg-[#fff] border border-[#30925533] text-[#000] text-base rounded-lg block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-[#309255]"
+                    required
+                  >
+                    <option value="1">Male</option>
+                    <option value="2">Female</option>
+                    <option value="3">Other</option>
+                  </select>
+                </div>
 
-              <div className="mb-6">
-                <label
-                  htmlFor="phone"
-                  className="block mb-2 text-base font-medium text-[#000]"
+                <div className="mb-6">
+                  <label
+                    htmlFor="phone"
+                    className="block mb-2 text-base font-medium text-[#000]"
+                  >
+                    Phone Number
+                  </label>
+                  <input
+                    type="number"
+                    id="phone"
+                    value={phoneNumber}
+                    onChange={handlePhoneNumberChange}
+                    className="bg-[#fff] border border-[#30925533] text-[#000] text-base rounded-lg block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-[#309255]"
+                    placeholder="Your Phone Number"
+                    required
+                  />
+                </div>
+                <div className="mb-6">
+                  <label
+                    htmlFor="bio_description"
+                    className="block mb-2 text-base font-medium text-[#000]"
+                  >
+                    Biography
+                  </label>
+                  <textarea
+                    id="bio_description"
+                    value={bioDescription}
+                    onChange={handleBioDescriptionChange}
+                    className="bg-[#fff] border border-[#30925533] text-[#000] text-base rounded-lg block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-[#309255] h-[200px]"
+                    placeholder="Your Biography"
+                    required
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="bg-[#309255] text-[18px] px-[35px] py-[15px] mt-[15px] rounded-lg text-[#fff] hover:bg-[#000] transition-all duration-300 ease-in-out delay-0"
                 >
-                  Phone Number
-                </label>
-                <input
-                  type="number"
-                  id="phone"
-                  value={phoneNumber}
-                  onChange={handlePhoneNumberChange}
-                  className="bg-[#fff] border border-[#30925533] text-[#000] text-base rounded-lg block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-[#309255]"
-                  placeholder="Your Phone Number"
-                  required
-                />
-              </div>
-              <div className="mb-6">
-                <label
-                  htmlFor="bio_description"
-                  className="block mb-2 text-base font-medium text-[#000]"
-                >
-                  Bio Description
-                </label>
-                <textarea
-                  id="bio_description"
-                  value={bioDescription}
-                  onChange={handleBioDescriptionChange}
-                  className="bg-[#fff] border border-[#30925533] text-[#000] text-base rounded-lg block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-[#309255] h-[200px]"
-                  placeholder="Your Bio Description"
-                  required
-                />
-              </div>
-              <button
-                type="submit"
-                className="bg-[#309255] text-[18px] px-[35px] py-[15px] mt-[15px] rounded-lg text-[#fff] hover:bg-[#000] transition-all duration-300 ease-in-out delay-0"
-              >
-                Submit
-              </button>
-            </form>
+                  Submit
+                </button>
+              </form>
+            </div>
           </div>
-          {/* <Modal
-            title="Success"
-            visible={isSuccessModalVisible}
-            onOk={handleOk}
-            onCancel={handleOk}
-          >
-            <p>Profile updated successfully!</p>
-          </Modal>
-          <Modal
-            title="Error"
-            visible={isErrorModalVisible}
-            onOk={handleOk}
-            onCancel={handleOk}
-          >
-            <p>Failed to update profile. Please try again.</p>
-          </Modal> */}
         </div>
       </div>
-    </div>
+    </>
   );
 }

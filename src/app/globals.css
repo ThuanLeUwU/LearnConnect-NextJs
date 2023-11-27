@@ -23,10 +23,64 @@
 }
 
 .page-banner {
-  height: 200px;
+  height: 150px;
   background-color: #e7f8ee;
   overflow: hidden;
 }
+
+.animation-round {
+  animation: round 8s linear 0s infinite normal forwards;
+}
+@keyframes round {
+  0% {
+    transform: rotate(0);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animation-down {
+  animation: down 5s linear 0s infinite normal forwards;
+}
+@keyframes down {
+  0% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(40px);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.animation-left {
+  animation: left 5s linear 0s infinite normal forwards;
+}
+@keyframes left {
+  0% {
+    transform: translateX(0);
+  }
+
+  50% {
+    transform: translateX(-40px);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
 .overlay {
   position: fixed;
   top: 0;
