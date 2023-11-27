@@ -50,7 +50,6 @@ export default function CourseDetailPage({ params }: any) {
   const [visible, setVisible] = useState(false);
   const idCourse = params.id;
   const [activeTab, setActiveTab] = useState("tab1");
-  // console.log("hhhhha", activeTab);
   const handleTabClick = (tabName: string) => {
     setActiveTab(tabName);
   };
@@ -75,7 +74,6 @@ export default function CourseDetailPage({ params }: any) {
     };
     fetchData();
   }, [idUser]);
-  // console.log("is enrolled", courses?.enrolled);
   useEffect(() => {
     const fetchData = async () => {
       const responseData = await http.get(
@@ -92,35 +90,20 @@ export default function CourseDetailPage({ params }: any) {
       router.push(`/profile-mentor/${courses.mentorId}`);
     }
   };
-  // const [rating, setRating] = useState<Rating[]>([]);
 
   const [listRating, setListRating] = useState<Rating[]>([]);
 
   useEffect(() => {
-    // Gọi API để lấy danh sách người dùng
     http
       .get(`/rating/listRatingOfCourse/${idCourse}`)
       .then((response) => {
-        // setInfoTest(response.data.questions);
         setListRating(response.data);
-        // setLoading(false);
       })
       .catch((error) => {
         console.error("Error fetching user data:", error);
         // setLoading(false);
       });
   }, [idCourse]);
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const responseData = await axios.get(
-  //       `https://learnconnectapitest.azurewebsites.net/api/lecture/by-course/${idCourse}`
-  //     );
-  //     setLectures(responseData?.data);
-  //   };
-
-  //   fetchData();
-  // }, []);
 
   const payment = async (
     userId: any,
@@ -389,32 +372,7 @@ export default function CourseDetailPage({ params }: any) {
                     <div className="faq-wrapper">
                       <div className="single-faq-item">
                         <div className="grid cols-2 lg:grid-cols-12 border-[#dff0e6] border border-solid rounded-lg px-[70px] pb-[35px] mt-5">
-                          {/* <div className="lg:col-span-4 px-[15px]">
-                              <div className="">
-                                <h4 className="text-[#212832] text-2xl font-medium mt-6 px-2">
-                                  Lectures
-                                </h4>
-                              </div>
-                            </div> */}
                           <div className="lg:col-span-12">
-                            {/* <div className="  ">
-                                <Menu
-                                  mode="inline"
-                                  // onClick={onShow}
-                                  triggerSubMenuAction="click"
-                                >
-                                  {lectures &&
-                                    lectures.map((item, index) => (
-                                      <Menu.SubMenu
-                                        key={item.id}
-                                        title={item.title}
-                                      >
-                                        {" "}
-                                        <Menu.Item>{item.content}</Menu.Item>
-                                      </Menu.SubMenu>
-                                    ))}
-                                </Menu>
-                              </div> */}
                             {lectures &&
                               lectures.map((item, index) => (
                                 <div key={index}>
@@ -434,9 +392,6 @@ export default function CourseDetailPage({ params }: any) {
                 )}
                 {activeTab === "tab3" && (
                   <div className="tab-reviews">
-                    {/* <h3 className="text-[#212832] text-2xl font-medium mt-6">
-                        Student Reviews:
-                      </h3> */}
                     <div className="reviews-wrapper reviews-active">
                       <div className="swiper-container">
                         <div className="swiper-wrapper">

@@ -1,8 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import ReactStars from "react-stars";
-import { Button } from "react-bootstrap";
-import { Modal, Space } from "antd";
+
 import InstructorCourseStyle from "./styles/style.module.scss";
 import Link from "next/link";
 import { Doughnut } from "react-chartjs-2";

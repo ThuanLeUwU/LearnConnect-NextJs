@@ -10,7 +10,6 @@ import {
   Form,
   Input,
   Modal,
-  Popconfirm,
   Select,
   Space,
   Spin,
@@ -171,6 +170,7 @@ const Dashboard = ({ params }: any) => {
   };
 
   const handleDeleteModal = (record: any) => {
+    console.log("record", record);
     setSelectedItem(record);
     setOneLecture(record);
     setDeleteVisible(true);
@@ -252,6 +252,35 @@ const Dashboard = ({ params }: any) => {
     setDeleteVisible(false);
   };
 
+  const [isModerating, setIsModerating] = useState<boolean>();
+
+  const handleSuccessModeration = () => {
+    setTimeout(() => {
+      // toast.info("Video is Moderating By")
+      http
+        .get(
+          `https://learnconnectapitest.azurewebsites.net/api/lecture/by-course/${idCourse}`
+        )
+        .then((response) => {
+          setLectures(response.data);
+          setLoading(false);
+          setIsModerating(true);
+          form.resetFields();
+          handleCreateCancel();
+        });
+    }, 3000);
+  };
+
+  useEffect(() => {
+    if (isModerating === false) {
+      toast.success("Moderation Video Complete!");
+      console.log("moder", isModerating);
+    } else if (isModerating === true) {
+      toast.info("Create Lecture Successfully! Video is moderating ... ");
+      console.log("moder", isModerating);
+    }
+  }, [isModerating]);
+
   const handleSubmit = async (data: any) => {
     if (!source) {
       toast.error("Please Input Your Video Content!");
@@ -277,17 +306,19 @@ const Dashboard = ({ params }: any) => {
             }
           )
           .then(() => {
-            form.resetFields();
-            handleCreateCancel();
-            toast.success("Create Lecture Successfully");
-            http
-              .get(
-                `https://learnconnectapitest.azurewebsites.net/api/lecture/by-course/${idCourse}`
-              )
-              .then((response) => {
-                setLectures(response.data);
-                setLoading(false);
-              });
+            // form.resetFields();
+            // handleCreateCancel();
+            // toast.success("Create Lecture Successfully");
+            // http
+            //   .get(
+            //     `https://learnconnectapitest.azurewebsites.net/api/lecture/by-course/${idCourse}`
+            //   )
+            //   .then((response) => {
+            //     setLectures(response.data);
+            //     setLoading(false);
+            //   });
+            // setLoading(false);
+            setIsModerating(false);
           });
       } catch (err) {
         setTimeout(() => {
@@ -577,7 +608,7 @@ const Dashboard = ({ params }: any) => {
           }
         )
         .then(() => {
-          toast.success("Create Test Successfully!!!");
+          toast.success("Create Test Successfully!");
           setTestTitleModal(false);
           http
             .get(`/test/get-tests-by-course?courseId=${idCourse}`)
@@ -687,7 +718,7 @@ const Dashboard = ({ params }: any) => {
             });
           // http.get();
           setShowQuestionForm(false);
-          toast.success("create question successfully!!!");
+          toast.success("create question successfully!");
         });
     } catch (err) {
       console.error(err);
@@ -732,10 +763,10 @@ const Dashboard = ({ params }: any) => {
           // http.get();
           form.resetFields();
           handleSetIsChecked(false);
-          toast.success("Create Answer successfully!!!");
+          toast.success("Create Answer successfully!");
         });
     } catch (err) {
-      toast.error("Create Answer Fail!!!");
+      toast.error("Create Answer Fail!");
     }
   };
 
@@ -831,7 +862,7 @@ const Dashboard = ({ params }: any) => {
             });
         });
     } catch (err) {
-      toast.error("Update Fail !!!");
+      toast.error("Update Fail !");
     }
     // setHasChanged(false);
     // Modal.destroyAll();
@@ -938,7 +969,7 @@ const Dashboard = ({ params }: any) => {
             });
         });
     } catch (err) {
-      toast.error("Delete Fails !!!");
+      toast.error("Delete Fail !");
     }
   };
 
@@ -970,7 +1001,7 @@ const Dashboard = ({ params }: any) => {
             });
         });
     } catch (err) {
-      toast.error("Delete Fails !!!");
+      toast.error("Delete Fail !");
     }
   };
 
@@ -989,7 +1020,7 @@ const Dashboard = ({ params }: any) => {
           `https://learnconnectapitest.azurewebsites.net/api/test/${testId}`
         )
         .then(() => {
-          toast.success("Delete Successfully !!!");
+          toast.success("Delete Successfully !");
           setDeleteTestModal(false);
           http
             .get(`/test/get-tests-by-course?courseId=${idCourse}`)
@@ -1002,7 +1033,7 @@ const Dashboard = ({ params }: any) => {
             });
         });
     } catch (err) {
-      toast.error("Delete Fails !!!");
+      toast.error("Delete Fail !");
     }
   };
 
@@ -1021,7 +1052,7 @@ const Dashboard = ({ params }: any) => {
         )
         .then(() => {
           handleDeleteCancel();
-          toast.success("Delete Lecture Successfully !!!");
+          toast.success("Delete Lecture Successfully !");
           http
             .get(
               `https://learnconnectapitest.azurewebsites.net/api/lecture/by-course/${idCourse}`
@@ -1670,7 +1701,10 @@ const Dashboard = ({ params }: any) => {
               layout="horizontal"
               className="mt-5"
               style={{ width: 600 }}
-              onFinish={handleSubmit}
+              onFinish={(e) => {
+                handleSubmit(e);
+                handleSuccessModeration();
+              }}
             >
               <Form.Item
                 rules={[{ required: true, message: "Please input Name!" }]}
@@ -2026,24 +2060,24 @@ const Dashboard = ({ params }: any) => {
             >
               <Form.Item
                 rules={[
-                  { required: true, message: "Please input Name!" },
+                  { required: true, message: "Please input Name ! " },
                   { max: 500, message: "Maximum 500 characters allowed!" },
                 ]}
                 label="Title"
                 name="title"
               >
-                <Input placeholder="Put title of Test here !!!" />
+                <Input placeholder="Put title of Test here !" />
               </Form.Item>
 
               <Form.Item
                 rules={[
-                  { required: true, message: "Please input Name!" },
-                  { max: 500, message: "Maximum 500 characters allowed!" },
+                  { required: true, message: "Please input Name !" },
+                  { max: 500, message: "Maximum 500 characters allowed !" },
                 ]}
                 label="Description"
                 name="description"
               >
-                <Input.TextArea placeholder="Type some description here !!!" />
+                <Input.TextArea placeholder="Type some description here !" />
               </Form.Item>
 
               <Space className="justify-end w-full">
