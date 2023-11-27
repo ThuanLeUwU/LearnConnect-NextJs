@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import jwt from "jsonwebtoken";
 import UnProtectWrapper from "@/components/wrapper/UnProtecWrapper";
 import { http } from "@/api/http";
-import { Spin } from "antd";
+import { Breadcrumb, Spin } from "antd";
 import { toast } from "sonner";
 
 export default function LoginPage() {
@@ -117,69 +117,101 @@ export default function LoginPage() {
   };
   return (
     <UnProtectWrapper>
-      <div className={styles["main-wrapper"]}>
-        <div className="bg-[#fff]">
-          <div className="container mx-auto max-w-screen-xl py-20">
-            {loading ? (
-              <div className="text-center text-5xl mt-5">
-                <Spin size="large" />
+      <>
+        <div className="bg-[#e7f8ee]">
+          <div
+            className="bg-no-repeat flex flex-row justify-between"
+            style={{
+              backgroundImage: "url('/images/shape-23.png')",
+              backgroundPosition: "bottom left",
+            }}
+          >
+            <div>
+              <div className="-translate-y-9 px-40">
+                <img
+                  className="animation-round "
+                  src="/images/shape-8.png"
+                  alt="Shape"
+                ></img>
               </div>
-            ) : (
-              <div className="grid lg:grid-cols-2 pt-6 px-10 pb-16 border border-solid border-opacity-20 border-[#30925533] rounded-10">
-                <div className="mx-auto pt-16">
-                  <img src="/register-login.png" alt="Shape" />
+              <Breadcrumb className="font-semibold text-3xl pb-5 pl-36 -translate-y-3">
+                <Breadcrumb.Item>
+                  <span>Login</span>
+                </Breadcrumb.Item>
+              </Breadcrumb>{" "}
+            </div>
+            <div
+              className="w-2/5 bg-auto bg-no-repeat bg-right-top"
+              style={{
+                backgroundImage: "url('/images/shape-24.png')",
+              }}
+            />
+          </div>
+        </div>
+        <div className={styles["main-wrapper"]}>
+          <div className="bg-[#fff]">
+            <div className="container mx-auto max-w-screen-xl py-20">
+              {loading ? (
+                <div className="text-center text-5xl mt-5">
+                  <Spin size="large" />
                 </div>
-                <div className="">
-                  <div className="mx-auto max-w-md">
-                    <h3 className="text-[30px] font-medium text-[#212832] px-10 pt-32">
-                      Login <span className="text-[#309255]">Now</span>
-                    </h3>
-                    <div className="pt-8">
-                      <form onSubmit={handleFormSubmit}>
-                        <div className={styles["single-form"]}>
-                          <input
-                            required
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            placeholder="Email"
-                          />{" "}
-                        </div>
-                        <div className={styles["single-form"]}>
-                          <input
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            placeholder="Password"
-                          />{" "}
-                        </div>
-                        <div className="mt-5 text-red-500 text-lg">
-                          {errorMessage}
-                        </div>
-                        <div className={styles["single-form"]}>
-                          <button
-                            className="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded-2xl py-4 px-3 leading-normal no-underline bg-[#309255] text-white hover:bg-black btn-hover-dark w-full transition-all duration-300 ease-in-out delay-0 my-2"
-                            onClick={handleSignInEmailPassword}
-                            type="submit"
-                          >
-                            Login
-                          </button>
-                          <button
-                            className="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded-2xl py-4 px-3 leading-normal no-underline bg-white text-[#309255] hover:bg-[#309255] btn-outline w-full border-[#a9f9c8] hover:text-white transition-all duration-300 ease-in-out delay-0 my-2"
-                            onClick={handleSignIn}
-                          >
-                            Login with Google
-                          </button>
-                        </div>
-                      </form>
+              ) : (
+                <div className="grid lg:grid-cols-2 pt-6 px-10 pb-16 border border-solid border-opacity-20 border-[#30925533] rounded-10">
+                  <div className="mx-auto pt-16">
+                    <img src="/register-login.png" alt="Shape" />
+                  </div>
+                  <div className="">
+                    <div className="mx-auto max-w-md">
+                      <h3 className="text-[30px] font-medium text-[#212832] px-10 pt-32">
+                        Login <span className="text-[#309255]">Now</span>
+                      </h3>
+                      <div className="pt-8">
+                        <form onSubmit={handleFormSubmit}>
+                          <div className={styles["single-form"]}>
+                            <input
+                              required
+                              type="email"
+                              value={email}
+                              onChange={(e) => setEmail(e.target.value)}
+                              placeholder="Email"
+                            />{" "}
+                          </div>
+                          <div className={styles["single-form"]}>
+                            <input
+                              type="password"
+                              value={password}
+                              onChange={(e) => setPassword(e.target.value)}
+                              placeholder="Password"
+                            />{" "}
+                          </div>
+                          <div className="mt-5 text-red-500 text-lg">
+                            {errorMessage}
+                          </div>
+                          <div className={styles["single-form"]}>
+                            <button
+                              className="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded-2xl py-4 px-3 leading-normal no-underline bg-[#309255] text-white hover:bg-black btn-hover-dark w-full transition-all duration-300 ease-in-out delay-0 my-2"
+                              onClick={handleSignInEmailPassword}
+                              type="submit"
+                            >
+                              Login
+                            </button>
+                            <button
+                              className="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded-2xl py-4 px-3 leading-normal no-underline bg-white text-[#309255] hover:bg-[#309255] btn-outline w-full border-[#a9f9c8] hover:text-white transition-all duration-300 ease-in-out delay-0 my-2"
+                              onClick={handleSignIn}
+                            >
+                              Login with Google
+                            </button>
+                          </div>
+                        </form>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
-      </div>
+      </>
     </UnProtectWrapper>
   );
 }

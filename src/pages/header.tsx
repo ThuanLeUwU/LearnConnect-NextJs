@@ -198,11 +198,11 @@ const Header = () => {
   };
 
   return (
-    <div className={`${headerStyles.header_section} page-banner`}>
+    <div className={`${headerStyles.header_section}`}>
       {!userData ? (
         <div className={`${headerStyles.header_top}`}></div>
       ) : (
-        <div className={`${headerStyles.header_login} page-banner`}>
+        <div className={`${headerStyles.header_login}`}>
           <div className={`${headerStyles.header_navbar}`}>
             <div className={`${headerStyles.header_login_left}`}>
               <button onClick={returnHome}>
@@ -500,182 +500,182 @@ const Header = () => {
         </div>
       )}
       <div className="header-main ">
-        <div className="container">
-          {!userData ? (
-            <div className={`${headerStyles.header_main_wrapper}`}>
-              <div className={`${headerStyles.header_logo}`}>
-                <button onClick={() => handleTabChange("")}>
-                  <Image
-                    width={120}
-                    height={100}
-                    src="/images/LogoRemoveBG.png"
-                    alt="logo"
-                  />
-                </button>
-              </div>
-              <div className={`${headerStyles.header_menu}`}>
-                <ul className={`${headerStyles.nav_menu} `}>
-                  <li
-                    className={`${
-                      activeTab === "" &&
-                      !isLogin &&
-                      "border-b-4 border-[#309255]"
-                    }`}
+        {/* <div className="container "> */}
+        {!userData ? (
+          <div className="page-banner">
+            <div className="container ">
+              <div
+                className={`${headerStyles.header_main_wrapper} mx-10 shadow-lg`}
+              >
+                <div className={`${headerStyles.header_logo}`}>
+                  <button onClick={() => handleTabChange("")}>
+                    <Image
+                      width={120}
+                      height={100}
+                      src="/images/LogoRemoveBG.png"
+                      alt="logo"
+                    />
+                  </button>
+                </div>
+                <div className={`${headerStyles.header_menu}`}>
+                  <ul
+                    className={`${headerStyles.nav_menu} text-base font-medium `}
                   >
-                    <button onClick={() => handleTabChange("")}>Home</button>
-                  </li>
-                  <li
-                    className={`${
-                      activeTab === "courses" && "border-b-4 border-[#309255]"
-                    }`}
-                  >
-                    <button onClick={() => handleTabChange("courses")}>
-                      Courses
-                    </button>
-                  </li>
-                  {/* <li
-                    className={`${
-                      activeTab === "my-course" && "border-b-4 border-[#309255]"
-                    }`}
-                  >
-                    <button onClick={() => handleTabChange("my-course")}>
-                      My Courses{" "}
-                    </button>
-                  </li>
-                  <li
-                    className={`${
-                      activeTab === "favorites" && "border-b-4 border-[#309255]"
-                    }`}
-                  >
-                    <button onClick={() => handleTabChange("favorites")}>
-                      My Favorites
-                    </button>
-                  </li> */}
-                  <li
-                    className={`${
-                      activeTab === "list-mentor" &&
-                      "border-b-4 border-[#309255]"
-                    }`}
-                  >
-                    <button onClick={() => handleTabChange("list-mentor")}>
-                      Mentors
-                    </button>
-                  </li>
-                </ul>
-              </div>
-              <div className={`${headerStyles.header_sign_in_up}`}>
-                <ul>
-                  <li>
-                    <button
-                      onClick={() => {
-                        setActiveTab("");
-                        setIsLogin(true);
-                        router.push("/login");
-                      }}
-                      className={`${headerStyles.sign_up}`}
+                    <li
+                      className={`${
+                        activeTab === "" &&
+                        !isLogin &&
+                        "border-b-4 border-[#309255]"
+                      }`}
                     >
-                      Sign In
-                    </button>
-                  </li>
-                  <li>
-                    {/* <Link
+                      <button text-lg onClick={() => handleTabChange("")}>
+                        Home
+                      </button>
+                    </li>
+                    <li
+                      className={`${
+                        activeTab === "courses" && "border-b-4 border-[#309255]"
+                      }`}
+                    >
+                      <button onClick={() => handleTabChange("courses")}>
+                        Courses
+                      </button>
+                    </li>
+                    <li
+                      className={`${
+                        activeTab === "list-mentor" &&
+                        "border-b-4 border-[#309255]"
+                      }`}
+                    >
+                      <button onClick={() => handleTabChange("list-mentor")}>
+                        Mentors
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+                <div className={`${headerStyles.header_sign_in_up}`}>
+                  <ul>
+                    <li>
+                      <button
+                        onClick={() => {
+                          setActiveTab("");
+                          setIsLogin(true);
+                          router.push("/login");
+                        }}
+                        className={`${headerStyles.sign_up}`}
+                      >
+                        Sign In
+                      </button>
+                    </li>
+                    <li>
+                      {/* <Link
                       className={`${headerStyles.sign_up}`}
                       href="register.html"
                     >
                       Sign Up
                     </Link> */}
-                  </li>
-                </ul>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
-          ) : (
-            <>
-              {role === 3 ? (
-                <div
-                  className={`${headerStyles.header_main_wrapper} shadow-lg`}
-                >
-                  <div className={`${headerStyles.header_logo}`}>
-                    <button onClick={() => handleTabChange("")}>
-                      <Image
-                        width={100}
-                        height={60}
-                        src="/images/LogoRemoveBG.png"
-                        alt="logo"
-                      />
-                    </button>
-                  </div>
-                  <div className={`${headerStyles.header_menu}`}>
-                    <ul className={`${headerStyles.nav_menu} `}>
-                      <li
-                        className={`${
-                          activeTab === "" && "border-b-4 border-[#309255]"
-                        }`}
+          </div>
+        ) : (
+          <>
+            {role === 3 ? (
+              <div className="page-banner ">
+                <div className="container">
+                  <div
+                    className={`${headerStyles.header_main_wrapper} shadow-lg `}
+                  >
+                    <div className={`${headerStyles.header_logo}`}>
+                      <button onClick={() => handleTabChange("")}>
+                        <Image
+                          width={100}
+                          height={60}
+                          src="/images/LogoRemoveBG.png"
+                          alt="logo"
+                        />
+                      </button>
+                    </div>
+                    <div className={`${headerStyles.header_menu}`}>
+                      <ul
+                        className={`${headerStyles.nav_menu} text-base font-medium`}
                       >
-                        <button onClick={() => handleTabChange("")}>
-                          Home
-                        </button>
-                      </li>
-                      <li
-                        className={`${
-                          activeTab === "courses" &&
-                          "border-b-4 border-[#309255]"
-                        }`}
-                      >
-                        <button onClick={() => handleTabChange("courses")}>
-                          Courses
-                        </button>
-                      </li>
-                      <li
-                        className={`${
-                          activeTab === "my-course" &&
-                          "border-b-4 border-[#309255]"
-                        }`}
-                      >
-                        <button onClick={() => handleTabChange("my-course")}>
-                          My Courses{" "}
-                        </button>
-                      </li>
-                      <li
-                        className={`${
-                          activeTab === "favorites" &&
-                          "border-b-4 border-[#309255]"
-                        }`}
-                      >
-                        <button onClick={() => handleTabChange("favorites")}>
-                          My Favorites
-                        </button>
-                      </li>
-                      <li
-                        className={`${
-                          activeTab === "list-mentor" &&
-                          "border-b-4 border-[#309255]"
-                        }`}
-                      >
-                        <button onClick={() => handleTabChange("list-mentor")}>
-                          Mentors
-                        </button>
-                      </li>
-                    </ul>
-                  </div>
+                        <li
+                          className={`${
+                            activeTab === "" && "border-b-4 border-[#309255]"
+                          }`}
+                        >
+                          <button onClick={() => handleTabChange("")}>
+                            Home
+                          </button>
+                        </li>
+                        <li
+                          className={`${
+                            activeTab === "courses" &&
+                            "border-b-4 border-[#309255]"
+                          }`}
+                        >
+                          <button onClick={() => handleTabChange("courses")}>
+                            Courses
+                          </button>
+                        </li>
+                        <li
+                          className={`${
+                            activeTab === "my-course" &&
+                            "border-b-4 border-[#309255]"
+                          }`}
+                        >
+                          <button onClick={() => handleTabChange("my-course")}>
+                            My Courses{" "}
+                          </button>
+                        </li>
+                        <li
+                          className={`${
+                            activeTab === "favorites" &&
+                            "border-b-4 border-[#309255]"
+                          }`}
+                        >
+                          <button onClick={() => handleTabChange("favorites")}>
+                            My Favorites
+                          </button>
+                        </li>
+                        <li
+                          className={`${
+                            activeTab === "list-mentor" &&
+                            "border-b-4 border-[#309255]"
+                          }`}
+                        >
+                          <button
+                            onClick={() => handleTabChange("list-mentor")}
+                          >
+                            Mentors
+                          </button>
+                        </li>
+                      </ul>
+                    </div>
 
-                  <div>
-                    {userData?.role == 3 ? (
-                      <div className={`${headerStyles.regis_btn}`}>
-                        <Button onClick={handleClickBecomeMentor}>
-                          Become a Mentor
-                        </Button>
-                      </div>
-                    ) : (
-                      <></>
-                    )}
+                    <div>
+                      {userData?.role == 3 ? (
+                        <div className={`${headerStyles.regis_btn}`}>
+                          <Button onClick={handleClickBecomeMentor}>
+                            Become a Mentor
+                          </Button>
+                        </div>
+                      ) : (
+                        <></>
+                      )}
+                    </div>
                   </div>
                 </div>
-              ) : (
-                <></>
-              )}
-            </>
-          )}
-        </div>
+              </div>
+            ) : (
+              <></>
+            )}
+          </>
+        )}
+        {/* </div> */}
       </div>
     </div>
   );

@@ -337,7 +337,7 @@ export const RegisterForm = () => {
 
           <Form.Item
             name="BankName"
-            label="Bank"
+            label="Bank Name"
             rules={[{ required: true, message: "Please select a bank" }]}
             labelAlign="left"
           >

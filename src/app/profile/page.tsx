@@ -5,6 +5,7 @@ import { UserAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { Breadcrumb } from "antd";
 // import { User } from "firebase/auth";
 
 export type User = {
@@ -94,48 +95,89 @@ export default function ProfileUser() {
     }
   };
 
+  const breadcrumbsHome = () => {
+    router.push("/");
+  };
+
   return (
-    <div className="container">
-      {userData && (
-        <section className="bg-gradient-to-b">
-          <div className="py-5">
-            <div className="flex justify-center items-center">
-              <div className="max-w-[1200px]">
-                <div className="bg-[#fff] rounded-lg shadow-lg">
-                  <div className="bg-[#309255] text-white flex flex-col lg:flex-row rounded-t p-4 lg:p-8">
-                    <div className="lg:mr-4 lg:mt-0 flex flex-col items-center w-full lg:w-36">
-                      <img
-                        src={
-                          userData?.profilePictureUrl || "www.default.imageurl"
-                        }
-                        alt="Generic placeholder image"
-                        className="w-36 h-36 rounded-full mt-4 mb-2"
-                      />
-                      <button
-                        type="button"
-                        className="btn btn-outline-dark btn-sm bg-[#e7f8ee] rounded-lg text-black px-3 py-1 mt-1"
-                      >
-                        <Link href="/edit-profile">Edit profile</Link>
-                      </button>
-                    </div>
-                    <div className="author-content pl-4 my-auto">
-                      <h5 className="text-lg my-1">
-                        Full Name: {DataUser?.fullName}
-                      </h5>
-                      <h5 className="text-lg my-1">Email: {DataUser?.email}</h5>
-                      <h5 className="text-lg my-1">
-                        Gender: {displayGender(DataUser?.gender)}
-                      </h5>
-                      <p className="text-lg my-1">
-                        Phone: {DataUser?.phoneNumber}
-                      </p>
-                      {/* <p>Role: {userData?.role}</p> */}
-                      {/* <p>Bio: {userData?.bioDescription}</p> */}
-                      {/* <p>Phone: {userData?.status}</p>
+    <>
+      <div className="bg-[#e7f8ee]">
+        <div
+          className="bg-no-repeat flex flex-row justify-between"
+          style={{
+            backgroundImage: "url('/images/shape-23.png')",
+            backgroundPosition: "bottom left",
+          }}
+        >
+          <div>
+            <div className="-translate-y-9 px-40">
+              <img
+                className="animation-round "
+                src="/images/shape-8.png"
+                alt="Shape"
+              ></img>
+            </div>
+            <Breadcrumb className="font-semibold text-3xl pb-5 pl-36 -translate-y-3">
+              <Breadcrumb.Item>
+                <button onClick={breadcrumbsHome}>Home</button>
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                <span>My Profile</span>
+              </Breadcrumb.Item>
+            </Breadcrumb>{" "}
+          </div>
+          <div
+            className="w-2/5 bg-auto bg-no-repeat bg-right-top"
+            style={{
+              backgroundImage: "url('/images/shape-24.png')",
+            }}
+          />
+        </div>
+      </div>
+      <div className="container">
+        {userData && (
+          <section className="bg-gradient-to-b">
+            <div className="py-5">
+              <div className="flex justify-center items-center">
+                <div className="max-w-[1200px]">
+                  <div className="bg-[#fff] rounded-lg shadow-lg">
+                    <div className="bg-[#309255] text-white flex flex-col lg:flex-row rounded-t p-4 lg:p-8">
+                      <div className="lg:mr-4 lg:mt-0 flex flex-col items-center w-full lg:w-36">
+                        <img
+                          src={
+                            userData?.profilePictureUrl ||
+                            "www.default.imageurl"
+                          }
+                          alt="Generic placeholder image"
+                          className="w-36 h-36 rounded-full mt-4 mb-2"
+                        />
+                        <button
+                          type="button"
+                          className="btn btn-outline-dark btn-sm bg-[#e7f8ee] rounded-lg text-black px-3 py-1 mt-1"
+                        >
+                          <Link href="/edit-profile">Edit profile</Link>
+                        </button>
+                      </div>
+                      <div className="author-content pl-4 my-auto">
+                        <h5 className="text-lg my-1">
+                          Full Name: {DataUser?.fullName}
+                        </h5>
+                        <h5 className="text-lg my-1">
+                          Email: {DataUser?.email}
+                        </h5>
+                        <h5 className="text-lg my-1">
+                          Gender: {displayGender(DataUser?.gender)}
+                        </h5>
+                        <p className="text-lg my-1">
+                          Phone: {DataUser?.phoneNumber}
+                        </p>
+                        {/* <p>Role: {userData?.role}</p> */}
+                        {/* <p>Bio: {userData?.bioDescription}</p> */}
+                        {/* <p>Phone: {userData?.status}</p>
                       <p>Phone: {userData?.profilePictureUrl}</p> */}
+                      </div>
                     </div>
-                  </div>
-                  {/* <div className="p-4 text-black bg-gray-200">
+                    {/* <div className="p-4 text-black bg-gray-200">
                     <div className="flex justify-center lg:justify-end text-center py-2 lg:py-1">
                       <div className="px-3">
                         <p className="mb-1 text-lg">253</p>
@@ -151,18 +193,16 @@ export default function ProfileUser() {
                       </div>
                     </div>
                   </div> */}
-                  <div className="card-body p-4 text-black">
-                    <div className="mb-5">
-                      <p className="font-semibold text-lg mb-2">
-                        Bio Description
-                      </p>
-                      <div className="p-4 bg-gray-200">
-                        <p className="italic mb-1">
-                          {DataUser?.bioDescription}
-                        </p>
+                    <div className="card-body p-4 text-black">
+                      <div className="mb-5">
+                        <p className="font-semibold text-lg mb-2">Biography</p>
+                        <div className="p-4 bg-gray-200">
+                          <p className="italic mb-1">
+                            {DataUser?.bioDescription}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                    {/* {/* <div className="flex justify-between items-center mb-4">
+                      {/* {/* <div className="flex justify-between items-center mb-4">
                       <p className="font-semibold text-lg mb-0">
                         Recent photos
                       </p>
@@ -172,71 +212,72 @@ export default function ProfileUser() {
                         </Link>
                       </p>
                     </div> */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
-                      <div className="mb-2">
-                        <img
-                          src="https://mdbcdn.b-cdn.net/img/Photos/Lightbox/Original/img%20(112).webp"
-                          alt="image 1"
-                          className="w-full rounded-lg"
-                        />
-                      </div>
-                      <div className="mb-2">
-                        <img
-                          src="https://mdbcdn.b-cdn.net/img/Photos/Lightbox/Original/img%20(107).webp"
-                          alt="image 1"
-                          className="w-full rounded-lg"
-                        />
-                      </div>
-                      <div className="mb-2">
-                        <img
-                          src="https://mdbcdn.b-cdn.net/img/Photos/Lightbox/Original/img%20(108).webp"
-                          alt="image 1"
-                          className="w-full rounded-lg"
-                        />
-                      </div>
-                      <div className="mb-2">
-                        <img
-                          src="https://mdbcdn.b-cdn.net/img/Photos/Lightbox/Original/img%20(114).webp"
-                          alt="image 1"
-                          className="w-full rounded-lg"
-                        />
-                      </div>
-                      <div className="mb-2">
-                        <img
-                          src="https://mdbcdn.b-cdn.net/img/Photos/Lightbox/Original/img%20(114).webp"
-                          alt="image 1"
-                          className="w-full rounded-lg"
-                        />
-                      </div>
-                      <div className="mb-2">
-                        <img
-                          src="https://mdbcdn.b-cdn.net/img/Photos/Lightbox/Original/img%20(114).webp"
-                          alt="image 1"
-                          className="w-full rounded-lg"
-                        />
-                      </div>
-                      <div className="mb-2">
-                        <img
-                          src="https://mdbcdn.b-cdn.net/img/Photos/Lightbox/Original/img%20(114).webp"
-                          alt="image 1"
-                          className="w-full rounded-lg"
-                        />
-                      </div>
-                      <div className="mb-2">
-                        <img
-                          src="https://mdbcdn.b-cdn.net/img/Photos/Lightbox/Original/img%20(114).webp"
-                          alt="image 1"
-                          className="w-full rounded-lg"
-                        />
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
+                        <div className="mb-2">
+                          <img
+                            src="https://mdbcdn.b-cdn.net/img/Photos/Lightbox/Original/img%20(112).webp"
+                            alt="image 1"
+                            className="w-full rounded-lg"
+                          />
+                        </div>
+                        <div className="mb-2">
+                          <img
+                            src="https://mdbcdn.b-cdn.net/img/Photos/Lightbox/Original/img%20(107).webp"
+                            alt="image 1"
+                            className="w-full rounded-lg"
+                          />
+                        </div>
+                        <div className="mb-2">
+                          <img
+                            src="https://mdbcdn.b-cdn.net/img/Photos/Lightbox/Original/img%20(108).webp"
+                            alt="image 1"
+                            className="w-full rounded-lg"
+                          />
+                        </div>
+                        <div className="mb-2">
+                          <img
+                            src="https://mdbcdn.b-cdn.net/img/Photos/Lightbox/Original/img%20(114).webp"
+                            alt="image 1"
+                            className="w-full rounded-lg"
+                          />
+                        </div>
+                        <div className="mb-2">
+                          <img
+                            src="https://mdbcdn.b-cdn.net/img/Photos/Lightbox/Original/img%20(114).webp"
+                            alt="image 1"
+                            className="w-full rounded-lg"
+                          />
+                        </div>
+                        <div className="mb-2">
+                          <img
+                            src="https://mdbcdn.b-cdn.net/img/Photos/Lightbox/Original/img%20(114).webp"
+                            alt="image 1"
+                            className="w-full rounded-lg"
+                          />
+                        </div>
+                        <div className="mb-2">
+                          <img
+                            src="https://mdbcdn.b-cdn.net/img/Photos/Lightbox/Original/img%20(114).webp"
+                            alt="image 1"
+                            className="w-full rounded-lg"
+                          />
+                        </div>
+                        <div className="mb-2">
+                          <img
+                            src="https://mdbcdn.b-cdn.net/img/Photos/Lightbox/Original/img%20(114).webp"
+                            alt="image 1"
+                            className="w-full rounded-lg"
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </section>
-      )}
-    </div>
+          </section>
+        )}
+      </div>
+    </>
   );
 }
