@@ -63,9 +63,9 @@ export default function AfterEnroll({ params }: any) {
     // if (role === 3) {
     //   router.push(`/`);
     // }
-    if (role === -1) {
-      router.push(`/`);
-    }
+    // if (role === -1) {
+    //   router.push(`/`);
+    // }
   });
   const [activeTab, setActiveTab] = useState("tab1");
   const { id, user, jwtToken, userData } = UserAuth();
@@ -217,29 +217,65 @@ export default function AfterEnroll({ params }: any) {
     setNumPages(numPages);
   };
 
-  // const newplugin = defaultLayoutPlugin();
-
   const [videoSrc, setVideoSrc] = useState("");
+  const [isComplete, setIsComplete] = useState(true);
   const changeVideoSource = (lecture: Lecture, index: number) => {
-    const getProcess = async () => {
-      await http
-        .get(
-          `https://learnconnectapitest.azurewebsites.net/api/learning-process/get_lecture_process?lectureId=${lecture.id}`
-        )
-        .then((res) => {
-          setCurrentTime(res?.data.currentStudyTime);
-          setMaxTime(res?.data.maxStudyTime);
-        })
-        .catch();
-    };
-    getProcess();
-    setVideoSrc(lecture.contentUrl);
-    setActiveVideoIndex(index);
-    const videoElement = document.getElementById(
-      "courseVideo"
-    ) as HTMLVideoElement;
-    if (videoElement) {
-      videoElement.load();
+    // try {
+    //   const response = await http.get(
+    //     `https://learnconnectapitest.azurewebsites.net/api/learning-process/get_lecture_process?lectureId=${lecture.id}&courseId=${idCourse}&userId=${userData?.id}`
+    //   );
+
+    //   const learningProcess = response?.data;
+    //   if (learningProcess?.status === 1) {
+    //     console.log("User can't play the video. Handle accordingly.");
+    //     return;
+    //   }
+
+    //   setVideoSrc(lecture.contentUrl);
+    //   setActiveVideoIndex(index);
+
+    //   const videoElement = document.getElementById(
+    //     "courseVideo"
+    //   ) as HTMLVideoElement;
+
+    //   if (videoElement) {
+    //     videoElement.load();
+    //   }
+    // } catch (error) {
+    //   console.error("Error fetching learning process data:", error);
+    // }
+    if (isComplete && index <= activeVideoIndex + 1) {
+      setVideoSrc(lecture.contentUrl);
+      setActiveVideoIndex(index);
+      const videoElement = document.getElementById(
+        "courseVideo"
+      ) as HTMLVideoElement;
+      if (videoElement) {
+        videoElement.load();
+      }
+      const getProcess = async () => {
+        await http
+          .get(
+            `https://learnconnectapitest.azurewebsites.net/api/learning-process/get_lecture_process?lectureId=${lecture.id}&courseId=${idCourse}&userId=${userData?.id}`
+          )
+          .then((res) => {
+            const learningProcess = res?.data.status;
+            if (learningProcess === 1) {
+              setIsComplete(false);
+            } else {
+              setIsComplete(true);
+            }
+            setCurrentTime(res?.data.currentStudyTime);
+            setMaxTime(res?.data.maxStudyTime);
+            // setHasCurrentTime(true);
+            if (res?.data.currentStudyTime > 0) {
+              setHasCurrentTime(!hasCurrentTime);
+            }
+          })
+
+          .catch();
+      };
+      getProcess();
     }
   };
   useEffect(() => {
@@ -327,13 +363,20 @@ export default function AfterEnroll({ params }: any) {
 
   const [maxTime, setMaxTime] = useState<number>(0); //truyen maxTime tu API response
   const [currentTime, setCurrentTime] = useState<number>(0);
-  const [totalTime, setTotalTime] = useState(0);
+  const [totalTime, setTotalTime] = useState(1);
   const handleOnTimeUpdate = (e) => {
     setCurrentTime(e.target.currentTime);
     if (videoRef.current && e.target.currentTime > maxTime) {
       setMaxTime(videoRef.current.played.end(0));
+      setTotalTime(Math.floor(videoRef.current.duration));
     }
-    if (Math.floor(e.target.currentTime) % 5 == 0) {
+    console.log("djt me thg thuan", e.target.currentTime);
+    if (
+      (Math.floor(e.target.currentTime) > 1 &&
+        Math.floor(e.target.currentTime) % 5 == 0) ||
+      Math.floor(e.target.currentTime) === totalTime
+    ) {
+      // setMaxTime(totalTime);
       http.post(
         `https://learnconnectapitest.azurewebsites.net/api/learning-process/save_process?userId=${id}&lectureId=${
           testVideo[activeVideoIndex].id
@@ -341,6 +384,9 @@ export default function AfterEnroll({ params }: any) {
           currentTime
         )}&maxTime=${Math.floor(maxTime)}&totalTime=${totalTime}`
       );
+    }
+    if (Math.floor(e.target.currentTime) === totalTime) {
+      setIsComplete(true);
     }
   };
 
@@ -353,11 +399,16 @@ export default function AfterEnroll({ params }: any) {
   const handleOnProgress = () => {
     if (videoRef.current) {
       setTotalTime(Math.floor(videoRef.current.duration));
-      if (currentTime) {
-        videoRef.current.currentTime = currentTime; //truyen currentTime tu API response
-      }
     }
   };
+
+  const [hasCurrentTime, setHasCurrentTime] = useState(false);
+
+  useEffect(() => {
+    if (videoRef.current && currentTime !== 0) {
+      videoRef.current.currentTime = currentTime; //truyen currentTime tu API response
+    }
+  }, [hasCurrentTime]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -437,7 +488,7 @@ export default function AfterEnroll({ params }: any) {
             <div className="">
               <div className="flex justify-between mt-2.5 items-center">
                 <h2 className="text-[25px] leading-normal text-[#212832] font-medium ">
-                  {activeVideoIndex !== -1
+                  {activeVideoIndex === 0
                     ? testVideo[activeVideoIndex].title
                     : courses?.name}
                 </h2>
@@ -584,7 +635,7 @@ export default function AfterEnroll({ params }: any) {
               {/* {activeVideoIndex !== -1
                 ? testVideo[activeVideoIndex].title
                 : courses?.name} */}
-              {activeVideoIndex !== -1 ? (
+              {activeVideoIndex === 0 ? (
                 <div className="w-full mx-auto mb-3 shadow-lg rounded-lg">
                   <div className="faq-wrapper">
                     <div className="single-faq-item">
@@ -592,7 +643,7 @@ export default function AfterEnroll({ params }: any) {
                         <div className="lg:col-span-12">
                           <div key={activeVideoIndex}>
                             <p className="mt-5 font-bold">
-                              Lecture {activeVideoIndex + 1}:{" "}
+                              Lecture {activeVideoIndex}:{" "}
                               {testVideo[activeVideoIndex].title}
                             </p>
                             <p className="mt-3.5 text-[#52565b] text-base font-normal">

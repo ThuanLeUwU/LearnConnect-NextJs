@@ -60,9 +60,9 @@ export default function Quiz({ params }: any) {
     // if (role === 3) {
     //   router.push(`/`);
     // }
-    if (role === -1) {
-      router.push(`/`);
-    }
+    // if (role === -1) {
+    //   router.push(`/`);
+    // }
   });
   const [questionsTest, setQuestionsTest] = useState<Test[]>([]);
   const [selectedAnswers, setSelectedAnswers] = useState<number[]>([]);

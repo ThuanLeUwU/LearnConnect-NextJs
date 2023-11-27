@@ -25,9 +25,9 @@ const Transaction = () => {
     // if (role === 3) {
     //   router.push(`/`);
     // }
-    if (role === -1) {
-      router.push(`/`);
-    }
+    // if (role === -1) {
+    //   router.push(`/`);
+    // }
   });
   const { loading, transaction, totalPages, currentPage, setCurrentPage } =
     useDataPaymentFetcher();
