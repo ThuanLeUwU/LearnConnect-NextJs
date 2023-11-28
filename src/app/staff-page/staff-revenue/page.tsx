@@ -162,16 +162,13 @@ const StaffRevenue = () => {
   const options = {
     type: "bar",
     scales: {
-      x: {
-        stacked: true,
-      },
-
       y: {
+        label: true,
         beginAtZero: true,
         max: Math.max(...chartData.datasets[0].data) + 10000, // Adjust max value for better visualization
         ticks: {
           callback: function (value) {
-            return value.toLocaleString(); // Format y-axis ticks as needed
+            return value.toLocaleString() + " VND"; // Format y-axis ticks as needed
           },
         },
       },
@@ -333,7 +330,7 @@ const StaffRevenue = () => {
               <div className="mt-5 rounded-lg border-solid border-2 mx-5 p-10 shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)]">
                 <div className="flex">
                   <div className="text-2xl font-semibold mb-0 pt-4 leading-5">
-                    Total Revenue
+                    Total Revenue Of Web
                   </div>
                 </div>
                 <div className="relative flex justify-center">

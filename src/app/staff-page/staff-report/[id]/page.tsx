@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { Breadcrumb, Button, Form, Modal, Space, Spin } from "antd";
 import { UserAuth } from "@/app/context/AuthContext";
 import { Course } from "@/components/courses/courses";
+import { Mentor } from "@/components/pagination/useDataMentorFetcher";
 
 interface Report {
   id: number;
@@ -61,19 +62,42 @@ const StaffReportID = ({ params }: any) => {
   const [course, setCourse] = useState<Course>();
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          `https://learnconnectapitest.azurewebsites.net/api/course/${idCourse}`
-        );
-        console.log("API Response:", response.data);
-        setCourse(response.data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
+    if (target === "course") {
+      const fetchData = async () => {
+        try {
+          const response = await axios.get(
+            `https://learnconnectapitest.azurewebsites.net/api/course/${idCourse}`
+          );
+          console.log("API Response:", response.data);
+          setCourse(response.data);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      };
 
-    fetchData();
+      fetchData();
+    }
+  }, [idCourse]);
+
+  const [mentor, setMentor] = useState<Mentor>();
+  console.log("Mentor", mentor?.user.fullName);
+
+  useEffect(() => {
+    if (target === "mentor") {
+      const fetchData = async () => {
+        try {
+          const response = await axios.get(
+            `https://learnconnectapitest.azurewebsites.net/api/mentor/${idCourse}`
+          );
+          console.log("API Response:", response.data);
+          setMentor(response.data);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      };
+
+      fetchData();
+    }
   }, [idCourse]);
 
   const handleBack = () => {
@@ -131,7 +155,12 @@ const StaffReportID = ({ params }: any) => {
                 <Breadcrumb.Item>
                   <button onClick={handleBack}>Report</button>
                 </Breadcrumb.Item>
-                <Breadcrumb.Item>{course?.name}</Breadcrumb.Item>
+                {target === "course" && (
+                  <Breadcrumb.Item>{course?.name}</Breadcrumb.Item>
+                )}
+                {target === "mentor" && (
+                  <Breadcrumb.Item>{mentor?.user.fullName}</Breadcrumb.Item>
+                )}
               </Breadcrumb>
 
               {/* <div className="">
