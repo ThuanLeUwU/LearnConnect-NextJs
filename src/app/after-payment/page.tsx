@@ -146,12 +146,10 @@ const AfterPayment = () => {
         ) : (
           <div className="text-center">
             <AiFillExclamationCircle className="text-6xl mx-auto text-red-500" />
-            <h1 className="text-3xl font-bold mb-4">
-              Payment not successfully!
-            </h1>
+            <h1 className="text-3xl font-bold mb-4">Payment Unsuccessful!</h1>
             <div className="text-center">
               <p className="text-lg text-gray-600 mb-8 max-w-md mx-auto">
-                Your payment was not successfully. Please review your payment
+                Your payment was not successful. Please review your payment
                 details and try again. If you need any assistance, please
                 don&apos;t hesitate to contact us.
               </p>

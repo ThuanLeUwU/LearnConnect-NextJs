@@ -242,9 +242,16 @@ export default function CourseDetailPage({ params }: any) {
                     </Link> */}
                   <span className="mx-5"></span>
                   <span className="text-sm font-normal text-[#309255]">
-                    {courses?.totalEnrollment &&
-                      courses?.totalEnrollment.toLocaleString()}{" "}
-                    Enrolled Student
+                    {courses?.totalEnrollment !== undefined ? (
+                      <>
+                        {courses.totalEnrollment.toLocaleString()}{" "}
+                        {courses.totalEnrollment <= 1
+                          ? "Enrolled Student"
+                          : "Enrolled Students"}
+                      </>
+                    ) : (
+                      "No Enrollment Data"
+                    )}
                   </span>
                 </div>
               </div>
@@ -259,7 +266,11 @@ export default function CourseDetailPage({ params }: any) {
                 </div>
 
                 <span className="text-sm text-[#52565b] font-normal">
-                  ({courses?.totalRatingCount} Rating)
+                  {courses && courses.totalRatingCount !== undefined
+                    ? courses.totalRatingCount <= 1
+                      ? `(${courses.totalRatingCount} Rating)`
+                      : `(${courses.totalRatingCount} Ratings)`
+                    : "No Ratings"}
                 </span>
               </div>
             </div>
@@ -358,8 +369,13 @@ export default function CourseDetailPage({ params }: any) {
                                           :
                                         </td>
                                         <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-normal">
-                                          {courses?.contentLength}{" "}
-                                          <span>min</span>
+                                          {courses?.contentLength ?? 0}{" "}
+                                          <span>
+                                            {courses?.contentLength &&
+                                            courses.contentLength <= 1
+                                              ? "minute"
+                                              : "minutes"}
+                                          </span>
                                         </td>
                                       </tr>
                                       <tr className="border-b border-b-[#e7f8ee]">
@@ -531,9 +547,15 @@ export default function CourseDetailPage({ params }: any) {
                         <strong className="text-[#212832] text-base font-medium">
                           Duration
                         </strong>{" "}
-                        <span className="text-[#52565b] float-right text-base font-normal">
-                          {courses?.contentLength} mins
-                        </span>
+                        <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-normal">
+                          {courses?.contentLength ?? 0}{" "}
+                          <span>
+                            {courses?.contentLength &&
+                            courses.contentLength <= 1
+                              ? "minute"
+                              : "minutes"}
+                          </span>
+                        </td>
                       </li>
                       <li className="border-b border-solid border-[#d1e6d9] py-3.5">
                         <i className="icofont-ui-video-play"></i>{" "}
