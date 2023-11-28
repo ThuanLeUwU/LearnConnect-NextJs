@@ -1,6 +1,6 @@
 "use client";
 import LeftNavbar from "@/components/left-navbar/page";
-import { Button, Form, Modal, Space, Spin, Table } from "antd";
+import { Breadcrumb, Button, Form, Modal, Space, Spin, Table, Tag } from "antd";
 import { useEffect, useState } from "react";
 
 import {
@@ -9,13 +9,14 @@ import {
   CategoryScale,
   LinearScale,
   Legend,
+  Tooltip,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 import { UserAuth } from "@/app/context/AuthContext";
 import { http } from "@/api/http";
 import { toast } from "sonner";
 
-ChartJs.register(BarElement, CategoryScale, LinearScale, Legend);
+ChartJs.register(BarElement, CategoryScale, LinearScale, Legend, Tooltip);
 
 interface RevenueEntry {
   date: string;
@@ -31,6 +32,7 @@ export type RevenueMentor = {
   accountNumber: string;
   revenue: number;
   amountToPay: number;
+  isPaid: boolean;
 };
 
 const StaffRevenue = () => {
@@ -39,12 +41,40 @@ const StaffRevenue = () => {
 
   const [rePayModal, setRePayModal] = useState(false);
 
+  const [payToMentor, setPayToMentor] = useState<number>();
+  const [mentor, setMentor] = useState<string>("");
+
   const handleRePayModal = (data: any) => {
+    setPayToMentor(data.mentorUserId);
+    setMentor(data.mentorName);
     setRePayModal(true);
   };
 
   const handleRePay = () => {
-    toast.success("Payment Successfully !!!");
+    try {
+      http
+        .post(
+          `https://learnconnectapitest.azurewebsites.net/api/PayPal/pay-revenue?mentorId=${payToMentor}`,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        )
+        .then(() => {
+          toast.success("Payment Successfully !!!");
+          http
+            .get(
+              "https://learnconnectapitest.azurewebsites.net/api/payment-transaction/aoumt-to-pay-of-mentors-today"
+            )
+            .then((res) => {
+              setRevenueOneMentor(res.data);
+            });
+        });
+    } catch (e) {
+      console.error(e);
+    }
+
     setRePayModal(false);
   };
 
@@ -59,10 +89,11 @@ const StaffRevenue = () => {
       {
         label: "Revenue",
         data: [] as number[],
-        backgroundColor: "#309255d9",
+        backgroundColor: "#309255",
         borderColor: "black",
-        borderWidth: 2,
-        barPercentage: 0.6,
+        borderWidth: 1,
+        barPercentage: 0.4,
+        z: {} as number,
       },
     ],
   });
@@ -93,15 +124,32 @@ const StaffRevenue = () => {
             : entryDateInVN.format("YYYY-MM-DD");
         });
 
-        const values = sortedData.map((entry) => entry.totalRevenue);
+        const total = sortedData.map((entry) => entry.totalRevenue);
+        const profits = sortedData.map((entry) => entry.totalRevenue * 0.05);
 
         setChartData({
           ...chartData,
           labels: labels,
           datasets: [
             {
+              ...chartData.datasets[1],
+              data: total,
+              label: "Profit",
+              backgroundColor: "#309255", // Màu cho Revenue
+              borderColor: "#e7f8ee",
+              borderWidth: 1,
+              barPercentage: 0.4,
+              z: 1,
+            },
+            {
               ...chartData.datasets[0],
-              data: values,
+              data: profits,
+              label: "Revenue",
+              backgroundColor: "#e7f8ee", // Màu cho Profit
+              borderColor: "#309255",
+              borderWidth: 1,
+              barPercentage: 0.4,
+              z: 0,
             },
           ],
         });
@@ -114,6 +162,10 @@ const StaffRevenue = () => {
   const options = {
     type: "bar",
     scales: {
+      x: {
+        stacked: true,
+      },
+
       y: {
         beginAtZero: true,
         max: Math.max(...chartData.datasets[0].data) + 10000, // Adjust max value for better visualization
@@ -124,12 +176,21 @@ const StaffRevenue = () => {
         },
       },
     },
-    tooltips: {
-      callbacks: {
-        label: function (tooltipItem, data) {
-          const dataset = data.datasets[tooltipItem.datasetIndex];
-          const currentValue = dataset.data[tooltipItem.index];
-          return `Revenue: $${currentValue}`;
+    responsive: true,
+    // maintainAspectRatio: f,
+    plugins: {
+      legend: {
+        display: false, // Ẩn hiển thị chú giải
+      },
+      tooltip: {
+        callbacks: {
+          label: (context) => {
+            const label = context.dataset.label || "";
+            const value = context.parsed.y || 0;
+
+            // Format giá trị theo nhu cầu của bạn
+            return value.toLocaleString();
+          },
         },
       },
     },
@@ -218,13 +279,23 @@ const StaffRevenue = () => {
       key: "action",
       render: (text, record) => (
         <span>
-          <Button
-            type="primary"
-            style={{ borderColor: "gray", color: "black" }}
-            onClick={() => handleRePayModal(record)}
-          >
-            Pay
-          </Button>
+          {!record.isPaid ? (
+            <button
+              className="border-2 px-2 py-1 text-sm rounded-md w-16 hover:border-[#309255] hover:text-white hover:bg-[#59b77d]"
+              style={{ color: "black" }}
+              onClick={() => handleRePayModal(record)}
+            >
+              Pay
+            </button>
+          ) : (
+            <button
+              disabled
+              // color="green"
+              className=" border-[#309255] bg-[#59b77d] text-white border-2 px-2 py-1 text-sm rounded-md w-16"
+            >
+              Paid
+            </button>
+          )}
         </span>
       ),
     },
@@ -248,10 +319,16 @@ const StaffRevenue = () => {
             // page6={"/staff-page/list-major"}
           />
           {/* <StaffRatingTable /> */}
-          <div className="w-full my-8 ">
+          <div className="w-full my-4 ">
             <div className="mb-20">
-              <div className="text-start font-semibold text-5xl pb-5 pl-5">
-                Revenue
+              <div className="flex justify-between items-center px-5 bg-[#e7f8ee] mb-5">
+                <Breadcrumb>
+                  <Breadcrumb.Item>
+                    <div className="text-start font-semibold text-4xl my-5 px-4">
+                      Revenue
+                    </div>
+                  </Breadcrumb.Item>
+                </Breadcrumb>
               </div>
               <div className="mt-5 rounded-lg border-solid border-2 mx-5 p-10 shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)]">
                 <div className="flex">
@@ -259,7 +336,7 @@ const StaffRevenue = () => {
                     Total Revenue
                   </div>
                 </div>
-                <div className="relative">
+                <div className="relative flex justify-center">
                   <Bar data={chartData} options={options}></Bar>
                 </div>
               </div>
@@ -279,7 +356,7 @@ const StaffRevenue = () => {
             destroyOnClose={true}
             title={
               <div className="text-lg">
-                Are you sure you want to Pay for this Mentor?
+                Are you sure you want to Pay for {mentor}?
               </div>
             }
             open={rePayModal}

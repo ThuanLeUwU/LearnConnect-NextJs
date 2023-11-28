@@ -70,49 +70,6 @@ export type Rating = {
   courseId: number;
   mentorId: number;
 };
-// export type Test = {
-//   test: {
-//     id: number;
-//     title: string;
-//     description: string;
-//     totalQuestion: number;
-//     createDate: string;
-//     status: number;
-//     courseId: number;
-//     questions: null;
-//   };
-//   questions: {
-//     question: {
-//       id: number;
-//       questionTest: string;
-//       questionType: number;
-//       status: number;
-//       testId: number;
-//     };
-//     answers: {
-//       id: number;
-//       answerTest: string;
-//       isCorrect: boolean;
-//       questionId: number;
-//     };
-//   };
-// };
-
-// export type Question = {
-//   id: number;
-//   questionTest: string;
-//   questionType: number;
-//   status: number;
-//   testId: number;
-// };
-
-// export type Answers = {
-//   id: number;
-//   questionTest: string;
-//   questionType: number;
-//   status: number;
-//   testId: number;
-// };
 
 const Dashboard = ({ params }: any) => {
   const idCourse = params.id;
@@ -2002,36 +1959,6 @@ const Dashboard = ({ params }: any) => {
               </Space>
             </Form>
           </Modal>
-          {/* <Dialog
-        open={deleteVisible}
-        onClose={handleDeleteCancel}
-        aria-describedby="alert-dialog-slide-description"
-      >
-        <DialogTitle
-          sx={{ backgroundColor: "#ff0000", fontSize: "20px", color: "white" }}
-        >
-          {" "}
-          WARNING!!!{" "}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            <Typography>
-              Do you want to Delete the Lecture {oneLecture?.title}?
-            </Typography>
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDeleteCancel}>cancel</Button>
-
-          <Button
-            danger
-            onClick={() => handleDeleteModal(oneLecture)}
-            type="primary"
-          >
-            Remove
-          </Button>
-        </DialogActions>
-      </Dialog> */}
 
           {/* Test Title Modal */}
           <Modal
@@ -2045,7 +1972,6 @@ const Dashboard = ({ params }: any) => {
             style={{
               top: "30%",
             }}
-            // style={{ background: "#FFCCCC" }}
           >
             {/* Add your update form here */}
             <Form
@@ -2087,8 +2013,6 @@ const Dashboard = ({ params }: any) => {
                       className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
                       onClick={handleCancel}
                       style={{
-                        // backgroundColor: "#4caf50",
-                        // borderColor: "#4caf50",
                         border: "2px solid #E0E0E0",
                         color: "black",
                       }}
@@ -2099,8 +2023,6 @@ const Dashboard = ({ params }: any) => {
                       className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
                       htmlType="submit"
                       style={{
-                        // backgroundColor: "#4caf50",
-                        // borderColor: "#4caf50",
                         border: "2px solid #4caf50",
                         color: "#fff",
                       }}

@@ -16,7 +16,13 @@ import {
   Typography,
 } from "@mui/material";
 import Modal from "@mui/material/Modal";
-import { Form, Modal as ModalAntd, Space, Button as ButtonAntd } from "antd";
+import {
+  Form,
+  Modal as ModalAntd,
+  Space,
+  Button as ButtonAntd,
+  Breadcrumb,
+} from "antd";
 import Button from "@mui/material/Button";
 import InstructorCourseStyle from "./styles.module.scss";
 import { toast } from "sonner";
@@ -35,6 +41,7 @@ export type specializationOfMentor = {
 };
 
 export type User = {
+  name: string;
   id: number;
   email: string;
   fullName: string;
@@ -74,7 +81,10 @@ export type ApiData = {
 }[];
 
 const MentorRequest = () => {
-  const [requestData, setRequestData] = useState<ApiData | null>(null);
+  const [requestData, setRequestData] = useState<ApiData | null>([]);
+
+  // console.log("data",requestData[0].user.name );
+
   const [isLoading, setIsLoading] = useState(true);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(0);
@@ -302,13 +312,19 @@ const MentorRequest = () => {
   return (
     <>
       <div className="w-full mt-4">
-        <div className="text-start font-semibold text-5xl pb-5 pl-5">
-          Requests
+        <div className="flex justify-between items-center px-5 bg-[#e7f8ee] mb-5">
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              <div className="text-start font-semibold text-4xl my-5 px-4">
+                Ratings
+              </div>
+            </Breadcrumb.Item>
+          </Breadcrumb>
         </div>
-        <div className="flex justify-center bg-[#e7f8ee] py-4 rounded-md">
+        <div className="flex justify-center py-4 rounded-md">
           <ul className="tabs flex space-x-5">
             <li
-              className={`cursor-pointer rounded-md ${
+              className={`cursor-pointer rounded-md shadow-[5px_5px_20px_10px_rgba(0,0,0,0.15)] ${
                 activeTab === "tab1" ? "bg-[#309255] text-white" : "bg-white"
               }`}
               onClick={() => handleTabClick("tab1", "mentor")}
@@ -318,7 +334,7 @@ const MentorRequest = () => {
               </button>
             </li>
             <li
-              className={`cursor-pointer rounded-md ${
+              className={`cursor-pointer rounded-md shadow-[5px_5px_20px_10px_rgba(0,0,0,0.15)] ${
                 activeTab === "tab2" ? "bg-[#309255] text-white" : "bg-white"
               }`}
               onClick={() => handleTabClick("tab2", "specialization")}
@@ -358,8 +374,10 @@ const MentorRequest = () => {
                         >
                           <TableHead>
                             <TableRow>
-                              <TableCell>Create Date</TableCell>
-                              <TableCell>Name</TableCell>
+                              <TableCell className="w-[150px]">
+                                Create Date
+                              </TableCell>
+                              <TableCell className="w-[200px]">Name</TableCell>
                               <TableCell>Email</TableCell>
                               <TableCell className="w-[600px]">
                                 Description
@@ -392,10 +410,10 @@ const MentorRequest = () => {
                                         ).toLocaleTimeString()}
                                       </div>
                                     </TableCell>
-                                    <TableCell>{data.user.fullName}</TableCell>
+                                    <TableCell>{data.user.name}</TableCell>
                                     <TableCell>{data.user.email}</TableCell>
 
-                                    <TableCell size="small">
+                                    <TableCell>
                                       {data.mentor.description}
                                     </TableCell>
                                     <TableCell>
@@ -707,8 +725,10 @@ const MentorRequest = () => {
                         >
                           <TableHead>
                             <TableRow>
-                              <TableCell>Create Date</TableCell>
-                              <TableCell>Name</TableCell>
+                              <TableCell className="w-[150px]">
+                                Create Date
+                              </TableCell>
+                              <TableCell className="w-[200px]">Name</TableCell>
                               <TableCell>Email</TableCell>
                               <TableCell className="w-[600px]">
                                 Description
@@ -741,7 +761,7 @@ const MentorRequest = () => {
                                         ).toLocaleTimeString()}
                                       </div>
                                     </TableCell>
-                                    <TableCell>{data.user.fullName}</TableCell>
+                                    <TableCell>{data.user.name}</TableCell>
                                     <TableCell>{data.user.email}</TableCell>
 
                                     <TableCell size="small">

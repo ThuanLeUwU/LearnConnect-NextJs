@@ -9,6 +9,7 @@ import UnProtectWrapper from "@/components/wrapper/UnProtecWrapper";
 import { http } from "@/api/http";
 import { Breadcrumb, Spin } from "antd";
 import { toast } from "sonner";
+import { CircularProgress } from "@mui/material";
 
 export default function LoginPage() {
   const { googleSignIn, logOut, setUserLogin, role } = UserAuth();
@@ -57,6 +58,7 @@ export default function LoginPage() {
   };
 
   const loginByEmail = async (email, password) => {
+    setIsFetching(true);
     try {
       const response = await http.post(
         "https://learnconnectapitest.azurewebsites.net/api/user/login-by-email",
@@ -77,6 +79,8 @@ export default function LoginPage() {
     }
   };
 
+  const [isFetching, setIsFetching] = useState(false);
+
   const handleSignInEmailPassword = async (e) => {
     e.preventDefault();
     if (!email) {
@@ -85,6 +89,7 @@ export default function LoginPage() {
       setErrorMessage("Please Input Password");
     } else {
       try {
+        setIsFetching(true);
         setLoading(true);
         const response = await loginByEmail(email, password);
         const decodedToken = jwt.decode(response);
@@ -98,6 +103,7 @@ export default function LoginPage() {
               },
             }
           );
+
           userData = responseUser?.data;
         };
         await fetchUser(decodedToken?.Id);
@@ -107,6 +113,7 @@ export default function LoginPage() {
         console.error("An error occurred while logging in:", error);
       } finally {
         setLoading(false);
+        setIsFetching(false);
       }
     }
   };
@@ -179,14 +186,25 @@ export default function LoginPage() {
                           <div className="mt-5 text-red-500 text-lg">
                             {errorMessage}
                           </div>
+
                           <div className={styles["single-form"]}>
-                            <button
-                              className="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded-2xl py-4 px-3 leading-normal no-underline bg-[#309255] text-white hover:bg-black btn-hover-dark w-full transition-all duration-300 ease-in-out delay-0 my-2"
-                              onClick={handleSignInEmailPassword}
-                              type="submit"
-                            >
-                              Login
-                            </button>
+                            {!isFetching ? (
+                              <button
+                                className="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded-2xl py-4 px-3 leading-normal no-underline bg-[#309255] text-white hover:bg-black btn-hover-dark w-full transition-all duration-300 ease-in-out delay-0 my-2"
+                                onClick={handleSignInEmailPassword}
+                                type="submit"
+                              >
+                                Login
+                              </button>
+                            ) : (
+                              <button
+                                className="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded-2xl py-4 px-3 leading-normal no-underline bg-[#309255] text-white hover:bg-black btn-hover-dark w-full transition-all duration-300 ease-in-out delay-0 my-2"
+                                type="submit"
+                              >
+                                <CircularProgress />
+                              </button>
+                            )}
+
                             <button
                               className="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded-2xl py-4 px-3 leading-normal no-underline bg-white text-[#309255] hover:bg-[#309255] btn-outline w-full border-[#a9f9c8] hover:text-white transition-all duration-300 ease-in-out delay-0 my-2"
                               onClick={handleSignIn}

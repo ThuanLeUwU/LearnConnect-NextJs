@@ -7,6 +7,7 @@ import Paginate from "@/components/pagination/pagination";
 import StaffRatingTable from "@/components/staff-rating-table/page";
 import { use, useEffect, useState } from "react";
 import {
+  Breadcrumb,
   Button,
   Empty,
   Form,
@@ -166,7 +167,7 @@ const MajorSepcialize = () => {
               handleDeleteMajorModal(record);
             }}
           >
-            <DeleteOutlined />
+            <DeleteOutlined className="item-center flex justify-center" />
           </button>
           {/* <Button danger>Delete</Button> */}
         </Space>
@@ -246,7 +247,7 @@ const MajorSepcialize = () => {
               borderRadius: "5px", // Thiết lập chiều cao mong muốn
             }}
           >
-            <DeleteOutlined />
+            <DeleteOutlined className="item-center flex justify-center" />
           </button>
           {/* <Button danger>Delete</Button> */}
         </Space>
@@ -668,14 +669,21 @@ const MajorSepcialize = () => {
            */}
           <div className="w-full mt-4">
             <div className="flex flex-col pb-5 gap-2">
-              <div className="text-start font-semibold text-5xl pl-5">
-                List of Majors
-              </div>
-              <div className="flex justify-end bg-[#e7f8ee] py-4 rounded-md mb-5">
+              <div className="flex justify-between items-center px-5 bg-[#e7f8ee] mb-5">
+                <Breadcrumb>
+                  <Breadcrumb.Item>
+                    <div className="text-start font-semibold text-4xl my-5 px-4">
+                      Majors
+                    </div>
+                  </Breadcrumb.Item>
+                </Breadcrumb>
                 <div className="flex justify-end ">
-                  <Button className=" mr-5" onClick={handleCreateMajor}>
+                  <button
+                    className=" my-3 px-5 py-3 bg-[#eefbf3] text-[#309255] border-[#309255] border rounded-lg  flex justify-center items-center  hover:bg-[#309255] hover:border-[#309255] hover:text-[#e5ecff] focus:outline-none transition-all duration-300"
+                    onClick={handleCreateMajor}
+                  >
                     New Major
-                  </Button>
+                  </button>
                 </div>
               </div>
             </div>
@@ -701,10 +709,13 @@ const MajorSepcialize = () => {
                     <div className="text-center font-semibold text-3xl ">
                       All Specializations of {majorName}
                     </div>
-                    <div className="flex justify-end ">
-                      <Button className="mr-5" onClick={handleCreateSpecialize}>
+                    <div className="flex justify-end px-5">
+                      <button
+                        className=" my-3 px-5 py-3 bg-[#eefbf3] text-[#309255] border-[#309255] border rounded-lg  flex justify-center items-center  hover:bg-[#309255] hover:border-[#309255] hover:text-[#e5ecff] focus:outline-none transition-all duration-300"
+                        onClick={handleCreateSpecialize}
+                      >
                         Add More
-                      </Button>
+                      </button>
                     </div>
                   </div>
                   {specializations.length === 0 ? (

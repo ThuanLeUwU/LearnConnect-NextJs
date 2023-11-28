@@ -436,7 +436,7 @@ const Header = () => {
                 <div>
                   <button
                     className={`${headerStyles.header_more}`}
-                    onMouseEnter={toggleDropdown}
+                    onClick={toggleDropdown}
                     // onMouseLeave={toggleDropdown}
                   >
                     <img
