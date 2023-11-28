@@ -38,6 +38,7 @@ export type specializationOfMentor = {
   status: number;
   specializationId: number;
   mentorId: number;
+  description: string;
 };
 
 export type User = {
@@ -78,6 +79,7 @@ export type ApiData = {
   mentor: Mentor;
   specialization: specializationOfMentor;
   verificationDocuments: VerificationDocument[];
+  specializationDocuments: VerificationDocument[];
 }[];
 
 const MentorRequest = () => {
@@ -100,6 +102,9 @@ const MentorRequest = () => {
   const [selectedDocuments, setSelectedDocuments] = useState<
     VerificationDocument[]
   >([]);
+  const [selectedDocuments2, setSelectedDocuments2] = useState<
+    VerificationDocument[]
+  >([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [confirmationData, setConfirmationData] = useState<{
     isOpen: boolean;
@@ -116,9 +121,16 @@ const MentorRequest = () => {
   const [noteInput, setNoteInput] = useState("");
 
   console.log("token Staff:", jwtToken);
-  const handleViewMoreClick = (documents: VerificationDocument[]) => {
-    setSelectedDocuments(documents);
+
+  const handleViewMoreClick = (
+    verify: VerificationDocument[],
+    specialization: VerificationDocument[],
+    description: string
+  ) => {
+    specialization[0].description = description;
+    setSelectedDocuments(verify);
     setIsModalOpen(true);
+    setSelectedDocuments2(specialization);
   };
 
   const handleCloseModal = () => {
@@ -309,6 +321,19 @@ const MentorRequest = () => {
     setConfirmationModalOpen(false);
   };
 
+  function formatDate(dateString: string): string {
+    const options: Intl.DateTimeFormatOptions = {
+      day: "numeric",
+      month: "numeric",
+      year: "numeric",
+    };
+    const formattedDate = new Date(dateString).toLocaleDateString(
+      undefined,
+      options
+    );
+    return formattedDate || "";
+  }
+
   return (
     <>
       <div className="w-full mt-4">
@@ -437,7 +462,10 @@ const MentorRequest = () => {
                                       <Button
                                         onClick={() =>
                                           handleViewMoreClick(
-                                            data.verificationDocuments
+                                            data.verificationDocuments,
+                                            data.specializationDocuments,
+                                            data.specializationOfMentor
+                                              .description
                                           )
                                         }
                                       >
@@ -526,7 +554,7 @@ const MentorRequest = () => {
                     gap: 2,
                     alignItems: "center",
                     justifyContent: "center",
-                    width: "70vw",
+                    width: "50vw",
                     minHeight: 380,
                     p: 4,
                     bgcolor: "white",
@@ -538,15 +566,50 @@ const MentorRequest = () => {
                       No information available
                     </Typography>
                   ) : (
-                    <div className="scrollable-container">
-                      <div className="grid grid-cols-2 gap-4">
-                        {selectedDocuments.map((doc) => (
-                          <div key={doc.id}>
-                            <p className="text-xl">{doc.description}</p>
+                    <div className="">
+                      <div className="scrollable-container max-h-[750px] overflow-y-auto mx-5">
+                        {selectedDocuments.map((doc, index) => (
+                          <div className="pt-5" key={doc.id}>
+                            {index === 0 && (
+                              <div className="flex">
+                                <p className="text-xl">Font ID Image: </p>
+                                <p className="text-xl font-bold">
+                                  {doc.description}
+                                </p>
+                              </div>
+                            )}
+                            {index === 1 && (
+                              <div className="flex">
+                                <p className="text-xl">Back ID Image:</p>
+                                <p className="text-xl font-bold">
+                                  {formatDate(doc.description)}
+                                </p>
+                              </div>
+                            )}
                             <img
                               src={doc.documentUrl}
                               alt={doc.description}
-                              className="w-full h-[350px] rounded-lg"
+                              className="w-full h-auto rounded-lg"
+                            />
+                          </div>
+                        ))}
+                        {selectedDocuments2.map((doc) => (
+                          <div className="pt-5" key={doc.id}>
+                            {
+                              <div className="flex">
+                                <p className="text-xl">Specialization: </p>
+                                <p className="text-xl font-bold">
+                                  {doc.description}
+                                </p>
+                                {/* <p className="text-xl font-bold">
+                                  {formatDate(doc.description)}
+                                </p> */}
+                              </div>
+                            }
+                            <img
+                              src={doc.documentUrl}
+                              alt={doc.description}
+                              className="w-full h-auto rounded-lg"
                             />
                           </div>
                         ))}
@@ -788,7 +851,10 @@ const MentorRequest = () => {
                                       <Button
                                         onClick={() =>
                                           handleViewMoreClick(
-                                            data.verificationDocuments
+                                            data.verificationDocuments,
+                                            data.specializationDocuments,
+                                            data.specializationOfMentor
+                                              .description
                                           )
                                         }
                                       >
@@ -884,23 +950,25 @@ const MentorRequest = () => {
                     borderRadius: 8,
                   }}
                 >
-                  {selectedDocuments.length === 0 ? (
+                  {selectedDocuments2.length === 0 ? (
                     <Typography variant="subtitle1" textAlign="center">
                       No information available
                     </Typography>
                   ) : (
                     <div className="scrollable-container w-full">
                       <div className="w-full">
-                        {selectedDocuments.map((doc) => (
+                        {selectedDocuments2.map((doc) => (
                           <div
                             key={doc.id}
                             className="w-full mx-auto overflow-hidden p-8"
                           >
-                            <p className="text-xl mb-5">{doc.description}</p>
+                            <p className="text-xl mb-5">
+                              Specialization: {doc.description}
+                            </p>
                             <div className="max-h-[600px] overflow-y-auto">
                               <img
                                 src={doc.documentUrl}
-                                alt={doc.description}
+                                alt="SpecializationImage"
                                 className="w-full h-auto rounded-lg m-auto"
                               />
                             </div>

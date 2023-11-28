@@ -75,7 +75,7 @@ const Transaction = () => {
             <Spin size="large" />
           </div>
         ) : (
-          <div className="w-full overflow-x-auto">
+          <div className="w-full overflow-x-auto min-h-[500px]">
             <table className="w-full table-auto">
               <thead>
                 <tr>

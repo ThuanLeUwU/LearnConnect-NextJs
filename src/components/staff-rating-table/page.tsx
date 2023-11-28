@@ -78,6 +78,8 @@ const StaffRatingTable = () => {
     }
   };
 
+  console.log("JWT Staff", jwtToken);
+
   useEffect(() => {
     fetchData();
   }, [selectedType]);
@@ -218,6 +220,9 @@ const StaffRatingTable = () => {
                                   </TableSortLabel>
                                 </TableCell>
                                 <TableCell className="w-[400px] text-[14px]">
+                                  Course
+                                </TableCell>
+                                <TableCell className="w-[400px] text-[14px]">
                                   Rating by
                                 </TableCell>
                                 <TableCell className="text-[14px]">
@@ -252,6 +257,20 @@ const StaffRatingTable = () => {
                                           {new Date(
                                             rating.ratingInfo.timeStamp
                                           ).toLocaleTimeString()}
+                                        </div>
+                                      </TableCell>
+                                      <TableCell>
+                                        <div className="flex">
+                                          <img
+                                            src={rating.ratingInfo.courseImage}
+                                            alt="Author"
+                                            className="w-28 h-28 rounded-lg border border-opacity-20 border-[#309255]"
+                                          />
+                                          <div className="mt-2">
+                                            <p className="ml-2 text-[20px]">
+                                              {rating.ratingInfo.courseName}
+                                            </p>
+                                          </div>
                                         </div>
                                       </TableCell>
                                       <TableCell>
@@ -370,6 +389,9 @@ const StaffRatingTable = () => {
                                   </TableSortLabel>
                                 </TableCell>
                                 <TableCell className="w-[400px] text-[14px]">
+                                  Mentors
+                                </TableCell>
+                                <TableCell className="w-[400px] text-[14px]">
                                   Rating by
                                 </TableCell>
                                 <TableCell className="text-[14px]">
@@ -404,6 +426,20 @@ const StaffRatingTable = () => {
                                           {new Date(
                                             rating.ratingInfo.timeStamp
                                           ).toLocaleTimeString()}
+                                        </div>
+                                      </TableCell>
+                                      <TableCell>
+                                        <div className="flex">
+                                          <img
+                                            src={rating.ratingInfo.mentorImage}
+                                            alt="Author"
+                                            className="w-28 h-28 rounded-lg border border-opacity-20 border-[#309255]"
+                                          />
+                                          <div className="mt-2">
+                                            <p className="ml-2 text-[20px]">
+                                              {rating.ratingInfo.mentorName}
+                                            </p>
+                                          </div>
                                         </div>
                                       </TableCell>
                                       <TableCell>

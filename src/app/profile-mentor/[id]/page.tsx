@@ -25,16 +25,23 @@ import { http } from "@/api/http";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 
 export type User = {
+  mentor: any;
+  user: any;
+  mentorInfo: any;
+  userInfo: any;
   id: string | number;
   password: string;
   email: string;
-  role: 1;
+  role: 0;
   fullName: string;
   phoneNumber: string;
-  gender: number;
+  gender: 0;
   bioDescription: string;
   profilePictureUrl: string;
   status: number;
+  MentorProfile: {
+    id: string;
+  };
 };
 export type CourseItemProfile = {
   id: string | number;
@@ -102,11 +109,11 @@ export default function ProfileUser({ params }: any) {
     setSelected(value);
   };
   const toggleDropdown = () => {
-    if (!jwtToken) {
-      toast.error("You Must Login To Do This Action");
-      router.push("/login");
-      return;
-    }
+    // if (!jwtToken) {
+    //   toast.error("You Must Login To Do This Action");
+    //   router.push("/login");
+    //   return;
+    // }
     setIsDropdownOpen(!isDropdownOpen);
   };
 
@@ -134,11 +141,23 @@ export default function ProfileUser({ params }: any) {
   const [formDataImage, setFormDataImage] = useState();
 
   const showModal = () => {
+    if (!jwtToken) {
+      toast.error("You Must Login To Report");
+      router.push("/login");
+      return;
+    }
+    setIsDropdownOpen(!isDropdownOpen);
     setIsModalOpen(true);
   };
 
   const showModalRating = () => {
+    if (!jwtToken) {
+      toast.error("You Must Login To Rating");
+      router.push("/login");
+      return;
+    }
     setModalRatingOpen(true);
+    setIsDropdownOpen(!isDropdownOpen);
   };
 
   const handleCancel = () => {
@@ -262,7 +281,7 @@ export default function ProfileUser({ params }: any) {
         const response = await axios.get(
           `https://learnconnectapitest.azurewebsites.net/api/mentor/${idMentor}`
         );
-        SetDataMentor(response?.data.user);
+        SetDataMentor(response?.data);
         console.log("data mentor", response?.data);
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -309,6 +328,8 @@ export default function ProfileUser({ params }: any) {
     router.push("/list-mentor");
   };
 
+  console.log("data", DataMentor);
+
   return (
     <>
       <div className="bg-[#e7f8ee]">
@@ -327,7 +348,7 @@ export default function ProfileUser({ params }: any) {
                 <button onClick={breadcrumbMentors}>Mentor</button>
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                <span>{DataMentor?.fullName}</span>
+                <span>{DataMentor?.user.fullName}</span>
               </Breadcrumb.Item>
             </Breadcrumb>{" "}
           </div>
@@ -350,25 +371,34 @@ export default function ProfileUser({ params }: any) {
                       <div className="lg:mr-4 lg:mt-0 flex flex-col items-center w-full lg:w-36">
                         <img
                           src={
-                            DataMentor?.profilePictureUrl ||
+                            DataMentor?.user.profilePictureUrl ||
                             "www.default.imageurl"
                           }
                           alt="Generic placeholder image"
                           className="w-36 h-36 rounded-full mt-4 mb-2"
                         />
+                        <Rating
+                          size="large"
+                          name="half-rating-read"
+                          max={5}
+                          precision={0.1}
+                          readOnly
+                          value={DataMentor?.mentor.averageRating}
+                        />
                       </div>
+
                       <div className="author-content pl-4 my-auto">
                         <h5 className="text-lg my-1">
-                          Full Name: {DataMentor?.fullName}
+                          Full Name: {DataMentor?.user.fullName}
                         </h5>
                         <h5 className="text-lg my-1">
-                          Email: {DataMentor?.email}
+                          Email: {DataMentor?.user.email}
                         </h5>
                         <h5 className="text-lg my-1">
-                          Gender: {displayGender(DataMentor?.gender)}
+                          Gender: {displayGender(DataMentor?.user.gender)}
                         </h5>
                         <h5 className="text-lg my-1">
-                          Phone: {DataMentor?.phoneNumber}
+                          Phone: {DataMentor?.user.phoneNumber}
                         </h5>
                       </div>
                       <div className="ml-auto">
@@ -406,7 +436,7 @@ export default function ProfileUser({ params }: any) {
                         <p className="font-semibold text-lg mb-2">Biography</p>
                         <div className="p-4 bg-gray-200">
                           <p className="italic mb-1">
-                            {DataMentor?.bioDescription}
+                            {DataMentor?.user.bioDescription}
                           </p>
                         </div>
                       </div>
@@ -503,7 +533,7 @@ export default function ProfileUser({ params }: any) {
                   </div>
                   <Modal
                     destroyOnClose={true}
-                    title={`Report ${DataMentor?.fullName} by ${userData?.fullName}`}
+                    title={`Report ${DataMentor?.user.fullName} by ${userData?.fullName}`}
                     open={isModalOpen}
                     // onOk={handleOk}
                     onCancel={handleCancel}
@@ -563,7 +593,7 @@ export default function ProfileUser({ params }: any) {
                   </Modal>
                   <Modal
                     destroyOnClose={true}
-                    title={`Rating ${DataMentor?.fullName} by ${userData?.fullName}`}
+                    title={`Rating ${DataMentor?.user.fullName} by ${userData?.fullName}`}
                     open={modalRating}
                     // onOk={handleOk}
                     onCancel={handleCancel}

@@ -1,5 +1,4 @@
 "use client";
-
 import { RegisterForm } from "@/components/registerForm";
 import { useRouter } from "next/navigation";
 import { UserAuth } from "../context/AuthContext";
