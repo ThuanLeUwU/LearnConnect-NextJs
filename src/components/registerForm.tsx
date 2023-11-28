@@ -152,6 +152,7 @@ export const RegisterForm = () => {
         setBackImage(url);
       });
     }
+    setFileList1(info.fileList);
   };
 
   const handleChangeDocumentData = (info: any) => {
@@ -164,6 +165,7 @@ export const RegisterForm = () => {
         setDocumentImage(url);
       });
     }
+    setFileList2(info.fileList);
   };
 
   const getBase64 = (img: any, callback: (url: string) => void) => {
@@ -197,10 +199,6 @@ export const RegisterForm = () => {
 
   const handleTabChange = (key: string) => {
     setCurrentTab(key);
-  };
-
-  const handleSubmitForm1 = async (values: any) => {
-    const { description, CardFront, CardBack } = values;
   };
 
   const handleSubmit = async (values: any) => {

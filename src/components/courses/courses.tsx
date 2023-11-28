@@ -189,13 +189,21 @@ const Courses = ({
         </div>
         <div className={`${CourseStyle.single_courses_timeline}`}>
           <span>
-            {" "}
-            {totalEnrollment && totalEnrollment.toLocaleString()} Students
-            Joined
+            {totalEnrollment !== undefined ? (
+              <>
+                {" "}
+                {Number(totalEnrollment).toLocaleString()}{" "}
+                {Number(totalEnrollment) <= 1 ? "Student" : "Students"} Joined
+              </>
+            ) : (
+              "No Enrollment Data"
+            )}
           </span>
           <span>
             {" "}
-            <i className="icofont-read-book"></i> {lectureCount} Lectures{" "}
+            <i className="icofont-read-book"></i>{" "}
+            {Number(lectureCount).toLocaleString()}{" "}
+            {Number(lectureCount) <= 1 ? "Lecture" : "Lectures"}
           </span>
         </div>
         <div className={`${CourseStyle.single_courses_timeline}`}>
@@ -207,7 +215,9 @@ const Courses = ({
               readOnly
             />
           </span>
-          <span className="font-extralight">{totalRatingCount} Rating</span>
+          <span className="font-extralight">
+            {totalRatingCount} {totalRatingCount <= 1 ? "Rating" : "Ratings"}
+          </span>
         </div>
         <div
           className={`${CourseStyle.single_courses_price} flex items-center`}
