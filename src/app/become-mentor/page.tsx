@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { UserAuth } from "../context/AuthContext";
 import { useEffect } from "react";
 import { Breadcrumb } from "antd";
+import Loading from "@/components/loading/loading";
 
 export default function BecomeMentor() {
   const router = useRouter();
@@ -32,7 +33,7 @@ export default function BecomeMentor() {
   };
 
   return role ? (
-    <div></div>
+    <Loading />
   ) : (
     <>
       <div className="bg-[#e7f8ee]">
