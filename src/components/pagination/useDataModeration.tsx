@@ -26,7 +26,6 @@ const useDataModeration = (status: number) => {
   const [currentPage, setCurrentPage] = useState(0);
 
   useEffect(() => {
-    console.log("2");
     const fetchData = async () => {
       const page = Math.min(currentPage + 1, totalPages);
       try {
@@ -46,7 +45,6 @@ const useDataModeration = (status: number) => {
 
   useEffect(() => {
     setCurrentPage(0);
-    console.log("1");
     const fetchData = async () => {
       const page = Math.min(currentPage + 1, totalPages);
       try {

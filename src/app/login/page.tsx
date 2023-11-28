@@ -159,7 +159,7 @@ export default function LoginPage() {
               ) : ( */}
               <div className="grid lg:grid-cols-2 pt-6 px-10 pb-16 border border-solid border-opacity-20 border-[#30925533] rounded-10">
                 <div className="mx-auto pt-16">
-                  <img src="/register-login.png" alt="Shape" />
+                  <img src="/images/loginImage.png" alt="Shape" />
                 </div>
                 <div className="">
                   <div className="mx-auto max-w-md">

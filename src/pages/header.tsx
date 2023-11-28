@@ -57,7 +57,6 @@ const Header = () => {
     const currentRoute = window.location.href;
     var contentUrl = currentRoute.split("/").reverse()[0];
     setActiveTab(contentUrl);
-    console.log("currentRoute", contentUrl);
   }, []);
 
   const { role, user, googleSignIn, logOut } = UserAuth();
@@ -138,7 +137,6 @@ const Header = () => {
 
   useEffect(() => {
     const currentRoute = window.location.href;
-    console.log("currentRoute", currentRoute);
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
@@ -185,7 +183,6 @@ const Header = () => {
     formData.append("fullName", data.fullName);
     formData.append("email", data.email);
     formData.append("password", data.password);
-    console.log("data", data.fullName, data.email, data.password);
     try {
       await http.post(
         `https://learnconnectapitest.azurewebsites.net/api/user/create-account-staff`,

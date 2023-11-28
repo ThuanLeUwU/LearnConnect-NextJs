@@ -31,7 +31,7 @@ export default function ListMentor() {
   const { loading, mentor, mentorID, totalPages, currentPage, setCurrentPage } =
     useDataMentorFetcher();
   const handleSwiperWrapperClick = (IdMentor) => {
-    console.log("id mentor:", IdMentor);
+    // console.log("id mentor:", IdMentor);
     router.push(`/profile-mentor/${IdMentor}`);
   };
   const breadcrumbsHome = () => {

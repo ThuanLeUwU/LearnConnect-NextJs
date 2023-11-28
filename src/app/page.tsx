@@ -5,11 +5,10 @@ import HowItWork from "@/components/howItWorks/HowItWork";
 import RegisInstructor from "@/components/registerInstructor/Register";
 import Image from "next/image";
 import React, { useEffect } from "react";
-import useDataFetcher from "@/components/pagination/useDataFetcher";
-import Paginate from "@/components/pagination/pagination";
+
 import useDataHomeFetcher from "@/components/pagination/useDataHomeFetcher";
 import Search from "@/components/search/search";
-import { Breadcrumb, Spin } from "antd";
+import { Spin } from "antd";
 import { UserAuth } from "./context/AuthContext";
 import { useRouter } from "next/navigation";
 import "./globals.css";
@@ -80,7 +79,7 @@ export default function Home() {
               Start A Course
             </button>
           </div>
-          <img className="w-3/6" src="/images/slider-1.png" alt="Shape" />
+          <img className="w-3/6" src="/images/Background.png" alt="Shape" />
         </div>
       </div>
       <div className="container">

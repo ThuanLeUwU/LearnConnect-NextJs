@@ -78,7 +78,7 @@ const StaffRatingTable = () => {
     }
   };
 
-  console.log("JWT Staff", jwtToken);
+  // console.log("JWT Staff", jwtToken);
 
   useEffect(() => {
     fetchData();

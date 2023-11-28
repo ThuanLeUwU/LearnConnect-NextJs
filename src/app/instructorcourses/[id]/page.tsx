@@ -127,7 +127,7 @@ const Dashboard = ({ params }: any) => {
   };
 
   const handleDeleteModal = (record: any) => {
-    console.log("record", record);
+    // console.log("record", record);
     setSelectedItem(record);
     setOneLecture(record);
     setDeleteVisible(true);
@@ -231,10 +231,10 @@ const Dashboard = ({ params }: any) => {
   useEffect(() => {
     if (isModerating === false) {
       toast.success("Moderation Video Complete!");
-      console.log("moder", isModerating);
+      // console.log("moder", isModerating);
     } else if (isModerating === true) {
       toast.info("Create Lecture Successfully! Video is moderating ... ");
-      console.log("moder", isModerating);
+      // console.log("moder", isModerating);
     }
   }, [isModerating]);
 
@@ -686,7 +686,7 @@ const Dashboard = ({ params }: any) => {
 
   const [isChecked, setIsChecked] = useState<boolean>(false);
   const handleSetIsChecked = (value: boolean) => {
-    console.log("CALL: ", value);
+    // console.log("CALL: ", value);
     setIsChecked(value);
   };
   // console.log("check", isChecked);
@@ -788,7 +788,7 @@ const Dashboard = ({ params }: any) => {
   const handleSaveData2 = (data: any, isCheckedCustom: boolean) => {
     // console.log("tui nè má", data);
     // setAnswerId(0);
-    console.log("nani", isCheckedCustom);
+    // console.log("nani", isCheckedCustom);
     const formData = new FormData();
     formData.append("answerText", updateAnswer);
     formData.append("isCorrect", isCheckedCustom.toString());
@@ -855,7 +855,7 @@ const Dashboard = ({ params }: any) => {
   }, [isChecked]);
 
   const handleBlur2 = (data: any) => {
-    console.log("DÈAULT: ", isChecked);
+    // console.log("DÈAULT: ", isChecked);
     let isCheckVal = isChecked;
     if (hasChanged2) {
       Modal.confirm({
@@ -882,7 +882,7 @@ const Dashboard = ({ params }: any) => {
           },
         },
         onOk: (...args: any[]) => {
-          console.log("SEND: ", isCheckVal);
+          // console.log("SEND: ", isCheckVal);
           handleSaveData2(data, isCheckVal);
         },
         onCancel: () => {
