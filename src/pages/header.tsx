@@ -433,19 +433,24 @@ const Header = () => {
               </li>
               <li className={`${headerStyles.header_info_img}`}></li>
               <li>
-                <button
-                  className={`${headerStyles.header_more}`}
-                  onClick={toggleDropdown}
-                >
-                  <img
-                    className={`${headerStyles.header_info_src}`}
-                    src={userData?.profilePictureUrl || "www.default.imageurl"}
-                    alt="author"
-                  ></img>
-                </button>
+                <div>
+                  <button
+                    className={`${headerStyles.header_more}`}
+                    onMouseEnter={toggleDropdown}
+                    // onMouseLeave={toggleDropdown}
+                  >
+                    <img
+                      className={`${headerStyles.header_info_src}`}
+                      src={
+                        userData?.profilePictureUrl || "www.default.imageurl"
+                      }
+                      alt="author"
+                    ></img>
+                  </button>
+                </div>
                 {isOpen && (
                   <div
-                    className="origin-top-right absolute right-0 mt-2 w-44 rounded-lg shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-[2]"
+                    className="origin-top-right absolute right-0 mt-2 w-44 rounded-lg shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-[9999]"
                     id="dropdown-profile"
                   >
                     <ul
@@ -467,7 +472,7 @@ const Header = () => {
                           <li>
                             <Link
                               href="/transaction"
-                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-tl-lg rounded-tr-lg hover:rounded-bl-lg hover:rounded-br-lg"
+                              className="block px-4 py-2 text-sm text-gray-700  hover:bg-gray-100 rounded-tl-lg rounded-tr-lg hover:rounded-bl-lg hover:rounded-br-lg"
                               onClick={closeDropdown}
                             >
                               Transactions

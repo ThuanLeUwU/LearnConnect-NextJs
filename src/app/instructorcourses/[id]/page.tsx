@@ -132,6 +132,9 @@ const Dashboard = ({ params }: any) => {
   const showModal = () => {
     setIsModal(true);
   };
+  const handleCreateCancel = () => {
+    setIsModal(false);
+  };
 
   const handleCancel = () => {
     setIsModal(false);
@@ -250,42 +253,47 @@ const Dashboard = ({ params }: any) => {
   };
 
   const handleSubmit = async (data: any) => {
-    const formData = new FormData();
-    formData.append("title", data.title);
-    formData.append("content", data.content);
-    formData.append("contentType", type.toString());
-    formData.append("contentUrl", source);
-    // if (formDataSource !== undefined) {
-    //   formData.append("contentUrl", formDataSource);
-    // }
+    if (!source) {
+      toast.error("Please Input Your Video Content!");
+    } else {
+      const formData = new FormData();
+      formData.append("title", data.title);
+      formData.append("content", data.content);
+      formData.append("contentType", type.toString());
+      formData.append("contentUrl", source);
+      // if (formDataSource !== undefined) {
+      //   formData.append("contentUrl", formDataSource);
+      // }
 
-    try {
-      await http
-        .post(
-          `https://learnconnectapitest.azurewebsites.net/api/lecture/create-new-lecture?userId=${id}&courseId=${idCourse}`,
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        )
-        .then(() => {
-          handleCancel();
-          toast.success("Create Lecture Successfully");
-          http
-            .get(
-              `https://learnconnectapitest.azurewebsites.net/api/lecture/by-course/${idCourse}`
-            )
-            .then((response) => {
-              setLectures(response.data);
-              setLoading(false);
-            });
+      try {
+        await http
+          .post(
+            `https://learnconnectapitest.azurewebsites.net/api/lecture/create-new-lecture?userId=${id}&courseId=${idCourse}`,
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          )
+          .then(() => {
+            form.resetFields();
+            handleCreateCancel();
+            toast.success("Create Lecture Successfully");
+            http
+              .get(
+                `https://learnconnectapitest.azurewebsites.net/api/lecture/by-course/${idCourse}`
+              )
+              .then((response) => {
+                setLectures(response.data);
+                setLoading(false);
+              });
+          });
+      } catch (err) {
+        setTimeout(() => {
+          toast.error("Create Lecture fail");
         });
-    } catch (err) {
-      setTimeout(() => {
-        toast.error("Create Lecture fail");
-      });
+      }
     }
   };
 
@@ -461,10 +469,10 @@ const Dashboard = ({ params }: any) => {
     },
 
     {
-      title: "Actions",
+      title: <div className="text-center">Actions</div>,
       key: "actions",
       render: (text, record) => (
-        <Space>
+        <Space className="flex justify-center">
           <Button onClick={() => handleUpdateModal(record)}>Update</Button>
           <Button danger onClick={() => handleDeleteModal(record)}>
             Delete
@@ -1648,7 +1656,7 @@ const Dashboard = ({ params }: any) => {
             open={isModal}
             // onOk={handleOk}
             width={600}
-            onCancel={handleCancel}
+            onCancel={handleCreateCancel}
             footer={false}
             style={{
               top: "30%",
@@ -1669,14 +1677,17 @@ const Dashboard = ({ params }: any) => {
                 label="Title"
                 name="title"
               >
-                <Input placeholder="Input Title" />
+                <Input placeholder="Input Title Lecture" />
               </Form.Item>
               <Form.Item
                 rules={[{ required: true, message: "Please input Name!" }]}
                 label="Content"
                 name="content"
               >
-                <Input.TextArea rows={4} />
+                <Input.TextArea
+                  rows={4}
+                  placeholder="Input More Details Content"
+                />
               </Form.Item>
               <Form.Item label="Type">
                 <Select onChange={handleChangeType} defaultValue={type}>
@@ -1740,7 +1751,7 @@ const Dashboard = ({ params }: any) => {
                   <Space>
                     <Button
                       className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
-                      onClick={handleCancel}
+                      onClick={handleCreateCancel}
                       style={{
                         // backgroundColor: "#4caf50",
                         // borderColor: "#4caf50",
@@ -1900,17 +1911,6 @@ const Dashboard = ({ params }: any) => {
               </Space>
             </Form>
           </Modal>
-          {/* Delete Lecture */}
-          {/* <Modal
-        title="Delete Item"
-        open={deleteVisible}
-        onOk={handleDeleteOk}
-        onCancel={handleDeleteCancel}
-      >
-        <p>Are you sure you want to delete this item?</p>
-      </Modal> */}
-
-          {/* Dialog */}
 
           <Modal
             destroyOnClose={true}
