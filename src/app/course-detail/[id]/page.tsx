@@ -547,15 +547,17 @@ export default function CourseDetailPage({ params }: any) {
                         <strong className="text-[#212832] text-base font-medium">
                           Duration
                         </strong>{" "}
-                        <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-normal">
-                          {courses?.contentLength ?? 0}{" "}
-                          <span>
-                            {courses?.contentLength &&
-                            courses.contentLength <= 1
-                              ? "minute"
-                              : "minutes"}
-                          </span>
-                        </td>
+                        <span className="text-[#52565b] float-right text-base font-normal">
+                          {
+                            courses?.contentLength !== undefined
+                              ? `${courses.contentLength} ${
+                                  courses.contentLength <= 1
+                                    ? "minute"
+                                    : "minutes"
+                                }`
+                              : "N/A" // or some default value when contentLength is undefined
+                          }
+                        </span>
                       </li>
                       <li className="border-b border-solid border-[#d1e6d9] py-3.5">
                         <i className="icofont-ui-video-play"></i>{" "}

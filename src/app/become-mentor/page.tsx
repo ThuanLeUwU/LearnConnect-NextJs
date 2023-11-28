@@ -6,7 +6,7 @@ import { UserAuth } from "../context/AuthContext";
 import { useEffect } from "react";
 import { Breadcrumb } from "antd";
 
-export default function EditProfile() {
+export default function BecomeMentor() {
   const router = useRouter();
   const { role } = UserAuth();
   useEffect(() => {
@@ -22,16 +22,18 @@ export default function EditProfile() {
     // if (role === 3) {
     //   router.push(`/`);
     // }
-    // if (role === -1) {
-    //   router.push(`/`);
-    // }
+    if (role === -1) {
+      router.push(`/`);
+    }
   });
 
   const breadcrumbsHome = () => {
     router.push("/");
   };
 
-  return (
+  return role ? (
+    <div></div>
+  ) : (
     <>
       <div className="bg-[#e7f8ee]">
         <div

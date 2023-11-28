@@ -28,6 +28,7 @@ import { http } from "@/api/http";
 import { maxTime } from "date-fns";
 import { Document, Page } from "react-pdf/dist/esm/entry.webpack";
 import { BsFillFlagFill } from "react-icons/bs";
+import Loading from "@/components/loading/loading";
 
 export type Lecture = {
   id: string | number;
@@ -65,9 +66,9 @@ export default function AfterEnroll({ params }: any) {
     // if (role === 3) {
     //   router.push(`/`);
     // }
-    // if (role === -1) {
-    //   router.push(`/`);
-    // }
+    if (role === -1) {
+      router.push(`/`);
+    }
   });
   const [activeTab, setActiveTab] = useState("tab1");
   const { id, user, jwtToken, userData } = UserAuth();
@@ -459,7 +460,9 @@ export default function AfterEnroll({ params }: any) {
     router.push("/my-course");
   };
 
-  return (
+  return role ? (
+    <Loading />
+  ) : (
     <>
       <div className="bg-[#e7f8ee]">
         <div
@@ -795,7 +798,12 @@ export default function AfterEnroll({ params }: any) {
                                                 </td>
                                                 <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-normal">
                                                   {courses?.contentLength}{" "}
-                                                  <span>min</span>
+                                                  <span>
+                                                    {courses?.contentLength &&
+                                                    courses.contentLength <= 1
+                                                      ? "minute"
+                                                      : "minutes"}
+                                                  </span>
                                                 </td>
                                               </tr>
                                               <tr className="border-b border-b-[#e7f8ee]">
@@ -862,7 +870,15 @@ export default function AfterEnroll({ params }: any) {
             <div className="bg-[#dff0e6] px-[30px] pt-[15px] pb-[25px]">
               <h3 className="text-[22px] mt-2.5">{courses?.name}</h3>
               <span className="mt-2.5 text-[#309255] text-[18px]">
-                {courses?.lectureCount} Lectures ({courses?.contentLength} m)
+                {courses?.lectureCount}{" "}
+                {courses?.lectureCount && courses.lectureCount <= 1
+                  ? "Lecture"
+                  : "Lectures"}{" "}
+                ({courses?.contentLength}{" "}
+                {courses?.contentLength && courses.contentLength <= 1
+                  ? "minute"
+                  : "minutes"}
+                )
               </span>
             </div>
             <div className="video-playlist bg-[#eefbf3] text-black">
