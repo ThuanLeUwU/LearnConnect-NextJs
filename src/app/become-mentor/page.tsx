@@ -4,8 +4,9 @@ import { useRouter } from "next/navigation";
 import { UserAuth } from "../context/AuthContext";
 import { useEffect } from "react";
 import { Breadcrumb } from "antd";
+import Loading from "@/components/loading/loading";
 
-export default function EditProfile() {
+export default function BecomeMentor() {
   const router = useRouter();
   const { role } = UserAuth();
   useEffect(() => {
@@ -21,16 +22,18 @@ export default function EditProfile() {
     // if (role === 3) {
     //   router.push(`/`);
     // }
-    // if (role === -1) {
-    //   router.push(`/`);
-    // }
+    if (role === -1) {
+      router.push(`/`);
+    }
   });
 
   const breadcrumbsHome = () => {
     router.push("/");
   };
 
-  return (
+  return role ? (
+    <Loading />
+  ) : (
     <>
       <div className="bg-[#e7f8ee]">
         <div
@@ -40,7 +43,7 @@ export default function EditProfile() {
           }}
         >
           <div>
-            <Breadcrumb className="font-semibold text-3xl py-5 pl-36 flex-auto">
+            <Breadcrumb className="font-semibold text-3xl py-5 px-64 flex-auto">
               <Breadcrumb.Item>
                 <button onClick={breadcrumbsHome}>Home</button>
               </Breadcrumb.Item>

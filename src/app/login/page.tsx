@@ -135,9 +135,9 @@ export default function LoginPage() {
             }}
           >
             <div>
-              <Breadcrumb className="font-semibold text-3xl py-5 pl-36 flex-auto">
+              <Breadcrumb className="font-semibold text-3xl py-5 px-64 flex-auto">
                 <Breadcrumb.Item>
-                  <span>Login</span>
+                  <span>{""}</span>
                 </Breadcrumb.Item>
               </Breadcrumb>{" "}
             </div>
