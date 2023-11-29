@@ -8,6 +8,7 @@ import axios from "axios";
 import { UserAuth } from "@/app/context/AuthContext";
 import Modal from "@mui/material/Modal";
 import { type } from "os";
+import { Breadcrumb } from "antd";
 
 // export type Report = {
 //   reportInfo: any;
@@ -140,27 +141,35 @@ const StaffReportTable = () => {
 
   return (
     <div className="w-full mt-4">
-      <div className="text-start font-semibold text-5xl pb-5 pl-5">Reports</div>
-      <div className="flex justify-center bg-[#e7f8ee] py-4 rounded-md">
+      <div className="flex justify-between items-center px-5 bg-[#e7f8ee] mb-5">
+        <Breadcrumb>
+          <Breadcrumb.Item>
+            <div className="text-start font-semibold text-4xl my-5 px-4">
+              Reports
+            </div>
+          </Breadcrumb.Item>
+        </Breadcrumb>
+      </div>
+      <div className="flex justify-center py-4 rounded-md">
         <ul className="tabs flex space-x-5">
           <li
-            className={`cursor-pointer rounded-md ${
+            className={`cursor-pointer rounded-md shadow-[5px_5px_20px_10px_rgba(0,0,0,0.15)] ${
               activeTab === "tab1" ? "bg-[#309255] text-white" : "bg-white"
             }`}
             onClick={() => handleTabClick("tab1", "course")}
           >
-            <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#309255]">
-              Course report
+            <button className="py-2 px-5 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#309255]">
+              Courses
             </button>
           </li>
           <li
-            className={`cursor-pointer rounded-md ${
+            className={`cursor-pointer rounded-md shadow-[5px_5px_20px_10px_rgba(0,0,0,0.15)] ${
               activeTab === "tab2" ? "bg-[#309255] text-white" : "bg-white"
             }`}
             onClick={() => handleTabClick("tab2", "mentor")}
           >
-            <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#309255]">
-              Mentor report
+            <button className="py-2 px-5 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#309255]">
+              Mentors
             </button>
           </li>
           {/* <li

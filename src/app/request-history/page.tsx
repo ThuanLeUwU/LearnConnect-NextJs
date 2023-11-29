@@ -505,7 +505,7 @@ const Reviews = () => {
                 </Breadcrumb>
                 <div className="flex justify-center items-center ">
                   <button
-                    className=" my-3 px-5 py-3 bg-[#eefbf3] border-[#309255] border rounded-lg text-black flex justify-center  hover:bg-[#309255] hover:border-[#309255] hover:text-[#e5ecff] focus:outline-none transition-all duration-300"
+                    className=" my-3 px-5 py-3 bg-[#eefbf3] text-[#309255] border-[#309255] border rounded-lg  flex justify-center  hover:bg-[#309255] hover:border-[#309255] hover:text-[#e5ecff] focus:outline-none transition-all duration-300"
                     onClick={showModal}
                   >
                     Register New Specialization

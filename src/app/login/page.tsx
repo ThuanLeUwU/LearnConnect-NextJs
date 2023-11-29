@@ -59,6 +59,7 @@ export default function LoginPage() {
   };
 
   const loginByEmail = async (email, password) => {
+    setIsFetching(true);
     try {
       setLoading(true);
       const response = await http.post(
@@ -80,6 +81,8 @@ export default function LoginPage() {
     }
   };
 
+  const [isFetching, setIsFetching] = useState(false);
+
   const handleSignInEmailPassword = async (e) => {
     e.preventDefault();
     if (!email) {
@@ -88,6 +91,7 @@ export default function LoginPage() {
       setErrorMessage("Please Input Password");
     } else {
       try {
+        setIsFetching(true);
         setLoading(true);
         const response = await loginByEmail(email, password);
         const decodedToken = jwt.decode(response);
@@ -101,6 +105,7 @@ export default function LoginPage() {
               },
             }
           );
+
           userData = responseUser?.data;
         };
         await fetchUser(decodedToken?.Id);
@@ -110,6 +115,7 @@ export default function LoginPage() {
         console.error("An error occurred while logging in:", error);
       } finally {
         setLoading(false);
+        setIsFetching(false);
       }
     }
   };
@@ -129,9 +135,9 @@ export default function LoginPage() {
             }}
           >
             <div>
-              <Breadcrumb className="font-semibold text-3xl py-5 pl-36 flex-auto">
+              <Breadcrumb className="font-semibold text-3xl py-5 px-64 flex-auto">
                 <Breadcrumb.Item>
-                  <span>Login</span>
+                  <span>{""}</span>
                 </Breadcrumb.Item>
               </Breadcrumb>{" "}
             </div>
@@ -153,7 +159,7 @@ export default function LoginPage() {
               ) : ( */}
               <div className="grid lg:grid-cols-2 pt-6 px-10 pb-16 border border-solid border-opacity-20 border-[#30925533] rounded-10">
                 <div className="mx-auto pt-16">
-                  <img src="/register-login.png" alt="Shape" />
+                  <img src="/images/loginImage.png" alt="Shape" />
                 </div>
                 <div className="">
                   <div className="mx-auto max-w-md">

@@ -20,7 +20,7 @@ import {
   TableSortLabel,
   Typography,
 } from "@mui/material";
-import { Button, Form, Modal, Space, Spin } from "antd";
+import { Breadcrumb, Button, Form, Modal, Space, Spin } from "antd";
 import form from "antd/es/form";
 import { toast } from "sonner";
 
@@ -78,7 +78,7 @@ const StaffRatingTable = () => {
     }
   };
 
-  console.log("JWT Staff", jwtToken);
+  // console.log("JWT Staff", jwtToken);
 
   useEffect(() => {
     fetchData();
@@ -153,29 +153,37 @@ const StaffRatingTable = () => {
   };
   return (
     <div className="w-full mt-4">
-      <div className="text-start font-semibold text-5xl pb-5 pl-5">Ratings</div>
+      <div className="flex justify-between items-center px-5 bg-[#e7f8ee] mb-5">
+        <Breadcrumb>
+          <Breadcrumb.Item>
+            <div className="text-start font-semibold text-4xl my-5 px-4">
+              Ratings
+            </div>
+          </Breadcrumb.Item>
+        </Breadcrumb>
+      </div>
       <div>
         <div className=" text-[#212832] ">
-          <div className="flex justify-center bg-[#e7f8ee] py-4 rounded-md">
+          <div className="flex justify-center py-4 rounded-md">
             <ul className="tabs flex space-x-5 ">
               <li
-                className={`cursor-pointer rounded-md ${
+                className={`cursor-pointer rounded-md shadow-[5px_5px_20px_10px_rgba(0,0,0,0.15)] ${
                   activeTab === "tab2" ? "bg-[#309255] text-white" : "bg-white"
                 }`}
                 onClick={() => handleTabClick("tab2", "course")}
               >
-                <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#309255]">
-                  Courses Ratings
+                <button className="py-2 px-5 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#309255]">
+                  Courses
                 </button>
               </li>
               <li
-                className={`cursor-pointer rounded-md ${
+                className={`cursor-pointer rounded-md  shadow-[5px_5px_20px_10px_rgba(0,0,0,0.15)] ${
                   activeTab === "tab3" ? "bg-[#309255] text-white" : "bg-white"
                 }`}
                 onClick={() => handleTabClick("tab3", "mentor")}
               >
-                <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#309255]">
-                  Mentors Ratings
+                <button className="py-2 px-5 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#309255]">
+                  Mentors
                 </button>
               </li>
             </ul>

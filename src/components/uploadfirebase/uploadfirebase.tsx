@@ -52,7 +52,7 @@ const UploadFirebase = ({
         () => {
           // Upload completed successfully, now get the download URL
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            console.log("File available at", downloadURL);
+            // console.log("File available at", downloadURL);
             returnUrl(downloadURL);
           });
         }

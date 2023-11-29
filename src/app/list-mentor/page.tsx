@@ -31,7 +31,7 @@ export default function ListMentor() {
   const { loading, mentor, mentorID, totalPages, currentPage, setCurrentPage } =
     useDataMentorFetcher();
   const handleSwiperWrapperClick = (IdMentor) => {
-    console.log("id mentor:", IdMentor);
+    // console.log("id mentor:", IdMentor);
     router.push(`/profile-mentor/${IdMentor}`);
   };
   const breadcrumbsHome = () => {
@@ -47,7 +47,7 @@ export default function ListMentor() {
           }}
         >
           <div>
-            <Breadcrumb className="font-semibold text-3xl py-5 pl-36 flex-auto">
+            <Breadcrumb className="font-semibold text-3xl py-5 px-64 flex-auto">
               <Breadcrumb.Item>
                 <button onClick={breadcrumbsHome}>Home</button>
               </Breadcrumb.Item>

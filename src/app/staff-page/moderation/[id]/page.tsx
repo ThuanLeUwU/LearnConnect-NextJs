@@ -402,15 +402,18 @@ const DetailsContent = ({ params }: any) => {
             page6={"/staff-page/staff-revenue"}
           />
           <div className="w-full my-4">
-            <Breadcrumb className="font-semibold text-2xl pl-5">
-              <Breadcrumb.Item>
-                <button onClick={breadcrumbNavigation}>Courses</button>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {course?.name} ({getStatusText(course?.status)})
-              </Breadcrumb.Item>
-              {/* <Breadcrumb.Item>React</Breadcrumb.Item> */}
-            </Breadcrumb>
+            <div className="flex justify-between items-center px-5 bg-[#e7f8ee] mb-5">
+              <Breadcrumb className="text-start font-semibold text-4xl my-5 px-4">
+                <Breadcrumb.Item>
+                  <button onClick={breadcrumbNavigation}>Course</button>
+                </Breadcrumb.Item>
+                <Breadcrumb.Item>
+                  {course?.name} ({getStatusText(course?.status)})
+                </Breadcrumb.Item>
+                {/* <Breadcrumb.Item>React</Breadcrumb.Item> */}
+              </Breadcrumb>
+            </div>
+
             <>
               {course?.status === 2 && (
                 <div className="text-3xl mt-4 underline">

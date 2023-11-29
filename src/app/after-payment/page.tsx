@@ -83,7 +83,7 @@ const AfterPayment = () => {
           }}
         >
           <div>
-            <Breadcrumb className="font-semibold text-3xl py-5 pl-36 flex-auto">
+            <Breadcrumb className="font-semibold text-3xl py-5 px-64 flex-auto">
               <Breadcrumb.Item>
                 <button onClick={breadcrumbsHome}>Home</button>
               </Breadcrumb.Item>
@@ -146,7 +146,7 @@ const AfterPayment = () => {
         ) : (
           <div className="text-center">
             <AiFillExclamationCircle className="text-6xl mx-auto text-red-500" />
-            <h1 className="text-3xl font-bold mb-4">Payment Unsuccessful!</h1>
+            <h1 className="text-3xl font-bold mb-4">Payment Unsuccessfully!</h1>
             <div className="text-center">
               <p className="text-lg text-gray-600 mb-8 max-w-md mx-auto">
                 Your payment was not successful. Please review your payment

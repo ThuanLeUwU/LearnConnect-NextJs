@@ -249,7 +249,7 @@ export default function Quiz({ params }: any) {
           }}
         >
           <div>
-            <Breadcrumb className="font-semibold text-3xl py-5 pl-28 -translate-y-3">
+            <Breadcrumb className="font-semibold text-3xl py-5 px-64 flex-auto">
               <Breadcrumb.Item>
                 <button onClick={breadcrumbsHome}>Home</button>
               </Breadcrumb.Item>

@@ -6,7 +6,7 @@ import useDataModeration from "@/components/pagination/useDataModeration";
 import Paginate from "@/components/pagination/pagination";
 import StaffRatingTable from "@/components/staff-rating-table/page";
 import { useEffect, useState } from "react";
-import { Empty, Spin, Tag } from "antd";
+import { Breadcrumb, Empty, Spin, Tag } from "antd";
 import { useRouter } from "next/navigation";
 
 const ModerationContent = () => {
@@ -58,13 +58,19 @@ const ModerationContent = () => {
           {/* <StaffRatingTable />
            */}
           <div className="w-full mt-4">
-            <div className="text-start font-semibold text-5xl pb-5 pl-5">
-              List Courses{" "}
+            <div className="flex justify-between items-center px-5 bg-[#e7f8ee] mb-5">
+              <Breadcrumb>
+                <Breadcrumb.Item>
+                  <div className="text-start font-semibold text-4xl my-5 px-4">
+                    Courses
+                  </div>
+                </Breadcrumb.Item>
+              </Breadcrumb>
             </div>
-            <div className="flex justify-evenly bg-[#e7f8ee] py-4 rounded-md mb-5">
+            <div className="flex justify-evenly py-4 rounded-md mb-5">
               <ul className="tabs flex space-x-24">
                 <li
-                  className={`cursor-pointer rounded-md ${
+                  className={`cursor-pointer rounded-md shadow-[5px_5px_20px_10px_rgba(0,0,0,0.15)] ${
                     activeTab === 0 ? "bg-[#309255] text-white" : "bg-white"
                   }`}
                   onClick={() => handleTabClick(0)}
@@ -74,7 +80,7 @@ const ModerationContent = () => {
                   </button>
                 </li>
                 <li
-                  className={`cursor-pointer rounded-md ${
+                  className={`cursor-pointer rounded-md shadow-[5px_5px_20px_10px_rgba(0,0,0,0.15)] ${
                     activeTab === 1 ? "bg-gray-500 text-white" : "bg-white"
                   }`}
                   onClick={() => handleTabClick(1)}
@@ -84,7 +90,7 @@ const ModerationContent = () => {
                   </button>
                 </li>
                 <li
-                  className={`cursor-pointer rounded-md ${
+                  className={`cursor-pointer rounded-md shadow-[5px_5px_20px_10px_rgba(0,0,0,0.15)] ${
                     activeTab === 2 ? "bg-[#ffa04e] text-white" : "bg-white"
                   }`}
                   onClick={() => handleTabClick(2)}
@@ -94,7 +100,7 @@ const ModerationContent = () => {
                   </button>
                 </li>
                 <li
-                  className={`cursor-pointer rounded-md ${
+                  className={`cursor-pointer rounded-md shadow-[5px_5px_20px_10px_rgba(0,0,0,0.15)] ${
                     activeTab === 3 ? "bg-red-500 text-white" : "bg-white"
                   }`}
                   onClick={() => handleTabClick(3)}

@@ -205,7 +205,7 @@ export default function EditProfile() {
           }}
         >
           <div>
-            <Breadcrumb className="font-semibold text-3xl py-5 pl-36 flex-auto">
+            <Breadcrumb className="font-semibold text-3xl py-5 px-64 flex-auto">
               <Breadcrumb.Item>
                 <button onClick={breadcrumbsHome}>Home</button>
               </Breadcrumb.Item>

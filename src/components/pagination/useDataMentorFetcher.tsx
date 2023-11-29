@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 export type Mentor = {
   averageRating: number;
   mentorInfo: any;
+  user: any;
   userInfo: any;
   id: string | number;
   password: string;

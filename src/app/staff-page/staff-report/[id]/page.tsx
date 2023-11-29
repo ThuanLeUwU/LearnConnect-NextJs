@@ -6,8 +6,10 @@ import axios from "axios";
 import { useRouter, useSearchParams } from "next/navigation";
 import { GrFormPrevious } from "react-icons/gr";
 import { toast } from "sonner";
-import { Button, Form, Modal, Space, Spin } from "antd";
+import { Breadcrumb, Button, Form, Modal, Space, Spin } from "antd";
 import { UserAuth } from "@/app/context/AuthContext";
+import { Course } from "@/components/courses/courses";
+import { Mentor } from "@/components/pagination/useDataMentorFetcher";
 
 interface Report {
   id: number;
@@ -55,6 +57,47 @@ const StaffReportID = ({ params }: any) => {
     };
 
     fetchData();
+  }, [idCourse]);
+
+  const [course, setCourse] = useState<Course>();
+
+  useEffect(() => {
+    if (target === "course") {
+      const fetchData = async () => {
+        try {
+          const response = await axios.get(
+            `https://learnconnectapitest.azurewebsites.net/api/course/${idCourse}`
+          );
+          console.log("API Response:", response.data);
+          setCourse(response.data);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      };
+
+      fetchData();
+    }
+  }, [idCourse]);
+
+  const [mentor, setMentor] = useState<Mentor>();
+  console.log("Mentor", mentor?.user.fullName);
+
+  useEffect(() => {
+    if (target === "mentor") {
+      const fetchData = async () => {
+        try {
+          const response = await axios.get(
+            `https://learnconnectapitest.azurewebsites.net/api/mentor/${idCourse}`
+          );
+          console.log("API Response:", response.data);
+          setMentor(response.data);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      };
+
+      fetchData();
+    }
   }, [idCourse]);
 
   const handleBack = () => {
@@ -105,16 +148,26 @@ const StaffReportID = ({ params }: any) => {
             page6={"/staff-page/staff-revenue"}
           />
 
-          <div className="w-full">
-            <div className="flex">
-              <div className="">
-                <button
-                  className="mx-5 my-3 px-5 py-3 rounded-lg text-black bg-[#e7f8ee]"
-                  onClick={handleBack}
-                >
-                  <GrFormPrevious className="text-2xl" />
-                </button>
-              </div>
+          <div className="w-full mt-4">
+            {/* <div className="flex"> */}
+            <div className="flex justify-between items-center px-5 bg-[#e7f8ee] mb-5">
+              <Breadcrumb className="text-start font-semibold text-4xl my-5 px-4">
+                <Breadcrumb.Item>
+                  <button onClick={handleBack}>Report</button>
+                </Breadcrumb.Item>
+                {target === "course" && (
+                  <Breadcrumb.Item>{course?.name}</Breadcrumb.Item>
+                )}
+                {target === "mentor" && (
+                  <Breadcrumb.Item>{mentor?.user.fullName}</Breadcrumb.Item>
+                )}
+              </Breadcrumb>
+
+              {/* <div className="">
+              <button className="mx-5 my-3 px-5 py-3 rounded-lg text-black bg-[#e7f8ee]">
+                <GrFormPrevious className="text-2xl" />
+              </button>
+            </div> */}
               <div className="ml-auto">
                 <button
                   className="mx-5 my-3 px-5 py-3 bg-red-500 rounded-lg text-white"
@@ -123,61 +176,62 @@ const StaffReportID = ({ params }: any) => {
                   Ban this {target}
                 </button>
               </div>
-
-              <Modal
-                destroyOnClose={true}
-                title={
-                  <div className="text-lg">
-                    Are you sure you want to ban this {target}?
-                  </div>
-                }
-                open={isConfirmationModalOpen}
-                width="35%"
-                onCancel={handleCancelBan}
-                footer={false}
-                style={{
-                  top: "30%",
-                }}
-              >
-                <Form
-                  autoComplete="off"
-                  form={form}
-                  labelCol={{ span: 4 }}
-                  wrapperCol={{ span: 16 }}
-                  layout="horizontal"
-                  className="mt-5"
-                  style={{ width: "100%" }}
-                  onFinish={handleConfirmBan}
-                >
-                  <Space className="justify-end w-full">
-                    <Form.Item className="mb-0">
-                      <Space>
-                        <Button
-                          className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
-                          onClick={handleCancelBan}
-                          style={{
-                            border: "2px solid #E0E0E0",
-                            color: "black",
-                          }}
-                        >
-                          Cancel
-                        </Button>
-                        <Button
-                          className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
-                          htmlType="submit"
-                          style={{
-                            border: "2px solid #4caf50",
-                            color: "#fff",
-                          }}
-                        >
-                          Confirm
-                        </Button>
-                      </Space>
-                    </Form.Item>
-                  </Space>
-                </Form>
-              </Modal>
             </div>
+
+            <Modal
+              destroyOnClose={true}
+              title={
+                <div className="text-lg">
+                  Are you sure you want to ban this {target}?
+                </div>
+              }
+              open={isConfirmationModalOpen}
+              width="35%"
+              onCancel={handleCancelBan}
+              footer={false}
+              style={{
+                top: "30%",
+              }}
+            >
+              <Form
+                autoComplete="off"
+                form={form}
+                labelCol={{ span: 4 }}
+                wrapperCol={{ span: 16 }}
+                layout="horizontal"
+                className="mt-5"
+                style={{ width: "100%" }}
+                onFinish={handleConfirmBan}
+              >
+                <Space className="justify-end w-full">
+                  <Form.Item className="mb-0">
+                    <Space>
+                      <Button
+                        className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                        onClick={handleCancelBan}
+                        style={{
+                          border: "2px solid #E0E0E0",
+                          color: "black",
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                        htmlType="submit"
+                        style={{
+                          border: "2px solid #4caf50",
+                          color: "#fff",
+                        }}
+                      >
+                        Confirm
+                      </Button>
+                    </Space>
+                  </Form.Item>
+                </Space>
+              </Form>
+            </Modal>
+            {/* </div> */}
             {Array.isArray(reportData) && reportData.length > 0 ? (
               reportData.map((report) => (
                 <div

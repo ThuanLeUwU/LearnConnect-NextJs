@@ -223,7 +223,7 @@ export const RegisterForm = () => {
     }
     formData.append("major", major);
     formData.append("specializationId", specialization);
-    console.log("3213123", specialization);
+    // console.log("3213123", specialization);
     formData.append("reason", reason);
     formData.append("descriptionDocument", "null");
     if (DocumentData) {
@@ -289,7 +289,7 @@ export const RegisterForm = () => {
       try {
         const response = await axios.get("https://api.vietqr.io/v2/banks");
         setBanks(response.data.data);
-        console.log("Bank Name", response.data);
+        // console.log("Bank Name", response.data);
       } catch (error) {
         console.error("Error fetching banks:", error);
       }
@@ -647,7 +647,7 @@ export const RegisterForm = () => {
                     if (isFormValid) {
                       handleSubmit(formValues);
                     } else {
-                      console.log("Please fill in all required fields.");
+                      toast.info("Please fill in all required fields.");
                     }
                   }}
                   // htmlType="submit"

@@ -1,5 +1,4 @@
 "use client";
-
 import { RegisterForm } from "@/components/registerForm";
 import { useRouter } from "next/navigation";
 import { UserAuth } from "../context/AuthContext";
@@ -44,7 +43,7 @@ export default function BecomeMentor() {
           }}
         >
           <div>
-            <Breadcrumb className="font-semibold text-3xl py-5 pl-36 flex-auto">
+            <Breadcrumb className="font-semibold text-3xl py-5 px-64 flex-auto">
               <Breadcrumb.Item>
                 <button onClick={breadcrumbsHome}>Home</button>
               </Breadcrumb.Item>
