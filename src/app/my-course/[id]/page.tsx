@@ -460,7 +460,7 @@ export default function AfterEnroll({ params }: any) {
     router.push("/my-course");
   };
 
-  return role ? (
+  return !role ? (
     <Loading />
   ) : (
     <>
