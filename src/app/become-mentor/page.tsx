@@ -31,9 +31,7 @@ export default function BecomeMentor() {
     router.push("/");
   };
 
-  return !role ? (
-    <Loading />
-  ) : (
+  return (
     <>
       <div className="bg-[#e7f8ee]">
         <div
