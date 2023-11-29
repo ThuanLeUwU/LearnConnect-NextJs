@@ -6,7 +6,7 @@ import {
   Card,
   Link,
   Paper,
-  Table,
+  // Table,
   TableCell,
   TableContainer,
   TableHead,
@@ -17,12 +17,15 @@ import {
 } from "@mui/material";
 import Modal from "@mui/material/Modal";
 import {
-  Form,
-  Modal as ModalAntd,
+  Table,
   Space,
+  Modal as ModalAntd,
+  Form,
   Button as ButtonAntd,
   Breadcrumb,
+  Input,
 } from "antd";
+
 import Button from "@mui/material/Button";
 import InstructorCourseStyle from "./styles.module.scss";
 import { toast } from "sonner";
@@ -75,18 +78,15 @@ export type VerificationDocument = {
 
 export type ApiData = {
   specializationOfMentor: specializationOfMentor;
-  user: User;
-  mentor: Mentor;
-  specialization: specializationOfMentor;
-  verificationDocuments: VerificationDocument[];
-  specializationDocuments: VerificationDocument[];
+  user: any;
+  mentor: any;
+  specialization: any;
+  verificationDocuments: any;
+  specializationDocuments: any;
 }[];
 
 const MentorRequest = () => {
-  const [requestData, setRequestData] = useState<ApiData | null>([]);
-
-  // console.log("data",requestData[0].user.name );
-
+  const [requestData, setRequestData] = useState<ApiData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(0);
@@ -119,6 +119,11 @@ const MentorRequest = () => {
   });
   axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
   const [noteInput, setNoteInput] = useState("");
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 5, // Số dòng mỗi trang
+  });
+  const [rejectReason, setRejectReason] = useState("");
 
   console.log("token Staff:", jwtToken);
 
@@ -148,7 +153,7 @@ const MentorRequest = () => {
           },
         }
       );
-      setRequestData(response.data);
+      setRequestData(response?.data);
     } catch (error) {
       console.error("Error fetching data:", error.message || error);
     } finally {
@@ -188,7 +193,7 @@ const MentorRequest = () => {
     specializationId: number | null
   ) => {
     try {
-      const reason = rejectReason || "Your request is Approve";
+      const reason = rejectReason || "Your request is Approved";
       await axios.post(
         `https://learnconnectapitest.azurewebsites.net/api/mentor/process-mentor-request?staffUserId=${userData?.id}&mentorUserId=${mentorUserId}&specializationId=${specializationId}&acceptRequest=true&rejectReason=${reason}`
       );
@@ -218,42 +223,9 @@ const MentorRequest = () => {
     }
   };
 
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
+  const handlePageChange = (current, pageSize) => {
+    setPagination({ current, pageSize });
   };
-
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
-  const startIndex = page * rowsPerPage + 1;
-  const endIndex = Math.min(
-    (page + 1) * rowsPerPage,
-    (requestData && requestData.length) || 0
-  );
-
-  function stableSort(
-    data: ApiData,
-    comparator: (a: any, b: any) => number
-  ): ApiData {
-    return data.slice().sort(comparator);
-  }
-
-  function getComparator(
-    order: "asc" | "desc",
-    orderBy: string
-  ): (a: any, b: any) => number {
-    return (a, b) => {
-      if (order === "asc") {
-        return a[orderBy] > b[orderBy] ? 1 : -1;
-      } else {
-        return b[orderBy] > a[orderBy] ? 1 : -1;
-      }
-    };
-  }
 
   function getStatusColor(status) {
     switch (status) {
@@ -298,7 +270,7 @@ const MentorRequest = () => {
     });
   };
 
-  const handleConfirmBan = async () => {
+  const handleConfirmBan = async (rejectReason) => {
     if (confirmationData.actionType === "approve") {
       handleApproveConfirmation(
         confirmationData.mentorUserId,
@@ -308,7 +280,7 @@ const MentorRequest = () => {
     } else {
       handleRejectConfirmation(
         confirmationData.mentorUserId,
-        noteInput,
+        rejectReason, // Pass reject reason to the function
         confirmationData.specializationId
       );
     }
@@ -333,6 +305,121 @@ const MentorRequest = () => {
     );
     return formattedDate || "";
   }
+
+  const columns = [
+    {
+      title: "Create Date",
+      dataIndex: "specializationOfMentor",
+      key: "verificationDate",
+      width: 150,
+      render: (specializationOfMentor, record) => (
+        <div>
+          {new Date(
+            specializationOfMentor.verificationDate
+          ).toLocaleDateString()}{" "}
+          <br />
+          {new Date(
+            specializationOfMentor.verificationDate
+          ).toLocaleTimeString()}
+        </div>
+      ),
+    },
+    {
+      title: "Name",
+      dataIndex: "user",
+      key: "name",
+      width: 200,
+      render: (user) => <p className="text-[16px]">{user.name}</p>,
+    },
+    {
+      title: "Email",
+      dataIndex: "user",
+      key: "email",
+      render: (user) => <p className="text-[16px]">{user.email}</p>,
+    },
+    {
+      title: "Description",
+      dataIndex: "mentor",
+      key: "description",
+      width: 600,
+      render: (mentor) => <p className="text-[16px]">{mentor.description}</p>,
+    },
+    {
+      title: "Specialization",
+      dataIndex: "specialization",
+      key: "specialization",
+      render: (specialization) => (
+        <p className="text-[16px]">{specialization.name}</p>
+      ),
+    },
+    {
+      title: "Status",
+      dataIndex: "specializationOfMentor",
+      key: "status",
+      render: (specializationOfMentor) => (
+        <span style={{ color: getStatusColor(specializationOfMentor.status) }}>
+          {getStatusText(specializationOfMentor.status)}
+        </span>
+      ),
+    },
+    {
+      title: "Note",
+      dataIndex: "specializationOfMentor",
+      key: "note",
+      render: (specializationOfMentor) => (
+        <p className="text-[16px]">{specializationOfMentor.note}</p>
+      ),
+    },
+    {
+      title: "Verification",
+      key: "verification",
+      render: (text, record) => (
+        <Button
+          onClick={() =>
+            handleViewMoreClick(
+              record.verificationDocuments,
+              record.specializationDocuments,
+              record.specializationOfMentor.description
+            )
+          }
+        >
+          View
+        </Button>
+      ),
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (text, record) => (
+        <Space direction="vertical">
+          {record.specializationOfMentor.status !== 0 && (
+            <>
+              {record.specializationOfMentor.status !== 2 && (
+                <button
+                  className="border-2 px-2 py-1 text-sm rounded-md w-24 hover:border-[#309255] hover:text-white hover:bg-[#59b77d]"
+                  onClick={() =>
+                    handleApprove(record.user.id, record.specialization.id)
+                  }
+                >
+                  Approve
+                </button>
+              )}
+              {record.specializationOfMentor.status !== 2 && (
+                <button
+                  className="border-2 px-2 py-1 text-sm rounded-md w-24 hover:border-[#f33404] hover:text-white hover:bg-[#f33404b7]"
+                  onClick={() =>
+                    handleReject(record.user.id, record.specialization.id)
+                  }
+                >
+                  Reject
+                </button>
+              )}
+            </>
+          )}
+        </Space>
+      ),
+    },
+  ];
 
   return (
     <>
@@ -374,168 +461,13 @@ const MentorRequest = () => {
         <div className="tab-content">
           {activeTab === "tab1" && (
             <div className="min-h-[1000px] w-full">
-              {/* <Typography variant="h3" className="px-3">
-                Become mentor request
-              </Typography> */}
-              <Box
-                component="main"
-                sx={{
-                  flexGrow: 1,
-                }}
-                className="shadow-[5px_10px_20px_15px_rgba(0,0,0,0.15)] rounded-lg mx-5 my-5"
-              >
-                <Card>
-                  <Paper sx={{ width: "100%" }}>
-                    {isLoading ? (
-                      <div className="text-center text-5xl mt-5">
-                        <Spin size="large" />
-                      </div>
-                    ) : (
-                      <TableContainer>
-                        <Table
-                          sx={{ minWidth: 750 }}
-                          aria-labelledby="tableTitle"
-                          size="medium"
-                        >
-                          <TableHead>
-                            <TableRow>
-                              <TableCell className="w-[150px]">
-                                Create Date
-                              </TableCell>
-                              <TableCell className="w-[200px]">Name</TableCell>
-                              <TableCell>Email</TableCell>
-                              <TableCell className="w-[600px]">
-                                Description
-                              </TableCell>
-                              <TableCell>Specialization</TableCell>
-                              <TableCell>Status</TableCell>
-                              <TableCell className="w-[400px]">Note</TableCell>
-                              <TableCell align="center">Verification</TableCell>
-                              <TableCell align="center">Action</TableCell>
-                            </TableRow>
-                            {requestData &&
-                              requestData
-                                .slice(
-                                  page * rowsPerPage,
-                                  page * rowsPerPage + rowsPerPage
-                                )
-                                .map((data) => (
-                                  <TableRow
-                                    key={data.specializationOfMentor.id}
-                                  >
-                                    <TableCell>
-                                      <div>
-                                        {new Date(
-                                          data.specializationOfMentor.verificationDate
-                                        ).toLocaleDateString()}
-                                      </div>
-                                      <div>
-                                        {new Date(
-                                          data.specializationOfMentor.verificationDate
-                                        ).toLocaleTimeString()}
-                                      </div>
-                                    </TableCell>
-                                    <TableCell>{data.user.name}</TableCell>
-                                    <TableCell>{data.user.email}</TableCell>
-
-                                    <TableCell>
-                                      {data.mentor.description}
-                                    </TableCell>
-                                    <TableCell>
-                                      {data.specialization.name}
-                                    </TableCell>
-                                    <TableCell
-                                      style={{
-                                        color: getStatusColor(
-                                          data.specializationOfMentor.status
-                                        ),
-                                      }}
-                                    >
-                                      {getStatusText(
-                                        data.specializationOfMentor.status
-                                      )}
-                                    </TableCell>
-                                    <TableCell>
-                                      {data.specializationOfMentor.note}
-                                    </TableCell>
-                                    <TableCell>
-                                      <Button
-                                        onClick={() =>
-                                          handleViewMoreClick(
-                                            data.verificationDocuments,
-                                            data.specializationDocuments,
-                                            data.specializationOfMentor
-                                              .description
-                                          )
-                                        }
-                                      >
-                                        View
-                                      </Button>
-                                    </TableCell>
-
-                                    <TableCell>
-                                      {data.specializationOfMentor.status !==
-                                        0 && (
-                                        <div className="flex flex-col gap-[10px]">
-                                          {data.specializationOfMentor
-                                            .status !== 2 && (
-                                            <Button
-                                              className="w-full my-1 bg-[#309255] text-white"
-                                              color="success"
-                                              variant="contained"
-                                              onClick={() =>
-                                                handleApprove(
-                                                  data.user.id,
-                                                  data.specialization.id
-                                                )
-                                              }
-                                            >
-                                              Approve
-                                            </Button>
-                                          )}
-                                          {data.specializationOfMentor
-                                            .status !== 2 && (
-                                            <Button
-                                              variant="contained"
-                                              color="error"
-                                              className="w-full my-1 bg-red-400 text-white"
-                                              onClick={() =>
-                                                handleReject(
-                                                  data.user.id,
-                                                  data.specialization.id
-                                                )
-                                              }
-                                            >
-                                              Reject
-                                            </Button>
-                                          )}
-                                        </div>
-                                      )}
-                                    </TableCell>
-                                  </TableRow>
-                                ))}
-                          </TableHead>
-                        </Table>
-                      </TableContainer>
-                    )}
-                    <TablePagination
-                      rowsPerPageOptions={[5, 10, 25]}
-                      component="div"
-                      count={requestData ? requestData.length : 0}
-                      rowsPerPage={rowsPerPage}
-                      page={page}
-                      onPageChange={handleChangePage}
-                      onRowsPerPageChange={handleChangeRowsPerPage}
-                    />
-                  </Paper>
-                </Card>
-              </Box>
-              <Box mt={2} ml={2}>
-                <Typography variant="caption" color="textSecondary">
-                  Showing {startIndex} - {endIndex} of{" "}
-                  {requestData ? requestData.length : 0} items
-                </Typography>
-              </Box>
+              <Table
+                dataSource={requestData}
+                columns={columns}
+                pagination={{ ...pagination, onChange: handlePageChange }}
+                loading={isLoading}
+                className="mx-5 shadow-[5px_15px_25px_10px_rgba(0,0,0,0.15)] mt-2 rounded-lg"
+              />
               <Modal
                 open={isModalOpen}
                 onClose={handleCloseModal}
@@ -647,8 +579,23 @@ const MentorRequest = () => {
                   layout="horizontal"
                   className="mt-5"
                   style={{ width: "100%" }}
-                  onFinish={handleConfirmBan}
+                  onFinish={(values) => handleConfirmBan(values.rejectReason)}
                 >
+                  <Form.Item
+                    label="Reject Reason"
+                    name="rejectReason"
+                    rules={[
+                      {
+                        required: false,
+                        message: "Please provide a reject reason!",
+                      },
+                    ]}
+                  >
+                    <Input.TextArea
+                      placeholder="Enter reject reason..."
+                      rows={4}
+                    />
+                  </Form.Item>
                   <Space className="justify-end w-full">
                     <Form.Item className="mb-0">
                       <Space>
@@ -677,254 +624,17 @@ const MentorRequest = () => {
                   </Space>
                 </Form>
               </ModalAntd>
-              {/* <Modal
-                open={confirmationData.isOpen}
-                onClose={() =>
-                  setConfirmationData({
-                    isOpen: false,
-                    actionType: "",
-                    mentorUserId: null,
-                    specializationId: null,
-                  })
-                }
-                aria-labelledby="modal-title"
-                aria-describedby="modal-description"
-              >
-                <div className="fixed inset-0 z-50 flex items-center justify-center">
-                  <div className="bg-white p-8 max-w-md w-full rounded-lg shadow-md">
-                    <h2 className="text-2xl font-semibold mb-4">
-                      Confirm{" "}
-                      {confirmationData.actionType === "approve"
-                        ? "Approval"
-                        : "Rejection"}
-                      ?
-                    </h2>
-                    {confirmationData.actionType === "reject" && (
-                      <div className="mb-4">
-                        <label
-                          htmlFor="rejectReason"
-                          className="block text-sm font-medium text-gray-700"
-                        >
-                          Note:
-                        </label>
-                        <input
-                          type="text"
-                          id="rejectReason"
-                          name="rejectReason"
-                          value={noteInput}
-                          onChange={(e) => setNoteInput(e.target.value)}
-                          className="mt-1 p-2 w-full border rounded-md"
-                          required
-                        />
-                      </div>
-                    )}
-                    <div className="flex justify-between">
-                      <button
-                        onClick={() => {
-                          if (confirmationData.actionType === "approve") {
-                            handleApproveConfirmation(
-                              confirmationData.mentorUserId,
-                              noteInput,
-                              confirmationData.specializationId
-                            );
-                          } else {
-                            handleRejectConfirmation(
-                              confirmationData.mentorUserId,
-                              noteInput,
-                              confirmationData.specializationId
-                            );
-                          }
-                          setConfirmationData({
-                            isOpen: false,
-                            actionType: "",
-                            mentorUserId: null,
-                            specializationId: null,
-                          });
-                        }}
-                        className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2"
-                      >
-                        Confirm
-                      </button>
-                      <button
-                        onClick={() =>
-                          setConfirmationData({
-                            isOpen: false,
-                            actionType: "",
-                            mentorUserId: null,
-                            specializationId: null,
-                          })
-                        }
-                        className="bg-gray-400 text-white px-4 py-2 rounded-md"
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </Modal> */}
             </div>
           )}
           {activeTab === "tab2" && (
             <div className="min-h-[1000px] w-full">
-              <Box
-                component="main"
-                sx={{
-                  flexGrow: 1,
-                }}
-                className="shadow-[5px_10px_20px_15px_rgba(0,0,0,0.15)] rounded-lg mx-5 my-5"
-              >
-                <Card>
-                  <Paper sx={{ width: "100%" }}>
-                    {isLoading ? (
-                      <div className="text-center text-5xl mt-5">
-                        <Spin size="large" />
-                      </div>
-                    ) : (
-                      <TableContainer>
-                        <Table
-                          sx={{ minWidth: 750 }}
-                          aria-labelledby="tableTitle"
-                          size="medium"
-                        >
-                          <TableHead>
-                            <TableRow>
-                              <TableCell className="w-[150px]">
-                                Create Date
-                              </TableCell>
-                              <TableCell className="w-[200px]">Name</TableCell>
-                              <TableCell>Email</TableCell>
-                              <TableCell className="w-[600px]">
-                                Description
-                              </TableCell>
-                              <TableCell>Specialization</TableCell>
-                              <TableCell>Status</TableCell>
-                              <TableCell className="w-[400px]">Note</TableCell>
-                              <TableCell align="center">Verification</TableCell>
-                              <TableCell align="center">Action</TableCell>
-                            </TableRow>
-                            {requestData &&
-                              requestData
-                                .slice(
-                                  page * rowsPerPage,
-                                  page * rowsPerPage + rowsPerPage
-                                )
-                                .map((data) => (
-                                  <TableRow
-                                    key={data.specializationOfMentor.id}
-                                  >
-                                    <TableCell>
-                                      <div>
-                                        {new Date(
-                                          data.specializationOfMentor.verificationDate
-                                        ).toLocaleDateString()}
-                                      </div>
-                                      <div>
-                                        {new Date(
-                                          data.specializationOfMentor.verificationDate
-                                        ).toLocaleTimeString()}
-                                      </div>
-                                    </TableCell>
-                                    <TableCell>{data.user.name}</TableCell>
-                                    <TableCell>{data.user.email}</TableCell>
-
-                                    <TableCell size="small">
-                                      {data.mentor.description}
-                                    </TableCell>
-                                    <TableCell>
-                                      {data.specialization.name}
-                                    </TableCell>
-                                    <TableCell
-                                      style={{
-                                        color: getStatusColor(
-                                          data.specializationOfMentor.status
-                                        ),
-                                      }}
-                                    >
-                                      {getStatusText(
-                                        data.specializationOfMentor.status
-                                      )}
-                                    </TableCell>
-                                    <TableCell>
-                                      {data.specializationOfMentor.note}
-                                    </TableCell>
-                                    <TableCell>
-                                      <Button
-                                        onClick={() =>
-                                          handleViewMoreClick(
-                                            data.verificationDocuments,
-                                            data.specializationDocuments,
-                                            data.specializationOfMentor
-                                              .description
-                                          )
-                                        }
-                                      >
-                                        View
-                                      </Button>
-                                    </TableCell>
-
-                                    <TableCell>
-                                      {data.specializationOfMentor.status !==
-                                        0 && (
-                                        <div className="flex flex-col gap-[10px]">
-                                          {data.specializationOfMentor
-                                            .status !== 2 && (
-                                            <Button
-                                              className="w-full my-1 bg-[#309255] text-white"
-                                              color="success"
-                                              variant="contained"
-                                              onClick={() =>
-                                                handleApprove(
-                                                  data.user.id,
-                                                  data.specialization.id
-                                                )
-                                              }
-                                            >
-                                              Approve
-                                            </Button>
-                                          )}
-                                          {data.specializationOfMentor
-                                            .status !== 2 && (
-                                            <Button
-                                              variant="contained"
-                                              color="error"
-                                              className="w-full my-1 bg-red-400 text-white"
-                                              onClick={() =>
-                                                handleReject(
-                                                  data.user.id,
-                                                  data.specialization.id
-                                                )
-                                              }
-                                            >
-                                              Reject
-                                            </Button>
-                                          )}
-                                        </div>
-                                      )}
-                                    </TableCell>
-                                  </TableRow>
-                                ))}
-                          </TableHead>
-                        </Table>
-                      </TableContainer>
-                    )}
-                    <TablePagination
-                      rowsPerPageOptions={[5, 10, 25]}
-                      component="div"
-                      count={requestData ? requestData.length : 0}
-                      rowsPerPage={rowsPerPage}
-                      page={page}
-                      onPageChange={handleChangePage}
-                      onRowsPerPageChange={handleChangeRowsPerPage}
-                    />
-                  </Paper>
-                </Card>
-              </Box>
-              <Box mt={2} ml={2}>
-                <Typography variant="caption" color="textSecondary">
-                  Showing {startIndex} - {endIndex} of{" "}
-                  {requestData ? requestData.length : 0} items
-                </Typography>
-              </Box>
+              <Table
+                dataSource={requestData}
+                columns={columns}
+                pagination={{ ...pagination, onChange: handlePageChange }}
+                loading={isLoading}
+                className="mx-5 shadow-[5px_15px_25px_10px_rgba(0,0,0,0.15)] mt-2 rounded-lg"
+              />
               <Modal
                 open={isModalOpen}
                 onClose={handleCloseModal}
@@ -975,7 +685,6 @@ const MentorRequest = () => {
                           </div>
                         ))}
                       </div>
-                      {/* Close button */}
                       <Box textAlign="right" width="100%">
                         <Button onClick={handleCloseModal} color="primary">
                           Close
@@ -1008,8 +717,23 @@ const MentorRequest = () => {
                   layout="horizontal"
                   className="mt-5"
                   style={{ width: "100%" }}
-                  onFinish={handleConfirmBan}
+                  onFinish={(values) => handleConfirmBan(values.rejectReason)}
                 >
+                  <Form.Item
+                    label="Reject Reason"
+                    name="rejectReason"
+                    rules={[
+                      {
+                        required: false,
+                        message: "Please provide a reject reason!",
+                      },
+                    ]}
+                  >
+                    <Input.TextArea
+                      placeholder="Enter reject reason..."
+                      rows={4}
+                    />
+                  </Form.Item>
                   <Space className="justify-end w-full">
                     <Form.Item className="mb-0">
                       <Space>
@@ -1038,91 +762,6 @@ const MentorRequest = () => {
                   </Space>
                 </Form>
               </ModalAntd>
-              {/* <Modal
-                open={confirmationData.isOpen}
-                onClose={() =>
-                  setConfirmationData({
-                    isOpen: false,
-                    actionType: "",
-                    mentorUserId: null,
-                    specializationId: null,
-                  })
-                }
-                aria-labelledby="modal-title"
-                aria-describedby="modal-description"
-              >
-                <div className="fixed inset-0 z-50 flex items-center justify-center">
-                  <div className="bg-white p-8 max-w-md w-full rounded-lg shadow-md">
-                    <h2 className="text-2xl font-semibold mb-4">
-                      Confirm{" "}
-                      {confirmationData.actionType === "approve"
-                        ? "Approval"
-                        : "Rejection"}
-                      ?
-                    </h2>
-                    {confirmationData.actionType === "reject" && (
-                      <div className="mb-4">
-                        <label
-                          htmlFor="rejectReason"
-                          className="block text-sm font-medium text-gray-700"
-                        >
-                          Note:
-                        </label>
-                        <input
-                          type="text"
-                          id="rejectReason"
-                          name="rejectReason"
-                          value={noteInput}
-                          onChange={(e) => setNoteInput(e.target.value)}
-                          className="mt-1 p-2 w-full border rounded-md"
-                          required
-                        />
-                      </div>
-                    )}
-                    <div className="flex justify-between">
-                      <button
-                        onClick={() => {
-                          if (confirmationData.actionType === "approve") {
-                            handleApproveConfirmation(
-                              confirmationData.mentorUserId,
-                              noteInput,
-                              confirmationData.specializationId
-                            );
-                          } else {
-                            handleRejectConfirmation(
-                              confirmationData.mentorUserId,
-                              noteInput,
-                              confirmationData.specializationId
-                            );
-                          }
-                          setConfirmationData({
-                            isOpen: false,
-                            actionType: "",
-                            mentorUserId: null,
-                            specializationId: null,
-                          });
-                        }}
-                        className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2"
-                      >
-                        Confirm
-                      </button>
-                      <button
-                        onClick={() =>
-                          setConfirmationData({
-                            isOpen: false,
-                            actionType: "",
-                            mentorUserId: null,
-                            specializationId: null,
-                          })
-                        }
-                        className="bg-gray-400 text-white px-4 py-2 rounded-md"
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </Modal> */}
             </div>
           )}
         </div>

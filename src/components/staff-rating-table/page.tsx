@@ -1,28 +1,12 @@
 "use client";
-
 import { http } from "@/api/http";
-import { Rating } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { UserAuth } from "@/app/context/AuthContext";
 import axios from "axios";
-import {
-  Box,
-  Card,
-  Link,
-  Paper,
-  Table,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TablePagination,
-  TableRow,
-  TableSortLabel,
-  Typography,
-} from "@mui/material";
-import { Breadcrumb, Button, Form, Modal, Space, Spin } from "antd";
-import form from "antd/es/form";
+import { Breadcrumb, Spin, Table, Space, Form, Modal, Button } from "antd";
+import { Rating } from "@mui/material";
 import { toast } from "sonner";
+import { AlignType } from "react-bootstrap/esm/types";
 
 export type Rating = {
   ratingInfo: any;
@@ -57,8 +41,6 @@ const StaffRatingTable = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(0);
-  const [order, setOrder] = useState<"asc" | "desc">("asc");
-  const [orderBy, setOrderBy] = useState<string>("verificationDate");
   const [form] = Form.useForm();
 
   const fetchData = async () => {
@@ -77,8 +59,6 @@ const StaffRatingTable = () => {
       }
     }
   };
-
-  // console.log("JWT Staff", jwtToken);
 
   useEffect(() => {
     fetchData();
@@ -119,29 +99,14 @@ const StaffRatingTable = () => {
     }
   };
 
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
+  const handleChangePage = (newPage: number) => {
+    setPage(newPage - 1);
   };
 
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
+  const handleChangeRowsPerPage = (pageSize: number) => {
+    setRowsPerPage(pageSize);
     setPage(0);
   };
-
-  function getComparator(
-    order: "asc" | "desc",
-    orderBy: string
-  ): (a: any, b: any) => number {
-    return (a, b) => {
-      if (order === "asc") {
-        return a[orderBy] > b[orderBy] ? 1 : -1;
-      } else {
-        return b[orderBy] > a[orderBy] ? 1 : -1;
-      }
-    };
-  }
 
   const handleCancel = () => {
     setIsConfirmationModalOpen(false);
@@ -151,6 +116,124 @@ const StaffRatingTable = () => {
   const handleUnBanCourseClick = () => {
     handleBanConfirmation(true);
   };
+
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 5, // Số dòng mỗi trang
+  });
+
+  const handlePageChange = (current, pageSize) => {
+    setPagination({ current, pageSize });
+  };
+
+  // Define columns for Ant Design Table
+  const columns = [
+    {
+      title: "Rating Date",
+      dataIndex: "ratingInfo",
+      key: "ratingInfo",
+      render: (ratingInfo) => (
+        <div>
+          {new Date(ratingInfo.timeStamp).toLocaleDateString()}
+          <br />
+          {new Date(ratingInfo.timeStamp).toLocaleTimeString()}
+        </div>
+      ),
+    },
+    {
+      title: "Course/Mentor",
+      dataIndex: "ratingInfo",
+      key: "courseName",
+      render: (ratingInfo) => (
+        <div className="flex">
+          <img
+            src={
+              activeTab === "tab2"
+                ? ratingInfo.courseImage
+                : ratingInfo.mentorImage
+            }
+            alt="Author"
+            className="w-28 h-28 rounded-lg border border-opacity-20 border-[#309255]"
+          />
+          <div className="mt-2">
+            <p className="ml-2 text-[20px]">
+              {activeTab === "tab2"
+                ? ratingInfo.courseName
+                : ratingInfo.mentorName}
+            </p>
+          </div>
+        </div>
+      ),
+    },
+    {
+      title: "Rating by",
+      dataIndex: "userRatingInfo",
+      key: "fullName",
+      render: (userRatingInfo) => (
+        <div className="flex">
+          <img
+            src={userRatingInfo.imageUser}
+            alt="Author"
+            className="w-28 h-28 rounded-lg border border-opacity-20 border-[#309255]"
+          />
+          <div className="mt-2">
+            <p className="ml-2 text-[20px]">{userRatingInfo.fullName}</p>
+            <p className="ml-2">{userRatingInfo.email}</p>
+          </div>
+        </div>
+      ),
+    },
+    {
+      title: "Rating",
+      dataIndex: "ratingInfo",
+      key: "rating1",
+      render: (ratingInfo) => (
+        <Rating
+          size="large"
+          name="half-rating-read"
+          max={5}
+          precision={0.1}
+          readOnly
+          value={ratingInfo.rating1}
+        />
+      ),
+    },
+    {
+      title: "Description",
+      dataIndex: "ratingInfo",
+      key: "comment",
+      render: (ratingInfo) => (
+        <p className="text-[16px]">{ratingInfo.comment}</p>
+      ),
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (rating) => (
+        <Space direction="vertical">
+          {rating.ratingInfo.status === 0 ? (
+            <button
+              onClick={() => handleRatingStatusUpdate(rating.ratingInfo.id, 1)}
+              className="border-2 px-2 py-1 text-sm rounded-md w-24 hover:border-[#309255] hover:text-white hover:bg-[#59b77d]"
+            >
+              Display
+            </button>
+          ) : (
+            <button
+              onClick={() => {
+                setSelectedRatingId(rating.ratingInfo.id);
+                setIsConfirmationModalOpen(true);
+              }}
+              className="border-2 px-2 py-1 text-sm rounded-md w-24 hover:border-[#f33404] hover:text-white hover:bg-[#f33404b7]"
+            >
+              Hidden
+            </button>
+          )}
+        </Space>
+      ),
+    },
+  ];
+
   return (
     <div className="w-full mt-4">
       <div className="flex justify-between items-center px-5 bg-[#e7f8ee] mb-5">
@@ -192,371 +275,29 @@ const StaffRatingTable = () => {
           <div className="tab-content">
             {activeTab === "tab2" && (
               <div className="min-h-[1000px] w-full">
-                <Box
-                  component="main"
-                  sx={{
-                    flexGrow: 1,
-                  }}
-                  className="shadow-[5px_10px_20px_15px_rgba(0,0,0,0.15)] rounded-lg mx-5 my-5"
-                >
-                  <Card>
-                    <Paper sx={{ width: "100%" }}>
-                      {isLoading ? (
-                        <div className="text-center text-5xl mt-5">
-                          <Spin size="large" />
-                        </div>
-                      ) : (
-                        <TableContainer>
-                          <Table
-                            sx={{ minWidth: 750 }}
-                            aria-labelledby="tableTitle"
-                            size="medium"
-                          >
-                            <TableHead>
-                              <TableRow className="">
-                                <TableCell>
-                                  <TableSortLabel className="w-[110px] text-[14px]">
-                                    Rating Date
-                                  </TableSortLabel>
-                                </TableCell>
-                                <TableCell className="w-[400px] text-[14px]">
-                                  Course
-                                </TableCell>
-                                <TableCell className="w-[400px] text-[14px]">
-                                  Rating by
-                                </TableCell>
-                                <TableCell className="text-[14px]">
-                                  Rating
-                                </TableCell>
-                                <TableCell className="w-[600px] text-[14px]">
-                                  Description
-                                </TableCell>
-
-                                <TableCell
-                                  align="center"
-                                  className="text-[14px]"
-                                >
-                                  Action
-                                </TableCell>
-                              </TableRow>
-                              {rating &&
-                                rating
-                                  .slice(
-                                    page * rowsPerPage,
-                                    page * rowsPerPage + rowsPerPage
-                                  )
-                                  .map((rating) => (
-                                    <TableRow key={rating.id}>
-                                      <TableCell>
-                                        <div>
-                                          {new Date(
-                                            rating.ratingInfo.timeStamp
-                                          ).toLocaleDateString()}
-                                        </div>
-                                        <div>
-                                          {new Date(
-                                            rating.ratingInfo.timeStamp
-                                          ).toLocaleTimeString()}
-                                        </div>
-                                      </TableCell>
-                                      <TableCell>
-                                        <div className="flex">
-                                          <img
-                                            src={rating.ratingInfo.courseImage}
-                                            alt="Author"
-                                            className="w-28 h-28 rounded-lg border border-opacity-20 border-[#309255]"
-                                          />
-                                          <div className="mt-2">
-                                            <p className="ml-2 text-[20px]">
-                                              {rating.ratingInfo.courseName}
-                                            </p>
-                                          </div>
-                                        </div>
-                                      </TableCell>
-                                      <TableCell>
-                                        <div className="flex">
-                                          <img
-                                            src={
-                                              rating.userRatingInfo.imageUser
-                                            }
-                                            alt="Author"
-                                            className="w-28 h-28 rounded-lg border border-opacity-20 border-[#309255]"
-                                          />
-                                          <div className="mt-2">
-                                            <p className="ml-2 text-[20px]">
-                                              {rating.userRatingInfo.fullName}
-                                            </p>
-                                            <p className="ml-2">
-                                              {rating.userRatingInfo.email}
-                                            </p>
-                                          </div>
-                                        </div>
-                                      </TableCell>
-                                      <TableCell>
-                                        <Rating
-                                          size="large"
-                                          name="half-rating-read"
-                                          max={5}
-                                          precision={0.1}
-                                          readOnly
-                                          value={rating.ratingInfo.rating1}
-                                        />
-                                      </TableCell>
-                                      <TableCell>
-                                        <p className="text-[16px]">
-                                          {" "}
-                                          {rating.ratingInfo.comment}
-                                        </p>
-                                      </TableCell>
-                                      <TableCell>
-                                        <div className="flex justify-center">
-                                          {rating.ratingInfo.status === 0 ? (
-                                            <button
-                                              onClick={() =>
-                                                handleRatingStatusUpdate(
-                                                  rating.ratingInfo.id,
-                                                  1
-                                                )
-                                              }
-                                              className="px-5 py-3 mx-2 bg-[#309255] w-[100px] text-white rounded-lg"
-                                            >
-                                              Display
-                                            </button>
-                                          ) : (
-                                            <button
-                                              onClick={() => {
-                                                setSelectedRatingId(
-                                                  rating.ratingInfo.id
-                                                );
-                                                setIsConfirmationModalOpen(
-                                                  true
-                                                );
-                                              }}
-                                              className="px-5 py-3 mx-2 bg-red-500 w-[100px] text-white rounded-lg"
-                                            >
-                                              Hidden
-                                            </button>
-                                          )}
-                                        </div>
-                                      </TableCell>
-                                    </TableRow>
-                                  ))}
-                            </TableHead>
-                          </Table>
-                        </TableContainer>
-                      )}
-                      <TablePagination
-                        rowsPerPageOptions={[5, 10, 25]}
-                        component="div"
-                        count={rating ? rating.length : 0}
-                        rowsPerPage={rowsPerPage}
-                        page={page}
-                        onPageChange={handleChangePage}
-                        onRowsPerPageChange={handleChangeRowsPerPage}
-                      />
-                    </Paper>
-                  </Card>
-                </Box>
+                <Table
+                  dataSource={rating}
+                  columns={columns}
+                  pagination={{ ...pagination, onChange: handlePageChange }}
+                  loading={isLoading}
+                  className="mx-5 shadow-[5px_15px_25px_10px_rgba(0,0,0,0.15)] mt-2 rounded-lg"
+                />
               </div>
             )}
             {activeTab === "tab3" && (
               <div className="min-h-[1000px] w-full">
-                <Box
-                  component="main"
-                  sx={{
-                    flexGrow: 1,
-                  }}
-                  className="shadow-[5px_10px_20px_15px_rgba(0,0,0,0.15)] rounded-lg mx-5 my-5"
-                >
-                  <Card>
-                    <Paper sx={{ width: "100%" }}>
-                      {isLoading ? (
-                        <div className="text-center text-5xl mt-5">
-                          <Spin size="large" />
-                        </div>
-                      ) : (
-                        <TableContainer>
-                          <Table
-                            sx={{ minWidth: 750 }}
-                            aria-labelledby="tableTitle"
-                            size="medium"
-                          >
-                            <TableHead>
-                              <TableRow className="">
-                                <TableCell>
-                                  <TableSortLabel className="w-[110px] text-[14px]">
-                                    Rating Date
-                                  </TableSortLabel>
-                                </TableCell>
-                                <TableCell className="w-[400px] text-[14px]">
-                                  Mentors
-                                </TableCell>
-                                <TableCell className="w-[400px] text-[14px]">
-                                  Rating by
-                                </TableCell>
-                                <TableCell className="text-[14px]">
-                                  Rating
-                                </TableCell>
-                                <TableCell className="w-[600px] text-[14px]">
-                                  Description
-                                </TableCell>
-
-                                <TableCell
-                                  align="center"
-                                  className="text-[14px]"
-                                >
-                                  Action
-                                </TableCell>
-                              </TableRow>
-                              {rating &&
-                                rating
-                                  .slice(
-                                    page * rowsPerPage,
-                                    page * rowsPerPage + rowsPerPage
-                                  )
-                                  .map((rating) => (
-                                    <TableRow key={rating.id}>
-                                      <TableCell>
-                                        <div>
-                                          {new Date(
-                                            rating.ratingInfo.timeStamp
-                                          ).toLocaleDateString()}
-                                        </div>
-                                        <div>
-                                          {new Date(
-                                            rating.ratingInfo.timeStamp
-                                          ).toLocaleTimeString()}
-                                        </div>
-                                      </TableCell>
-                                      <TableCell>
-                                        <div className="flex">
-                                          <img
-                                            src={rating.ratingInfo.mentorImage}
-                                            alt="Author"
-                                            className="w-28 h-28 rounded-lg border border-opacity-20 border-[#309255]"
-                                          />
-                                          <div className="mt-2">
-                                            <p className="ml-2 text-[20px]">
-                                              {rating.ratingInfo.mentorName}
-                                            </p>
-                                          </div>
-                                        </div>
-                                      </TableCell>
-                                      <TableCell>
-                                        <div className="flex">
-                                          <img
-                                            src={
-                                              rating.userRatingInfo.imageUser
-                                            }
-                                            alt="Author"
-                                            className="w-28 h-28 rounded-lg border border-opacity-20 border-[#309255]"
-                                          />
-                                          <div className="mt-2">
-                                            <p className="ml-2 text-[20px]">
-                                              {rating.userRatingInfo.fullName}
-                                            </p>
-                                            <p className="ml-2">
-                                              {rating.userRatingInfo.email}
-                                            </p>
-                                          </div>
-                                        </div>
-                                      </TableCell>
-                                      <TableCell>
-                                        <Rating
-                                          size="large"
-                                          name="half-rating-read"
-                                          max={5}
-                                          precision={0.1}
-                                          readOnly
-                                          value={rating.ratingInfo.rating1}
-                                        />
-                                      </TableCell>
-                                      <TableCell>
-                                        <p className="text-[16px]">
-                                          {" "}
-                                          {rating.ratingInfo.comment}
-                                        </p>
-                                      </TableCell>
-                                      <TableCell>
-                                        <div className="flex justify-center">
-                                          {rating.ratingInfo.status === 0 ? (
-                                            <button
-                                              onClick={() =>
-                                                handleRatingStatusUpdate(
-                                                  rating.ratingInfo.id,
-                                                  1
-                                                )
-                                              }
-                                              className="px-5 py-3 mx-2 bg-[#309255] w-[100px] text-white rounded-lg"
-                                            >
-                                              Display
-                                            </button>
-                                          ) : (
-                                            <button
-                                              onClick={() => {
-                                                setSelectedRatingId(
-                                                  rating.ratingInfo.id
-                                                );
-                                                setIsConfirmationModalOpen(
-                                                  true
-                                                );
-                                              }}
-                                              className="px-5 py-3 mx-2 bg-red-500 w-[100px] text-white rounded-lg"
-                                            >
-                                              Hidden
-                                            </button>
-                                          )}
-                                        </div>
-                                      </TableCell>
-                                    </TableRow>
-                                  ))}
-                            </TableHead>
-                          </Table>
-                        </TableContainer>
-                      )}
-                      <TablePagination
-                        rowsPerPageOptions={[5, 10, 25]}
-                        component="div"
-                        count={rating ? rating.length : 0}
-                        rowsPerPage={rowsPerPage}
-                        page={page}
-                        onPageChange={handleChangePage}
-                        onRowsPerPageChange={handleChangeRowsPerPage}
-                      />
-                    </Paper>
-                  </Card>
-                </Box>
+                <Table
+                  columns={columns}
+                  dataSource={rating}
+                  pagination={{ ...pagination, onChange: handlePageChange }}
+                  loading={isLoading}
+                  className="mx-5 shadow-[5px_15px_25px_10px_rgba(0,0,0,0.15)] mt-2 rounded-lg"
+                />
               </div>
             )}
           </div>
         </div>
       </div>
-      {/* <Modal
-        open={isConfirmationModalOpen}
-        onClose={() => setIsConfirmationModalOpen(false)}
-      >
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div className="bg-white p-8 max-w-md w-full rounded-lg shadow-md">
-            <h2 className="text-2xl font-semibold mb-4">
-              Are you sure you want to Hidden this Comment?
-            </h2>
-            <div className="flex justify-between">
-              <button
-                onClick={() => handleBanConfirmation(true)}
-                className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2"
-              >
-                Confirm
-              </button>
-              <button
-                onClick={() => handleBanConfirmation(false)}
-                className="bg-gray-400 text-white px-4 py-2 rounded-md"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-      </Modal> */}
       <Modal
         destroyOnClose={true}
         title={
