@@ -31,7 +31,7 @@ export default function BecomeMentor() {
     router.push("/");
   };
 
-  return role ? (
+  return !role ? (
     <Loading />
   ) : (
     <>

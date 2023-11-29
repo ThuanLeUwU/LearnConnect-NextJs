@@ -44,7 +44,7 @@ export default function ListCourse() {
   const [minPrice, setMinPrice] = useState<any>("");
   const [maxPrice, setMaxPrice] = useState<any>("");
   const [rate, setRate] = useState<any>("");
-  console.log("rate", rate);
+  // console.log("rate", rate);
   const [specialized, setSpecialized] = useState<Category[]>([]);
   const [filterBySpecialized, setFilterBySpecialized] = useState<any>("");
   const [priceOption, setPriceOption] = useState("");
