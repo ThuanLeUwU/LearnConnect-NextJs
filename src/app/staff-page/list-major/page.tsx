@@ -2,9 +2,6 @@
 import { UserAuth } from "@/app/context/AuthContext";
 import { Course } from "@/components/courses/courses";
 import LeftNavbar from "@/components/left-navbar/page";
-import useDataModeration from "@/components/pagination/useDataModeration";
-import Paginate from "@/components/pagination/pagination";
-import StaffRatingTable from "@/components/staff-rating-table/page";
 import { use, useEffect, useState } from "react";
 import {
   Breadcrumb,
@@ -53,7 +50,7 @@ const MajorSepcialize = () => {
 
   const [pagination, setPagination] = useState({
     current: 1,
-    pageSize: 5, // Số dòng mỗi trang
+    pageSize: 10, // Số dòng mỗi trang
   });
 
   const handlePageChange = (current, pageSize) => {
@@ -106,6 +103,8 @@ const MajorSepcialize = () => {
       title: "Name",
       dataIndex: "name",
       key: "name",
+      sorter: (a, b) => a.name.localeCompare(b.name),
+
       width: 300,
     },
     {
@@ -113,12 +112,14 @@ const MajorSepcialize = () => {
       dataIndex: "description",
       key: "description",
       width: 1000,
+      sorter: (a, b) => a.description.localeCompare(b.description),
     },
     {
       title: "Status",
       dataIndex: "isActive",
       key: "isActive",
       width: 200,
+      sorter: (a, b) => (a.isActive ? 1 : -1) - (b.isActive ? 1 : -1),
       render: (isActive) => (
         <Tag color={isActive ? "green" : "red"}>
           {isActive ? "Active" : "Inactive"}
@@ -133,10 +134,6 @@ const MajorSepcialize = () => {
         <Space>
           <Button onClick={() => handleUpdateMajor(record)}>Update</Button>
           {record.isActive === true ? (
-            // <Button danger onClick={() => handleDisableMajor(record)}>
-            //   Disable
-            // </Button>
-
             <button
               className="bg-white text-black border rounded-md border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-2 py-1"
               onClick={() => {

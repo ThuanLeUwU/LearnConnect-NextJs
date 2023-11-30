@@ -1,20 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import {
-  Box,
-  Card,
-  Link,
-  Paper,
-  // Table,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TablePagination,
-  TableRow,
-  TableSortLabel,
-  Typography,
-} from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import Modal from "@mui/material/Modal";
 import {
   Table,
@@ -27,10 +14,8 @@ import {
 } from "antd";
 
 import Button from "@mui/material/Button";
-import InstructorCourseStyle from "./styles.module.scss";
 import { toast } from "sonner";
 import { Spin } from "antd";
-import LeftNavbar from "@/components/left-navbar/page";
 import { UserAuth } from "@/app/context/AuthContext";
 
 export type specializationOfMentor = {
@@ -121,7 +106,7 @@ const MentorRequest = () => {
   const [noteInput, setNoteInput] = useState("");
   const [pagination, setPagination] = useState({
     current: 1,
-    pageSize: 5, // Số dòng mỗi trang
+    pageSize: 10, // Số dòng mỗi trang
   });
   const [rejectReason, setRejectReason] = useState("");
 
@@ -312,6 +297,15 @@ const MentorRequest = () => {
       dataIndex: "specializationOfMentor",
       key: "verificationDate",
       width: 150,
+      sorter: (a, b) => {
+        const dateA = new Date(
+          a.specializationOfMentor.verificationDate
+        ).getTime();
+        const dateB = new Date(
+          b.specializationOfMentor.verificationDate
+        ).getTime();
+        return dateA - dateB;
+      },
       render: (specializationOfMentor, record) => (
         <div>
           {new Date(
@@ -329,12 +323,22 @@ const MentorRequest = () => {
       dataIndex: "user",
       key: "name",
       width: 200,
+      sorter: (a, b) => {
+        const nameA = a.user.name.toUpperCase(); // Convert names to uppercase for case-insensitive sorting
+        const nameB = b.user.name.toUpperCase();
+        return nameA.localeCompare(nameB);
+      },
       render: (user) => <p className="text-[16px]">{user.name}</p>,
     },
     {
       title: "Email",
       dataIndex: "user",
       key: "email",
+      sorter: (a, b) => {
+        const emailA = a.user.email.toUpperCase();
+        const emailB = b.user.email.toUpperCase();
+        return emailA.localeCompare(emailB);
+      },
       render: (user) => <p className="text-[16px]">{user.email}</p>,
     },
     {
@@ -342,12 +346,22 @@ const MentorRequest = () => {
       dataIndex: "mentor",
       key: "description",
       width: 600,
+      sorter: (a, b) => {
+        const descriptionA = a.mentor.description.toUpperCase();
+        const descriptionB = b.mentor.description.toUpperCase();
+        return descriptionA.localeCompare(descriptionB);
+      },
       render: (mentor) => <p className="text-[16px]">{mentor.description}</p>,
     },
     {
       title: "Specialization",
       dataIndex: "specialization",
       key: "specialization",
+      sorter: (a, b) => {
+        const specializationA = a.specialization.name.toUpperCase();
+        const specializationB = b.specialization.name.toUpperCase();
+        return specializationA.localeCompare(specializationB);
+      },
       render: (specialization) => (
         <p className="text-[16px]">{specialization.name}</p>
       ),
@@ -356,6 +370,9 @@ const MentorRequest = () => {
       title: "Status",
       dataIndex: "specializationOfMentor",
       key: "status",
+      sorter: (a, b) =>
+        a.specializationOfMentor.status - b.specializationOfMentor.status,
+
       render: (specializationOfMentor) => (
         <span style={{ color: getStatusColor(specializationOfMentor.status) }}>
           {getStatusText(specializationOfMentor.status)}
@@ -366,6 +383,11 @@ const MentorRequest = () => {
       title: "Note",
       dataIndex: "specializationOfMentor",
       key: "note",
+      sorter: (a, b) => {
+        const noteA = (a.specializationOfMentor.note || "").toUpperCase();
+        const noteB = (b.specializationOfMentor.note || "").toUpperCase();
+        return noteA.localeCompare(noteB);
+      },
       render: (specializationOfMentor) => (
         <p className="text-[16px]">{specializationOfMentor.note}</p>
       ),

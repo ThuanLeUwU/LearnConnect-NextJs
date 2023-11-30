@@ -132,6 +132,8 @@ const StaffRatingTable = () => {
       title: "Rating Date",
       dataIndex: "ratingInfo",
       key: "ratingInfo",
+      width: 150,
+
       render: (ratingInfo) => (
         <div>
           {new Date(ratingInfo.timeStamp).toLocaleDateString()}
@@ -139,6 +141,11 @@ const StaffRatingTable = () => {
           {new Date(ratingInfo.timeStamp).toLocaleTimeString()}
         </div>
       ),
+      sorter: (a, b) => {
+        const dateA = new Date(a.ratingInfo.timeStamp);
+        const dateB = new Date(b.ratingInfo.timeStamp);
+        return dateA.getTime() - dateB.getTime();
+      },
     },
     {
       title: "Course/Mentor",
@@ -164,6 +171,17 @@ const StaffRatingTable = () => {
           </div>
         </div>
       ),
+      sorter: (a, b) => {
+        const nameA =
+          activeTab === "tab2"
+            ? a.ratingInfo.courseName
+            : a.ratingInfo.mentorName;
+        const nameB =
+          activeTab === "tab2"
+            ? b.ratingInfo.courseName
+            : b.ratingInfo.mentorName;
+        return nameA.localeCompare(nameB);
+      },
     },
     {
       title: "Rating by",
@@ -182,6 +200,11 @@ const StaffRatingTable = () => {
           </div>
         </div>
       ),
+      sorter: (a, b) => {
+        const nameA = a.userRatingInfo.fullName.toLowerCase();
+        const nameB = b.userRatingInfo.fullName.toLowerCase();
+        return nameA.localeCompare(nameB);
+      },
     },
     {
       title: "Rating",
@@ -197,6 +220,7 @@ const StaffRatingTable = () => {
           value={ratingInfo.rating1}
         />
       ),
+      sorter: (a, b) => a.ratingInfo.rating1 - b.ratingInfo.rating1,
     },
     {
       title: "Description",
@@ -205,6 +229,11 @@ const StaffRatingTable = () => {
       render: (ratingInfo) => (
         <p className="text-[16px]">{ratingInfo.comment}</p>
       ),
+      sorter: (a, b) => {
+        const descriptionA = a.ratingInfo.comment || ""; // Handle null or undefined values
+        const descriptionB = b.ratingInfo.comment || "";
+        return descriptionA.localeCompare(descriptionB);
+      },
     },
     {
       title: "Action",
@@ -214,7 +243,7 @@ const StaffRatingTable = () => {
           {rating.ratingInfo.status === 0 ? (
             <button
               onClick={() => handleRatingStatusUpdate(rating.ratingInfo.id, 1)}
-              className="border-2 px-2 py-1 text-sm rounded-md w-24 hover:border-[#309255] hover:text-white hover:bg-[#59b77d]"
+              className="border-2 px-2 py-1 text-sm rounded-md w-24 hover:border-[#309255] hover:text-white hover:bg-[#59b77d] border-[#309255]"
             >
               Display
             </button>
@@ -224,7 +253,7 @@ const StaffRatingTable = () => {
                 setSelectedRatingId(rating.ratingInfo.id);
                 setIsConfirmationModalOpen(true);
               }}
-              className="border-2 px-2 py-1 text-sm rounded-md w-24 hover:border-[#f33404] hover:text-white hover:bg-[#f33404b7]"
+              className="border-2 px-2 py-1 text-sm rounded-md w-24 hover:border-[#f33404] hover:text-white hover:bg-[#f33404b7] border-[#f33404]"
             >
               Hidden
             </button>

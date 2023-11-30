@@ -185,33 +185,44 @@ export default function UserManagePage() {
       title: "No.",
       dataIndex: "id",
       key: "id",
+      sorter: (a, b) => a.id - b.id,
     },
     {
       title: "Name",
       dataIndex: "fullName",
       key: "fullName",
+      sorter: (a, b) => a.fullName.localeCompare(b.fullName),
     },
     {
       title: "Email Contact",
       dataIndex: "email",
       key: "email",
+      sorter: (a, b) => a.email.localeCompare(b.email),
     },
     {
       title: "Phone",
       dataIndex: "phoneNumber",
       key: "phoneNumber",
+      sorter: (a, b) =>
+        (a.phoneNumber || "").localeCompare(b.phoneNumber || ""),
     },
     {
       title: "Role",
       dataIndex: "role",
       key: "role",
       render: (role) => displayRoleText(role),
+      sorter: (a, b) => {
+        const roleA = String(a.role || "");
+        const roleB = String(b.role || "");
+        return roleA.localeCompare(roleB);
+      },
     },
     {
       title: "Activity",
       dataIndex: "status",
       key: "status",
       render: (status) => displayActive(status),
+      sorter: (a, b) => a.status - b.status,
     },
     {
       title: "Action",
