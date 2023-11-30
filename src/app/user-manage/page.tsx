@@ -28,11 +28,17 @@ import {
   TableSortLabel,
   Typography,
 } from "@mui/material";
+
 import { format, parseISO } from "date-fns";
 import axios from "axios";
 import Head from "next/head";
 import PropTypes from "prop-types";
-import { Button, Form, Modal, Tag } from "antd";
+import { Button, Form, Modal, Tag, Table as AntTable, Space } from "antd";
+import {
+  EditOutlined,
+  StopOutlined,
+  UserDeleteOutlined,
+} from "@ant-design/icons";
 
 export type User = {
   id: string | number;
@@ -63,6 +69,10 @@ export default function UserManagePage() {
   const [dense, setDense] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [mounted, setMounted] = useState(false);
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 10, // Số dòng mỗi trang
+  });
   // console.log("sort,",allUser);
   // console.log("Admin Token", jwtToken);
 
@@ -170,9 +180,75 @@ export default function UserManagePage() {
       return <Tag color="red">Inactive</Tag>;
     }
   };
-  // if (!mounted)
+  const columns = [
+    {
+      title: "No.",
+      dataIndex: "id",
+      key: "id",
+      sorter: (a, b) => a.id - b.id,
+    },
+    {
+      title: "Name",
+      dataIndex: "fullName",
+      key: "fullName",
+      sorter: (a, b) => a.fullName.localeCompare(b.fullName),
+    },
+    {
+      title: "Email Contact",
+      dataIndex: "email",
+      key: "email",
+      sorter: (a, b) => a.email.localeCompare(b.email),
+    },
+    {
+      title: "Phone",
+      dataIndex: "phoneNumber",
+      key: "phoneNumber",
+      sorter: (a, b) =>
+        (a.phoneNumber || "").localeCompare(b.phoneNumber || ""),
+    },
+    {
+      title: "Role",
+      dataIndex: "role",
+      key: "role",
+      render: (role) => displayRoleText(role),
+      sorter: (a, b) => {
+        const roleA = String(a.role || "");
+        const roleB = String(b.role || "");
+        return roleA.localeCompare(roleB);
+      },
+    },
+    {
+      title: "Activity",
+      dataIndex: "status",
+      key: "status",
+      render: (status) => displayActive(status),
+      sorter: (a, b) => a.status - b.status,
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (record) => (
+        <Space size="middle">
+          <Button
+            type="primary"
+            style={{ color: "black" }}
+            icon={<EditOutlined />}
+            onClick={() => showModal(record)}
+          >
+            Update
+          </Button>
+          <Button type="primary" danger icon={<StopOutlined />}>
+            Ban
+          </Button>
+          {/* Add more action buttons if needed */}
+        </Space>
+      ),
+    },
+  ];
 
-  // console.log("JWT Token staff: ", jwtToken);
+  const handlePageChange = (current, pageSize) => {
+    setPagination({ current, pageSize });
+  };
   return (
     <>
       <Head>
@@ -199,189 +275,19 @@ export default function UserManagePage() {
             <Typography variant="h3">User Manager</Typography>
           </div>
           <div className={`${InstructorCourseStyle.body_container}`}>
-            <Box
-              component="main"
-              sx={{
-                flexGrow: 1,
-              }}
+            <AntTable
+              columns={columns}
+              dataSource={allUser}
+              pagination={{ ...pagination, onChange: handlePageChange }}
               className="mx-5 shadow-[5px_15px_25px_10px_rgba(0,0,0,0.15)] mt-2 rounded-lg"
-            >
-              <Card>
-                <Paper sx={{ width: "100%" }}>
-                  <TableContainer>
-                    <Table
-                      sx={{ minWidth: 750 }}
-                      aria-labelledby="tableTitle"
-                      size={dense ? "small" : "medium"}
-                    >
-                      <EnhancedTableHead
-                        order={order}
-                        orderBy={orderBy}
-                        onRequestSort={handleRequestSort}
-                        rowCount={0}
-                      />
-                      <TableBody>
-                        {stableSort(allUser, getComparator(order, orderBy))
-                          .slice(
-                            page * rowsPerPage,
-                            page * rowsPerPage + rowsPerPage
-                          )
-                          .map(
-                            (
-                              user: {
-                                dob: null;
-                                fullName:
-                                  | string
-                                  | number
-                                  | boolean
-                                  | ReactElement<
-                                      any,
-                                      string | JSXElementConstructor<any>
-                                    >
-                                  | Iterable<ReactNode>
-                                  | ReactPortal
-                                  | PromiseLikeOfReactNode
-                                  | null
-                                  | undefined;
-                                email:
-                                  | string
-                                  | number
-                                  | boolean
-                                  | ReactElement<
-                                      any,
-                                      string | JSXElementConstructor<any>
-                                    >
-                                  | Iterable<ReactNode>
-                                  | ReactPortal
-                                  | PromiseLikeOfReactNode
-                                  | null
-                                  | undefined;
-                                phoneNumber:
-                                  | string
-                                  | number
-                                  | boolean
-                                  | ReactElement<
-                                      any,
-                                      string | JSXElementConstructor<any>
-                                    >
-                                  | Iterable<ReactNode>
-                                  | ReactPortal
-                                  | PromiseLikeOfReactNode
-                                  | null
-                                  | undefined;
-                                campus_name:
-                                  | string
-                                  | number
-                                  | boolean
-                                  | ReactElement<
-                                      any,
-                                      string | JSXElementConstructor<any>
-                                    >
-                                  | Iterable<ReactNode>
-                                  | ReactPortal
-                                  | PromiseLikeOfReactNode
-                                  | null
-                                  | undefined;
-                                address:
-                                  | string
-                                  | number
-                                  | boolean
-                                  | ReactElement<
-                                      any,
-                                      string | JSXElementConstructor<any>
-                                    >
-                                  | Iterable<ReactNode>
-                                  | ReactPortal
-                                  | PromiseLikeOfReactNode
-                                  | null
-                                  | undefined;
-                                role: number;
-                                status: number;
-                              },
-                              index: number
-                            ) => {
-                              const num = page * rowsPerPage + index + 1;
-                              return (
-                                <TableRow hover tabIndex={-1} key={index}>
-                                  <TableCell>
-                                    <Typography variant="body1">
-                                      {num}
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell align="left">
-                                    <Typography variant="body1">
-                                      {user.fullName}
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell align="left">
-                                    <Typography variant="body1">
-                                      {user.email}
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell align="left">
-                                    <Typography variant="body1">
-                                      {user.phoneNumber}
-                                    </Typography>
-                                  </TableCell>
 
-                                  <TableCell align="left">
-                                    <Typography variant="body1">
-                                      {displayRoleText(user.role)}
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell align="center">
-                                    <Typography variant="body1">
-                                      {displayActive(user.status)}
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell align="right">
-                                    <Typography variant="body1">
-                                      <div className="flex gap-[10px]">
-                                        <Button
-                                          type="primary"
-                                          style={{ color: "black" }}
-                                          onClick={() => {
-                                            showModal(user);
-                                            // console.log("t nè", user);
-                                          }}
-                                        >
-                                          Update
-                                        </Button>
-
-                                        <Button type="primary" danger>
-                                          Ban
-                                        </Button>
-                                      </div>
-                                    </Typography>
-                                  </TableCell>
-                                </TableRow>
-                              );
-                            }
-                          )}
-                        {emptyRows > 0 && (
-                          <TableRow
-                            style={{
-                              height: (dense ? 33 : 53) * emptyRows,
-                            }}
-                          >
-                            <TableCell colSpan={6} />
-                          </TableRow>
-                        )}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                  <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
-                    component="div"
-                    count={allUser.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                  />
-                </Paper>
-              </Card>
-            </Box>
+              // pagination={{
+              //   pageSize: rowsPerPage,
+              //   current: page + 1,
+              //   total: allUser.length,
+              //   onChange: handleChangePage,
+              // }}
+            />
           </div>
         </div>
       </div>
@@ -423,26 +329,6 @@ function descendingComparator(
   if (orderBy === "role") {
     return compareStrings(a.role, b.role);
   }
-  // if (orderBy === "status") {
-  //   return compareStrings(a.status, b.status);
-  // }
-  // if (orderBy === "birthday") {
-  //   if (a.birthDate === null) {
-  //     a.birthDate = "20/3/2001";
-  //   }
-  //   if (b.birthDate === null) {
-  //     b.birthDate = "20/3/2001";
-  //   }
-  //   const dateA = new Date(a.birthday);
-  //   const dateB = new Date(b.birthday);
-  //   return dateA.getTime() - dateB.getTime();
-  // }
-  // if (b[orderBy] < a[orderBy]) {
-  //   return -1;
-  // }
-  // if (b[orderBy] > a[orderBy]) {
-  //   return 1;
-  // }
 
   return 0;
 }

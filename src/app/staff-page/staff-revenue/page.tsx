@@ -293,6 +293,7 @@ const StaffRevenue = () => {
       dataIndex: "index",
       key: "index",
       width: 50,
+      sorter: (a, b) => a.mentorName.localeCompare(b.mentorName),
       render: (text, record, index) => {
         const currentIndex =
           (pagination.current - 1) * pagination.pageSize + index + 1;
@@ -303,26 +304,31 @@ const StaffRevenue = () => {
       title: "Mentor Name",
       dataIndex: "mentorName",
       key: "mentorName",
+      sorter: (a, b) => a.accountNumber - b.accountNumber,
     },
     {
       title: "Bank Number",
       dataIndex: "accountNumber",
       key: "accountNumber",
+      sorter: (a, b) => a.accountNumber - b.accountNumber,
     },
     {
       title: "Bank",
       dataIndex: "bank",
       key: "bank",
+      sorter: (a, b) => a.bank.localeCompare(b.bank),
     },
     {
       title: "Courses Revenue",
       dataIndex: "revenue",
       key: "revenue",
+      sorter: (a, b) => a.revenue - b.revenue,
     },
     {
       title: "Amount To Pay",
       dataIndex: "amountToPay",
       key: "amountToPay",
+      sorter: (a, b) => a.amountToPay - b.amountToPay,
     },
     {
       title: "Action",

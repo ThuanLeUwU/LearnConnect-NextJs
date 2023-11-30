@@ -1,6 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
-import "../../../globals.css";
+import { ReactNode, useEffect, useState } from "react";
+import "../../app/./globals.css";
 import axios from "axios";
 import { UserAuth } from "@/app/context/AuthContext";
 import { Empty, Modal } from "antd";
@@ -16,6 +16,7 @@ import { Course } from "@/components/courses/courses";
 ChartJs.register(ArcElement, Tooltip, Legend);
 
 export type Test = {
+  description: ReactNode;
   test: {
     id: number;
     title: string;
@@ -46,29 +47,12 @@ export type Test = {
   ];
 };
 
-export default function Quiz({ params }: any) {
+const Quiz = (props) => {
+  const { idCourse } = props;
+  //   console.log("idcourse1", idCourse);
   const router = useRouter();
-  const { role } = UserAuth();
-  useEffect(() => {
-    if (role === 0) {
-      router.push(`/user-manage`);
-    }
-    if (role === 1) {
-      router.push(`/staff-page`);
-    }
-    // if (role === 2) {
-    //   router.push(`/instructorcourses`);
-    // }
-    // if (role === 3) {
-    //   router.push(`/`);
-    // }
-    // if (role === -1) {
-    //   router.push(`/`);
-    // }
-  });
   const [questionsTest, setQuestionsTest] = useState<Test[]>([]);
   const [selectedAnswers, setSelectedAnswers] = useState<number[]>([]);
-  const idCourse = params.id;
   const { userData } = UserAuth();
   const [submitted, setSubmitted] = useState(false); // Track whether the quiz has been submitted
   const handleCancel = () => {
@@ -103,10 +87,20 @@ export default function Quiz({ params }: any) {
   const handleAnswerSelect = (answerId) => {
     if (!submitted) {
       setSelectedAnswers((prevAnswers) => {
-        const isSelected = prevAnswers.includes(answerId);
-        return isSelected
-          ? prevAnswers.filter((id) => id !== answerId)
-          : [...prevAnswers, answerId];
+        const currentQuestion = questionsTest[0].questions.find((q) =>
+          q.answers.map((a) => a.id).includes(answerId)
+        );
+        console.log("updatedAnswers1", currentQuestion);
+
+        if (currentQuestion?.question.questionType === 0) {
+          const updatedAnswers = prevAnswers.filter(
+            (id) => !currentQuestion?.answers.map((a) => a.id).includes(id)
+          );
+
+          console.log("updatedAnswers", updatedAnswers);
+          return [...updatedAnswers, answerId];
+        }
+        return [...prevAnswers, answerId];
       });
     }
   };
@@ -119,11 +113,16 @@ export default function Quiz({ params }: any) {
     questionsTest.forEach((item) => {
       totalQuestions += item.test.totalQuestion;
       item.questions.forEach((q) => {
-        const correctAnswer = q.answers.find((answer) => answer.isCorrect);
+        const correctAnswer = q.answers
+          .filter((answer) => answer.isCorrect)
+          .map((a) => a.id);
         if (
           correctAnswer &&
           selectedAnswers &&
-          selectedAnswers.includes(correctAnswer.id)
+          correctAnswer.filter((a) => selectedAnswers.includes(a)).length ===
+            correctAnswer.length &&
+          q.answers.filter((a) => selectedAnswers.includes(a.id)).length ===
+            correctAnswer.length
         ) {
           count++;
         }
@@ -174,13 +173,13 @@ export default function Quiz({ params }: any) {
         title: "Quiz Results",
         content: (
           <div className="flex flex-row">
-            <div className="w-40">
+            <div className="w-60">
               <Doughnut data={chartDataFormatted} />
             </div>
-            <div className="text-xl">
+            <div className="text-xl pl-5">
               <p className="text-[#309255]">Correct Answers: {count}</p>
               <p>Total Questions : {totalQuestions}</p>
-              <p>Average Score : {averageScore}</p>
+              <p>Average Score : {averageScore.toFixed(2)}</p>
             </div>
           </div>
         ),
@@ -190,6 +189,7 @@ export default function Quiz({ params }: any) {
         cancelButtonProps: {
           style: { backgroundColor: "#309255", color: "#fff" },
         },
+        width: 600,
         onCancel: handleCancel,
       });
     } catch (error) {
@@ -211,18 +211,6 @@ export default function Quiz({ params }: any) {
   };
 
   const answerOptions = ["A.", "B.", "C.", "D."];
-
-  const breadcrumbsHome = () => {
-    router.push("/");
-  };
-
-  const breadcrumbsMyCourses = () => {
-    router.push("/my-course");
-  };
-
-  const breadcrumbsDetailsCourse = () => {
-    router.push(`/my-course/${idCourse}`);
-  };
 
   const [oneCourse, setOneCourse] = useState<Course>();
 
@@ -248,24 +236,6 @@ export default function Quiz({ params }: any) {
             backgroundImage: "url('/images/shape-23.png')",
           }}
         >
-          <div>
-            <Breadcrumb className="font-semibold text-3xl py-5 px-64 flex-auto">
-              <Breadcrumb.Item>
-                <button onClick={breadcrumbsHome}>Home</button>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                <button onClick={breadcrumbsMyCourses}>My Courses</button>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                <button onClick={breadcrumbsDetailsCourse}>
-                  {oneCourse?.name}
-                </button>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                <span>Test</span>
-              </Breadcrumb.Item>
-            </Breadcrumb>{" "}
-          </div>
           <div
             className="w-2/5 bg-auto bg-no-repeat bg-right-top flex-1"
             style={{
@@ -275,7 +245,7 @@ export default function Quiz({ params }: any) {
         </div>
       </div>
       <div className="container mx-auto px-4">
-        <div className="p-4">
+        <div className="">
           {questionsTest.length === 0 ? (
             <div className="text-center text-2xl mt-8 items-center justify-center min-h-[60vh]">
               <Empty description={false} />
@@ -291,10 +261,11 @@ export default function Quiz({ params }: any) {
             </div>
           ) : (
             questionsTest.map((item) => (
-              <div key={item.test.id} className="mb-4 mt-6">
-                <h3 className="text-xl font-semibold mb-2">
+              <div key={item.test.id} className="mb-4">
+                <p className="text-3xl font-semibold mb-2 text-center">
                   {item.test.title}
-                </h3>
+                </p>
+                <p className="text-start my-5">{item.test.description}</p>
 
                 {item.questions.map((q, index) => (
                   <div
@@ -302,13 +273,22 @@ export default function Quiz({ params }: any) {
                     className="mb-2 mt-6 p-6 border-2 rounded-lg border-gray-200 shadow-lg"
                   >
                     <p className="mb-1 font-medium text-[18px]">
-                      {index + 1}. {q.question.questionText}
+                      {index + 1}.{" "}
+                      <span className="text-gray-500 text-[18px] text font-light">
+                        (Choose {q.answers.filter((a) => a.isCorrect).length}{" "}
+                        answer
+                        {q.answers.filter((a) => a.isCorrect).length <= 1
+                          ? ""
+                          : "s"}
+                        ){" "}
+                      </span>
+                      {q.question.questionText}
                     </p>
-                    <div className="pl-4 grid grid-cols-2 gap-4">
+                    <div className="px-4 grid grid-cols-2 gap-4 mt-10">
                       {q.answers.map((answer, ansIndex) => (
                         <button
                           key={answer.id}
-                          className={`mt-3 border-2 p-2 text-left rounded-lg ${
+                          className={` border-2 p-2 text-left rounded-lg ${
                             submitted
                               ? selectedAnswers?.includes(answer.id)
                                 ? answer.isCorrect
@@ -316,8 +296,8 @@ export default function Quiz({ params }: any) {
                                   : "border-red-500 bg-red-100"
                                 : "border-gray-300"
                               : selectedAnswers?.includes(answer.id)
-                              ? "border-blue-500 bg-blue-100"
-                              : "border-gray-100"
+                              ? "border-blue-500 bg-blue-100 hover:border-blue-700"
+                              : "border-gray-300 hover:border-blue-500"
                           }`}
                           onClick={() => handleAnswerSelect(answer.id)}
                         >
@@ -338,21 +318,15 @@ export default function Quiz({ params }: any) {
               {submitted ? (
                 <>
                   <button
-                    className="bg-[#309255] text-white font-bold py-2 px-4 mt-4 rounded mx-2 hover:bg-[#309256da]"
+                    className="bg-[#309255] text-white font-bold py-2 px-4 my-4 rounded mx-2 hover:bg-[#309256da] shadow-lg w-full"
                     onClick={handleDoAgain}
                   >
                     Try it again
                   </button>
-                  <button
-                    className="bg-[#309255] text-white font-bold py-2 px-4 mt-4 rounded mx-2 hover:bg-[#309256da]"
-                    onClick={handleClickGotoCourse}
-                  >
-                    Go to Course
-                  </button>
                 </>
               ) : (
                 <button
-                  className="bg-[#309255] text-white font-bold py-2 px-4 mt-4 rounded mx-2 hover:bg-[#309256da]"
+                  className="bg-[#309255] text-white font-bold py-2 px-4 my-4 rounded mx-2 hover:bg-[#309256da] shadow-lg w-full"
                   onClick={handleSubmit}
                 >
                   Submit
@@ -364,4 +338,5 @@ export default function Quiz({ params }: any) {
       </div>
     </>
   );
-}
+};
+export default Quiz;

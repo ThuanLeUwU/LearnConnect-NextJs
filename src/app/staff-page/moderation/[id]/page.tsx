@@ -264,11 +264,14 @@ const DetailsContent = ({ params }: any) => {
       title: "Title",
       dataIndex: "title",
       key: "title",
+      sorter: (a, b) => a.title.localeCompare(b.title),
     },
     {
       title: "Content",
       dataIndex: "content",
       key: "content",
+      sorter: (a, b) => a.content.localeCompare(b.content),
+
       render: (text, record) => (
         <>
           {text.length > 50 ? (
@@ -287,6 +290,7 @@ const DetailsContent = ({ params }: any) => {
       title: "URL",
       dataIndex: "contentUrl",
       key: "contentUrl",
+
       render: (text, record) => {
         return (
           <a href={text} target="_blank" rel="noopener noreferrer">
@@ -299,6 +303,8 @@ const DetailsContent = ({ params }: any) => {
       title: "Type",
       dataIndex: "contentType",
       key: "contentType",
+      sorter: (a, b) => a.contentType - b.contentType,
+
       render: (text: number, record: any) => {
         return text === 1 ? "Video" : "Document";
       },
@@ -340,12 +346,17 @@ const DetailsContent = ({ params }: any) => {
       title: "Note",
       dataIndex: "rejectReason",
       key: "rejectReason",
+      sorter: (a, b) => a.rejectReason.localeCompare(b.rejectReason),
     },
     {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      render: (status) => <>{getStatusText(status)}</>,
+      sorter: (a, b) => a.status - b.status,
+
+      render: (status) => (
+        <Tag color={getStatusColor(status)}>{getStatusText(status)}</Tag>
+      ),
     },
   ];
 
@@ -529,36 +540,6 @@ const DetailsContent = ({ params }: any) => {
               )}
             </div>
             <div className="flex justify-end gap-2 mt-10 pr-5">
-              {/* {course?.status === 0 ? (
-            <>
-              <Button
-                className="bg-white text-black border rounded-lg border-[#24ee00] hover:bg-[#24ee00] hover:text-white transition duration-300 px-4 py-2"
-                onClick={handleBan}
-              >
-                Ban
-              </Button>
-            </>
-          ) : (
-            <>
-              <button
-                className="bg-white text-black border rounded-lg border-[#24ee00] hover:bg-[#24ee00] hover:text-white transition duration-300 px-4 py-2"
-                onClick={handleApprove}
-              >
-                Approve
-              </button>
-              <button
-                className="bg-white text-black border rounded-lg border-[#ffa04e] hover:bg-[#ffa04e] hover:text-white transition duration-300 px-4 py-2"
-                // style={{
-                //   backgroundColor: "#ffa04e",
-                //   borderColor: "#ffa04e",
-                //   color: "#fff",
-                // }}
-                onClick={handleReject}
-              >
-                Reject
-              </button>
-            </>
-          )} */}
               {course?.status === 0 ? (
                 <button
                   className="bg-white text-black border rounded-lg border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-6 py-2"
@@ -586,12 +567,6 @@ const DetailsContent = ({ params }: any) => {
                   >
                     Reject
                   </button>
-                  {/* <button
-                className="bg-white text-black border rounded-lg border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-6 py-2"
-                onClick={handleBan}
-              >
-                Ban
-              </button> */}
                   <button
                     className="bg-white text-black border rounded-lg border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-6 py-2"
                     onClick={handleBan}

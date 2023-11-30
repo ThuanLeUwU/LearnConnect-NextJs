@@ -7,6 +7,9 @@ import axios from "axios";
 import { Course, Lectures } from "@/components/courses/courses";
 import Image from "next/image";
 import { Worker, Viewer } from "@react-pdf-viewer/core";
+import { FaCheck } from "react-icons/fa";
+import { FaLock } from "react-icons/fa6";
+
 // import { Button } from "react-bootstrap";
 import {
   Breadcrumb,
@@ -21,6 +24,8 @@ import {
   Upload,
   message,
 } from "antd";
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
+
 // import { Option } from "antd/es/mentions";
 import { UserAuth } from "@/app/context/AuthContext";
 import { toast } from "sonner";
@@ -29,6 +34,7 @@ import { maxTime } from "date-fns";
 import { Document, Page } from "react-pdf/dist/esm/entry.webpack";
 import { BsFillFlagFill } from "react-icons/bs";
 import Loading from "@/components/loading/loading";
+import Quiz from "@/components/test/test";
 
 export type Lecture = {
   id: string | number;
@@ -66,9 +72,9 @@ export default function AfterEnroll({ params }: any) {
     // if (role === 3) {
     //   router.push(`/`);
     // }
-    // if (role === -1) {
-    //   router.push(`/`);
-    // }
+    if (role === -1) {
+      router.push(`/`);
+    }
   });
   const [activeTab, setActiveTab] = useState("tab1");
   const { id, user, jwtToken, userData } = UserAuth();
@@ -89,7 +95,9 @@ export default function AfterEnroll({ params }: any) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
   const idCourse = params.id;
+  console.log("idCourse", idCourse);
   const [courses, setCourses] = useState<Course>();
+  const [isTestOpen, setIsTestOpen] = useState(false);
   // const [videoSrc, setVideoSrc] = useState(
   //   "https://player.vimeo.com/external/215175080.hd.mp4?s=5b17787857fd95646e67ad0f666ea69388cb703c&profile_id=119"
   // );
@@ -216,6 +224,10 @@ export default function AfterEnroll({ params }: any) {
   const [pdf, setPDF] = useState<number>();
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
+  const [percentage, setPercentage] = useState(0);
+  const [learned, setLearned] = useState(0);
+
+  // const percentage = 10;
 
   const onDocumentLoadSuccess = (numPages) => {
     setNumPages(numPages);
@@ -223,33 +235,11 @@ export default function AfterEnroll({ params }: any) {
 
   const [videoSrc, setVideoSrc] = useState("");
   const [isComplete, setIsComplete] = useState(true);
+
   const changeVideoSource = (lecture: Lecture, index: number) => {
-    // try {
-    //   const response = await http.get(
-    //     `https://learnconnectapitest.azurewebsites.net/api/learning-process/get_lecture_process?lectureId=${lecture.id}&courseId=${idCourse}&userId=${userData?.id}`
-    //   );
-
-    //   const learningProcess = response?.data;
-    //   if (learningProcess?.status === 1) {
-    //     console.log("User can't play the video. Handle accordingly.");
-    //     return;
-    //   }
-
-    //   setVideoSrc(lecture.contentUrl);
-    //   setActiveVideoIndex(index);
-
-    //   const videoElement = document.getElementById(
-    //     "courseVideo"
-    //   ) as HTMLVideoElement;
-
-    //   if (videoElement) {
-    //     videoElement.load();
-    //   }
-    // } catch (error) {
-    //   console.error("Error fetching learning process data:", error);
-    // }
-    if (isComplete && index <= activeVideoIndex + 1) {
+    if (index < learned) {
       setVideoSrc(lecture.contentUrl);
+      setIsTestOpen(false);
       setActiveVideoIndex(index);
       const videoElement = document.getElementById(
         "courseVideo"
@@ -266,6 +256,7 @@ export default function AfterEnroll({ params }: any) {
             const learningProcess = res?.data.status;
             if (learningProcess === 1) {
               setIsComplete(false);
+              console.log("123");
             } else {
               setIsComplete(true);
             }
@@ -282,6 +273,7 @@ export default function AfterEnroll({ params }: any) {
       getProcess();
     }
   };
+
   useEffect(() => {
     const fetchData = async () => {
       const responseData = await http.get(
@@ -294,13 +286,15 @@ export default function AfterEnroll({ params }: any) {
   }, []);
 
   const handleClick = () => {
-    router.push(`test/${courses?.id}`);
+    if (isComplete && testVideo.length + 1 === learned) {
+      setIsTestOpen(true);
+      setVideoSrc("");
+    }
   };
 
   //rating
   const [modalRating, setModalRatingOpen] = useState(false);
   const [value, setValue] = useState<number>(0);
-  // console.log("value", value);
   const desc = ["terrible", "bad", "normal", "good", "wonderful"];
 
   const showModalRating = () => {
@@ -392,6 +386,12 @@ export default function AfterEnroll({ params }: any) {
     if (Math.floor(e.target.currentTime) === totalTime) {
       setIsComplete(true);
     }
+    if (activeVideoIndex + 1 === learned) {
+      setPercentage((maxTime / totalTime) * 100);
+      if (maxTime > totalTime * 0.9) {
+        setLearned(learned + 1);
+      }
+    }
   };
 
   const handleOnSeek = (e) => {
@@ -459,7 +459,24 @@ export default function AfterEnroll({ params }: any) {
     router.push("/my-course");
   };
 
-  return role === -1 ? (
+  useEffect(() => {
+    const fetchData = async () => {
+      await http
+        .get(
+          `https://learnconnectapitest.azurewebsites.net/api/learning-process/get_user_current_lecture?courseId=${idCourse}&userId=${userData?.id}`
+        )
+        .then((response) => {
+          setPercentage(response?.data?.progress);
+          setLearned(response?.data.lectureLearned);
+        })
+        .catch((error) => {
+          console.log("error at fetchData: ", error);
+        });
+    };
+    fetchData();
+  }, []);
+
+  return !role ? (
     <Loading />
   ) : (
     <>
@@ -494,253 +511,257 @@ export default function AfterEnroll({ params }: any) {
       <div className="container">
         <div className="grid cols-2 lg:grid-cols-12 mt-[40px] gap-5">
           <div className="lg:col-span-8">
-            {!videoSrc && (
-              <img
-                src={courses?.imageUrl}
-                className="w-full object-cover h-[438px]"
-              />
-            )}
-            {videoSrc && (
+            {isTestOpen ? (
+              <Quiz idCourse={idCourse} />
+            ) : (
               <>
-                {pdf === 1 ? (
-                  <video
-                    width="full"
-                    height="full"
-                    controls
-                    id="courseVideo"
-                    ref={videoRef}
-                    onSeeked={handleOnSeek}
-                    onTimeUpdate={handleOnTimeUpdate}
-                    onProgress={handleOnProgress}
-                  >
-                    <source src={videoSrc} type="video/mp4" />
-                  </video>
-                ) : (
-                  // <></>
-                  <iframe
-                    title="PDF Viewer"
-                    width="100%"
-                    height="438px"
-                    src={videoSrc}
-                    aria-readonly
-                  ></iframe>
+                {!videoSrc && (
+                  <img
+                    src={courses?.imageUrl}
+                    className="w-full object-cover h-[438px]"
+                  />
                 )}
-              </>
-            )}
-            <div>
-              <div className="">
-                <div className="flex justify-between mt-2.5 items-center">
-                  <h2 className="text-[25px] leading-normal text-[#212832] font-medium ">
-                    {activeVideoIndex === 0
-                      ? testVideo[activeVideoIndex].title
-                      : courses?.name}
-                  </h2>
-                  <div className=" flex gap-[10px]">
-                    {value === 0 ? (
-                      <Button
-                        style={{ color: "black", background: "lightgreen" }}
-                        type="primary"
-                        onClick={showModalRating}
+                {videoSrc && (
+                  <>
+                    {pdf === 1 ? (
+                      <video
+                        width="full"
+                        height="full"
+                        controls
+                        id="courseVideo"
+                        ref={videoRef}
+                        onSeeked={handleOnSeek}
+                        onTimeUpdate={handleOnTimeUpdate}
+                        onProgress={handleOnProgress}
+                        controlsList="nodownload"
                       >
-                        {/* <Image
-                    width={40}
-                    height={40}
-                    src="/menu-icon/flag-icon.jpg"
-                    alt="flag"
-                  /> */}
-                        Rating
-                      </Button>
+                        <source src={videoSrc} type="video/mp4" />
+                      </video>
                     ) : (
-                      <Tooltip title="You have already rated this course !">
-                        <Button
-                          disabled
-                          style={{ color: "black", background: "lightgreen" }}
-                          type="primary"
-                          onClick={showModalRating}
-                        >
-                          Rating
-                        </Button>
-                      </Tooltip>
+                      // <></>
+                      <iframe
+                        title="PDF Viewer"
+                        width="100%"
+                        height="438px"
+                        src={videoSrc}
+                        aria-readonly
+                      ></iframe>
                     )}
-
-                    <Button danger type="primary" onClick={showModal}>
-                      {/* <Image
+                  </>
+                )}
+                <div>
+                  <div className="">
+                    <div className="flex justify-between mt-2.5 items-center">
+                      <h2 className="text-[25px] leading-normal text-[#212832] font-medium ">
+                        {activeVideoIndex === 0
+                          ? testVideo[activeVideoIndex].title
+                          : courses?.name}
+                      </h2>
+                      <div className=" flex gap-[10px]">
+                        {value === 0 ? (
+                          <Button
+                            style={{ color: "black", background: "lightgreen" }}
+                            type="primary"
+                            onClick={showModalRating}
+                          >
+                            {/* <Image
                     width={40}
                     height={40}
                     src="/menu-icon/flag-icon.jpg"
                     alt="flag"
                   /> */}
-                      <BsFillFlagFill />
-                    </Button>
-                  </div>
-
-                  <Modal
-                    destroyOnClose={true}
-                    title={`Rating ${courses?.name} by ${user?.displayName}`}
-                    open={modalRating}
-                    // onOk={handleOk}
-                    onCancel={handleCancel}
-                    footer={false}
-                  >
-                    <Form
-                      autoComplete="off"
-                      form={form}
-                      labelCol={{ span: 4 }}
-                      wrapperCol={{ span: 14 }}
-                      layout="horizontal"
-                      className="mt-5"
-                      style={{ width: 600 }}
-                      onFinish={handleSubmit}
-                    >
-                      <span className="flex pl-[140px] pb-5">
-                        <Rate
-                          tooltips={desc}
-                          onChange={handleRateChange}
-                          value={value}
-                        />
-                      </span>
-                      <Form.Item label="Description" name="description">
-                        <Input.TextArea rows={3} />
-                      </Form.Item>
-                      <Space className="justify-end w-full pr-[150px]">
-                        <Form.Item className="mb-0">
-                          <Space>
-                            <Button onClick={handleCancel}>Cancel</Button>
+                            Rating
+                          </Button>
+                        ) : (
+                          <Tooltip title="You have already rated this course !">
                             <Button
+                              disabled
+                              style={{
+                                color: "black",
+                                background: "lightgreen",
+                              }}
                               type="primary"
-                              htmlType="submit"
-                              style={{ color: "black" }}
+                              onClick={showModalRating}
                             >
                               Rating
                             </Button>
-                          </Space>
-                        </Form.Item>
-                      </Space>
-                    </Form>
-                  </Modal>
-                  <Modal
-                    destroyOnClose={true}
-                    title={`Report ${courses?.name} by ${user?.displayName}`}
-                    open={isModalOpen}
-                    // onOk={handleOk}
-                    onCancel={handleCancel}
-                    footer={false}
-                  >
-                    <Form
-                      autoComplete="off"
-                      form={form}
-                      labelCol={{ span: 4 }}
-                      wrapperCol={{ span: 14 }}
-                      layout="horizontal"
-                      className="mt-5"
-                      style={{ width: 600 }}
-                      onFinish={handleOk}
-                    >
-                      <Form.Item label="Reason">
-                        <Select
-                          // defaultValue={selected}
-                          onChange={handleChangeReason}
-                        >
-                          {Reasons.map((option) => {
-                            return (
-                              <Option key={option.id} value={option.name}>
-                                {option.name}
-                              </Option>
-                            );
-                          })}
-                        </Select>
-                      </Form.Item>
-                      <Form.Item label="Comment" name="comment">
-                        <Input.TextArea rows={4} />
-                      </Form.Item>
-                      {/* <Form.Item>
-                      {/* <Image width={200} height={200} src={image} /> */}
-                      {/* </Form.Item> */}
-                      <Form.Item
-                        label="Capture"
-                        // valuePropName="fileList"
-                        getValueFromEvent={normFile}
+                          </Tooltip>
+                        )}
+
+                        <Button danger type="primary" onClick={showModal}>
+                          {/* <Image
+                    width={40}
+                    height={40}
+                    src="/menu-icon/flag-icon.jpg"
+                    alt="flag"
+                  /> */}
+                          <BsFillFlagFill />
+                        </Button>
+                      </div>
+
+                      <Modal
+                        destroyOnClose={true}
+                        title={`Rating ${courses?.name} by ${user?.displayName}`}
+                        open={modalRating}
+                        // onOk={handleOk}
+                        onCancel={handleCancel}
+                        footer={false}
                       >
-                        <Upload
-                          accept="image/png, image/jpeg"
-                          onChange={handleChange}
-                          beforeUpload={beforeUpload}
-                          // headers={{ Authorization: authorization }}
-                          action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
-                          listType="picture-card"
+                        <Form
+                          autoComplete="off"
+                          form={form}
+                          labelCol={{ span: 4 }}
+                          wrapperCol={{ span: 14 }}
+                          layout="horizontal"
+                          className="mt-5"
+                          style={{ width: 600 }}
+                          onFinish={handleSubmit}
                         >
-                          Upload
-                        </Upload>
-                      </Form.Item>
-                      <Space className="justify-end w-full pr-[150px]">
-                        <Form.Item className="mb-0">
-                          <Space>
-                            <Button onClick={handleCancel}>Cancel</Button>
-                            <Button
-                              type="primary"
-                              htmlType="submit"
-                              style={{ color: "black" }}
-                            >
-                              Report
-                            </Button>
+                          <span className="flex pl-[140px] pb-5">
+                            <Rate
+                              tooltips={desc}
+                              onChange={handleRateChange}
+                              value={value}
+                            />
+                          </span>
+                          <Form.Item label="Description" name="description">
+                            <Input.TextArea rows={3} />
+                          </Form.Item>
+                          <Space className="justify-end w-full pr-[150px]">
+                            <Form.Item className="mb-0">
+                              <Space>
+                                <Button onClick={handleCancel}>Cancel</Button>
+                                <Button
+                                  type="primary"
+                                  htmlType="submit"
+                                  style={{ color: "black" }}
+                                >
+                                  Rating
+                                </Button>
+                              </Space>
+                            </Form.Item>
                           </Space>
-                        </Form.Item>
-                      </Space>
-                    </Form>
-                  </Modal>
-                </div>
-                {/* {activeVideoIndex !== -1
+                        </Form>
+                      </Modal>
+                      <Modal
+                        destroyOnClose={true}
+                        title={`Report ${courses?.name} by ${user?.displayName}`}
+                        open={isModalOpen}
+                        // onOk={handleOk}
+                        onCancel={handleCancel}
+                        footer={false}
+                      >
+                        <Form
+                          autoComplete="off"
+                          form={form}
+                          labelCol={{ span: 4 }}
+                          wrapperCol={{ span: 14 }}
+                          layout="horizontal"
+                          className="mt-5"
+                          style={{ width: 600 }}
+                          onFinish={handleOk}
+                        >
+                          <Form.Item label="Reason">
+                            <Select
+                              // defaultValue={selected}
+                              onChange={handleChangeReason}
+                            >
+                              {Reasons.map((option) => {
+                                return (
+                                  <Option key={option.id} value={option.name}>
+                                    {option.name}
+                                  </Option>
+                                );
+                              })}
+                            </Select>
+                          </Form.Item>
+                          <Form.Item label="Comment" name="comment">
+                            <Input.TextArea rows={4} />
+                          </Form.Item>
+                          {/* <Form.Item>
+                      {/* <Image width={200} height={200} src={image} /> */}
+                          {/* </Form.Item> */}
+                          <Form.Item
+                            label="Capture"
+                            // valuePropName="fileList"
+                            getValueFromEvent={normFile}
+                          >
+                            <Upload
+                              accept="image/png, image/jpeg"
+                              onChange={handleChange}
+                              beforeUpload={beforeUpload}
+                              // headers={{ Authorization: authorization }}
+                              action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
+                              listType="picture-card"
+                            >
+                              Upload
+                            </Upload>
+                          </Form.Item>
+                          <Space className="justify-end w-full pr-[150px]">
+                            <Form.Item className="mb-0">
+                              <Space>
+                                <Button onClick={handleCancel}>Cancel</Button>
+                                <Button
+                                  type="primary"
+                                  htmlType="submit"
+                                  style={{ color: "black" }}
+                                >
+                                  Report
+                                </Button>
+                              </Space>
+                            </Form.Item>
+                          </Space>
+                        </Form>
+                      </Modal>
+                    </div>
+                    {/* {activeVideoIndex !== -1
                 ? testVideo[activeVideoIndex].title
                 : courses?.name} */}
-                {activeVideoIndex === 0 ? (
-                  <div className="w-full mx-auto mb-3 shadow-lg rounded-lg">
-                    <div className="faq-wrapper">
-                      <div className="single-faq-item">
-                        <div className="grid cols-2 lg:grid-cols-12 border-[#dff0e6] border border-solid rounded-lg px-[70px] pb-[35px] mt-5">
-                          <div className="lg:col-span-12">
-                            <div key={activeVideoIndex}>
-                              <p className="mt-5 font-bold">
-                                Lecture {activeVideoIndex}:{" "}
-                                {testVideo[activeVideoIndex].title}
-                              </p>
-                              <p className="mt-3.5 text-[#52565b] text-base font-normal">
-                                {testVideo[activeVideoIndex]?.content}
-                              </p>
+                    {activeVideoIndex === 0 ? (
+                      <div className="w-full mx-auto mb-3 shadow-lg rounded-lg">
+                        <div className="faq-wrapper">
+                          <div className="single-faq-item">
+                            <div className="grid cols-2 lg:grid-cols-12 border-[#dff0e6] border border-solid rounded-lg px-[70px] pb-[35px] mt-5">
+                              <div className="lg:col-span-12">
+                                <div key={activeVideoIndex}>
+                                  <p className="mt-3.5 text-[#52565b] text-base font-normal">
+                                    {testVideo[activeVideoIndex]?.content}
+                                  </p>
+                                </div>
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div>
-                    <div className="flex justify-center bg-[#e7f8ee] p-3 rounded-lg mt-5">
-                      <ul className="tabs flex space-x-5">
-                        <li
-                          className={`cursor-pointer rounded-md ${
-                            activeTab === "tab1"
-                              ? " text-[#fff] bg-[#309255]"
-                              : "bg-[#fff] "
-                          }`}
-                          onClick={() => handleTabClick("tab1")}
-                        >
-                          <button className="w-28 h-14 px-[15px] text-center text-sm font-medium  rounded-md hover:text-[#fff] hover:bg-[#309255]">
-                            Overview
-                          </button>
-                        </li>
-                        <li
-                          className={`cursor-pointer rounded-md ${
-                            activeTab === "tab2"
-                              ? " text-[#fff] bg-[#309255]"
-                              : "bg-[#fff] "
-                          }`}
-                          onClick={() => handleTabClick("tab2")}
-                        >
-                          <button className="w-28 h-14 px-[15px] text-center text-sm font-medium  border-opacity-20 rounded-md hover:border-[#309255] hover:text-[#fff] hover:bg-[#309255]">
-                            Lectures
-                          </button>
-                        </li>
-                        {/* <li
+                    ) : (
+                      <div>
+                        <div className="flex justify-center bg-[#e7f8ee] p-3 rounded-lg mt-5">
+                          <ul className="tabs flex space-x-5">
+                            <li
+                              className={`cursor-pointer rounded-md ${
+                                activeTab === "tab1"
+                                  ? " text-[#fff] bg-[#309255]"
+                                  : "bg-[#fff] "
+                              }`}
+                              onClick={() => handleTabClick("tab1")}
+                            >
+                              <button className="w-28 h-14 px-[15px] text-center text-sm font-medium  rounded-md hover:text-[#fff] hover:bg-[#309255]">
+                                Overview
+                              </button>
+                            </li>
+                            <li
+                              className={`cursor-pointer rounded-md ${
+                                activeTab === "tab2"
+                                  ? " text-[#fff] bg-[#309255]"
+                                  : "bg-[#fff] "
+                              }`}
+                              onClick={() => handleTabClick("tab2")}
+                            >
+                              <button className="w-28 h-14 px-[15px] text-center text-sm font-medium  border-opacity-20 rounded-md hover:border-[#309255] hover:text-[#fff] hover:bg-[#309255]">
+                                Lectures
+                              </button>
+                            </li>
+                            {/* <li
                     className={`cursor-pointer rounded-md ${
                       activeTab === "#"
                         ? " text-[#fff] bg-[#309255]"
@@ -751,73 +772,76 @@ export default function AfterEnroll({ params }: any) {
                       Reviews
                     </button>
                   </li> */}
-                      </ul>
-                    </div>
-                    {activeTab === "tab1" && (
-                      <div className="w-full mx-auto mb-3">
-                        <div className="faq-wrapper">
-                          <div className="single-faq-item">
-                            <div className="grid cols-2 lg:grid-cols-12 border-[#dff0e6] border border-solid rounded-lg px-[70px] pb-[35px] mt-5">
-                              {/* <div className="lg:col-span-4 px-[15px]">
+                          </ul>
+                        </div>
+                        {activeTab === "tab1" && (
+                          <div className="w-full mx-auto mb-3">
+                            <div className="faq-wrapper">
+                              <div className="single-faq-item">
+                                <div className="grid cols-2 lg:grid-cols-12 border-[#dff0e6] border border-solid rounded-lg px-[70px] pb-[35px] mt-5">
+                                  {/* <div className="lg:col-span-4 px-[15px]">
                           <div className="">
                             <h4 className="text-[25px] px-[15px] pt-5 text-[#212832]">
                               Details
                             </h4>
                           </div>
                         </div> */}
-                              <div className="lg:col-span-12">
-                                <div className="text-[15px] font-medium mt-[25px] px-[15px]">
-                                  <p className="mb-4 leading-loose">
-                                    {courses?.description}{" "}
-                                  </p>
-                                  <div className="flex flex-col">
-                                    <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
-                                      <div className="inline-block min-w-full sm:px-6 lg:px-8">
-                                        <div className="overflow-hidden">
-                                          <table className="min-w-full text-left text-sm font-light">
-                                            <tbody>
-                                              <tr className="border-b border-b-[#e7f8ee]">
-                                                <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-medium">
-                                                  Instructor
-                                                </td>
-                                                <td className="whitespace-nowrap px-6 py-4">
-                                                  :
-                                                </td>
-                                                <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-normal">
-                                                  {/* {courses.} */}
-                                                  {courses?.mentorName}
-                                                </td>
-                                              </tr>
-                                              <tr className="border-b border-b-[#e7f8ee]">
-                                                <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-medium">
-                                                  Duration
-                                                </td>
-                                                <td className="whitespace-nowrap px-6 py-4">
-                                                  :
-                                                </td>
-                                                <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-normal">
-                                                  {courses?.contentLength}{" "}
-                                                  <span>
-                                                    {courses?.contentLength &&
-                                                    courses.contentLength <= 1
-                                                      ? "minute"
-                                                      : "minutes"}
-                                                  </span>
-                                                </td>
-                                              </tr>
-                                              <tr className="border-b border-b-[#e7f8ee]">
-                                                <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-medium">
-                                                  Lectures
-                                                </td>
-                                                <td className="whitespace-nowrap px-6 py-4">
-                                                  :
-                                                </td>
-                                                <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-normal">
-                                                  {courses?.lectureCount}
-                                                </td>
-                                              </tr>
-                                            </tbody>
-                                          </table>
+                                  <div className="lg:col-span-12">
+                                    <div className="text-[15px] font-medium mt-[25px] px-[15px]">
+                                      <p className="mb-4 leading-loose">
+                                        {courses?.description}{" "}
+                                      </p>
+                                      <div className="flex flex-col">
+                                        <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
+                                          <div className="inline-block min-w-full sm:px-6 lg:px-8">
+                                            <div className="overflow-hidden">
+                                              <table className="min-w-full text-left text-sm font-light">
+                                                <tbody>
+                                                  <tr className="border-b border-b-[#e7f8ee]">
+                                                    <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-medium">
+                                                      Instructor
+                                                    </td>
+                                                    <td className="whitespace-nowrap px-6 py-4">
+                                                      :
+                                                    </td>
+                                                    <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-normal">
+                                                      {/* {courses.} */}
+                                                      {courses?.mentorName}
+                                                    </td>
+                                                  </tr>
+                                                  <tr className="border-b border-b-[#e7f8ee]">
+                                                    <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-medium">
+                                                      Duration
+                                                    </td>
+                                                    <td className="whitespace-nowrap px-6 py-4">
+                                                      :
+                                                    </td>
+                                                    <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-normal">
+                                                      {courses?.contentLength}{" "}
+                                                      <span>
+                                                        {courses?.contentLength &&
+                                                        courses.contentLength <=
+                                                          1
+                                                          ? "minute"
+                                                          : "minutes"}
+                                                      </span>
+                                                    </td>
+                                                  </tr>
+                                                  <tr className="border-b border-b-[#e7f8ee]">
+                                                    <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-medium">
+                                                      Lectures
+                                                    </td>
+                                                    <td className="whitespace-nowrap px-6 py-4">
+                                                      :
+                                                    </td>
+                                                    <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-normal">
+                                                      {courses?.lectureCount}
+                                                    </td>
+                                                  </tr>
+                                                </tbody>
+                                              </table>
+                                            </div>
+                                          </div>
                                         </div>
                                       </div>
                                     </div>
@@ -826,43 +850,36 @@ export default function AfterEnroll({ params }: any) {
                               </div>
                             </div>
                           </div>
-                        </div>
-                      </div>
-                    )}
-                    {activeTab === "tab2" && (
-                      <div className="w-full mx-auto mb-3">
-                        <div className="faq-wrapper">
-                          <div className="single-faq-item">
-                            <div className="grid cols-2 lg:grid-cols-12 border-[#dff0e6] border border-solid rounded-lg px-[70px] pb-[35px] mt-5">
-                              {/* <div className="lg:col-span-4 px-[15px]">
-                          <div className="">
-                            <h4 className="text-[25px] px-[15px] pt-5 text-[#212832]">
-                              Lectures
-                            </h4>
-                          </div>
-                        </div> */}
-                              <div className="lg:col-span-12">
-                                {testVideo &&
-                                  testVideo.map((item, index) => (
-                                    <div key={index}>
-                                      <p className="mt-5 font-bold">
-                                        Lecture {index + 1}: {item.title}
-                                      </p>
-                                      <p className="mt-3.5 text-[#52565b] text-base font-medium">
-                                        {item?.content}
-                                      </p>
-                                    </div>
-                                  ))}
+                        )}
+                        {activeTab === "tab2" && (
+                          <div className="w-full mx-auto mb-3">
+                            <div className="faq-wrapper">
+                              <div className="single-faq-item">
+                                <div className="grid cols-2 lg:grid-cols-12 border-[#dff0e6] border border-solid rounded-lg px-[70px] pb-[35px] mt-5">
+                                  <div className="lg:col-span-12">
+                                    {testVideo &&
+                                      testVideo.map((item, index) => (
+                                        <div key={index}>
+                                          <p className="mt-5 font-bold">
+                                            Lecture {index + 1}: {item.title}
+                                          </p>
+                                          <p className="mt-3.5 text-[#52565b] text-base font-medium">
+                                            {item?.content}
+                                          </p>
+                                        </div>
+                                      ))}
+                                  </div>
+                                </div>
                               </div>
                             </div>
                           </div>
-                        </div>
+                        )}
                       </div>
                     )}
                   </div>
-                )}
-              </div>
-            </div>
+                </div>
+              </>
+            )}
           </div>
 
           <div className="lg:col-span-4">
@@ -897,11 +914,36 @@ export default function AfterEnroll({ params }: any) {
                           setPDF(item.contentType);
                         }}
                       >
-                        <div className="py-2 pl-[30px] flex flex-row gap-3">
-                          <p className="flex-none h-[50px]">
-                            Lecture {index + 1}:
-                          </p>
-                          <p className="flex-auto"> {item.title}</p>
+                        <div className="flex">
+                          {index + 1 === learned && (
+                            <CircularProgressbar
+                              value={percentage}
+                              styles={buildStyles({
+                                rotation: 0,
+                                strokeLinecap: "butt",
+                                textSize: "25px",
+                                pathTransitionDuration: 0.5,
+                                pathColor: `#309255`,
+                                trailColor: "#d6d6d6",
+                                backgroundColor: "#309255",
+                              })}
+                              strokeWidth={20}
+                              className="w-[40px] h-[40px] pl-[10px] min-w-[40px]"
+                            />
+                          )}
+                          {index + 1 > learned && (
+                            <FaLock className="h-[20px] pl-[10px] text-gray-500 mt-[10px] min-w-[40px]" />
+                          )}
+                          {index + 1 < learned && (
+                            <FaCheck className="w-[40px] h-[20px] pl-[10px] text-[#309255] mt-[10px] min-w-[40px]" />
+                          )}
+
+                          <div className="py-2 pl-[10px] flex flex-row gap-3">
+                            <p className="flex-none h-[50px]">
+                              Lecture {index + 1}:
+                            </p>
+                            <p className="flex-auto"> {item.title}</p>
+                          </div>
                         </div>
                       </button>
                     );
@@ -913,11 +955,15 @@ export default function AfterEnroll({ params }: any) {
                   </div>
                   <div className="pl-10 py-2 pr-[30px] bg-[#dff0e6] flex">
                     <button
-                      className="border-2 border-[#309255] px-5 py-1 rounded-lg hover:bg-[#309255] active:bg-[#75c989] hover:text-white"
+                      className="border-2 border-[#309255] px-5 py-1 rounded-lg hover:bg-[#309255] active:bg-[#75c989] hover:text-white flex"
                       onClick={handleClick}
                     >
-                      Test
+                      {!(isComplete && testVideo.length + 1 === learned) && (
+                        <FaLock className="my-auto" />
+                      )}{" "}
+                      <span>Test</span>
                     </button>
+
                     <p className="ml-auto my-auto">
                       Score: {performance?.score}
                     </p>
