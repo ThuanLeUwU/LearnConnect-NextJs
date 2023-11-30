@@ -91,7 +91,7 @@ interface verificationDocuments {
 
 const Reviews = () => {
   const { role, userData, jwtToken } = UserAuth();
-  console.log("jwtToken mentor", jwtToken);
+  // console.log("jwtToken mentor", jwtToken);
   const router = useRouter();
   useEffect(() => {
     if (role === 0) {
@@ -249,7 +249,7 @@ const Reviews = () => {
           `https://learnconnectapitest.azurewebsites.net/api/mentor/specializations-request/${userData?.id}/${selectedType}`
         );
         setMentor(responseData?.data);
-        console.log("mentor", mentor);
+        // console.log("mentor", mentor);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {

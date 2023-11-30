@@ -345,9 +345,7 @@ const DetailsContent = ({ params }: any) => {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      render: (status) => (
-        <Tag color={getStatusColor(status)}>{getStatusText(status)}</Tag>
-      ),
+      render: (status) => <>{getStatusText(status)}</>,
     },
   ];
 
@@ -369,13 +367,30 @@ const DetailsContent = ({ params }: any) => {
   const getStatusText = (status) => {
     switch (status) {
       case 0:
-        return "Active";
+        return (
+          <Tag color="green" className="text-lg">
+            Active
+          </Tag>
+        );
+
       case 1:
-        return "Pending";
+        return (
+          <Tag color="gray" className="text-lg">
+            Pending
+          </Tag>
+        );
       case 2:
-        return "Reject";
+        return (
+          <Tag color="#ffa04e" className="text-lg">
+            Reject
+          </Tag>
+        );
       case 3:
-        return "Banned";
+        return (
+          <Tag color="red" className="text-lg">
+            Ban
+          </Tag>
+        );
       default:
         return "Unknown Status";
     }
@@ -407,9 +422,7 @@ const DetailsContent = ({ params }: any) => {
                 <Breadcrumb.Item>
                   <button onClick={breadcrumbNavigation}>Course</button>
                 </Breadcrumb.Item>
-                <Breadcrumb.Item>
-                  {course?.name} ({getStatusText(course?.status)})
-                </Breadcrumb.Item>
+                <Breadcrumb.Item>{course?.name}</Breadcrumb.Item>
                 {/* <Breadcrumb.Item>React</Breadcrumb.Item> */}
               </Breadcrumb>
             </div>
@@ -441,7 +454,7 @@ const DetailsContent = ({ params }: any) => {
                   <p
                     className={`${InstructorCourseStyle.featured_bottom_title}`}
                   >
-                    {course?.name}
+                    {course?.name} {getStatusText(course?.status)}
                   </p>
                   <p
                     className={`${InstructorCourseStyle.featured_bottom_cate}`}

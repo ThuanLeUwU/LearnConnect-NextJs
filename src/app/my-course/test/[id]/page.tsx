@@ -82,11 +82,11 @@ export default function Quiz({ params }: any) {
           `https://learnconnectapitest.azurewebsites.net/api/test/get-tests-by-course?courseId=${idCourse}`
         );
         setQuestionsTest(response.data);
-        console.log("asad", questionsTest);
+
         const userAnswersResponse = await http.get(
           `https://learnconnectapitest.azurewebsites.net/api/user-answer/get-list-answer-by-course?userId=${userData?.id}&courseId=${idCourse}`
         );
-        console.log("userAnswersResponse", userAnswersResponse.data.length);
+        // console.log("userAnswersResponse", userAnswersResponse.data.length);
         if (userAnswersResponse.data.length !== 0) {
           setSelectedAnswers(
             userAnswersResponse.data.map((answer) => answer.answerId)
@@ -134,7 +134,7 @@ export default function Quiz({ params }: any) {
 
     try {
       const response = await axios.post(urlAPI, selectedAnswers);
-      console.log("User answers posted successfully:", response.data);
+      // console.log("User answers posted successfully:", response.data);
 
       setTimeout(() => {
         toast.success("Save Answer successful");

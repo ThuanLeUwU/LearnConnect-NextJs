@@ -296,7 +296,7 @@ const MajorSepcialize = () => {
 
   const handleUpdateMajor = (data: any) => {
     setFormUpdateMajor(true);
-    console.log("data", data);
+    // console.log("data", data);
     setMajor(data);
   };
 
@@ -478,7 +478,7 @@ const MajorSepcialize = () => {
     setFormUpdateSpecialize(true);
     setSpecialization(data);
     setSpecializeId(data.id);
-    console.log("t", data);
+    // console.log("t", data);
   };
 
   const handleUpdateSpecializeClick = (data: any) => {

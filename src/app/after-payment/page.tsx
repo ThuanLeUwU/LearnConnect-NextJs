@@ -27,7 +27,7 @@ const AfterPayment = () => {
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(true);
   axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
-  console.log("jwtToken", jwtToken);
+  // console.log("jwtToken", jwtToken);
   const [urlParams, setUrlParams] = useState<URLSearchParams | null>(null);
   const [payment, setPayment] = useState<Payment>();
   const [courseId, setCourseId] = useState("");

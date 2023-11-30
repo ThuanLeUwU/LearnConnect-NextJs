@@ -130,7 +130,6 @@ const StaffReportTable = () => {
           `https://learnconnectapitest.azurewebsites.net/api/report/all-list-reports?reportType=${selectedType}`
         );
         setData(response.data);
-        console.log("response.data", response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
       }

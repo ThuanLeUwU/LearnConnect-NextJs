@@ -300,7 +300,7 @@ export default function AfterEnroll({ params }: any) {
   //rating
   const [modalRating, setModalRatingOpen] = useState(false);
   const [value, setValue] = useState<number>(0);
-  console.log("value", value);
+  // console.log("value", value);
   const desc = ["terrible", "bad", "normal", "good", "wonderful"];
 
   const showModalRating = () => {
@@ -315,7 +315,7 @@ export default function AfterEnroll({ params }: any) {
     // const numericValue = parseFloat(value);
     const formdata = new FormData();
     formdata.append("rating", value.toString());
-    console.log("rate");
+    // console.log("rate");
     formdata.append(
       "comment",
       data.description !== undefined ? data.description : null
@@ -375,7 +375,6 @@ export default function AfterEnroll({ params }: any) {
       setMaxTime(videoRef.current.played.end(0));
       setTotalTime(Math.floor(videoRef.current.duration));
     }
-    console.log("djt me thg thuan", e.target.currentTime);
     if (
       (Math.floor(e.target.currentTime) > 1 &&
         Math.floor(e.target.currentTime) % 5 == 0) ||
