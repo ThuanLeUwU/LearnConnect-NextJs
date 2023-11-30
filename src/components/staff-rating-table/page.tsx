@@ -192,7 +192,7 @@ const StaffRatingTable = () => {
           <img
             src={userRatingInfo.imageUser}
             alt="Author"
-            className="w-28 h-28 rounded-lg border border-opacity-20 border-[#309255]"
+            className="w-20 h-20 rounded-full border border-opacity-20 border-[#309255]"
           />
           <div className="mt-2">
             <p className="ml-2 text-[20px]">{userRatingInfo.fullName}</p>

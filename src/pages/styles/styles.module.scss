@@ -927,12 +927,14 @@
 
 .header_info_src {
   width: 48px;
+  height: 48px;
   border-radius: 50%;
+  overflow: hidden;
 }
 
 .header_more {
-  width: 40px;
-  height: 40px;
+  width: 48px;
+  height: 48px;
   border: 0;
   background-color: #fff;
   border-radius: 50%;
