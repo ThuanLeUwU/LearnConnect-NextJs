@@ -1,11 +1,18 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import "../../app/./globals.css";
 import regisInstructorStyle from "./styles/style.module.scss";
 import Link from "next/link";
-
+import { Button } from "react-bootstrap";
+import { RegisterForm } from "../registerForm";
+import { Modal } from "antd";
+import { UserAuth } from "@/app/context/AuthContext";
 
 const RegisInstructor = () => {
+  const [visible, setVisible] = useState(false);
+
+  const { user, googleSignIn, logOut } = UserAuth();
+
   return (
     // <!-- Call to Action Start -->
     <div className="section section-padding-02">
@@ -28,14 +35,28 @@ const RegisInstructor = () => {
               {/* <!-- Section Title End --> */}
             </div>
             <div className={`${regisInstructorStyle.call_to_action_row}`}>
-              <button className={`${regisInstructorStyle.call_to_action_btn}`}>
-                <Link
-                  className={`${regisInstructorStyle.regis_btn}`}
-                  href="/"
-                >
-                  Drop Information
-                </Link>
-              </button>
+              <div className={`${regisInstructorStyle.call_to_action_btn}`}>
+                {!user ? (
+                  <Link
+                    className={`${regisInstructorStyle.regis_btn}`}
+                    href="/login"
+                  >
+                    Drop Information
+                  </Link>
+                ) : (
+                  <Button
+                    className={`${regisInstructorStyle.regis_btn}`}
+                    onClick={() => {
+                      Modal.confirm({
+                        title: "Create New Course",
+                        content: <RegisterForm />,
+                      });
+                    }}
+                  >
+                    Drop Information
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
         </div>

@@ -3,396 +3,673 @@ import Image from "next/image";
 import headerStyles from "./styles/styles.module.scss";
 import "../app/./globals.css";
 import Link from "next/link";
-import React, { useState } from "react";
-import { CourseDropDown } from "../app/test/CourseDropdown";
-import { UserAuth } from "@/app/context/AuthContext";
+import React, { useEffect, useState } from "react";
+import { UserAuth, UserRole } from "@/app/context/AuthContext";
+import { RegisterForm } from "@/components/registerForm";
+import { Empty, Modal, Space, Button as ButtonAntd } from "antd";
+import { useRouter } from "next/navigation";
+import { AiFillBell } from "react-icons/ai";
+import axios from "axios";
+import { http } from "@/api/http";
+import { Form, Input } from "antd";
+import { toast } from "sonner";
+import { Button } from "react-bootstrap";
 
+export type Notification = {
+  id: string | number;
+  title: string;
+  description: string;
+  isRead: boolean;
+  timeStamp: string;
+  userId: number;
+};
 const Header = () => {
   const [click, setClick] = useState(false);
-  const [dropdown, setDropdown] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [notification, setNotification] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const { userData, id, jwtToken, switchRole } = UserAuth();
+  axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
+  const [notificationContent, setNotificationContent] = useState<
+    Notification[]
+  >([]);
+  const [form] = Form.useForm();
 
-  const { user, googleSignIn, logOut } = UserAuth();
+  const [isLogin, setIsLogin] = useState(false);
+  const router = useRouter();
 
-  const handleSignIn = async () => {
-    try {
-      await googleSignIn();
-    } catch (error) {
-      console.log(error);
-    }
+  // const currentRoute = router.asPath;
+  // console.log("Current Route:", currentRoute);
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
+    setNotification(false);
   };
+  const closeDropdown = () => {
+    setIsOpen(false);
+  };
+
+  const closeDropdownNotification = () => {
+    setNotification(false);
+  };
+  const [activeTab, setActiveTab] = useState("");
+
+  useEffect(() => {
+    const currentRoute = window.location.href;
+    var contentUrl = currentRoute.split("/").reverse()[0];
+    setActiveTab(contentUrl);
+  }, []);
+
+  const { role, user, googleSignIn, logOut } = UserAuth();
+
+  // console.log("userrole", userData?.role);
+  // const handleSignIn = async () => {
+  //   try {
+  //     await googleSignIn();
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   const handleSignOut = async () => {
     try {
-      await logOut();
+      logOut();
+      closeDropdown();
+      handleTabChange("");
     } catch (error) {
       console.log(error);
     }
   };
-  // console.log(user);
 
-  // const onMouseEnter = () => {
-  //   if (window.innerWidth < 960) {
-  //     setDropdown(false);
-  //   } else {
-  //     setDropdown(true);
-  //   }
-  // };
+  const handleClickSeeAll = () => {
+    router.push(`/notifications`);
+  };
 
-  // const onMouseLeave = () => {
-  //   if (window.innerWidth < 960) {
-  //     setDropdown(false);
-  //   } else {
-  //     setDropdown(false);
-  //   }
-  // };
+  const handleClickBecomeMentor = () => {
+    setActiveTab("alo");
+    router.push("/become-mentor");
+  };
 
-  const handleClick = () => setClick(!click);
+  const returnHome = () => {
+    switch (role) {
+      case UserRole.Student:
+        handleTabChange("");
+        break;
+      case UserRole.Mentor:
+        router.push("/instructorcourses");
+        break;
+      case UserRole.Staff:
+        router.push("/staff-page");
+        break;
+      case UserRole.Admin:
+        router.push("/user-manage");
+        break;
+      default:
+        handleTabChange("");
+        break;
+    }
+  };
 
-  const course = [
-    {
-      href: "/",
-      title: "All Course",
-    },
-    {
-      href: "/",
-      title: "Course Details",
-    },
-  ];
+  useEffect(() => {
+    const fetchNotificationData = async () => {
+      try {
+        const response = await http.get(`/notification/byUserId/${id}`);
+        setNotificationContent(response.data);
+      } catch (error) {
+        console.error("Error fetching Notification Data:", error);
+      }
+    };
+    if (id) {
+      fetchNotificationData();
+    }
+  }, [id]);
+
+  const handleClickOutside = (event: MouseEvent) => {
+    const dropdown = document.getElementById("dropdown-menu");
+    const dropdownProfile = document.getElementById("dropdown-profile");
+
+    if (dropdown && !dropdown.contains(event.target as Node)) {
+      setNotification(false);
+    }
+    if (dropdownProfile && !dropdownProfile.contains(event.target as Node)) {
+      setIsOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    const currentRoute = window.location.href;
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const toggleDropdownNotification = () => {
+    setNotification(!notification);
+    setIsOpen(false);
+  };
+
+  const handleSwitchRole = () => {
+    if (role === 3) {
+      switchRole(2);
+      router.push(`/instructorcourses`);
+    }
+    if (role === 2) {
+      switchRole(3);
+      handleTabChange("");
+    }
+  };
+
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    setIsLogin(false);
+    router.push(`/${tab}`);
+  };
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const [formDataImage, setFormDataImage] = useState();
+
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleCancel = () => {
+    form.resetFields();
+    setIsModalVisible(false);
+  };
+
+  const handleFormSubmit = async (data: any) => {
+    const formData = new FormData();
+    formData.append("fullName", data.fullName);
+    formData.append("email", data.email);
+    formData.append("password", data.password);
+    try {
+      await http.post(
+        `https://learnconnectapitest.azurewebsites.net/api/user/create-account-staff`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      form.resetFields();
+      setIsModalVisible(false);
+      setTimeout(() => {
+        toast.success("Create Account successful");
+      });
+    } catch (error) {
+      setTimeout(() => {
+        toast.error("Create Account fail");
+      });
+    }
+  };
 
   return (
-    // <!-- Header Section Start -->
     <div className={`${headerStyles.header_section}`}>
-      {/* <!-- Header Top Start --> */}
-      {!user ? (
-        <div className={`${headerStyles.header_top}`}>
-          <div className="container">
-            {/* <!-- Header Top Wrapper Start --> */}
-            <div className={`${headerStyles.header_top_wrapper}`}>
-              {/* <!-- Header Top Left Start --> */}
-              <div className={`${headerStyles.header_top_left}`}>
-                <p>
-                  All course 28% off for <a href="#">Liberian people’s.</a>
-                </p>
-              </div>
-              {/* <!-- Header Top Left End --> */}
-
-              {/* <!-- Header Top Medal Start --> */}
-              <div className={`${headerStyles.header_top_medal}`}>
-                <div className={`${headerStyles.top_info}`}>
-                  <p>
-                    <i className="flaticon-phone-call"></i>{" "}
-                    <a href="tel:9702621413">(970) 262-1413</a>
-                  </p>
-                  <p>
-                    <i className="flaticon-email"></i>{" "}
-                    <a href="mailto:address@gmail.com">address@gmail.com</a>
-                  </p>
-                </div>
-              </div>
-              {/* <!-- Header Top Medal End --> */}
-
-              {/* <!-- Header Top Right Start --> */}
-              <div className={`${headerStyles.header_top_right}`}>
-                <ul className={`${headerStyles.header_top_right_social}`}>
-                  <li>
-                    <a href="#">
-                      <i className="flaticon-facebook"></i>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <i className="flaticon-twitter"></i>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <i className="flaticon-skype"></i>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <i className="flaticon-instagram"></i>
-                    </a>
-                  </li>
-                </ul>
-              </div>
-              {/* <!-- Header Top Right End --> */}
+      {!userData ? (
+        <div className={`${headerStyles.header_top}`}></div>
+      ) : (
+        <div className={`${headerStyles.header_login}`}>
+          <div className={`${headerStyles.header_navbar}`}>
+            <div className={`${headerStyles.header_login_left}`}>
+              <button onClick={returnHome}>
+                <Image
+                  width={100}
+                  height={40}
+                  src="/images/LogoTextWhite.png"
+                  alt="Logo"
+                />
+              </button>
             </div>
-            {/* <!-- Header Top Wrapper End --> */}
+            <ul className={`${headerStyles.header_login_right} `}>
+              {userData?.role === 2 ? (
+                <button
+                  onClick={handleSwitchRole}
+                  className="text-white border border-solid border-[#309255] shadow-lg border-opacity-20 rounded-lg bg-[#309255] py-1 px-3"
+                >
+                  Switch role {role === 3 ? "mentor" : "student"}
+                </button>
+              ) : (
+                <></>
+              )}
+              {userData?.role === 0 ? (
+                <button
+                  className="text-white border border-solid border-[#309255] border-opacity-20 rounded-lg bg-[#309255] py-1 px-3"
+                  onClick={showModal}
+                >
+                  Create Account for staff
+                </button>
+              ) : (
+                <></>
+              )}
+              <Modal
+                title="Create Account for Staff"
+                visible={isModalVisible}
+                onCancel={() => setIsModalVisible(false)}
+                footer={false}
+              >
+                {/* Form inside the modal */}
+                <Form
+                  autoComplete="off"
+                  form={form}
+                  labelCol={{ span: 6 }}
+                  labelAlign={"left"}
+                  wrapperCol={{ span: 18 }}
+                  layout="horizontal"
+                  className="mt-5"
+                  style={{ width: "100%" }}
+                  onFinish={handleFormSubmit}
+                >
+                  <Form.Item
+                    label="Full Name"
+                    name="fullName"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please enter your full name!",
+                      },
+                    ]}
+                  >
+                    <Input placeholder="Full Name" />
+                  </Form.Item>
+                  <Form.Item
+                    label="Email"
+                    name="email"
+                    rules={[
+                      { required: true, message: "Please enter your email!" },
+                    ]}
+                  >
+                    <Input type="email" placeholder="Email" />
+                  </Form.Item>
+                  <Form.Item
+                    label="Password"
+                    name="password"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please enter your password!",
+                      },
+                    ]}
+                  >
+                    <Input.Password placeholder="Password" />
+                  </Form.Item>
+
+                  <Space className="justify-end w-full">
+                    <Form.Item className="mb-0">
+                      <Space>
+                        <ButtonAntd
+                          className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                          onClick={handleCancel}
+                          style={{
+                            border: "2px solid #E0E0E0",
+                            color: "black",
+                          }}
+                        >
+                          Cancel
+                        </ButtonAntd>
+                        <ButtonAntd
+                          className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                          htmlType="submit"
+                          style={{
+                            border: "2px solid #4caf50",
+                            color: "#fff",
+                          }}
+                        >
+                          Confirm
+                        </ButtonAntd>
+                        {/* <button
+                          onClick={handleCancel}
+                          className="px-5 py-2 bg-red-400 rounded-lg text-white"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          type="submit"
+                          className="px-5 py-2 bg-[#309255] rounded-lg text-white"
+                        >
+                          Create
+                        </button> */}
+                      </Space>
+                    </Form.Item>
+                  </Space>
+
+                  {/* <Space>
+                    <Button onClick={handleCancel}>Cancel</Button>
+                    <Button
+                      key="submit"
+                      type="primary"
+                      onClick={handleFormSubmit}
+                      style={{ color: "black" }}
+                    >
+                      Submit
+                    </Button>
+                  </Space> */}
+                </Form>
+              </Modal>
+              <li className={`${headerStyles.header_notification}`}>
+                <button onClick={toggleDropdownNotification}>
+                  <AiFillBell />
+                </button>
+                {notification && (
+                  <div
+                    className="origin-top-right absolute right-0 mt-2 w-[450px] rounded-lg shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-20"
+                    id="dropdown-menu"
+                  >
+                    {notificationContent && notificationContent.length > 0 ? (
+                      <ul className="divide-y divide-gray-200 rounded-lg">
+                        {notificationContent.slice(0, 7).map((item) => {
+                          const date = new Date(item.timeStamp);
+                          const now = Date.now();
+                          const tmp = (now - date.getTime()) / 1000;
+
+                          let timeString = `${tmp} second${
+                            tmp > 1 ? "s" : ""
+                          } ago`;
+                          if (tmp > 604800) {
+                            timeString = `${Math.floor(tmp / 604800)} week${
+                              Math.floor(tmp / 604800) > 1 ? "s" : ""
+                            } ago`;
+                          } else if (tmp > 86400) {
+                            timeString = `${Math.floor(tmp / 86400)} day${
+                              Math.floor(tmp / 86400) > 1 ? "s" : ""
+                            } ago`;
+                          } else if (tmp > 3600) {
+                            timeString = `${Math.floor(tmp / 3600)} hours${
+                              Math.floor(tmp / 3600) > 1 ? "s" : ""
+                            } ago`;
+                          } else if (tmp > 60) {
+                            timeString = `${Math.floor(tmp / 60)} minute${
+                              Math.floor(tmp / 60) > 1 ? "s" : ""
+                            } ago`;
+                          }
+                          return (
+                            <li
+                              key={item.id}
+                              className="flex items-center py-4 px-[25px] hover:bg-[#e7f8ee] hover:rounded-tl-lg hover:rounded-tr-lg"
+                            >
+                              {/* <span>{item.id}</span> */}
+                              <span className="text-white">
+                                {item.isRead ? (
+                                  <i className="bg-gray-400 rounded-full h-2 w-2 block"></i>
+                                ) : (
+                                  <i className="bg-[#309255] rounded-full h-2 w-2 block"></i>
+                                )}
+                              </span>
+                              <div className="ml-3 text-sm">
+                                <a href="#" className="text-gray-900">
+                                  <p className="truncate max-w-[280px]">
+                                    <strong>{item.title}</strong>{" "}
+                                    {item.description}
+                                  </p>
+                                </a>
+                              </div>
+                              <span className="text-gray-500 ml-auto text-sm">
+                                {timeString}
+                              </span>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    ) : (
+                      <div className="text-center text-[#000] text-xl mt-8 items-center justify-center min-h-[280px]">
+                        <Empty description={false} />
+                        You don&apos;t have any notification.
+                      </div>
+                    )}
+                    <button
+                      onClick={() => {
+                        handleClickSeeAll();
+                      }}
+                      className="block text-center text-sm text-gray-700 py-2  bg-[#e7f8ee] rounded-br-lg rounded-bl-lg hover:rounded-bl-lg hover:rounded-br-lg w-full"
+                    >
+                      See all notifications
+                    </button>
+                  </div>
+                )}
+              </li>
+              <li className={`${headerStyles.header_info_img}`}></li>
+              <li>
+                <div>
+                  <button
+                    className={`${headerStyles.header_more}`}
+                    onClick={toggleDropdown}
+                    // onMouseLeave={toggleDropdown}
+                  >
+                    <img
+                      className={`${headerStyles.header_info_src}`}
+                      src={
+                        userData?.profilePictureUrl || "www.default.imageurl"
+                      }
+                      alt="author"
+                    ></img>
+                  </button>
+                </div>
+                {isOpen && (
+                  <div
+                    className="origin-top-right absolute right-0 mt-2 w-44 rounded-lg shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-[9999]"
+                    id="dropdown-profile"
+                  >
+                    <ul
+                      role="menu"
+                      aria-orientation="vertical"
+                      aria-labelledby="options-menu"
+                    >
+                      {userData?.role !== 0 && userData?.role !== 1 && (
+                        <>
+                          <li>
+                            <Link
+                              href="/profile"
+                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-tl-lg rounded-tr-lg hover:rounded-bl-lg hover:rounded-br-lg"
+                              onClick={closeDropdown}
+                            >
+                              Profile
+                            </Link>
+                          </li>
+                          <li>
+                            <Link
+                              href="/transaction"
+                              className="block px-4 py-2 text-sm text-gray-700  hover:bg-gray-100 rounded-tl-lg rounded-tr-lg hover:rounded-bl-lg hover:rounded-br-lg"
+                              onClick={closeDropdown}
+                            >
+                              Transactions
+                            </Link>
+                          </li>
+                        </>
+                      )}
+                      <li>
+                        <a
+                          href="#"
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-bl-lg rounded-br-lg hover:rounded-tl-lg hover:rounded-tr-lg"
+                          onClick={handleSignOut}
+                        >
+                          Sign out
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                )}
+              </li>
+            </ul>
           </div>
         </div>
-      ) : (
-        // <div className={`${headerStyles.header_login}`}>
-        //     {/* <!-- Login Header Wrapper Start --> */}
-        //     <div className="login-header-wrapper navbar navbar-expand">
-
-        //         {/* <!-- Header Logo Start --> */}
-        //         <div className="login-header-logo">
-        //             <a href="index.html">
-        //               {/* <img src="assets/images/logo-icon.png" alt="Logo"/> */}
-        //               </a>
-        //         </div>
-        //         {/* <!-- Header Logo End --> */}
-
-        //         {/* <!-- Header Action Start --> */}
-        //         <div className="login-header-action ml-auto">
-        //             <div className="dropdown">
-        //                 <button className="action notification" data-bs-toggle="dropdown">
-        //                     <i className="flaticon-notification"></i>
-        //                     <span className="active"></span>
-        //                 </button>
-        //                 <div className="dropdown-menu dropdown-notification">
-        //                     <ul className="notification-items-list">
-        //                         <li className="notification-item">
-        //                             <span className="notify-icon bg-success text-white"><i className="icofont-ui-user"></i></span>
-        //                             <div className="dropdown-body">
-        //                                 <a href="#">
-        //                                     <p><strong>Martin</strong> has added a <strong>customer</strong> Successfully
-        //                                     </p>
-        //                                 </a>
-        //                             </div>
-        //                             <span className="notify-time">3:20 am</span>
-        //                         </li>
-        //                         <li className="notification-item">
-        //                             <span className="notify-icon bg-success text-white"><i className="icofont-shopping-cart"></i></span>
-        //                             <div className="dropdown-body">
-        //                                 <a href="#">
-        //                                     <p><strong>Jennifer</strong> purchased Light Dashboard 2.0.</p>
-        //                                 </a>
-        //                             </div>
-        //                             <span className="notify-time">3:20 am</span>
-        //                         </li>
-        //                         <li className="notification-item">
-        //                             <span className="notify-icon bg-danger text-white"><i className="icofont-book-mark"></i></span>
-        //                             <div className="dropdown-body">
-        //                                 <a href="#">
-        //                                     <p><strong>Robin</strong> marked a <strong>ticket</strong> as unsolved.
-        //                                     </p>
-        //                                 </a>
-        //                             </div>
-        //                             <span className="notify-time">3:20 am</span>
-        //                         </li>
-        //                         <li className="notification-item">
-        //                             <span className="notify-icon bg-success text-white"><i className="icofont-heart-alt"></i></span>
-        //                             <div className="dropdown-body">
-        //                                 <a href="#">
-        //                                     <p><strong>David</strong> purchased Light Dashboard 1.0.</p>
-        //                                 </a>
-        //                             </div>
-        //                             <span className="notify-time">3:20 am</span>
-        //                         </li>
-        //                         <li className="notification-item">
-        //                             <span className="notify-icon bg-success text-white"><i className="icofont-image"></i></span>
-        //                             <div className="dropdown-body">
-        //                                 <a href="#">
-        //                                     <p><strong> James.</strong> has added a<strong>customer</strong> Successfully
-        //                                     </p>
-        //                                 </a>
-        //                             </div>
-        //                             <span className="notify-time">3:20 am</span>
-        //                         </li>
-        //                     </ul>
-        //                     <a className="all-notification" href="#">See all notifications <i className="icofont-simple-right"></i></a>
-        //                 </div>
-        //             </div>
-
-        //             <a className="action author" href="#">
-        //                 <img src="assets/images/author/author-07.jpg" alt="Author"/>
-        //             </a>
-
-        //             <div className="dropdown">
-        //                 <button className="action more" data-bs-toggle="dropdown">
-        //                     <span></span>
-        //                     <span></span>
-        //                     <span></span>
-        //                 </button>
-        //                 <ul className="dropdown-menu">
-        //                     <li><a className="" href="#"><i className="icofont-user"></i> Profile</a></li>
-        //                     <li><a className="" href="#"><i className="icofont-inbox"></i> Inbox</a></li>
-        //                     <li><a className="" href="#"><i className="icofont-logout"></i> Sign Out</a></li>
-        //                 </ul>
-        //             </div>
-        //         </div>
-        //         {/* <!-- Header Action End --> */}
-
-        //     </div>
-        //     {/* <!-- Login Header Wrapper End --> */}
-        // </div>
-        <>
-        He he</>
       )}
-
-      {/* <!-- Header Top End --> */}
-
-      {/* <!-- Header Main Start --> */}
       <div className="header-main ">
-        <div className="container">
-          {/* <!-- Header Main Start --> */}
-          <div className={`${headerStyles.header_main_wrapper}`}>
-            {/* <!-- Header Logo Start --> */}
-            <div className={`${headerStyles.header_logo}`}>
-              <a href="index.html">Image</a>
-            </div>
-            {/* <!-- Header Logo End --> */}
-
-            {/* <!-- Header Menu Start --> */}
-            <div className={`${headerStyles.header_menu}`}>
-              <ul className={`${headerStyles.nav_menu}`}>
-                <li>
-                  <Link href="/">Home</Link>
-                </li>
-                <li>
-                  <a href="#">All Course</a>
-                  <ul className={`${headerStyles.sub_menu}`}>
-                    {course.map((item, index) => (
-                      <li key={index}>
-                        <Link href={item.href}>{item.title}</Link>
-                      </li>
-                    ))}
-                    {/* <li><a href="courses.html">Courses</a></li>
-                                        <li><a href="courses-details.html">Courses Details</a></li> */}
-                  </ul>
-                </li>
-                <li>
-                  <a href="#">Pages </a>
-                  <ul className={`${headerStyles.sub_menu}`}>
-                    <li>
-                      <a href="about.html">About</a>
+        {/* <div className="container "> */}
+        {!userData ? (
+          <div className="page-banner">
+            <div className="container ">
+              <div
+                className={`${headerStyles.header_main_wrapper} mx-10 shadow-lg`}
+              >
+                <div className={`${headerStyles.header_logo}`}>
+                  <button onClick={() => handleTabChange("")}>
+                    <Image
+                      width={120}
+                      height={100}
+                      src="/images/LogoRemoveBG.png"
+                      alt="logo"
+                    />
+                  </button>
+                </div>
+                <div className={`${headerStyles.header_menu}`}>
+                  <ul
+                    className={`${headerStyles.nav_menu} text-base font-medium `}
+                  >
+                    <li
+                      className={`${
+                        activeTab === "" &&
+                        !isLogin &&
+                        "border-b-4 border-[#309255]"
+                      }`}
+                    >
+                      <button onClick={() => handleTabChange("")}>Home</button>
                     </li>
-                    <li>
-                      <a href="register.html">Register</a>
+                    <li
+                      className={`${
+                        activeTab === "courses" && "border-b-4 border-[#309255]"
+                      }`}
+                    >
+                      <button onClick={() => handleTabChange("courses")}>
+                        Courses
+                      </button>
                     </li>
-                    <li>
-                      <Link href="/login">Login</Link>
-                    </li>
-                    <li>
-                      <a href="faq.html">FAQ</a>
-                    </li>
-                    <li>
-                      <a href="404-error.html">404 Error</a>
-                    </li>
-                    <li>
-                      <a href="after-enroll.html">After Enroll</a>
-                    </li>
-                    <li>
-                      <a href="courses-admin.html">
-                        Instructor Dashboard (Course List)
-                      </a>
-                    </li>
-                    <li>
-                      <a href="overview.html">
-                        Instructor Dashboard (Performance)
-                      </a>
-                    </li>
-                    <li>
-                      <a href="students.html">Students</a>
-                    </li>
-                    <li>
-                      <a href="reviews.html">Reviews</a>
-                    </li>
-                    <li>
-                      <a href="engagement.html">Course engagement</a>
-                    </li>
-                    <li>
-                      <a href="traffic-conversion.html">Traffic & conversion</a>
-                    </li>
-                    <li>
-                      <a href="messages.html">Messages</a>
+                    <li
+                      className={`${
+                        activeTab === "list-mentor" &&
+                        "border-b-4 border-[#309255]"
+                      }`}
+                    >
+                      <button onClick={() => handleTabChange("list-mentor")}>
+                        Mentors
+                      </button>
                     </li>
                   </ul>
-                </li>
-                <li>
-                  <a href="#">Blog</a>
-                  <ul className={`${headerStyles.sub_menu}`}>
+                </div>
+                <div className={`${headerStyles.header_sign_in_up}`}>
+                  <ul>
                     <li>
-                      <a href="#">Blog</a>
-                      <ul className={`${headerStyles.sub_menu}`}>
-                        <li>
-                          <a href="blog-grid.html">Blog</a>
-                        </li>
-                        <li>
-                          <a href="blog-left-sidebar.html">Blog Left Sidebar</a>
-                        </li>
-                        <li>
-                          <a href="blog-right-sidebar.html">
-                            Blog Right Sidebar
-                          </a>
-                        </li>
-                      </ul>
+                      <button
+                        onClick={() => {
+                          setActiveTab("");
+                          setIsLogin(true);
+                          router.push("/login");
+                        }}
+                        className={`${headerStyles.sign_up}`}
+                      >
+                        Sign In
+                      </button>
                     </li>
                     <li>
-                      <a href="#">Blog Details</a>
-                      <ul className={`${headerStyles.sub_menu}`}>
-                        <li>
-                          <a href="blog-details-left-sidebar.html">
-                            Blog Details Left Sidebar
-                          </a>
-                        </li>
-                        <li>
-                          <a href="blog-details-right-sidebar.html">
-                            Blog Details Right Sidebar
-                          </a>
-                        </li>
-                      </ul>
-                    </li>
-                  </ul>
-                </li>
-                <li>
-                  <Link href="/contact">Contact</Link>
-                </li>
-              </ul>
-            </div>
-            {/* <!-- Header Menu End --> */}
-            {!user ? (
-              <div className={`${headerStyles.header_sign_in_up}`}>
-                <ul>
-                  <li>
-                    <Link className={`${headerStyles.sign_in}`} href="/login">
-                      Sign In
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
+                      {/* <Link
                       className={`${headerStyles.sign_up}`}
                       href="register.html"
                     >
                       Sign Up
-                    </Link>
-                  </li>
-                </ul>
+                    </Link> */}
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <>
+            {role === 3 ? (
+              <div className="page-banner ">
+                <div className="container">
+                  <div
+                    className={`${headerStyles.header_main_wrapper} shadow-lg `}
+                  >
+                    <div className={`${headerStyles.header_logo}`}>
+                      <button onClick={() => handleTabChange("")}>
+                        <Image
+                          width={100}
+                          height={60}
+                          src="/images/LogoRemoveBG.png"
+                          alt="logo"
+                        />
+                      </button>
+                    </div>
+                    <div className={`${headerStyles.header_menu}`}>
+                      <ul
+                        className={`${headerStyles.nav_menu} text-base font-medium`}
+                      >
+                        <li
+                          className={`${
+                            activeTab === "" && "border-b-4 border-[#309255]"
+                          }`}
+                        >
+                          <button onClick={() => handleTabChange("")}>
+                            Home
+                          </button>
+                        </li>
+                        <li
+                          className={`${
+                            activeTab === "courses" &&
+                            "border-b-4 border-[#309255]"
+                          }`}
+                        >
+                          <button onClick={() => handleTabChange("courses")}>
+                            Courses
+                          </button>
+                        </li>
+                        <li
+                          className={`${
+                            activeTab === "my-course" &&
+                            "border-b-4 border-[#309255]"
+                          }`}
+                        >
+                          <button onClick={() => handleTabChange("my-course")}>
+                            My Courses{" "}
+                          </button>
+                        </li>
+                        <li
+                          className={`${
+                            activeTab === "favorites" &&
+                            "border-b-4 border-[#309255]"
+                          }`}
+                        >
+                          <button onClick={() => handleTabChange("favorites")}>
+                            My Favorites
+                          </button>
+                        </li>
+                        <li
+                          className={`${
+                            activeTab === "list-mentor" &&
+                            "border-b-4 border-[#309255]"
+                          }`}
+                        >
+                          <button
+                            onClick={() => handleTabChange("list-mentor")}
+                          >
+                            Mentors
+                          </button>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div>
+                      {userData?.role == 3 ? (
+                        <div className={`${headerStyles.regis_btn}`}>
+                          <Button onClick={handleClickBecomeMentor}>
+                            Become a Mentor
+                          </Button>
+                        </div>
+                      ) : (
+                        <></>
+                      )}
+                    </div>
+                  </div>
+                </div>
               </div>
             ) : (
-              <div>
-                <p className="text-black ">Wellcome, {user.displayName}</p>
-                <a
-                  onClick={handleSignOut}
-                  className="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded-2xl py-4 px-3 leading-normal no-underline bg-white text-[#309255] hover:bg-[#309255] btn-outline w-full border-[#a9f9c8] hover:text-white transition-all duration-300 ease-in-out delay-0 my-2"
-                >
-                  Logout
-                </a>
-              </div>
+              <></>
             )}
-            {/* <!-- Header Sing In & Up Start --> */}
-
-            {/* <!-- Header Sing In & Up End --> */}
-
-            {/* <!-- Header Mobile Toggle Start --> */}
-            <div className="header-toggle d-lg-none">
-              <a className="menu-toggle" href="javascript:void(0)">
-                <span></span>
-                <span></span>
-                <span></span>
-              </a>
-            </div>
-            {/* <!-- Header Mobile Toggle End --> */}
-          </div>
-          {/* <!-- Header Main End --> */}
-        </div>
+          </>
+        )}
+        {/* </div> */}
       </div>
-      {/* <!-- Header Main End --> */}
-      {/* <!-- Overlay Start --> */}
-      {/* <div className="overlay"></div> */}
-      {/* <!-- Overlay End --> */}
     </div>
   );
 };

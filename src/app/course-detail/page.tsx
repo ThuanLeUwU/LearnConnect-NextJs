@@ -1,9 +1,36 @@
 "use client";
-import styles from "../login/styles.module.scss";
-import React, { useState } from "react";
+import { Payment } from "@/components/payment";
+import { Modal } from "antd";
+import Link from "next/link";
+import React, { useEffect, useState } from "react";
+import { Button } from "react-bootstrap";
+import { UserAuth } from "../context/AuthContext";
+import { useRouter } from "next/navigation";
 
 export default function CourseDetailPage() {
+  const router = useRouter();
+  const { id, user, role } = UserAuth();
+  useEffect(() => {
+    if (role === 0) {
+      router.push(`/user-manage`);
+    }
+    if (role === 1) {
+      router.push(`/staff-page`);
+    }
+    if (role === 2) {
+      router.push(`/instructorcourses`);
+    }
+    // if (role === 3) {
+    //   router.push(`/`);
+    // }
+    // if (role === -1) {
+    //   router.push(`/`);
+    // }
+  });
+  const [visible, setVisible] = useState(false);
+
   const [activeTab, setActiveTab] = useState("tab1");
+
   const handleTabClick = (tabName: string) => {
     setActiveTab(tabName);
   };
@@ -32,9 +59,9 @@ export default function CourseDetailPage() {
                     />
                   </div>
                   <div className="author-content pl-4">
-                    <a className="text-base pl-4 pb-1.5" href="#">
+                    <Link className="text-base pl-4 pb-1.5" href="#">
                       Pamela Foster
-                    </a>
+                    </Link>
                     <span className="mx-5"></span>
                     <span className="text-sm font-normal text-[#309255]">
                       286 Enrolled Students
@@ -502,15 +529,6 @@ export default function CourseDetailPage() {
                           </span>
                         </li>
                         <li className="border-b border-solid border-[#d1e6d9] py-3.5">
-                          <i className="icofont-bars"></i>{" "}
-                          <strong className="text-[#212832] text-base font-medium">
-                            Level
-                          </strong>{" "}
-                          <span className="text-[#52565b] float-right text-base font-normal">
-                            Secondary
-                          </span>
-                        </li>
-                        <li className="border-b border-solid border-[#d1e6d9] py-3.5">
                           <i className="icofont-book-alt"></i>{" "}
                           <strong className="text-[#212832] text-base font-medium">
                             Language
@@ -519,24 +537,30 @@ export default function CourseDetailPage() {
                             English
                           </span>
                         </li>
-                        <li className="border-b border-solid border-[#d1e6d9] py-3.5">
-                          <i className="icofont-certificate-alt-1"></i>{" "}
-                          <strong className="text-[#212832] text-base font-medium">
-                            Certificate
-                          </strong>{" "}
-                          <span className="text-[#52565b] float-right text-base font-normal">
-                            Yes
-                          </span>
-                        </li>
                       </ul>
                     </div>
                     <div className="text-center mt-10">
-                      <a
-                        href="#"
+                      <Button
+                        // href="/after-enroll"
                         className="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded-2xl py-4 px-3 leading-normal no-underline bg-[#309255] text-white hover:bg-black btn-outline w-44 border-[#a9f9c8] hover:text-white transition-all duration-300 ease-in-out delay-0 my-2"
+                        onClick={() => {
+                          Modal.confirm({
+                            title: "Payment successful",
+                            content: (
+                              <Payment
+                                visible={visible}
+                                setVisible={setVisible}
+                                onCancel={() => {
+                                  setVisible(false);
+                                }}
+                                isEdit={false}
+                              />
+                            ),
+                          });
+                        }}
                       >
                         Enroll Now
-                      </a>
+                      </Button>
                     </div>
                   </div>
                 </div>
@@ -546,29 +570,29 @@ export default function CourseDetailPage() {
                 <h4 className="widget-title">Share Course:</h4>
                 <ul className="social">
                   <li>
-                    <a href="#">
+                    <Link href="#">
                       <i className="flaticon-facebook"></i>
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a href="#">
+                    <Link href="#">
                       <i className="flaticon-linkedin"></i>
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a href="#">
+                    <Link href="#">
                       <i className="flaticon-twitter"></i>
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a href="#">
+                    <Link href="#">
                       <i className="flaticon-skype"></i>
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a href="#">
+                    <Link href="#">
                       <i className="flaticon-instagram"></i>
-                    </a>
+                    </Link>
                   </li>
                 </ul>
               </div>
