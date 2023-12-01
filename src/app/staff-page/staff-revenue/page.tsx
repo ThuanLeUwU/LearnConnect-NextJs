@@ -29,6 +29,7 @@ import Chart from "react-google-charts";
 
 import dynamic from "next/dynamic";
 import { ApexOptions } from "apexcharts";
+import { TotalStatistic } from "@/app/revenue/page";
 
 // Load ReactApexChart dynamically to avoid server-side rendering issues
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
@@ -57,6 +58,24 @@ interface StackChartData {
 interface DonutChartData {
   label: string;
   value: number;
+}
+
+interface StatisticData {
+  statisticsByDate: any;
+  date: string;
+  newCoursesFee: number;
+  newCoursesFree: number;
+  newMentors: number;
+  newEnrollments: number;
+  newRevenue: number;
+}
+
+interface StatisticStatusData {
+  totalCourseStatusStatistic: any;
+  coursesActive: number;
+  coursesPending: number;
+  coursesReject: number;
+  coursesBan: number;
 }
 
 export type RevenueMentor = {
@@ -143,12 +162,12 @@ const StaffRevenue = () => {
   const handleChangeSelected1 = (e: any) => {
     setSelected1(e);
   };
-  const [selected2, setSelected2] = useState<string>("");
+  const [selected2, setSelected2] = useState<string>("Last Day");
 
   const handleChangeSelected2 = (e: any) => {
     setSelected2(e);
   };
-  const [selected3, setSelected3] = useState<string>("");
+  const [selected3, setSelected3] = useState<string>("Last Day");
 
   const handleChangeSelected3 = (e: any) => {
     setSelected3(e);
@@ -157,105 +176,10 @@ const StaffRevenue = () => {
   const { Option } = Select;
 
   const timeLine = [
-    { title: "Daily" },
-    { title: "Weekly" },
-    { title: "Monthly" },
+    { title: "Last Day", value: "day" },
+    { title: "Last Week", value: "week" },
+    { title: "Last Month", value: "month" },
   ];
-
-  // useEffect(() => {
-  //   setLoading(false);
-  //   // Fetch data from your API using Axios
-  //   http
-  //     .get<RevenueEntry[]>(
-  //       `https://learnconnectapitest.azurewebsites.net/api/payment-transaction/revenue-web-by-week`
-  //     )
-  //     .then((response) => {
-  //       const data = response.data;
-  //       setListDate(data);
-
-  //       const sortedData = data.sort(
-  //         (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-  //       );
-
-  //       const labels = sortedData.map((entry) => {
-  //         const entryDateInVN = moment(entry.date).tz("Asia/Ho_Chi_Minh");
-  //         const currentDateInVN = moment().tz("Asia/Ho_Chi_Minh");
-  //         return entryDateInVN.format("YYYY-MM-DD") ===
-  //           currentDateInVN.format("YYYY-MM-DD")
-  //           ? "Today"
-  //           : entryDateInVN.format("YYYY-MM-DD");
-  //       });
-
-  //       const total = sortedData.map((entry) => entry.totalRevenue);
-  //       const profits = sortedData.map((entry) => entry.totalRevenue * 0.05);
-
-  //       setChartData({
-  //         ...chartData,
-  //         labels: labels,
-  //         datasets: [
-  //           {
-  //             ...chartData.datasets[1],
-  //             data: total,
-  //             label: "Profit",
-  //             backgroundColor: "#309255", // Màu cho Revenue
-  //             borderColor: "#e7f8ee",
-  //             borderWidth: 1,
-  //             barPercentage: 0.4,
-  //             z: 1,
-  //           },
-  //           {
-  //             ...chartData.datasets[0],
-  //             data: profits,
-  //             label: "Revenue",
-  //             backgroundColor: "#e7f8ee", // Màu cho Profit
-  //             borderColor: "#309255",
-  //             borderWidth: 1,
-  //             barPercentage: 0.4,
-  //             z: 0,
-  //           },
-  //         ],
-  //       });
-  //       setLoading(true);
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error fetching data:", error);
-  //     });
-  // }, [selected]);
-
-  // const options = {
-  //   type: "bar",
-  //   scales: {
-  //     y: {
-  //       label: true,
-  //       beginAtZero: true,
-  //       // max: Math.max(...chartData.datasets[0].data) + 10000, // Adjust max value for better visualization
-  //       ticks: {
-  //         callback: function (value) {
-  //           return value.toLocaleString() + " VND"; // Format y-axis ticks as needed
-  //         },
-  //         stepSize: 100000,
-  //       },
-  //     },
-  //   },
-  //   responsive: true,
-  //   // maintainAspectRatio: f,
-  //   plugins: {
-  //     legend: {
-  //       display: false, // Ẩn hiển thị chú giải
-  //     },
-  //     tooltip: {
-  //       callbacks: {
-  //         label: (context) => {
-  //           const label = context.dataset.label || "";
-  //           const value = context.parsed.y || 0;
-
-  //           // Format giá trị theo nhu cầu của bạn
-  //           return value.toLocaleString();
-  //         },
-  //       },
-  //     },
-  //   },
-  // };
 
   const [revenueOneMentor, setRevenueOneMentor] = useState<RevenueMentor[]>([]);
 
@@ -388,6 +312,13 @@ const StaffRevenue = () => {
     setIncomeChart(processedData);
   }, []);
 
+  const [totalStatistic, setTotalStatistic] = useState<TotalStatistic>();
+  const [courseStatistic2, setCourseStatistic2] = useState<StatisticData[]>([]);
+  const [totalStatusCourses, setTotalStatusCourse] =
+    useState<StatisticStatusData>();
+
+  console.log("vv", courseStatistic2);
+
   const [mixedChart, setMixChart] = useState({
     options: {
       chart: {
@@ -395,14 +326,6 @@ const StaffRevenue = () => {
         toolbar: {
           show: false,
         },
-      },
-      stroke: {
-        width: [0, 2, 4],
-      },
-      title: {
-        text: "Dual Y-Axis Chart",
-        align: "left" as "left",
-        offsetX: 110,
       },
       xaxis: {
         categories: [] as string[],
@@ -414,21 +337,24 @@ const StaffRevenue = () => {
           },
           axisBorder: {
             show: true,
-            color: "#008FFB",
+            color: "#309255",
           },
           labels: {
             style: {
-              colors: "#008FFB",
+              colors: "#309255",
             },
           },
           title: {
-            text: "Profit (in USD)",
+            text: "Revenue (in VND)",
             style: {
-              color: "#008FFB",
+              color: "#309255",
             },
           },
           tooltip: {
             enabled: true,
+          },
+          fill: {
+            colors: ["#309255"], // Màu của miền giá trị trục y
           },
         },
         {
@@ -438,30 +364,33 @@ const StaffRevenue = () => {
           },
           axisBorder: {
             show: true,
-            color: "#00E396",
+            color: "rgba(254,176,25,1)",
           },
           labels: {
             style: {
-              colors: "#00E396",
+              colors: "rgba(254,176,25,1)",
             },
           },
           title: {
-            text: "Participants",
+            text: "Enrollments",
             style: {
-              color: "#00E396",
+              color: "rgba(254,176,25,1)",
             },
+          },
+          fill: {
+            colors: ["rgba(254,176,25,1)"], // Màu của miền giá trị trục y
           },
         },
       ],
     },
     series: [
       {
-        name: "Profit",
+        name: "Revenue",
         type: "column",
         data: [] as number[],
       },
       {
-        name: "Participants",
+        name: "Enrollments",
         type: "line",
         data: [] as number[],
       },
@@ -469,39 +398,27 @@ const StaffRevenue = () => {
   });
 
   useEffect(() => {
-    // Simulated data
-    const simulatedData: ChartData[] = [
-      { date: "2023-01-01", profit: 5000, participants: 100 },
-      { date: "2023-01-02", profit: 7000, participants: 120 },
-      { date: "2023-01-03", profit: 6000, participants: 90 },
-      { date: "2023-01-04", profit: 8000, participants: 110 },
-      { date: "2023-01-05", profit: 9000, participants: 130 },
-      { date: "2023-01-05", profit: 9000, participants: 130 },
-      { date: "2023-01-05", profit: 9000, participants: 130 },
-      { date: "2023-01-05", profit: 9000, participants: 130 },
-      { date: "2023-01-05", profit: 9000, participants: 130 },
-      { date: "2023-01-05", profit: 9000, participants: 130 },
-      { date: "2023-01-05", profit: 9000, participants: 130 },
-      { date: "2023-01-05", profit: 9000, participants: 130 },
-      { date: "2023-01-05", profit: 9000, participants: 130 },
-      { date: "2023-01-05", profit: 9000, participants: 130 },
-      { date: "2023-01-05", profit: 9000, participants: 130 },
-      { date: "2023-01-05", profit: 9000, participants: 130 },
-      { date: "2023-01-05", profit: 9000, participants: 130 },
-      { date: "2023-01-05", profit: 9000, participants: 130 },
-      { date: "2023-01-05", profit: 9000, participants: 130 },
-      { date: "2023-01-05", profit: 9000, participants: 130 },
-      { date: "2023-01-05", profit: 9000, participants: 130 },
-      { date: "2023-01-05", profit: 9000, participants: 130 },
-      { date: "2023-01-05", profit: 9000, participants: 130 },
-      { date: "2023-01-05", profit: 9000, participants: 130 },
-      { date: "2023-01-05", profit: 9000, participants: 130 },
-      { date: "2023-01-05", profit: 9000, participants: 130 },
-      { date: "2023-01-05", profit: 9000, participants: 130 },
-      { date: "2023-01-05", profit: 9000, participants: 130 },
-    ];
+    try {
+      http
+        .get(
+          `https://learnconnectapitest.azurewebsites.net/api/payment-transaction/statistic-staff?filterType=${
+            selected2 === "Last Day" ? "day" : selected2
+          }`
+        )
+        .then((res) => {
+          setTotalStatistic(res.data[0].totalStatisticInfo);
+          setCourseStatistic2(res.data[0].statisticsByDate);
+          setTotalStatusCourse(res.data[0].totalCourseStatusStatistic);
+        });
+    } catch (e) {
+      console.error(e);
+    }
+  }, [selected2, id]);
 
-    const categories = simulatedData.map((entry) => entry.date);
+  useEffect(() => {
+    const categories = courseStatistic2.map((entry) =>
+      new Date(entry.date).toISOString().slice(0, 10)
+    );
 
     setMixChart({
       ...mixedChart,
@@ -514,15 +431,18 @@ const StaffRevenue = () => {
       series: [
         {
           ...mixedChart.series[0],
-          data: simulatedData.map((entry) => entry.profit),
+          data: courseStatistic2.map((entry) => entry.newRevenue),
         },
         {
           ...mixedChart.series[1],
-          data: simulatedData.map((entry) => entry.participants),
+          data: courseStatistic2.map((entry) => entry.newEnrollments),
         },
       ],
     });
-  }, []);
+  }, [courseStatistic2]);
+
+  const [courseStatistic3, setCourseStatistic3] = useState<StatisticData[]>([]);
+  console.log("yohoho", courseStatistic3);
 
   const [stackedChart, setStackedChart] = useState({
     options: {
@@ -535,36 +455,50 @@ const StaffRevenue = () => {
       },
       yaxis: {
         title: {
-          text: "Số lượng course",
+          text: "Course",
         },
       },
     },
     series: [
       {
-        name: "Miễn phí",
+        name: "Fee",
         data: [] as number[], // Dữ liệu số lượng course miễn phí
       },
       {
-        name: "Trả Phí",
+        name: "Free",
         data: [] as number[], // Dữ liệu tổng số lượng course trừ đi số lượng course miễn phí
       },
     ],
   });
 
   useEffect(() => {
-    // Simulated data
-    const simulatedData: StackChartData[] = [
-      { date: "2023-01-01", freeCourses: 20, totalCourses: 50 },
-      { date: "2023-01-02", freeCourses: 25, totalCourses: 60 },
-      { date: "2023-01-03", freeCourses: 18, totalCourses: 55 },
-      // ... Add more data ...
-    ];
+    try {
+      http
+        .get(
+          `https://learnconnectapitest.azurewebsites.net/api/payment-transaction/statistic-staff?filterType=${
+            selected3 === "Last Day" ? "day" : selected3
+          }`
+        )
+        .then((res) => {
+          setTotalStatistic(res.data[0].totalStatisticInfo);
+          setCourseStatistic3(res.data[0].statisticsByDate);
+          setTotalStatusCourse(res.data[0].totalCourseStatusStatistic);
+        });
+    } catch (e) {
+      console.error(e);
+    }
+  }, [selected3, id]);
 
-    const categories = simulatedData.map((entry) => entry.date);
-    const freeCoursesData = simulatedData.map((entry) => entry.freeCourses);
-    const totalCoursesData = simulatedData.map(
-      (entry) => entry.totalCourses - entry.freeCourses
+  useEffect(() => {
+    // Simulated data
+
+    const categories = courseStatistic3.map((entry) =>
+      new Date(entry.date).toISOString().slice(0, 10)
     );
+    const freeCoursesData = courseStatistic3.map(
+      (entry) => entry.newCoursesFree
+    );
+    const feeCoursesData = courseStatistic3.map((entry) => entry.newCoursesFee);
 
     setStackedChart({
       ...stackedChart,
@@ -581,11 +515,11 @@ const StaffRevenue = () => {
         },
         {
           ...stackedChart.series[1],
-          data: totalCoursesData,
+          data: feeCoursesData,
         },
       ],
     });
-  }, []);
+  }, [courseStatistic3]);
 
   const [donutChart, setDonutChart] = useState({
     options: {
@@ -615,25 +549,18 @@ const StaffRevenue = () => {
 
   useEffect(() => {
     // Simulated data
-    const simulatedData: DonutChartData[] = [
-      { label: "Active", value: 30 },
-      { label: "Pending", value: 20 },
-      { label: "Reject", value: 10 },
-      { label: "Ban", value: 5 },
-    ];
-
-    const labels = simulatedData.map((entry) => entry.label);
-    const values = simulatedData.map((entry) => entry.value);
-
-    setDonutChart({
-      ...donutChart,
-      options: {
-        ...donutChart.options,
-        labels: labels,
-      },
-      series: values,
-    });
-  }, []);
+    const newLabels = ["Active", "Pending", "Reject", "Ban"];
+    if (totalStatusCourses) {
+      setDonutChart({
+        ...donutChart,
+        options: {
+          ...donutChart.options,
+          labels: newLabels,
+        },
+        series: Object.values(totalStatusCourses),
+      });
+    }
+  }, [totalStatusCourses]);
 
   return (
     <>
@@ -642,7 +569,7 @@ const StaffRevenue = () => {
           <Spin size="large" />
         </div>
       ) : (
-        <div className="flex">
+        <div className="flex w-full">
           <LeftNavbar
             page1={"/staff-page"}
             page2={"/staff-page/staff-rating"}
@@ -666,10 +593,12 @@ const StaffRevenue = () => {
               </div>
 
               <div className="mt-10 mx-10 flex flex-row gap-4 justify-between">
-                <div className="p-5 rounded-lg border-solid border-2 shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)] flex flex-row w-[360px] min-h-[200px] justify-between">
+                <div className="p-5 rounded-lg border-solid border-2 shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)] flex flex-row max-w-[320px] min-h-[200px] justify-between">
                   <div className="flex flex-col gap-4">
-                    <div className="text-xl font-medium">Toal Courses</div>
-                    <div className="text-3xl">200,000,000 </div>
+                    <div className="text-xl font-medium">Total Courses</div>
+                    <div className="text-5xl">
+                      {totalStatistic?.totalActiveCourses}{" "}
+                    </div>
                   </div>
                   <div className="flex items-center">
                     <img
@@ -678,10 +607,12 @@ const StaffRevenue = () => {
                     />
                   </div>
                 </div>
-                <div className="p-5 rounded-lg border-solid border-2 shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)] flex flex-row w-[360px] min-h-[200px] justify-between">
+                <div className="p-5 rounded-lg border-solid border-2 shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)] flex flex-row max-w-[320px] min-h-[200px] justify-between">
                   <div className="flex flex-col gap-4">
                     <div className="text-xl font-medium">Total Mentors</div>
-                    <div className="text-3xl">200,000,000 VND</div>
+                    <div className="text-5xl">
+                      {totalStatistic?.totalMentors}
+                    </div>
                   </div>
                   <div className="flex items-center">
                     <img
@@ -690,10 +621,12 @@ const StaffRevenue = () => {
                     />
                   </div>
                 </div>
-                <div className="p-5 rounded-lg border-solid border-2 shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)] flex flex-row w-[360px] min-h-[200px] justify-between">
+                <div className="p-5 rounded-lg border-solid border-2 shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)] flex flex-row max-w-[320px] min-h-[200px] justify-between">
                   <div className="flex flex-col gap-4">
                     <div className="text-xl font-medium">Total Enrollments</div>
-                    <div className="text-3xl">Tổng Thu Nhập</div>
+                    <div className="text-5xl">
+                      {totalStatistic?.totalEnrollments}
+                    </div>
                   </div>
                   <div className="flex items-center justify-end">
                     <img
@@ -702,12 +635,13 @@ const StaffRevenue = () => {
                     />
                   </div>
                 </div>
-                <div className="p-5 rounded-lg border-solid border-2 shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)] flex flex-row w-[360px] min-h-[200px] justify-between">
+                <div className="p-5 rounded-lg border-solid border-2 shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)] flex flex-row max-w-[320px] min-h-[200px] justify-between">
                   <div className="flex flex-col gap-4">
-                    <div className="text-xl font-medium">
-                      Tổng Lợi Nhuận (VND)
+                    <div className="text-xl font-medium">Revenue (VND)</div>
+                    <div className="text-3xl">
+                      {totalStatistic?.totalRevenue &&
+                        totalStatistic?.totalRevenue.toLocaleString()}
                     </div>
-                    <div className="text-3xl">200,000,000 </div>
                   </div>
                   <div className="flex items-center">
                     <img
@@ -727,11 +661,11 @@ const StaffRevenue = () => {
                     size="large"
                     defaultValue={selected2}
                     onChange={handleChangeSelected2}
-                    style={{ width: 120 }}
-                    className="mx-5 w-[120px]"
+                    // style={{ width: 120 }}
+                    className="mx-5 w-[150px]"
                   >
                     {timeLine.map((option, index) => (
-                      <Option key={option.title} value={option.title}>
+                      <Option key={option.title} value={option.value}>
                         {option.title}
                       </Option>
                     ))}
@@ -750,41 +684,49 @@ const StaffRevenue = () => {
                 </div> */}
               </div>
               <div className="mt-5 rounded-lg border-solid border-2 mx-10 p-10 shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)] flex flex-col gap-4">
-                <div className="flex justify-between items-center">
-                  <div className="text-2xl font-semibold mb-0 leading-5 flex items-center">
-                    Course Statistics
-                  </div>
-                  <Select
-                    size="large"
-                    defaultValue={selected3}
-                    onChange={handleChangeSelected3}
-                    style={{ width: 120 }}
-                    className="mx-5 w-[120px]"
-                  >
-                    {timeLine.map((option, index) => (
-                      // <div key={index}>hahaha {option.date}</div>
-                      <Option key={option.title} value={option.title}>
-                        {option.title}
-                      </Option>
-                    ))}
-                  </Select>
-                </div>
-                <div className="flex flex-row gap-10">
-                  <div className="flex-auto w-6/12">
-                    <ReactApexChart
-                      options={stackedChart.options}
-                      series={stackedChart.series}
-                      type="bar"
-                      height={350}
-                    />
+                <div className="flex flex-row justify-between">
+                  <div className="flex-auto w-6/12 ">
+                    <div className="flex justify-between">
+                      <div className="text-2xl font-semibold mb-0 leading-5 flex items-center">
+                        New Course Statistics
+                      </div>
+                      <Select
+                        size="large"
+                        defaultValue={selected3}
+                        onChange={handleChangeSelected3}
+                        // style={{ width: 120 }}
+                        className=" w-[150px]"
+                      >
+                        {timeLine.map((option, index) => (
+                          // <div key={index}>hahaha {option.date}</div>
+                          <Option key={option.title} value={option.value}>
+                            {option.title}
+                          </Option>
+                        ))}
+                      </Select>
+                    </div>
+
+                    <div className="">
+                      <ReactApexChart
+                        options={stackedChart.options}
+                        series={stackedChart.series}
+                        type="bar"
+                        height={350}
+                      />
+                    </div>
                   </div>
                   <div className="flex-1">
-                    <ReactApexChart
-                      options={donutChart.options}
-                      series={donutChart.series}
-                      type="pie"
-                      height={350}
-                    />
+                    <div className="flex flex-col gap-10">
+                      <div className="text-2xl font-semibold mb-0 leading-5 flex items-center justify-center">
+                        Course Status
+                      </div>
+                      <ReactApexChart
+                        options={donutChart.options}
+                        series={donutChart.series}
+                        type="pie"
+                        height={350}
+                      />
+                    </div>
                   </div>
                 </div>
                 {/* <div className="relative flex justify-center">
