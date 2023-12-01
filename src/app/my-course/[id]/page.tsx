@@ -1,16 +1,13 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import "../../globals.css";
-import AccordionItem from "@/components/dropdown/Dropdown";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { Course, Lectures } from "@/components/courses/courses";
-import Image from "next/image";
-import { Worker, Viewer } from "@react-pdf-viewer/core";
 import { FaCheck } from "react-icons/fa";
 import { FaLock } from "react-icons/fa6";
-
-// import { Button } from "react-bootstrap";
+import { VscEllipsis } from "react-icons/vsc";
+import { FaRankingStar } from "react-icons/fa6";
 import {
   Breadcrumb,
   Button,
@@ -25,8 +22,7 @@ import {
   message,
 } from "antd";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
-
-// import { Option } from "antd/es/mentions";
+import { IoChatboxSharp } from "react-icons/io5";
 import { UserAuth } from "@/app/context/AuthContext";
 import { toast } from "sonner";
 import { http } from "@/api/http";
@@ -54,6 +50,25 @@ export type Performance = {
   timeSpent: number;
   userId: number;
   courseId: number;
+};
+
+export type Comment = {
+  // map(arg0: (item: any, index: any) => React.JSX.Element): React.ReactNode;
+  comment: {
+    id: number;
+    userId: number;
+    parentCommentId: null;
+    comment1: string;
+    commentTime: string;
+    status: number;
+    lectureId: number;
+  };
+  user: {
+    userId: number;
+    userName: string;
+    userEmail: string;
+    userImage: string;
+  };
 };
 
 export default function AfterEnroll({ params }: any) {
@@ -98,14 +113,14 @@ export default function AfterEnroll({ params }: any) {
   console.log("idCourse", idCourse);
   const [courses, setCourses] = useState<Course>();
   const [isTestOpen, setIsTestOpen] = useState(false);
-  // const [videoSrc, setVideoSrc] = useState(
-  //   "https://player.vimeo.com/external/215175080.hd.mp4?s=5b17787857fd95646e67ad0f666ea69388cb703c&profile_id=119"
-  // );
   const showModal = () => {
     setIsModalOpen(true);
   };
   const [timeSpent, setTimeSpent] = useState<Performance>();
-
+  const [comment, setComment] = useState<Comment[]>([]);
+  const [commentText, setCommentText] = useState<string>("");
+  const [IdLecture, setIdLecture] = useState(0);
+  const [editText, setEditText] = useState("");
   const handleOk = async (data: any) => {
     // console.log(e)
     setIsModalOpen(false);
@@ -194,17 +209,6 @@ export default function AfterEnroll({ params }: any) {
     }
     return e?.fileList;
   };
-
-  // const newplugin = defaultLayoutPlugin();
-  // const uploadImage = () => {
-  //   const fetchImg= async () => {
-  //     const res = await axios.post(`https://learnconnectapitest.azurewebsites.net/api/image`)
-  //   }
-  // }
-
-  // console.log("id is", idCourse);
-  //   const id = router.query.id;
-  //   console.log("id", id);
   const [testVideo, setTestVideo] = useState<Lecture[]>([]);
   useEffect(() => {
     const fetchData = async () => {
@@ -215,10 +219,6 @@ export default function AfterEnroll({ params }: any) {
     };
 
     fetchData();
-    // if (testVideo.length > 0) {
-    //   setVideoSrc(testVideo[0].contentUrl);
-    //   setActiveVideoIndex(0);
-    // }
   }, []);
 
   const [pdf, setPDF] = useState<number>();
@@ -226,11 +226,17 @@ export default function AfterEnroll({ params }: any) {
   const [pageNumber, setPageNumber] = useState(1);
   const [percentage, setPercentage] = useState(0);
   const [learned, setLearned] = useState(0);
-
-  // const percentage = 10;
+  const [selectedType, setSelectedType] = useState("course");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const onDocumentLoadSuccess = (numPages) => {
     setNumPages(numPages);
+  };
+
+  const [idDropDown, setIdDropdown] = useState<Number>();
+  const toggleDropdown = (data: any) => {
+    setIdDropdown(data);
+    setIsDropdownOpen(!isDropdownOpen);
   };
 
   const [videoSrc, setVideoSrc] = useState("");
@@ -262,7 +268,6 @@ export default function AfterEnroll({ params }: any) {
             }
             setCurrentTime(res?.data.currentStudyTime);
             setMaxTime(res?.data.maxStudyTime);
-            // setHasCurrentTime(true);
             if (res?.data.currentStudyTime > 0) {
               setHasCurrentTime(!hasCurrentTime);
             }
@@ -299,6 +304,11 @@ export default function AfterEnroll({ params }: any) {
 
   const showModalRating = () => {
     setModalRatingOpen(true);
+  };
+
+  const handleTabClickComment = (tabName: string, type: string) => {
+    setActiveTab(tabName);
+    setSelectedType(type);
   };
 
   const handleRateChange = (newValue: number) => {
@@ -388,7 +398,7 @@ export default function AfterEnroll({ params }: any) {
     }
     if (activeVideoIndex + 1 === learned) {
       setPercentage((maxTime / totalTime) * 100);
-      if (maxTime > totalTime * 0.9) {
+      if (maxTime > totalTime * 1) {
         setLearned(learned + 1);
       }
     }
@@ -476,6 +486,108 @@ export default function AfterEnroll({ params }: any) {
     fetchData();
   }, []);
 
+  const handleClickOutside = (event: MouseEvent) => {
+    const dropdown = document.getElementById("dropdown-menu");
+
+    if (dropdown && !dropdown.contains(event.target as Node)) {
+      setIsDropdownOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const consoleLogLectureId = async (lectureId) => {
+    await http
+      .get(
+        `https://learnconnectapitest.azurewebsites.net/api/Comment/get-comments-by-lectureId/${lectureId}`
+      )
+      .then((res) => {
+        setComment(res?.data.reverse());
+        setIdLecture(lectureId);
+      });
+    console.log("Clicked Lecture Id:", lectureId);
+    console.log("Clicked Lecture Id11111:", IdLecture);
+  };
+
+  const submitComment = async () => {
+    try {
+      if (!commentText) {
+        toast.error("Comment cannot be empty.");
+        return;
+      }
+      const formData = new FormData();
+      formData.append("comment", commentText);
+      await http
+        .post(
+          `https://learnconnectapitest.azurewebsites.net/api/Comment?userId=${userData?.id}&lectureId=${IdLecture}`,
+          formData
+        )
+        .then(() => {
+          http
+            .get(
+              `https://learnconnectapitest.azurewebsites.net/api/Comment/get-comments-by-lectureId/${IdLecture}`
+            )
+            .then((res) => {
+              setComment(res?.data.reverse());
+            });
+        });
+      toast.success("Comment posted successfully!!");
+      setCommentText("");
+    } catch (error) {
+      console.error("Error posting comment:", error);
+      toast.error("Failed to post comment. Please try again.");
+    }
+  };
+
+  const [isEditing, setIsEditing] = useState(false);
+
+  const EditCommentMode = () => {
+    setIsEditing(true);
+  };
+
+  const EditComment = async (comment) => {
+    comment.comment1 = editText;
+    await http
+      .put(
+        `https://learnconnectapitest.azurewebsites.net/api/comment/${comment.id}`,
+        comment
+      )
+      .then(() => {
+        toast.success("Edit Comment Success");
+        setIsEditing(false);
+        http
+          .get(
+            `https://learnconnectapitest.azurewebsites.net/api/Comment/get-comments-by-lectureId/${IdLecture}`
+          )
+          .then((res) => {
+            setComment(res?.data.reverse());
+          });
+      });
+    setEditText("");
+  };
+
+  const DeleteComment = async (promotionId) => {
+    await http
+      .delete(
+        `https://learnconnectapitest.azurewebsites.net/api/comment/${promotionId}`
+      )
+      .then(() => {
+        toast.success("Delete Comment Success");
+        http
+          .get(
+            `https://learnconnectapitest.azurewebsites.net/api/Comment/get-comments-by-lectureId/${IdLecture}`
+          )
+          .then((res) => {
+            setComment(res?.data.reverse());
+          });
+      });
+  };
+
   return !role ? (
     <Loading />
   ) : (
@@ -538,7 +650,6 @@ export default function AfterEnroll({ params }: any) {
                         <source src={videoSrc} type="video/mp4" />
                       </video>
                     ) : (
-                      // <></>
                       <iframe
                         title="PDF Viewer"
                         width="100%"
@@ -560,17 +671,11 @@ export default function AfterEnroll({ params }: any) {
                       <div className=" flex gap-[10px]">
                         {value === 0 ? (
                           <Button
-                            style={{ color: "black", background: "lightgreen" }}
-                            type="primary"
+                            style={{ color: "black" }}
                             onClick={showModalRating}
+                            className="text-[20px] border border-[#309255]"
                           >
-                            {/* <Image
-                    width={40}
-                    height={40}
-                    src="/menu-icon/flag-icon.jpg"
-                    alt="flag"
-                  /> */}
-                            Rating
+                            <FaRankingStar />
                           </Button>
                         ) : (
                           <Tooltip title="You have already rated this course !">
@@ -578,23 +683,21 @@ export default function AfterEnroll({ params }: any) {
                               disabled
                               style={{
                                 color: "black",
-                                background: "lightgreen",
                               }}
-                              type="primary"
                               onClick={showModalRating}
                             >
-                              Rating
+                              <FaRankingStar />
                             </Button>
                           </Tooltip>
                         )}
 
-                        <Button danger type="primary" onClick={showModal}>
-                          {/* <Image
-                    width={40}
-                    height={40}
-                    src="/menu-icon/flag-icon.jpg"
-                    alt="flag"
-                  /> */}
+                        <Button
+                          onClick={showModal}
+                          style={{
+                            color: "black",
+                          }}
+                          className="border border-red-500"
+                        >
                           <BsFillFlagFill />
                         </Button>
                       </div>
@@ -603,7 +706,6 @@ export default function AfterEnroll({ params }: any) {
                         destroyOnClose={true}
                         title={`Rating ${courses?.name} by ${user?.displayName}`}
                         open={modalRating}
-                        // onOk={handleOk}
                         onCancel={handleCancel}
                         footer={false}
                       >
@@ -647,7 +749,6 @@ export default function AfterEnroll({ params }: any) {
                         destroyOnClose={true}
                         title={`Report ${courses?.name} by ${user?.displayName}`}
                         open={isModalOpen}
-                        // onOk={handleOk}
                         onCancel={handleCancel}
                         footer={false}
                       >
@@ -662,10 +763,7 @@ export default function AfterEnroll({ params }: any) {
                           onFinish={handleOk}
                         >
                           <Form.Item label="Reason">
-                            <Select
-                              // defaultValue={selected}
-                              onChange={handleChangeReason}
-                            >
+                            <Select onChange={handleChangeReason}>
                               {Reasons.map((option) => {
                                 return (
                                   <Option key={option.id} value={option.name}>
@@ -678,12 +776,8 @@ export default function AfterEnroll({ params }: any) {
                           <Form.Item label="Comment" name="comment">
                             <Input.TextArea rows={4} />
                           </Form.Item>
-                          {/* <Form.Item>
-                      {/* <Image width={200} height={200} src={image} /> */}
-                          {/* </Form.Item> */}
                           <Form.Item
                             label="Capture"
-                            // valuePropName="fileList"
                             getValueFromEvent={normFile}
                           >
                             <Upload
@@ -714,23 +808,238 @@ export default function AfterEnroll({ params }: any) {
                         </Form>
                       </Modal>
                     </div>
-                    {/* {activeVideoIndex !== -1
-                ? testVideo[activeVideoIndex].title
-                : courses?.name} */}
                     {activeVideoIndex === 0 ? (
                       <div className="w-full mx-auto mb-3 shadow-lg rounded-lg">
+                        <div className="flex justify-center bg-[#e7f8ee] p-3 rounded-lg mt-5">
+                          <ul className="tabs flex space-x-5">
+                            <li
+                              className={`cursor-pointer rounded-md ${
+                                activeTab === "tab1"
+                                  ? " text-[#fff] bg-[#309255]"
+                                  : "bg-[#fff] "
+                              }`}
+                              onClick={() =>
+                                handleTabClickComment("tab1", "course")
+                              }
+                            >
+                              <button className="w-28 h-14 px-[15px] text-center text-sm font-medium  rounded-md hover:text-[#fff] hover:bg-[#309255]">
+                                Description
+                              </button>
+                            </li>
+                            <li
+                              className={`cursor-pointer rounded-md ${
+                                activeTab === "tab2"
+                                  ? " text-[#fff] bg-[#309255]"
+                                  : "bg-[#fff] "
+                              }`}
+                              onClick={() =>
+                                handleTabClickComment("tab2", "mentor")
+                              }
+                            >
+                              <button className="w-28 h-14 px-[15px] text-center text-sm font-medium  border-opacity-20 rounded-md hover:border-[#309255] hover:text-[#fff] hover:bg-[#309255]">
+                                Comment
+                              </button>
+                            </li>
+                          </ul>
+                        </div>
                         <div className="faq-wrapper">
-                          <div className="single-faq-item">
-                            <div className="grid cols-2 lg:grid-cols-12 border-[#dff0e6] border border-solid rounded-lg px-[70px] pb-[35px] mt-5">
-                              <div className="lg:col-span-12">
-                                <div key={activeVideoIndex}>
-                                  <p className="mt-3.5 text-[#52565b] text-base font-normal">
-                                    {testVideo[activeVideoIndex]?.content}
-                                  </p>
+                          {activeTab === "tab1" && (
+                            <div className="single-faq-item">
+                              <div className="grid cols-2 lg:grid-cols-12 border-[#dff0e6] border border-solid rounded-lg px-[70px] pb-[35px] mt-5">
+                                <div className="lg:col-span-12">
+                                  <div key={activeVideoIndex}>
+                                    <p className="mt-3.5 text-[#52565b] text-base font-normal">
+                                      {testVideo[activeVideoIndex]?.content}
+                                    </p>
+                                  </div>
                                 </div>
                               </div>
                             </div>
-                          </div>
+                          )}
+                          {activeTab === "tab2" && (
+                            <div className="">
+                              <div className="py-7 px-5">
+                                <div className="flex">
+                                  <img
+                                    alt="CommentImg"
+                                    src={userData?.profilePictureUrl}
+                                    className="w-[70px] h-[70px] rounded-full"
+                                  />
+                                  <div className="my-auto pl-5 w-full">
+                                    <TextArea
+                                      placeholder="Post Comment"
+                                      autoSize={{ minRows: 7, maxRows: 15 }}
+                                      className="w-full"
+                                      value={commentText}
+                                      onChange={(e) =>
+                                        setCommentText(e.target.value)
+                                      }
+                                    />
+                                  </div>
+                                </div>
+                                <div className="pt-5 flex justify-end">
+                                  <button className="border border-[#309255] px-[35px] mx-1 py-2 rounded-lg">
+                                    Cancel
+                                  </button>
+                                  <button
+                                    className="border border-[#309255] px-[35px] mx-1 py-2 rounded-lg text-[#309255] hover:bg-[#309255] hover:text-[#fff]"
+                                    onClick={() => submitComment()}
+                                  >
+                                    Submit
+                                  </button>
+                                </div>
+                              </div>
+                              {comment &&
+                                comment.map((item) => (
+                                  <div className="py-7 px-5 border-t border-[#30925533]">
+                                    <div className="flex">
+                                      <img
+                                        alt="CommentImg"
+                                        src={item?.user.userImage}
+                                        className="w-[70px] h-[70px] rounded-full"
+                                      />
+                                      <div className="my-auto pl-5">
+                                        <p className="font-bold text-xl">
+                                          {item?.user.userName}
+                                        </p>
+                                        <p className="font-light text-[#8e9298]">
+                                          {item?.comment.commentTime}
+                                        </p>
+                                      </div>
+
+                                      <div className="flex ml-auto">
+                                        <button className=" my-auto bg-[#d6e9dd] ml-auto px-5 max-h-[40px] flex item-center rounded-lg border border-[#30925533] w-full py-1 hover:text-[#fff] hover:bg-[#309255]">
+                                          <span className="my-auto pr-1">
+                                            <IoChatboxSharp />
+                                          </span>
+                                          Answer
+                                        </button>
+                                        {item?.user.userId === userData?.id && (
+                                          <button
+                                            className="w-full flex my-auto ml-2 border border-[#30925533] p-2 rounded-lg hover:text-[#000] hover:bg-[#30925533]"
+                                            onClick={() => {
+                                              toggleDropdown(item?.comment.id);
+                                            }}
+                                          >
+                                            <VscEllipsis />
+                                            {isDropdownOpen &&
+                                              item?.comment.id ===
+                                                idDropDown && (
+                                                <div
+                                                  id="dropdown-menu"
+                                                  className="modal-overlay absolute mt-[30px]"
+                                                >
+                                                  <div className="bg-white border border-gray-300 rounded shadow-lg">
+                                                    <div className="p-2 text-black flex flex-col">
+                                                      <button
+                                                        className="px-3 py-2 mb-1 hover:bg-[#e7f8ee]"
+                                                        onClick={
+                                                          EditCommentMode
+                                                        }
+                                                      >
+                                                        Edit Comment
+                                                      </button>
+                                                      <button
+                                                        className="px-3 py-2 hover:bg-[#e7f8ee]"
+                                                        onClick={() => {
+                                                          DeleteComment(
+                                                            item?.comment.id
+                                                          );
+                                                        }}
+                                                      >
+                                                        Delete Comment
+                                                      </button>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              )}
+                                          </button>
+                                        )}
+                                      </div>
+                                    </div>
+                                    <div className="pt-5">
+                                      {isEditing &&
+                                      item?.comment.id === idDropDown ? (
+                                        <div>
+                                          <TextArea
+                                            placeholder="Post Comment"
+                                            autoSize={{
+                                              minRows: 7,
+                                              maxRows: 15,
+                                            }}
+                                            className="w-full"
+                                            defaultValue={
+                                              item?.comment.comment1
+                                            }
+                                            onChange={(e) =>
+                                              setEditText(e.target.value)
+                                            }
+                                          />
+                                          <div className="pt-5 flex justify-end">
+                                            <button className="border border-[#309255] px-[35px] mx-1 py-2 rounded-lg">
+                                              Cancel
+                                            </button>
+                                            <button
+                                              className="border border-[#309255] px-[35px] mx-1 py-2 rounded-lg text-[#309255] hover:bg-[#309255] hover:text-[#fff]"
+                                              onClick={() => {
+                                                EditComment(item.comment);
+                                              }}
+                                            >
+                                              Update
+                                            </button>
+                                          </div>
+                                        </div>
+                                      ) : (
+                                        <p>{item?.comment.comment1}</p>
+                                      )}
+                                    </div>
+                                  </div>
+                                ))}
+                              {/* <div className="py-7 px-5 ml-[110px] border-t border-[#30925533]">
+                                <div className="flex">
+                                  <img
+                                    alt="CommentImg"
+                                    src={userData?.profilePictureUrl}
+                                    className="w-[70px] h-[70px] rounded-full"
+                                  />
+                                  <div className="my-auto pl-5">
+                                    <p className="font-bold text-xl">
+                                      Name Comment
+                                    </p>
+                                    <p className="font-light text-[#8e9298]">
+                                      Asked: March 28, 2021
+                                    </p>
+                                  </div>
+                                  <div className="flex ml-auto">
+                                    <button className="my-auto bg-[#d6e9dd] ml-auto px-5 max-h-[40px] flex item-center rounded-lg border border-[#30925533] w-full py-1 hover:text-[#fff] hover:bg-[#309255]">
+                                      <span className="my-auto pr-1">
+                                        <IoChatboxSharp />
+                                      </span>
+                                      Answer
+                                    </button>
+                                  </div>
+                                </div>
+                                <div className="pt-5">
+                                  <p>
+                                    Lorem Ipsum is simply dummy text of the
+                                    printing and typesetting industry. Lorem
+                                    Ipsum has been the industry's standard dummy
+                                    text ever since the 1500s when an unknown
+                                    printer took a galley of type and scrambled
+                                    it to make specimen book has survived not
+                                    only five centuries.
+                                  </p>
+                                </div>
+                              </div> */}
+                              {/* <div className="border-t border-[#30925533]">
+                                <div className="py-7 px-5  mt-8">
+                                  <button className="text-[18px] text-[#309255] border border-[#309255] w-full py-2 rounded-lg hover:text-[#fff] hover:bg-[#309255] bg-[#d6e9dd] ">
+                                    Load more 22 answer
+                                  </button>
+                                </div>
+                              </div> */}
+                            </div>
+                          )}
                         </div>
                       </div>
                     ) : (
@@ -761,17 +1070,6 @@ export default function AfterEnroll({ params }: any) {
                                 Lectures
                               </button>
                             </li>
-                            {/* <li
-                    className={`cursor-pointer rounded-md ${
-                      activeTab === "#"
-                        ? " text-[#fff] bg-[#309255]"
-                        : "bg-[#fff] "
-                    }`}
-                  >
-                    <button className="w-28 h-14 px-[15px] text-center text-sm font-medium  border-opacity-20 rounded-md hover:border-[#309255] hover:text-[#fff] hover:bg-[#309255]">
-                      Reviews
-                    </button>
-                  </li> */}
                           </ul>
                         </div>
                         {activeTab === "tab1" && (
@@ -779,13 +1077,6 @@ export default function AfterEnroll({ params }: any) {
                             <div className="faq-wrapper">
                               <div className="single-faq-item">
                                 <div className="grid cols-2 lg:grid-cols-12 border-[#dff0e6] border border-solid rounded-lg px-[70px] pb-[35px] mt-5">
-                                  {/* <div className="lg:col-span-4 px-[15px]">
-                          <div className="">
-                            <h4 className="text-[25px] px-[15px] pt-5 text-[#212832]">
-                              Details
-                            </h4>
-                          </div>
-                        </div> */}
                                   <div className="lg:col-span-12">
                                     <div className="text-[15px] font-medium mt-[25px] px-[15px]">
                                       <p className="mb-4 leading-loose">
@@ -912,6 +1203,7 @@ export default function AfterEnroll({ params }: any) {
                         onClick={() => {
                           changeVideoSource(item, index);
                           setPDF(item.contentType);
+                          consoleLogLectureId(item.id);
                         }}
                       >
                         <div className="flex">
