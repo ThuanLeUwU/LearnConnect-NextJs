@@ -133,10 +133,8 @@ const Courses = ({
           setTimeout(() => {
             toast.success("Added to favorites successful");
           });
-          // console.log("Post request success: ", response.data);
         })
         .catch((error) => {
-          // toast.error(error.response.data);
           console.error("Error making POST request: ", error);
         });
     }
