@@ -253,7 +253,7 @@ const DetailsContent = ({ params }: any) => {
     setRejectCourse(false);
     setBanCourse(false);
     setUnBanCourse(false);
-    setApproveTestModal(false);
+    setRejectTestModal(false);
   };
 
   const columns = [
@@ -460,6 +460,39 @@ const DetailsContent = ({ params }: any) => {
               setAllQuestions(response.data[0].questions);
               setIdTest(response.data[0].test.id);
               setApproveTestModal(false);
+              toast.success("Approve Test Successfully!");
+            })
+            .catch((error) => {
+              console.log("Error fetching user data:", error);
+              setLoading(false);
+            });
+        });
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const [rejectTestModal, setRejectTestModal] = useState(false);
+
+  const handleRejectTestModal = (data: any) => {
+    setRejectTestModal(true);
+    setTestId(data);
+  };
+
+  const handleRejectTestClick = (data: any) => {
+    try {
+      http
+        .post(
+          `https://learnconnectapitest.azurewebsites.net/api/test/process-test-request?testId=${testId}&acceptRequest=false&note=${data.reason}`
+        )
+        .then(() => {
+          http
+            .get(`/test/get-tests-by-course?courseId=${idCourse}`)
+            .then((response) => {
+              setListQuestion(response.data);
+              setAllQuestions(response.data[0].questions);
+              setIdTest(response.data[0].test.id);
+              setRejectTestModal(false);
               toast.success("Approve Test Successfully!");
             })
             .catch((error) => {
@@ -718,7 +751,12 @@ const DetailsContent = ({ params }: any) => {
                                       >
                                         Approve
                                       </button>
-                                      <button className="bg-white text-black border rounded-lg border-[#ffa04e] hover:bg-[#ffa04e] hover:text-white transition duration-300 px-3 py-1">
+                                      <button
+                                        onClick={() => {
+                                          handleRejectTestModal(item.test.id);
+                                        }}
+                                        className="bg-white text-black border rounded-lg border-[#ffa04e] hover:bg-[#ffa04e] hover:text-white transition duration-300 px-3 py-1"
+                                      >
                                         Reject
                                       </button>
                                     </>
@@ -1202,6 +1240,73 @@ const DetailsContent = ({ params }: any) => {
               style={{ width: "100%" }}
               onFinish={handleApproveTestClick}
             >
+              <Space className="justify-end w-full">
+                <Form.Item className="mb-0">
+                  <Space>
+                    <Button
+                      className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                      onClick={handleModalCancel}
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #E0E0E0",
+                        color: "black",
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                      htmlType="submit"
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #4caf50",
+                        color: "#fff",
+                      }}
+                    >
+                      Confirm
+                    </Button>
+                  </Space>
+                </Form.Item>
+              </Space>
+            </Form>
+          </Modal>
+
+          <Modal
+            destroyOnClose={true}
+            title={
+              <div className="text-lg">
+                Are you sure you want to Reject this Course?
+              </div>
+            }
+            open={rejectTestModal}
+            // onOk={handleOk}
+            width="35%"
+            onCancel={handleModalCancel}
+            footer={false}
+            style={{
+              top: "30%",
+            }}
+          >
+            <Form
+              autoComplete="off"
+              form={form}
+              labelCol={{ span: 4 }}
+              wrapperCol={{ span: 20 }}
+              layout="horizontal"
+              className="mt-5"
+              style={{ width: "100%" }}
+              onFinish={handleRejectTestClick}
+            >
+              <Form.Item
+                rules={[{ required: true, message: "Please input Reason!" }]}
+                label="Reason"
+                name="reason"
+              >
+                <Input.TextArea rows={4} placeholder="Write your Reason" />
+              </Form.Item>
+
               <Space className="justify-end w-full">
                 <Form.Item className="mb-0">
                   <Space>

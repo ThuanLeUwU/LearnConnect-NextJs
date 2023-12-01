@@ -890,8 +890,11 @@ export default function AfterEnroll({ params }: any) {
                                 </div>
                               </div>
                               {comment &&
-                                comment.map((item) => (
-                                  <div className="py-7 px-5 border-t border-[#30925533]">
+                                comment.map((item, index) => (
+                                  <div
+                                    key={index}
+                                    className="py-7 px-5 border-t border-[#30925533]"
+                                  >
                                     <div className="flex">
                                       <img
                                         alt="CommentImg"
