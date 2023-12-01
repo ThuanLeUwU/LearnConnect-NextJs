@@ -9,6 +9,7 @@ import { Lecture } from "@/app/my-course/[id]/page";
 import {
   Breadcrumb,
   Button,
+  Empty,
   Form,
   Input,
   Modal,
@@ -20,6 +21,7 @@ import {
 import { toast } from "sonner";
 import { useForm } from "antd/es/form/Form";
 import { useRouter } from "next/navigation";
+import { Test } from "@/components/test/test";
 
 const DetailsContent = ({ params }: any) => {
   const idCourse = params.id;
@@ -251,6 +253,7 @@ const DetailsContent = ({ params }: any) => {
     setRejectCourse(false);
     setBanCourse(false);
     setUnBanCourse(false);
+    setApproveTestModal(false);
   };
 
   const columns = [
@@ -337,7 +340,7 @@ const DetailsContent = ({ params }: any) => {
               </Button>
             </>
           )}
-          {record.status === 2 && <></>}
+          {record.status === 2 && <>-</>}
           {record.status === 3 && <Button>Unban</Button>}
         </Space>
       ),
@@ -354,9 +357,7 @@ const DetailsContent = ({ params }: any) => {
       key: "status",
       sorter: (a, b) => a.status - b.status,
 
-      render: (status) => (
-        <Tag color={getStatusColor(status)}>{getStatusText(status)}</Tag>
-      ),
+      render: (status) => getStatusText(status),
     },
   ];
 
@@ -411,6 +412,66 @@ const DetailsContent = ({ params }: any) => {
     router.push("/staff-page/moderation");
   };
 
+  const [activeTab, setActiveTab] = useState("tab1");
+  const handleTabClick = (tabName: string) => {
+    setActiveTab(tabName);
+  };
+
+  const [listQuestion, setListQuestion] = useState<Test[]>([]);
+  const [allQuestions, setAllQuestions] = useState<Test[]>([]);
+  const [idTest, setIdTest] = useState<Test>();
+  useEffect(() => {
+    // Gọi API để lấy danh sách người dùng
+    http
+      .get(`/test/get-tests-by-course?courseId=${idCourse}`)
+      .then((response) => {
+        // setInfoTest(response.data.questions);
+        setListQuestion(response.data);
+        setAllQuestions(response.data[0].questions);
+        setIdTest(response.data[0].test.id);
+        // console.log("vải ò", response.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log("Error fetching user data:", error);
+        setLoading(false);
+      });
+  }, []);
+
+  const [approveTestModal, setApproveTestModal] = useState(false);
+  const [testId, setTestId] = useState<number>(0);
+
+  const handleApproveTestModal = (data: any) => {
+    setApproveTestModal(true);
+    setTestId(data);
+  };
+
+  const handleApproveTestClick = () => {
+    try {
+      http
+        .post(
+          `https://learnconnectapitest.azurewebsites.net/api/test/process-test-request?testId=${testId}&acceptRequest=true`
+        )
+        .then(() => {
+          http
+            .get(`/test/get-tests-by-course?courseId=${idCourse}`)
+            .then((response) => {
+              setListQuestion(response.data);
+              setAllQuestions(response.data[0].questions);
+              setIdTest(response.data[0].test.id);
+              setApproveTestModal(false);
+              toast.success("Approve Test Successfully!");
+            })
+            .catch((error) => {
+              console.log("Error fetching user data:", error);
+              setLoading(false);
+            });
+        });
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   return (
     <>
       {!userData ? (
@@ -450,6 +511,53 @@ const DetailsContent = ({ params }: any) => {
                 <h1 className={`${InstructorCourseStyle.featured_top_title}`}>
                   About Course
                 </h1>
+
+                <div className="flex justify-end gap-2  items-center">
+                  {course?.status === 0 ? (
+                    <button
+                      className="bg-white text-black border rounded-lg border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-6 py-2"
+                      onClick={handleBan}
+                    >
+                      Ban
+                    </button>
+                  ) : course?.status === 1 ? (
+                    <>
+                      {" "}
+                      <button
+                        className="bg-white text-black border rounded-lg border-[#4caf50] hover:bg-[#4caf50] hover:text-white transition duration-300 px-4 py-2"
+                        onClick={handleApprove}
+                      >
+                        Approve
+                      </button>
+                      <button
+                        className="bg-white text-black border rounded-lg border-[#ffa04e] hover:bg-[#ffa04e] hover:text-white transition duration-300 px-5 py-2"
+                        // style={{
+                        //   backgroundColor: "#ffa04e",
+                        //   borderColor: "#ffa04e",
+                        //   color: "#fff",
+                        // }}
+                        onClick={handleReject}
+                      >
+                        Reject
+                      </button>
+                      <button
+                        className="bg-white text-black border rounded-lg border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-6 py-2"
+                        onClick={handleBan}
+                      >
+                        Ban
+                      </button>
+                    </>
+                  ) : course?.status === 3 ? (
+                    <button
+                      className="bg-white text-black border rounded-lg border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-6 py-2 mr-5"
+                      onClick={handleUnBan}
+                    >
+                      Unban
+                    </button>
+                  ) : (
+                    <></>
+                  )}
+                </div>
               </div>
               {/* <div className={`${InstructorCourseStyle.featured_bottom}`}> */}
               <div className="p-5 flex gap-5">
@@ -465,7 +573,13 @@ const DetailsContent = ({ params }: any) => {
                   <p
                     className={`${InstructorCourseStyle.featured_bottom_title}`}
                   >
-                    {course?.name} {getStatusText(course?.status)}
+                    <div className="flex justify-between">
+                      <div>{course?.name}</div>{" "}
+                      <div className="flex items-center">
+                        {" "}
+                        {getStatusText(course?.status)}
+                      </div>
+                    </div>
                   </p>
                   <p
                     className={`${InstructorCourseStyle.featured_bottom_cate}`}
@@ -500,7 +614,7 @@ const DetailsContent = ({ params }: any) => {
                     className={`${InstructorCourseStyle.featured_bottom_amount}`}
                   >
                     <p>
-                      <span className="text-green-500">Create Date: </span>
+                      <span className="">Create Date: </span>
                       {course?.createDate
                         ? new Date(course?.createDate).toLocaleTimeString(
                             "en-US"
@@ -527,64 +641,160 @@ const DetailsContent = ({ params }: any) => {
                 </div>
               </div>
             </div>
-            <div className="mt-5 mx-5">
-              <div className="text-3xl my-5">List Of Lectures</div>
-              {loading ? (
-                <Spin size="large" />
-              ) : (
-                <Table
-                  className="shadow-[5px_15px_25px_10px_rgba(0,0,0,0.15)] mt-2 rounded-lg"
-                  dataSource={lectures}
-                  columns={columns}
-                />
-              )}
-            </div>
-            <div className="flex justify-end gap-2 mt-10 pr-5">
-              {course?.status === 0 ? (
-                <button
-                  className="bg-white text-black border rounded-lg border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-6 py-2"
-                  onClick={handleBan}
+            <div className="flex justify-center bg-[#e7f8ee] py-4 rounded-md m-5">
+              <ul className="tabs flex space-x-10 ">
+                <li
+                  className={`cursor-pointer rounded-md ${
+                    activeTab === "tab1"
+                      ? "bg-[#309255] text-white"
+                      : "bg-white"
+                  }`}
+                  onClick={() => handleTabClick("tab1")}
                 >
-                  Ban
-                </button>
-              ) : course?.status === 1 ? (
-                <>
-                  {" "}
-                  <button
-                    className="bg-white text-black border rounded-lg border-[#4caf50] hover:bg-[#4caf50] hover:text-white transition duration-300 px-4 py-2"
-                    onClick={handleApprove}
-                  >
-                    Approve
+                  <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#309255]">
+                    Lectures
                   </button>
-                  <button
-                    className="bg-white text-black border rounded-lg border-[#ffa04e] hover:bg-[#ffa04e] hover:text-white transition duration-300 px-5 py-2"
-                    // style={{
-                    //   backgroundColor: "#ffa04e",
-                    //   borderColor: "#ffa04e",
-                    //   color: "#fff",
-                    // }}
-                    onClick={handleReject}
-                  >
-                    Reject
-                  </button>
-                  <button
-                    className="bg-white text-black border rounded-lg border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-6 py-2"
-                    onClick={handleBan}
-                  >
-                    Ban
-                  </button>
-                </>
-              ) : course?.status === 3 ? (
-                <button
-                  className="bg-white text-black border rounded-lg border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-6 py-2 mr-5"
-                  onClick={handleUnBan}
+                </li>
+                <li
+                  className={`cursor-pointer rounded-md ${
+                    activeTab === "tab2"
+                      ? "bg-[#309255] text-white"
+                      : "bg-white"
+                  }`}
+                  onClick={() => handleTabClick("tab2")}
                 >
-                  Unban
-                </button>
-              ) : (
-                <></>
-              )}
+                  <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#309255]">
+                    Test
+                  </button>
+                </li>
+              </ul>
             </div>
+            {activeTab === "tab1" && (
+              <div className="mt-5 mx-5">
+                {loading ? (
+                  <Spin size="large" />
+                ) : (
+                  <Table
+                    className="shadow-[5px_15px_25px_10px_rgba(0,0,0,0.15)] mt-2 rounded-lg"
+                    dataSource={lectures}
+                    columns={columns}
+                  />
+                )}
+              </div>
+            )}
+            {activeTab === "tab2" && (
+              <div className={`${InstructorCourseStyle.lecture}`}>
+                {/* <div className="flex justify-between mb-5">
+              <Button onClick={showModal}> New Question</Button>
+            </div> */}
+                {listQuestion.length === 0 ? (
+                  <>
+                    <Empty />
+                  </>
+                ) : (
+                  <>
+                    {loading ? (
+                      <Spin size="large" />
+                    ) : (
+                      <>
+                        {listQuestion.map((item) => (
+                          <div key={item.test.id} className="mb-4 mt-6">
+                            <div className="flex flex-col">
+                              <div className="flex flex-row justify-end">
+                                <Space>
+                                  {item.test.status === 0 && (
+                                    <button className="bg-white text-black border rounded-lg border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-4 py-2">
+                                      Ban
+                                    </button>
+                                  )}
+                                  {item.test.status === 1 && (
+                                    <>
+                                      {" "}
+                                      <button
+                                        onClick={() => {
+                                          handleApproveTestModal(item.test.id);
+                                        }}
+                                        className="bg-white text-black border rounded-lg border-[#4caf50] hover:bg-[#4caf50] hover:text-white transition duration-300 px-3 py-1"
+                                      >
+                                        Approve
+                                      </button>
+                                      <button className="bg-white text-black border rounded-lg border-[#ffa04e] hover:bg-[#ffa04e] hover:text-white transition duration-300 px-3 py-1">
+                                        Reject
+                                      </button>
+                                    </>
+                                  )}
+                                  {item.test.status === 2 && <></>}
+                                  {item.test.status === 3 && (
+                                    <button
+                                      className="bg-white text-black border rounded-lg border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-3 py-1 mr-5"
+                                      // onClick={handleUnBan}
+                                    >
+                                      Un ban
+                                    </button>
+                                  )}
+                                </Space>{" "}
+                              </div>
+                              <h3 className="text-xl font-semibold mt-2 text-center ">
+                                <div className=" flex flex-col items-center justify-center mb-2">
+                                  <div className="flex flex-row justify-center items-center gap-2 ">
+                                    <div className="text-3xl flex flex-col gap-2">
+                                      <div>Title: {item.test.title} </div>
+                                      <div className="flex justify-center items-center text-2xl">
+                                        {getStatusText(item.test.status)}
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  <br />
+                                  <div>
+                                    Description: {item.test.description}
+                                  </div>
+                                </div>
+                              </h3>
+                            </div>
+
+                            {/* {item.questions.length == 0 ? <></> : <></>} */}
+                            {item.questions.map((q, index) => (
+                              <div
+                                key={q.question.id}
+                                className="mb-2 my-8 p-4 border-2 rounded-lg border-gray-200 shadow-[10px_10px_20px_10px_rgba(0,0,0,0.15)] "
+                              >
+                                <div className="mb-1 font-medium text-[18px] flex flex-row justify-between">
+                                  <div className="flex flex-row gap-2">
+                                    {index + 1}.{" "}
+                                    <div className="w-full">
+                                      {q.question.questionText}
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="px-4 grid grid-cols-2 gap-4">
+                                  {q.answers.map((answer, ansIndex) => (
+                                    <>
+                                      <div className="flex gap-2 justify-center align-middle items-center mt-3">
+                                        <div
+                                          className={` border-2 p-2 flex-auto text-left rounded-lg ${
+                                            answer.isCorrect === true
+                                              ? "border-green-500 bg-green-100"
+                                              : ""
+                                          }`}
+                                        >
+                                          {answer.answerText}
+                                        </div>
+                                      </div>
+                                    </>
+                                  ))}
+                                </div>
+                              </div>
+                            ))}
+                            <></>
+                          </div>
+                        ))}
+                      </>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
           </div>
 
           <Modal
@@ -832,76 +1042,11 @@ const DetailsContent = ({ params }: any) => {
             </Form>
           </Modal>
 
-          {/* <Dialog
-        open={banCourse}
-        onClose={handleModalCancel}
-        aria-describedby="alert-dialog-slide-description"
-      >
-        <DialogTitle
-          sx={{ backgroundColor: "Red", fontSize: "20px", color: "white" }}
-        >
-          {" "}
-          Warning!!!{" "}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            <Typography>Do you want to Ban this Course ?</Typography>
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleModalCancel}>cancel</Button>
-
-          <Button
-            style={{
-              backgroundColor: "#4caf50",
-              borderColor: "#4caf50",
-              color: "#fff",
-            }}
-            onClick={() => handleBanCourseClick()}
-            type="primary"
-          >
-            Confirm
-          </Button>
-        </DialogActions>
-      </Dialog> */}
-          {/* <Dialog
-        open={rejectCourse}
-        onClose={handleModalCancel}
-        aria-describedby="alert-dialog-slide-description"
-      >
-        <DialogTitle
-          sx={{ backgroundColor: "#ffa04e", fontSize: "20px", color: "white" }}
-        >
-          {" "}
-          Warning!!!{" "}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            <Typography>Do you want to Reject this Course?</Typography>
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <button
-            className="bg-white text-black border rounded-lg border-blue-400 hover:text-blue-400 transition duration-300 px-4 py-1"
-            onClick={handleModalCancel}
-          >
-            Cancel
-          </button>
-
-          <button
-            className="bg-white text-black border rounded-lg border-[#ffa04e] hover:bg-[#ffa04e] hover:text-white transition duration-300 px-2 py-1"
-            onClick={() => handleRejectCourse()}
-          >
-            Confirm
-          </button>
-        </DialogActions>
-      </Dialog> */}
-
           <Modal
             destroyOnClose={true}
             title={
               <div className="text-lg">
-                Are you sure you want to Reject this Course?
+                Are you sure you want to Reject this Lecture?
               </div>
             }
             open={RejectModal}
@@ -998,6 +1143,65 @@ const DetailsContent = ({ params }: any) => {
                 <Input.TextArea rows={4} placeholder="Write your Reason" />
               </Form.Item>
 
+              <Space className="justify-end w-full">
+                <Form.Item className="mb-0">
+                  <Space>
+                    <Button
+                      className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                      onClick={handleModalCancel}
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #E0E0E0",
+                        color: "black",
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                      htmlType="submit"
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #4caf50",
+                        color: "#fff",
+                      }}
+                    >
+                      Confirm
+                    </Button>
+                  </Space>
+                </Form.Item>
+              </Space>
+            </Form>
+          </Modal>
+
+          <Modal
+            destroyOnClose={true}
+            title={
+              <div className="text-lg">
+                Are you sure you want to Approve this Lecture?
+              </div>
+            }
+            open={approveTestModal}
+            // onOk={handleOk}
+            width="35%"
+            onCancel={handleModalCancel}
+            footer={false}
+            style={{
+              top: "30%",
+            }}
+          >
+            <Form
+              autoComplete="off"
+              form={form}
+              labelCol={{ span: 4 }}
+              wrapperCol={{ span: 16 }}
+              layout="horizontal"
+              className="mt-5"
+              style={{ width: "100%" }}
+              onFinish={handleApproveTestClick}
+            >
               <Space className="justify-end w-full">
                 <Form.Item className="mb-0">
                   <Space>

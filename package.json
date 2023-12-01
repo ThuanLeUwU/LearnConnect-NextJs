@@ -6,7 +6,20 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "jest"
+  },
+  "babel": {
+    "presets": [
+      [
+        "next/babel",
+        {
+          "preset-env": {
+            "modules": "commonjs"
+          }
+        }
+      ]
+    ]
   },
   "dependencies": {
     "@ant-design/icons": "^5.2.6",
@@ -64,9 +77,11 @@
     "use-local-storage": "^3.0.0"
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "^6.1.4",
+    "@testing-library/jest-dom": "^6.1.5",
     "@testing-library/react": "^14.1.2",
     "@types/react-stars": "^2.2.2",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-jest": "^29.7.0",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "sass": "^1.66.1"

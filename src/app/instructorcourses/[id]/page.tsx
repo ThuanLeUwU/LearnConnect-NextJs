@@ -45,6 +45,7 @@ import { Test } from "@/components/test/test";
 // import { Rating } from "@/app/course-detail/[id]/page";
 
 export type TestTitle = {
+  test: any;
   id: number;
   title: string;
   description: string;
@@ -104,6 +105,7 @@ const Dashboard = ({ params }: any) => {
     setDeleteQuestionModal(false);
     setDeleteAnswerModal(false);
     setSource("");
+    setUpdateTestModal(false);
   };
 
   //update
@@ -232,7 +234,7 @@ const Dashboard = ({ params }: any) => {
   useEffect(() => {
     if (isModerating === false) {
       toast.success("Moderation Video Complete!");
-      // console.log("moder", isModerating);
+      console.log("moder", isModerating);
     } else if (isModerating === true) {
       toast.info("Create Lecture Successfully! Video is moderating ... ");
       // console.log("moder", isModerating);
@@ -386,10 +388,7 @@ const Dashboard = ({ params }: any) => {
   // console.log("all", allQuestions);
   const [idTest, setIdTest] = useState<Test>();
   // console.log("list", idTest);
-  const [submitted, setSubmitted] = useState(false);
-  const [selectedAnswers, setSelectedAnswers] = useState<{
-    [key: number]: { answer: string; isCorrect: boolean };
-  }>({});
+
   // console.log("Questions", listQuestion);
   useEffect(() => {
     // Gọi API để lấy danh sách người dùng
@@ -489,7 +488,7 @@ const Dashboard = ({ params }: any) => {
       case 0:
         return "green"; // Màu xanh cho trạng thái Active
       case 1:
-        return "grey"; // Màu đỏ cho trạng thái Pending
+        return "gray"; // Màu đỏ cho trạng thái Pending
       case 2:
         return "volcano"; // Màu đỏ cam cho trạng thái Reject
       case 3:
@@ -532,14 +531,14 @@ const Dashboard = ({ params }: any) => {
       });
   }, [idCourse]);
 
-  const [test, setTest] = useState<Test[]>([]);
-  // console.log("test", test);
+  const [test, setTest] = useState<TestTitle>();
+  console.log("test", test);
 
   useEffect(() => {
     http
       .get(`/test/get-tests-by-course?courseId=${idCourse}`)
       .then((response) => {
-        setTest(response.data);
+        setTest(response.data[0].test);
       });
   }, []);
 
@@ -1024,6 +1023,47 @@ const Dashboard = ({ params }: any) => {
       console.log(err);
     }
   };
+
+  const [updateTestModal, setUpdateTestModal] = useState(false);
+
+  const handleUpdateTestModal = (data: any) => {
+    setUpdateTestModal(true);
+    setTestId(data);
+  };
+
+  const handleUpdateTestClick = (data: any) => {
+    const formData = new FormData();
+    formData.append("title", data.title || test?.title);
+    formData.append("description", data.description || test?.description);
+    console.log("formdata", data.title, data.description);
+
+    try {
+      http
+        .put(
+          `https://learnconnectapitest.azurewebsites.net/api/test/${testId}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        )
+        .then(() => {
+          http
+            .get(`/test/get-tests-by-course?courseId=${idCourse}`)
+            .then((response) => {
+              setListQuestion(response.data);
+              setAllQuestions(response.data[0].questions);
+              setIdTest(response.data[0].test.id);
+              toast.success("Update Test Successfully");
+              setUpdateTestModal(false);
+            });
+        });
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   const router = useRouter();
 
   const breadCrumbHome = () => {
@@ -1079,12 +1119,22 @@ const Dashboard = ({ params }: any) => {
                   <p
                     className={`${InstructorCourseStyle.featured_bottom_title}`}
                   >
-                    {course?.name}
+                    <div className="flex justify-between">
+                      <div>{course?.name}</div>{" "}
+                      <div className="flex items-center">
+                        <Tag
+                          className="text-xl"
+                          color={getStatusColor(course?.status)}
+                        >
+                          {getStatusText(course?.status)}
+                        </Tag>
+                      </div>
+                    </div>
                   </p>
                   <p
                     className={`${InstructorCourseStyle.featured_bottom_cate}`}
                   >
-                    {course?.specializationName}
+                    {course?.specializationName}{" "}
                   </p>
                   <div className="flex flex-row justify-between">
                     <div>
@@ -1128,7 +1178,7 @@ const Dashboard = ({ params }: any) => {
                     className={`${InstructorCourseStyle.featured_bottom_amount}`}
                   >
                     <p>
-                      <span className="text-green-500">Create Date: </span>
+                      <span className="">Create Date: </span>
                       {course?.createDate
                         ? new Date(course?.createDate).toLocaleTimeString(
                             "en-US"
@@ -1249,7 +1299,15 @@ const Dashboard = ({ params }: any) => {
                         {listQuestion.map((item) => (
                           <div key={item.test.id} className="mb-4 mt-6">
                             <div className="flex flex-col">
-                              <div className="flex justify-end">
+                              <div className="flex flex-row justify-end gap-2">
+                                <Button
+                                  onClick={() => {
+                                    handleUpdateTestModal(item.test.id);
+                                  }}
+                                  className="flex flex-row items-center"
+                                >
+                                  Update
+                                </Button>
                                 <button
                                   // className="flex items-end"
                                   style={{
@@ -1268,7 +1326,17 @@ const Dashboard = ({ params }: any) => {
                               </div>
                               <h3 className="text-xl font-semibold mt-2 text-center ">
                                 <div className=" flex flex-col items-center justify-center mb-2">
-                                  <div>Title: {item.test.title}</div>
+                                  <div className="flex flex-row justify-center items-center gap-2 ">
+                                    <div className="text-3xl flex flex-col gap-2">
+                                      <div>Title: {item.test.title} </div>
+                                      <Tag
+                                        className="flex justify-center text-2xl"
+                                        color={getStatusColor(item.test.status)}
+                                      >
+                                        {getStatusText(item.test.status)}
+                                      </Tag>
+                                    </div>
+                                  </div>
 
                                   <br />
                                   <div>
@@ -2183,6 +2251,76 @@ const Dashboard = ({ params }: any) => {
               style={{ width: "100%" }}
               onFinish={handleDeleteAnswer}
             >
+              <Space className="justify-end w-full">
+                <Form.Item className="mb-0">
+                  <Space>
+                    <Button
+                      className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                      onClick={handleCancel}
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #E0E0E0",
+                        color: "black",
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                      htmlType="submit"
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #4caf50",
+                        color: "#fff",
+                      }}
+                    >
+                      Confirm
+                    </Button>
+                  </Space>
+                </Form.Item>
+              </Space>
+            </Form>
+          </Modal>
+
+          <Modal
+            destroyOnClose={true}
+            title={`Update test`}
+            open={updateTestModal}
+            // onOk={handleUpdateOk}
+            width="40%"
+            onCancel={handleCancel}
+            footer={false}
+            style={{
+              top: "30%",
+            }}
+          >
+            {/* Add your update form here */}
+            <Form
+              autoComplete="off"
+              form={form}
+              labelCol={{ span: 4 }}
+              wrapperCol={{ span: 16 }}
+              layout="horizontal"
+              className="mt-5"
+              style={{ width: "100%" }}
+              onFinish={handleUpdateTestClick}
+            >
+              <Form.Item
+                // rules={[{ required: true, message: "Please input Name!" }]}
+                label="Title"
+                name="title"
+              >
+                <Input defaultValue={test?.title} />
+              </Form.Item>
+              <Form.Item
+                // rules={[{ required: true, message: "Please input Name!" }]}
+                label="Description"
+                name="description"
+              >
+                <Input.TextArea rows={4} defaultValue={test?.description} />
+              </Form.Item>
               <Space className="justify-end w-full">
                 <Form.Item className="mb-0">
                   <Space>

@@ -281,37 +281,6 @@ const StaffRevenue = () => {
     },
   ];
 
-  const [incomeChart, setIncomeChart] = useState<Array<Array<string | number>>>(
-    []
-  );
-  // const [maxRevenue, setMaxRevenue] = useState<number>(0);
-  useEffect(() => {
-    // Dữ liệu giả định
-    const sampleData: RevenueEntry[] = [
-      { date: "Ngày 1", totalRevenue: 150500 },
-      { date: "Ngày 2", totalRevenue: 300400 },
-      { date: "Course A", totalRevenue: 180600 },
-      { date: "Course A", totalRevenue: 202000 },
-      { date: "Course A", totalRevenue: 215000 },
-      { date: "Course A", totalRevenue: 432000 },
-      { date: "Course A", totalRevenue: 356000 },
-    ];
-
-    // Xử lý dữ liệu
-    const processedData: Array<Array<string | number>> = [
-      ["Course", "Revenue"],
-    ];
-    let localMaxRevenue = 0;
-
-    sampleData.forEach((course) => {
-      processedData.push([course.date, course.totalRevenue]);
-      // localMaxRevenue = Math.max(localMaxRevenue, course.revenue);
-    });
-
-    // setMaxRevenue(localMaxRevenue);
-    setIncomeChart(processedData);
-  }, []);
-
   const [totalStatistic, setTotalStatistic] = useState<TotalStatistic>();
   const [courseStatistic2, setCourseStatistic2] = useState<StatisticData[]>([]);
   const [totalStatusCourses, setTotalStatusCourse] =
