@@ -31,6 +31,7 @@ import { Document, Page } from "react-pdf/dist/esm/entry.webpack";
 import { BsFillFlagFill } from "react-icons/bs";
 import Loading from "@/components/loading/loading";
 import Quiz from "@/components/test/test";
+import { type } from "os";
 
 export type Lecture = {
   id: string | number;
@@ -54,6 +55,25 @@ export type Performance = {
 
 export type Comment = {
   // map(arg0: (item: any, index: any) => React.JSX.Element): React.ReactNode;
+  comment: {
+    id: number;
+    userId: number;
+    parentCommentId: null;
+    comment1: string;
+    commentTime: string;
+    status: number;
+    lectureId: number;
+  };
+  user: {
+    userId: number;
+    userName: string;
+    userEmail: string;
+    userImage: string;
+  };
+  reply: [comment: any, user: any];
+};
+
+export type Reply = {
   comment: {
     id: number;
     userId: number;
@@ -121,6 +141,10 @@ export default function AfterEnroll({ params }: any) {
   const [commentText, setCommentText] = useState<string>("");
   const [IdLecture, setIdLecture] = useState(0);
   const [editText, setEditText] = useState("");
+  const [replyComment, setReplyComment] = useState("");
+  const [reply, setReply] = useState<Reply[]>([]);
+  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
+  const [idDelete, setIdDelete] = useState(0);
   const handleOk = async (data: any) => {
     // console.log(e)
     setIsModalOpen(false);
@@ -161,6 +185,7 @@ export default function AfterEnroll({ params }: any) {
     setModalRatingOpen(false);
     setValue(0);
     form.resetFields();
+    setIsConfirmationModalOpen(false);
   };
 
   const handleChange = (info: any) => {
@@ -510,6 +535,8 @@ export default function AfterEnroll({ params }: any) {
         setComment(res?.data.reverse());
         setIdLecture(lectureId);
       });
+    console.log("reply", reply);
+    console.log("comment", comment);
     console.log("Clicked Lecture Id:", lectureId);
     console.log("Clicked Lecture Id11111:", IdLecture);
   };
@@ -545,12 +572,50 @@ export default function AfterEnroll({ params }: any) {
   };
 
   const [isEditing, setIsEditing] = useState(false);
+  const [isAnswer, setIsAnswer] = useState(false);
+
+  const AnswerMode = (data) => {
+    setIsAnswer(!isAnswer);
+    setIdDropdown(data);
+
+    console.log("isanswer", isAnswer);
+  };
 
   const EditCommentMode = () => {
     setIsEditing(true);
   };
 
+  const ReplyComment = async (comment) => {
+    if (!replyComment) {
+      toast.error("Comment cannot be empty.");
+      return;
+    }
+    const formData = new FormData();
+    formData.append("comment", replyComment);
+    await http
+      .post(
+        `https://learnconnectapitest.azurewebsites.net/api/comment?userId=${userData?.id}&lectureId=${IdLecture}&parentCommentId=${comment}`,
+        formData
+      )
+      .then(() => {
+        toast.success("Reply Comment Success");
+        setIsAnswer(false);
+        setReplyComment("");
+        http
+          .get(
+            `https://learnconnectapitest.azurewebsites.net/api/Comment/get-comments-by-lectureId/${IdLecture}`
+          )
+          .then((res) => {
+            setComment(res?.data.reverse());
+          });
+      });
+  };
+
   const EditComment = async (comment) => {
+    if (!editText) {
+      toast.error("Comment cannot be empty.");
+      return;
+    }
     comment.comment1 = editText;
     await http
       .put(
@@ -586,6 +651,10 @@ export default function AfterEnroll({ params }: any) {
             setComment(res?.data.reverse());
           });
       });
+  };
+
+  const HandleOnDelteClick = () => {
+    DeleteComment;
   };
 
   return !role ? (
@@ -701,7 +770,6 @@ export default function AfterEnroll({ params }: any) {
                           <BsFillFlagFill />
                         </Button>
                       </div>
-
                       <Modal
                         destroyOnClose={true}
                         title={`Rating ${courses?.name} by ${user?.displayName}`}
@@ -878,9 +946,14 @@ export default function AfterEnroll({ params }: any) {
                                   </div>
                                 </div>
                                 <div className="pt-5 flex justify-end">
-                                  <button className="border border-[#309255] px-[35px] mx-1 py-2 rounded-lg">
+                                  {/* <button
+                                    className="border border-[#309255] px-[35px] mx-1 py-2 rounded-lg hover:border-red-500"
+                                    onClick={() => {
+                                      setCommentText("");
+                                    }}
+                                  >
                                     Cancel
-                                  </button>
+                                  </button> */}
                                   <button
                                     className="border border-[#309255] px-[35px] mx-1 py-2 rounded-lg text-[#309255] hover:bg-[#309255] hover:text-[#fff]"
                                     onClick={() => submitComment()}
@@ -892,8 +965,8 @@ export default function AfterEnroll({ params }: any) {
                               {comment &&
                                 comment.map((item, index) => (
                                   <div
-                                    key={index}
                                     className="py-7 px-5 border-t border-[#30925533]"
+                                    key={index}
                                   >
                                     <div className="flex">
                                       <img
@@ -911,7 +984,12 @@ export default function AfterEnroll({ params }: any) {
                                       </div>
 
                                       <div className="flex ml-auto">
-                                        <button className=" my-auto bg-[#d6e9dd] ml-auto px-5 max-h-[40px] flex item-center rounded-lg border border-[#30925533] w-full py-1 hover:text-[#fff] hover:bg-[#309255]">
+                                        <button
+                                          className=" my-auto bg-[#d6e9dd] ml-auto px-5 max-h-[40px] flex item-center rounded-lg border border-[#30925533] w-full py-1 hover:text-[#fff] hover:bg-[#309255]"
+                                          onClick={() => {
+                                            AnswerMode(item.comment.id);
+                                          }}
+                                        >
                                           <span className="my-auto pr-1">
                                             <IoChatboxSharp />
                                           </span>
@@ -930,7 +1008,7 @@ export default function AfterEnroll({ params }: any) {
                                                 idDropDown && (
                                                 <div
                                                   id="dropdown-menu"
-                                                  className="modal-overlay absolute mt-[30px]"
+                                                  className="modal-overlay absolute mt-[30px] z-50"
                                                 >
                                                   <div className="bg-white border border-gray-300 rounded shadow-lg">
                                                     <div className="p-2 text-black flex flex-col">
@@ -945,8 +1023,14 @@ export default function AfterEnroll({ params }: any) {
                                                       <button
                                                         className="px-3 py-2 hover:bg-[#e7f8ee]"
                                                         onClick={() => {
-                                                          DeleteComment(
+                                                          // DeleteComment(
+                                                          //   item?.comment.id
+                                                          // );
+                                                          setIdDelete(
                                                             item?.comment.id
+                                                          );
+                                                          setIsConfirmationModalOpen(
+                                                            true
                                                           );
                                                         }}
                                                       >
@@ -960,12 +1044,12 @@ export default function AfterEnroll({ params }: any) {
                                         )}
                                       </div>
                                     </div>
-                                    <div className="pt-5">
+                                    <div className="py-5">
                                       {isEditing &&
                                       item?.comment.id === idDropDown ? (
                                         <div>
                                           <TextArea
-                                            placeholder="Post Comment"
+                                            placeholder="Edit Comment"
                                             autoSize={{
                                               minRows: 7,
                                               maxRows: 15,
@@ -978,8 +1062,13 @@ export default function AfterEnroll({ params }: any) {
                                               setEditText(e.target.value)
                                             }
                                           />
-                                          <div className="pt-5 flex justify-end">
-                                            <button className="border border-[#309255] px-[35px] mx-1 py-2 rounded-lg">
+                                          <div className="py-5 flex justify-end">
+                                            <button
+                                              className="border border-[#309255] px-[35px] mx-1 py-2 rounded-lg hover:border-red-500"
+                                              onClick={() => {
+                                                setIsEditing(false);
+                                              }}
+                                            >
                                               Cancel
                                             </button>
                                             <button
@@ -988,7 +1077,7 @@ export default function AfterEnroll({ params }: any) {
                                                 EditComment(item.comment);
                                               }}
                                             >
-                                              Update
+                                              Save
                                             </button>
                                           </div>
                                         </div>
@@ -996,44 +1085,187 @@ export default function AfterEnroll({ params }: any) {
                                         <p>{item?.comment.comment1}</p>
                                       )}
                                     </div>
+                                    {isAnswer &&
+                                      item?.comment.id === idDropDown && (
+                                        <div className="py-7 px-5 ml-[110px] border-t border-[#30925533]">
+                                          <div className="flex">
+                                            <img
+                                              alt="CommentImg"
+                                              src={userData?.profilePictureUrl}
+                                              className="w-[70px] h-[70px] rounded-full"
+                                            />
+                                            <div className="my-auto pl-5">
+                                              <p className="font-bold text-xl">
+                                                {userData?.fullName}
+                                              </p>
+                                            </div>
+                                          </div>
+                                          <div className="pt-5">
+                                            <TextArea
+                                              placeholder="Post Comment"
+                                              autoSize={{
+                                                minRows: 7,
+                                                maxRows: 15,
+                                              }}
+                                              className="w-full"
+                                              value={replyComment}
+                                              // defaultValue={item?.comment.comment1}
+                                              onChange={(e) =>
+                                                setReplyComment(e.target.value)
+                                              }
+                                            />
+                                          </div>
+                                          <div className="pt-5 flex justify-end">
+                                            <button
+                                              className="border border-[#309255] px-[35px] mx-1 py-2 rounded-lg hover:border-red-500"
+                                              onClick={() => {
+                                                setIsAnswer(false);
+                                                setReplyComment("");
+                                              }}
+                                            >
+                                              Cancel
+                                            </button>
+                                            <button
+                                              className="border border-[#309255] px-[35px] mx-1 py-2 rounded-lg text-[#309255] hover:bg-[#309255] hover:text-[#fff]"
+                                              onClick={() => {
+                                                ReplyComment(item.comment.id);
+                                              }}
+                                            >
+                                              Reply
+                                            </button>
+                                          </div>
+                                        </div>
+                                      )}
+                                    {item.reply.map((replyItem, replyIndex) => (
+                                      <div
+                                        className="py-7 px-5 ml-[110px] border-t border-[#30925533]"
+                                        key={replyIndex}
+                                      >
+                                        <div className="flex">
+                                          <img
+                                            alt="CommentImg"
+                                            src={replyItem.user.userImage}
+                                            className="w-[70px] h-[70px] rounded-full"
+                                          />
+
+                                          <div className="my-auto pl-5">
+                                            {replyItem.user && (
+                                              <div>
+                                                <p className="font-bold text-xl">
+                                                  {replyItem.user.userName}
+                                                </p>
+                                                <p className="font-light text-[#8e9298]">
+                                                  {
+                                                    replyItem?.comment
+                                                      .commentTime
+                                                  }
+                                                </p>
+                                              </div>
+                                            )}
+                                          </div>
+                                          <div className="flex ml-auto">
+                                            {replyItem?.user.userId ===
+                                              userData?.id && (
+                                              <button
+                                                className="w-full flex my-auto ml-2 border border-[#30925533] p-2 rounded-lg hover:text-[#000] hover:bg-[#30925533]"
+                                                onClick={() => {
+                                                  toggleDropdown(
+                                                    replyItem?.comment.id
+                                                  );
+                                                }}
+                                              >
+                                                <VscEllipsis />
+                                                {isDropdownOpen &&
+                                                  replyItem?.comment.id ===
+                                                    idDropDown && (
+                                                    <div
+                                                      id="dropdown-menu"
+                                                      className="modal-overlay absolute mt-[30px] z-50"
+                                                    >
+                                                      <div className="bg-white border border-gray-300 rounded shadow-lg">
+                                                        <div className="p-2 text-black flex flex-col">
+                                                          <button
+                                                            className="px-3 py-2 mb-1 hover:bg-[#e7f8ee]"
+                                                            onClick={
+                                                              EditCommentMode
+                                                            }
+                                                          >
+                                                            Edit Comment
+                                                          </button>
+                                                          <button
+                                                            className="px-3 py-2 hover:bg-[#e7f8ee]"
+                                                            onClick={() => {
+                                                              // DeleteComment(
+                                                              //   replyItem
+                                                              //     ?.comment.id
+                                                              // );
+                                                              setIdDelete(
+                                                                replyItem
+                                                                  ?.comment.id
+                                                              );
+                                                              setIsConfirmationModalOpen(
+                                                                true
+                                                              );
+                                                            }}
+                                                          >
+                                                            Delete Comment
+                                                          </button>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                  )}
+                                              </button>
+                                            )}
+                                          </div>
+                                        </div>
+                                        <div className="py-5">
+                                          {isEditing &&
+                                          replyItem?.comment.id ===
+                                            idDropDown ? (
+                                            <div>
+                                              <TextArea
+                                                placeholder="Edit Comment"
+                                                autoSize={{
+                                                  minRows: 7,
+                                                  maxRows: 15,
+                                                }}
+                                                className="w-full"
+                                                defaultValue={
+                                                  replyItem?.comment.comment1
+                                                }
+                                                onChange={(e) =>
+                                                  setEditText(e.target.value)
+                                                }
+                                              />
+                                              <div className="py-5 flex justify-end">
+                                                <button
+                                                  className="border border-[#309255] px-[35px] mx-1 py-2 rounded-lg hover:border-red-500"
+                                                  onClick={() => {
+                                                    setIsEditing(false);
+                                                  }}
+                                                >
+                                                  Cancel
+                                                </button>
+                                                <button
+                                                  className="border border-[#309255] px-[35px] mx-1 py-2 rounded-lg text-[#309255] hover:bg-[#309255] hover:text-[#fff]"
+                                                  onClick={() => {
+                                                    EditComment(
+                                                      replyItem.comment
+                                                    );
+                                                  }}
+                                                >
+                                                  Save
+                                                </button>
+                                              </div>
+                                            </div>
+                                          ) : (
+                                            <p> {replyItem.comment.comment1}</p>
+                                          )}
+                                        </div>
+                                      </div>
+                                    ))}
                                   </div>
                                 ))}
-                              {/* <div className="py-7 px-5 ml-[110px] border-t border-[#30925533]">
-                                <div className="flex">
-                                  <img
-                                    alt="CommentImg"
-                                    src={userData?.profilePictureUrl}
-                                    className="w-[70px] h-[70px] rounded-full"
-                                  />
-                                  <div className="my-auto pl-5">
-                                    <p className="font-bold text-xl">
-                                      Name Comment
-                                    </p>
-                                    <p className="font-light text-[#8e9298]">
-                                      Asked: March 28, 2021
-                                    </p>
-                                  </div>
-                                  <div className="flex ml-auto">
-                                    <button className="my-auto bg-[#d6e9dd] ml-auto px-5 max-h-[40px] flex item-center rounded-lg border border-[#30925533] w-full py-1 hover:text-[#fff] hover:bg-[#309255]">
-                                      <span className="my-auto pr-1">
-                                        <IoChatboxSharp />
-                                      </span>
-                                      Answer
-                                    </button>
-                                  </div>
-                                </div>
-                                <div className="pt-5">
-                                  <p>
-                                    Lorem Ipsum is simply dummy text of the
-                                    printing and typesetting industry. Lorem
-                                    Ipsum has been the industry's standard dummy
-                                    text ever since the 1500s when an unknown
-                                    printer took a galley of type and scrambled
-                                    it to make specimen book has survived not
-                                    only five centuries.
-                                  </p>
-                                </div>
-                              </div> */}
                               {/* <div className="border-t border-[#30925533]">
                                 <div className="py-7 px-5  mt-8">
                                   <button className="text-[18px] text-[#309255] border border-[#309255] w-full py-2 rounded-lg hover:text-[#fff] hover:bg-[#309255] bg-[#d6e9dd] ">
@@ -1041,6 +1273,63 @@ export default function AfterEnroll({ params }: any) {
                                   </button>
                                 </div>
                               </div> */}
+                              <Modal
+                                destroyOnClose={true}
+                                title={
+                                  <div className="text-lg">
+                                    Are you sure to delete this comment
+                                  </div>
+                                }
+                                open={isConfirmationModalOpen}
+                                width="35%"
+                                onCancel={handleCancel}
+                                footer={false}
+                                style={{
+                                  top: "30%",
+                                }}
+                              >
+                                <Form
+                                  autoComplete="off"
+                                  form={form}
+                                  labelCol={{ span: 4 }}
+                                  wrapperCol={{ span: 16 }}
+                                  layout="horizontal"
+                                  className="mt-5"
+                                  style={{ width: "100%" }}
+                                  onFinish={() => {
+                                    DeleteComment(idDelete);
+                                    setIsConfirmationModalOpen(false);
+                                    setIdDelete(0);
+                                  }}
+                                >
+                                  <Space className="justify-end w-full">
+                                    <Form.Item className="mb-0">
+                                      <Space>
+                                        <Button
+                                          className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                                          onClick={handleCancel}
+                                          style={{
+                                            border: "2px solid #E0E0E0",
+                                            color: "black",
+                                          }}
+                                        >
+                                          Cancel
+                                        </Button>
+                                        <Button
+                                          className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                                          htmlType="submit"
+                                          style={{
+                                            border: "2px solid #4caf50",
+                                            color: "#fff",
+                                          }}
+                                        >
+                                          Confirm
+                                        </Button>
+                                      </Space>
+                                    </Form.Item>
+                                  </Space>
+                                </Form>
+                              </Modal>
                             </div>
                           )}
                         </div>
