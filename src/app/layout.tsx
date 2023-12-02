@@ -7,7 +7,6 @@ import Footer from "@/pages/Footer";
 import { AuthContextProvider } from "./context/AuthContext";
 import { ToastContainer } from "react-toastify";
 import { Toaster, toast } from "sonner";
-import Notification from "@/components/notification/notification";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -31,7 +30,7 @@ export default function RootLayout({
             {children}
           </div>
           <Footer />
-          <Notification />
+          {/* <Notification /> */}
         </AuthContextProvider>
       </body>
     </html>
