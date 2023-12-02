@@ -15,14 +15,14 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
-}
-
 // Retrieve firebase messaging
 const messaging = firebase.messaging();
+
 messaging.onBackgroundMessage(function (payload) {
-  // console.log("Received background message ", payload);
+  console.log(
+    "[firebase-messaging-sw.js] Received background message ",
+    payload
+  );
   // Customize notification here
   const notificationTitle = payload.notification.title;
   const notificationOptions = {
