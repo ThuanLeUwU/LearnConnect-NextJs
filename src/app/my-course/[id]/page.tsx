@@ -1137,8 +1137,11 @@ export default function AfterEnroll({ params }: any) {
                                         </div>
                                       )}
                                     {item.reply.map((replyItem, replyIndex) => (
-                                      <div className="py-7 px-5 ml-[110px] border-t border-[#30925533]">
-                                        <div key={replyIndex} className="flex">
+                                      <div
+                                        className="py-7 px-5 ml-[110px] border-t border-[#30925533]"
+                                        key={replyIndex}
+                                      >
+                                        <div className="flex">
                                           <img
                                             alt="CommentImg"
                                             src={replyItem.user.userImage}
