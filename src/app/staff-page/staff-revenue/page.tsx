@@ -546,6 +546,7 @@ const StaffRevenue = () => {
             page4={"/staff-page/moderation"}
             page5={"/staff-page/list-major"}
             page6={"#"}
+            page7={"/staff-page/staff-transaction"}
             // page6={"/staff-page/list-major"}
           />
           {/* <StaffRatingTable /> */}

@@ -146,6 +146,7 @@ const StaffReportID = ({ params }: any) => {
             page4={"/staff-page/moderation"}
             page5={"/staff-page/list-major"}
             page6={"/staff-page/staff-revenue"}
+            page7={"/staff-page/staff-transaction"}
           />
 
           <div className="w-full mt-4">

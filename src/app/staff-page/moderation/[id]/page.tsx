@@ -296,9 +296,16 @@ const DetailsContent = ({ params }: any) => {
 
       render: (text, record) => {
         return (
-          <a href={text} target="_blank" rel="noopener noreferrer">
-            Link
-          </a>
+          <>
+            <a
+              onClick={() => {
+                routerPush(record.id);
+                console.log("tne", record.id);
+              }}
+            >
+              Link
+            </a>
+          </>
         );
       },
     },
@@ -360,6 +367,10 @@ const DetailsContent = ({ params }: any) => {
       render: (status) => getStatusText(status),
     },
   ];
+
+  const routerPush = (id: any) => {
+    router.push(`/staff-page/moderation/${idCourse}/${id}`);
+  };
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -520,6 +531,7 @@ const DetailsContent = ({ params }: any) => {
             page4={"/staff-page/moderation"}
             page5={"/staff-page/list-major"}
             page6={"/staff-page/staff-revenue"}
+            page7={"/staff-page/staff-transaction"}
           />
           <div className="w-full my-4">
             <div className="flex justify-between items-center px-5 bg-[#e7f8ee] mb-5">
