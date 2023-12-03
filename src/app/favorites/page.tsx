@@ -105,11 +105,6 @@ const MyCourse = () => {
 
   const handleSubmit = async (values: any) => {
     const { note, course, selectedDate } = values;
-    // formData.append("note", note);
-    // formData.append("course", course);
-    // formData.append("startDate", startDate);
-    // formData.append("endDate", endDate);
-    console.log("SelectedDate", selectedDate[0].toDate());
     try {
       const url = `https://learnconnectapitest.azurewebsites.net/api/schedule`;
       await http
