@@ -59,8 +59,8 @@ export default function CourseDetailPage({ params }: any) {
   const [averageRating, setAverageRating] = useState(0);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const idUser = id;
-  console.log("id user is", idUser);
-  console.log("id course is", idCourse);
+  // console.log("id user is", idUser);
+  // console.log("id course is", idCourse);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -139,12 +139,6 @@ export default function CourseDetailPage({ params }: any) {
   const handleClickGotoCourse = () => {
     router.push(`/my-course/${idCourse}`);
     // setIsModalVisible(false);
-  };
-
-  // const items: MenuProps
-
-  const onShow = (e) => {
-    console.log("click ", e);
   };
 
   const breadcrumbsHome = () => {

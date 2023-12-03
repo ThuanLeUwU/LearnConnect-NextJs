@@ -586,7 +586,7 @@ const InstructorCourse = () => {
               >
                 <Input placeholder="Name Course" />
               </Form.Item>
-              <Form.Item label="Specialize">
+              <Form.Item label="Specialization">
                 <Select onChange={handleChangeCate}>
                   {listCategory.map((option) => {
                     return (
@@ -623,7 +623,12 @@ const InstructorCourse = () => {
                 label="Lectures"
                 name="lecture"
               >
-                <InputNumber className="w-[200px]" min={0} controls={false} />
+                <InputNumber
+                  placeholder="Input Number of Lectures!"
+                  className="w-[200px]"
+                  min={0}
+                  controls={false}
+                />
               </Form.Item>
               <Form.Item
                 rules={[
@@ -635,7 +640,12 @@ const InstructorCourse = () => {
                 label="Price(VND):"
                 name="price"
               >
-                <InputNumber style={{ width: 200 }} min={0} controls={false} />
+                <InputNumber
+                  placeholder="Input Price!"
+                  style={{ width: 200 }}
+                  min={0}
+                  controls={false}
+                />
               </Form.Item>
               <Form.Item
                 rules={[
@@ -647,10 +657,13 @@ const InstructorCourse = () => {
                 label="Short Description"
                 name="shortDes"
               >
-                <Input placeholder="Input Some Short Description" />
+                <Input.TextArea
+                  rows={2}
+                  placeholder="Input Some Short Description"
+                />
               </Form.Item>
               <Form.Item label="Description" name="description">
-                <Input.TextArea rows={4} />
+                <Input.TextArea rows={4} placeholder="Input More Description" />
               </Form.Item>
               <Space className="justify-end w-full">
                 <Form.Item className="mb-0">

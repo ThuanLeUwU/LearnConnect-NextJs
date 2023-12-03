@@ -29,6 +29,7 @@ const StaffPage = () => {
             page4={"/staff-page/moderation"}
             page5={"/staff-page/list-major"}
             page6={"/staff-page/staff-revenue"}
+            page7={"/staff-page/staff-transaction"}
           />
           <MentorRequest />
         </div>

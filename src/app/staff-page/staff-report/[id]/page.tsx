@@ -49,7 +49,7 @@ const StaffReportID = ({ params }: any) => {
         const response = await axios.get(
           `https://learnconnectapitest.azurewebsites.net/api/report/get-reports?targetId=${idCourse}&reportType=${target}`
         );
-        console.log("API Response:", response.data);
+        // console.log("API Response:", response.data);
         setReportData(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -68,7 +68,7 @@ const StaffReportID = ({ params }: any) => {
           const response = await axios.get(
             `https://learnconnectapitest.azurewebsites.net/api/course/${idCourse}`
           );
-          console.log("API Response:", response.data);
+          // console.log("API Response:", response.data);
           setCourse(response.data);
         } catch (error) {
           console.error("Error fetching data:", error);
@@ -80,7 +80,7 @@ const StaffReportID = ({ params }: any) => {
   }, [idCourse]);
 
   const [mentor, setMentor] = useState<Mentor>();
-  console.log("Mentor", mentor?.user.fullName);
+  // console.log("Mentor", mentor?.user.fullName);
 
   useEffect(() => {
     if (target === "mentor") {
@@ -89,7 +89,7 @@ const StaffReportID = ({ params }: any) => {
           const response = await axios.get(
             `https://learnconnectapitest.azurewebsites.net/api/mentor/${idCourse}`
           );
-          console.log("API Response:", response.data);
+          // console.log("API Response:", response.data);
           setMentor(response.data);
         } catch (error) {
           console.error("Error fetching data:", error);
@@ -146,6 +146,7 @@ const StaffReportID = ({ params }: any) => {
             page4={"/staff-page/moderation"}
             page5={"/staff-page/list-major"}
             page6={"/staff-page/staff-revenue"}
+            page7={"/staff-page/staff-transaction"}
           />
 
           <div className="w-full mt-4">

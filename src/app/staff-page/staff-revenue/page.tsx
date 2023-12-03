@@ -1,26 +1,81 @@
 "use client";
 import LeftNavbar from "@/components/left-navbar/page";
-import { Breadcrumb, Button, Form, Modal, Space, Spin, Table, Tag } from "antd";
+import {
+  Breadcrumb,
+  Button,
+  Form,
+  Modal,
+  Select,
+  Space,
+  Spin,
+  Table,
+} from "antd";
 import { useEffect, useState } from "react";
 
-import {
-  Chart as ChartJs,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-  Legend,
-  Tooltip,
-} from "chart.js";
-import { Bar } from "react-chartjs-2";
+// import {
+//   Chart as ChartJs,
+//   BarElement,
+//   CategoryScale,
+//   LinearScale,
+//   Legend,
+//   Tooltip,
+// } from "chart.js";
+// import { Bar } from "react-chartjs-2";
 import { UserAuth } from "@/app/context/AuthContext";
 import { http } from "@/api/http";
 import { toast } from "sonner";
+import Chart from "react-google-charts";
+// import ReactApexChart from "react-apexcharts";
 
-ChartJs.register(BarElement, CategoryScale, LinearScale, Legend, Tooltip);
+import dynamic from "next/dynamic";
+import { ApexOptions } from "apexcharts";
+import { TotalStatistic } from "@/app/revenue/page";
+
+// Load ReactApexChart dynamically to avoid server-side rendering issues
+const ReactApexChart = dynamic(() => import("react-apexcharts"), {
+  ssr: false,
+});
+
+// ChartJs.register(BarElement, CategoryScale, LinearScale, Legend, Tooltip);
 
 interface RevenueEntry {
   date: string;
   totalRevenue: number;
+}
+
+interface ChartData {
+  date: string;
+  profit: number;
+  participants: number;
+}
+
+interface StackChartData {
+  date: string;
+  freeCourses: number;
+  totalCourses: number;
+}
+
+interface DonutChartData {
+  label: string;
+  value: number;
+}
+
+interface StatisticData {
+  statisticsByDate: any;
+  date: string;
+  newCoursesFee: number;
+  newCoursesFree: number;
+  newMentors: number;
+  newEnrollments: number;
+  newRevenue: number;
+}
+
+interface StatisticStatusData {
+  totalCourseStatusStatistic: any;
+  coursesActive: number;
+  coursesPending: number;
+  coursesReject: number;
+  coursesBan: number;
 }
 
 export type RevenueMentor = {
@@ -82,116 +137,49 @@ const StaffRevenue = () => {
     setRePayModal(false);
   };
 
-  const [chartData, setChartData] = useState({
-    labels: [] as string[],
+  // const [chartData, setChartData] = useState({
+  //   labels: [] as string[],
 
-    datasets: [
-      {
-        label: "Revenue",
-        data: [] as number[],
-        backgroundColor: "#309255",
-        borderColor: "black",
-        borderWidth: 1,
-        barPercentage: 0.4,
-        z: {} as number,
-      },
-    ],
-  });
+  //   datasets: [
+  //     {
+  //       label: "Revenue",
+  //       data: [] as number[],
+  //       backgroundColor: "#309255",
+  //       borderColor: "black",
+  //       borderWidth: 1,
+  //       barPercentage: 0.4,
+  //       z: {} as number,
+  //     },
+  //   ],
+  // });
   const moment = require("moment-timezone");
   const [today, setToday] = useState<string>();
   const [listDate, setListDate] = useState<RevenueEntry[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    // Fetch data from your API using Axios
-    http
-      .get<RevenueEntry[]>(
-        `https://learnconnectapitest.azurewebsites.net/api/payment-transaction/revenue-web-by-week`
-      )
-      .then((response) => {
-        const data = response.data;
-        setListDate(data);
+  const [selected1, setSelected1] = useState<string>("");
 
-        const sortedData = data.sort(
-          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-        );
-
-        const labels = sortedData.map((entry) => {
-          const entryDateInVN = moment(entry.date).tz("Asia/Ho_Chi_Minh");
-          const currentDateInVN = moment().tz("Asia/Ho_Chi_Minh");
-          return entryDateInVN.format("YYYY-MM-DD") ===
-            currentDateInVN.format("YYYY-MM-DD")
-            ? "Today"
-            : entryDateInVN.format("YYYY-MM-DD");
-        });
-
-        const total = sortedData.map((entry) => entry.totalRevenue);
-        const profits = sortedData.map((entry) => entry.totalRevenue * 0.05);
-
-        setChartData({
-          ...chartData,
-          labels: labels,
-          datasets: [
-            {
-              ...chartData.datasets[1],
-              data: total,
-              label: "Profit",
-              backgroundColor: "#309255", // Màu cho Revenue
-              borderColor: "#e7f8ee",
-              borderWidth: 1,
-              barPercentage: 0.4,
-              z: 1,
-            },
-            {
-              ...chartData.datasets[0],
-              data: profits,
-              label: "Revenue",
-              backgroundColor: "#e7f8ee", // Màu cho Profit
-              borderColor: "#309255",
-              borderWidth: 1,
-              barPercentage: 0.4,
-              z: 0,
-            },
-          ],
-        });
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
-  }, []);
-
-  const options = {
-    type: "bar",
-    scales: {
-      y: {
-        label: true,
-        beginAtZero: true,
-        max: Math.max(...chartData.datasets[0].data) + 10000, // Adjust max value for better visualization
-        ticks: {
-          callback: function (value) {
-            return value.toLocaleString() + " VND"; // Format y-axis ticks as needed
-          },
-        },
-      },
-    },
-    responsive: true,
-    // maintainAspectRatio: f,
-    plugins: {
-      legend: {
-        display: false, // Ẩn hiển thị chú giải
-      },
-      tooltip: {
-        callbacks: {
-          label: (context) => {
-            const label = context.dataset.label || "";
-            const value = context.parsed.y || 0;
-
-            // Format giá trị theo nhu cầu của bạn
-            return value.toLocaleString();
-          },
-        },
-      },
-    },
+  const handleChangeSelected1 = (e: any) => {
+    setSelected1(e);
   };
+  const [selected2, setSelected2] = useState<string>("Last Day");
+
+  const handleChangeSelected2 = (e: any) => {
+    setSelected2(e);
+  };
+  const [selected3, setSelected3] = useState<string>("Last Day");
+
+  const handleChangeSelected3 = (e: any) => {
+    setSelected3(e);
+  };
+
+  const { Option } = Select;
+
+  const timeLine = [
+    { title: "Last Day", value: "day" },
+    { title: "Last Week", value: "week" },
+    { title: "Last Month", value: "month" },
+  ];
 
   const [revenueOneMentor, setRevenueOneMentor] = useState<RevenueMentor[]>([]);
 
@@ -208,17 +196,6 @@ const StaffRevenue = () => {
       console.error(err);
     }
   }, []);
-
-  const data = [
-    {
-      key: "1",
-      mentorName: "John Doe",
-      idNumber: "123456789",
-      bank: "1234567890",
-      revenue: 5000,
-    },
-    // Thêm dữ liệu cho các hàng khác nếu cần
-  ];
 
   const [pagination, setPagination] = useState({
     current: 1,
@@ -304,6 +281,256 @@ const StaffRevenue = () => {
     },
   ];
 
+  const [totalStatistic, setTotalStatistic] = useState<TotalStatistic>();
+  const [courseStatistic2, setCourseStatistic2] = useState<StatisticData[]>([]);
+  const [totalStatusCourses, setTotalStatusCourse] =
+    useState<StatisticStatusData>();
+
+  console.log("vv", courseStatistic2);
+
+  const [mixedChart, setMixChart] = useState({
+    options: {
+      chart: {
+        stacked: false,
+        toolbar: {
+          show: false,
+        },
+      },
+      xaxis: {
+        categories: [] as string[],
+      },
+      yaxis: [
+        {
+          axisTicks: {
+            show: true,
+          },
+          axisBorder: {
+            show: true,
+            color: "#309255",
+          },
+          labels: {
+            style: {
+              colors: "#309255",
+            },
+          },
+          title: {
+            text: "Revenue (in VND)",
+            style: {
+              color: "#309255",
+            },
+          },
+          tooltip: {
+            enabled: true,
+          },
+          fill: {
+            colors: ["#309255"], // Màu của miền giá trị trục y
+          },
+        },
+        {
+          opposite: true,
+          axisTicks: {
+            show: true,
+          },
+          axisBorder: {
+            show: true,
+            color: "rgba(254,176,25,1)",
+          },
+          labels: {
+            style: {
+              colors: "rgba(254,176,25,1)",
+            },
+          },
+          title: {
+            text: "Enrollments",
+            style: {
+              color: "rgba(254,176,25,1)",
+            },
+          },
+          fill: {
+            colors: ["rgba(254,176,25,1)"], // Màu của miền giá trị trục y
+          },
+        },
+      ],
+    },
+    series: [
+      {
+        name: "Revenue",
+        type: "column",
+        data: [] as number[],
+      },
+      {
+        name: "Enrollments",
+        type: "line",
+        data: [] as number[],
+      },
+    ],
+  });
+
+  useEffect(() => {
+    try {
+      http
+        .get(
+          `https://learnconnectapitest.azurewebsites.net/api/payment-transaction/statistic-staff?filterType=${
+            selected2 === "Last Day" ? "day" : selected2
+          }`
+        )
+        .then((res) => {
+          setTotalStatistic(res.data[0].totalStatisticInfo);
+          setCourseStatistic2(res.data[0].statisticsByDate);
+          setTotalStatusCourse(res.data[0].totalCourseStatusStatistic);
+        });
+    } catch (e) {
+      console.error(e);
+    }
+  }, [selected2, id]);
+
+  useEffect(() => {
+    const categories = courseStatistic2.map((entry) =>
+      new Date(entry.date).toISOString().slice(0, 10)
+    );
+
+    setMixChart({
+      ...mixedChart,
+      options: {
+        ...mixedChart.options,
+        xaxis: {
+          categories: categories,
+        },
+      },
+      series: [
+        {
+          ...mixedChart.series[0],
+          data: courseStatistic2.map((entry) => entry.newRevenue),
+        },
+        {
+          ...mixedChart.series[1],
+          data: courseStatistic2.map((entry) => entry.newEnrollments),
+        },
+      ],
+    });
+  }, [courseStatistic2]);
+
+  const [courseStatistic3, setCourseStatistic3] = useState<StatisticData[]>([]);
+  console.log("yohoho", courseStatistic3);
+
+  const [stackedChart, setStackedChart] = useState({
+    options: {
+      chart: {
+        type: "bar" as "bar",
+        stacked: true,
+      },
+      xaxis: {
+        categories: [] as string[], // Dữ liệu ngày
+      },
+      yaxis: {
+        title: {
+          text: "Course",
+        },
+      },
+    },
+    series: [
+      {
+        name: "Fee",
+        data: [] as number[], // Dữ liệu số lượng course miễn phí
+      },
+      {
+        name: "Free",
+        data: [] as number[], // Dữ liệu tổng số lượng course trừ đi số lượng course miễn phí
+      },
+    ],
+  });
+
+  useEffect(() => {
+    try {
+      http
+        .get(
+          `https://learnconnectapitest.azurewebsites.net/api/payment-transaction/statistic-staff?filterType=${
+            selected3 === "Last Day" ? "day" : selected3
+          }`
+        )
+        .then((res) => {
+          setTotalStatistic(res.data[0].totalStatisticInfo);
+          setCourseStatistic3(res.data[0].statisticsByDate);
+          setTotalStatusCourse(res.data[0].totalCourseStatusStatistic);
+        });
+    } catch (e) {
+      console.error(e);
+    }
+  }, [selected3, id]);
+
+  useEffect(() => {
+    // Simulated data
+
+    const categories = courseStatistic3.map((entry) =>
+      new Date(entry.date).toISOString().slice(0, 10)
+    );
+    const freeCoursesData = courseStatistic3.map(
+      (entry) => entry.newCoursesFree
+    );
+    const feeCoursesData = courseStatistic3.map((entry) => entry.newCoursesFee);
+
+    setStackedChart({
+      ...stackedChart,
+      options: {
+        ...stackedChart.options,
+        xaxis: {
+          categories: categories,
+        },
+      },
+      series: [
+        {
+          ...stackedChart.series[0],
+          data: freeCoursesData,
+        },
+        {
+          ...stackedChart.series[1],
+          data: feeCoursesData,
+        },
+      ],
+    });
+  }, [courseStatistic3]);
+
+  const [donutChart, setDonutChart] = useState({
+    options: {
+      labels: [] as string[],
+      colors: ["#00E396", "#008FFB", "#FEB019", "#FF4560"],
+      responsive: [
+        {
+          breakpoint: 480,
+          options: {
+            chart: {
+              width: 200,
+            },
+          },
+        },
+      ],
+      plotOptions: {
+        pie: {
+          size: 100, // Giảm kích thước phần bị cắt
+        },
+      } as ApexPlotOptions,
+      legend: {
+        position: "bottom", // Chỉnh label xuống phía dưới
+      },
+    } as ApexOptions,
+    series: [] as number[],
+  });
+
+  useEffect(() => {
+    // Simulated data
+    const newLabels = ["Active", "Pending", "Reject", "Ban"];
+    if (totalStatusCourses) {
+      setDonutChart({
+        ...donutChart,
+        options: {
+          ...donutChart.options,
+          labels: newLabels,
+        },
+        series: Object.values(totalStatusCourses),
+      });
+    }
+  }, [totalStatusCourses]);
+
   return (
     <>
       {!userData ? (
@@ -311,14 +538,15 @@ const StaffRevenue = () => {
           <Spin size="large" />
         </div>
       ) : (
-        <div className="flex">
+        <div className="flex w-full">
           <LeftNavbar
             page1={"/staff-page"}
-            page2={"#"}
+            page2={"/staff-page/staff-rating"}
             page3={"/staff-page/staff-report"}
             page4={"/staff-page/moderation"}
             page5={"/staff-page/list-major"}
             page6={"#"}
+            page7={"/staff-page/staff-transaction"}
             // page6={"/staff-page/list-major"}
           />
           {/* <StaffRatingTable /> */}
@@ -333,15 +561,147 @@ const StaffRevenue = () => {
                   </Breadcrumb.Item>
                 </Breadcrumb>
               </div>
-              <div className="mt-5 rounded-lg border-solid border-2 mx-5 p-10 shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)]">
-                <div className="flex">
-                  <div className="text-2xl font-semibold mb-0 pt-4 leading-5">
-                    Total Revenue Of Web
+
+              <div className="mt-10 mx-10 flex flex-row gap-4 justify-between">
+                <div className="p-5 rounded-lg border-solid border-2 shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)] flex flex-row max-w-[320px] min-h-[200px] justify-between">
+                  <div className="flex flex-col gap-4">
+                    <div className="text-xl font-medium">Total Courses</div>
+                    <div className="text-5xl">
+                      {totalStatistic?.totalActiveCourses}{" "}
+                    </div>
+                  </div>
+                  <div className="flex items-center">
+                    <img
+                      src="/images/online-learning.png"
+                      className="w-[96px] h-[96px]"
+                    />
                   </div>
                 </div>
-                <div className="relative flex justify-center">
-                  <Bar data={chartData} options={options}></Bar>
+                <div className="p-5 rounded-lg border-solid border-2 shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)] flex flex-row max-w-[320px] min-h-[200px] justify-between">
+                  <div className="flex flex-col gap-4">
+                    <div className="text-xl font-medium">Total Mentors</div>
+                    <div className="text-5xl">
+                      {totalStatistic?.totalMentors}
+                    </div>
+                  </div>
+                  <div className="flex items-center">
+                    <img
+                      src="/images/mentor.png"
+                      className="w-[96px] h-[96px]"
+                    />
+                  </div>
                 </div>
+                <div className="p-5 rounded-lg border-solid border-2 shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)] flex flex-row max-w-[320px] min-h-[200px] justify-between">
+                  <div className="flex flex-col gap-4">
+                    <div className="text-xl font-medium">Total Enrollments</div>
+                    <div className="text-5xl">
+                      {totalStatistic?.totalEnrollments}
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-end">
+                    <img
+                      src="/images/enroll.png"
+                      className="w-[96px] h-[96px]"
+                    />
+                  </div>
+                </div>
+                <div className="p-5 rounded-lg border-solid border-2 shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)] flex flex-row max-w-[320px] min-h-[200px] justify-between">
+                  <div className="flex flex-col gap-4">
+                    <div className="text-xl font-medium">Revenue (VND)</div>
+                    <div className="text-3xl">
+                      {totalStatistic?.totalRevenue &&
+                        totalStatistic?.totalRevenue.toLocaleString()}
+                    </div>
+                  </div>
+                  <div className="flex items-center">
+                    <img
+                      src="/images/profits.png"
+                      className="w-[96px] h-[96px]"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-5 rounded-lg border-solid border-2 mx-10 p-10 shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)] flex flex-col gap-4">
+                <div className="flex justify-between items-center">
+                  <div className="text-2xl font-semibold mb-0 leading-5 flex items-center">
+                    Revenue
+                  </div>
+                  <Select
+                    size="large"
+                    defaultValue={selected2}
+                    onChange={handleChangeSelected2}
+                    // style={{ width: 120 }}
+                    className="mx-5 w-[150px]"
+                  >
+                    {timeLine.map((option, index) => (
+                      <Option key={option.title} value={option.value}>
+                        {option.title}
+                      </Option>
+                    ))}
+                  </Select>
+                </div>
+                <div>
+                  <ReactApexChart
+                    options={mixedChart.options}
+                    series={mixedChart.series}
+                    type="line"
+                    height={350}
+                  />
+                </div>
+                {/* <div className="relative flex justify-center">
+                  <Bar data={chartData} options={options}></Bar>
+                </div> */}
+              </div>
+              <div className="mt-5 rounded-lg border-solid border-2 mx-10 p-10 shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)] flex flex-col gap-4">
+                <div className="flex flex-row justify-between">
+                  <div className="flex-auto w-6/12 ">
+                    <div className="flex justify-between">
+                      <div className="text-2xl font-semibold mb-0 leading-5 flex items-center">
+                        New Course Statistics
+                      </div>
+                      <Select
+                        size="large"
+                        defaultValue={selected3}
+                        onChange={handleChangeSelected3}
+                        // style={{ width: 120 }}
+                        className=" w-[150px]"
+                      >
+                        {timeLine.map((option, index) => (
+                          // <div key={index}>hahaha {option.date}</div>
+                          <Option key={option.title} value={option.value}>
+                            {option.title}
+                          </Option>
+                        ))}
+                      </Select>
+                    </div>
+
+                    <div className="">
+                      <ReactApexChart
+                        options={stackedChart.options}
+                        series={stackedChart.series}
+                        type="bar"
+                        height={350}
+                      />
+                    </div>
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex flex-col gap-10">
+                      <div className="text-2xl font-semibold mb-0 leading-5 flex items-center justify-center">
+                        Course Status
+                      </div>
+                      <ReactApexChart
+                        options={donutChart.options}
+                        series={donutChart.series}
+                        type="pie"
+                        height={350}
+                      />
+                    </div>
+                  </div>
+                </div>
+                {/* <div className="relative flex justify-center">
+                  <Bar data={chartData} options={options}></Bar>
+                </div> */}
               </div>
             </div>
             <div className="text-center font-semibold text-5xl pb-5 pl-5">

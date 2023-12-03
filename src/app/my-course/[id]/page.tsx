@@ -344,7 +344,7 @@ export default function AfterEnroll({ params }: any) {
     // const numericValue = parseFloat(value);
     const formdata = new FormData();
     formdata.append("rating", value.toString());
-    console.log("rate");
+    // console.log("rate");
     formdata.append(
       "comment",
       data.description !== undefined ? data.description : null

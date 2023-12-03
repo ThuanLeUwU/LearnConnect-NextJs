@@ -228,7 +228,7 @@ export default function ProfileUser({ params }: any) {
     // const numericValue = parseFloat(value);
     const formdata = new FormData();
     formdata.append("rating", value.toString());
-    console.log("rate");
+    // console.log("rate");
     formdata.append(
       "comment",
       data.description !== undefined ? data.description : null
@@ -282,7 +282,7 @@ export default function ProfileUser({ params }: any) {
           `https://learnconnectapitest.azurewebsites.net/api/mentor/${idMentor}`
         );
         SetDataMentor(response?.data);
-        console.log("data mentor", response?.data);
+        // console.log("data mentor", response?.data);
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -311,14 +311,14 @@ export default function ProfileUser({ params }: any) {
         `${API_URL}${idMentor}&currentPage=${page}&pageSize=${pagesize}`
       );
       setCourses(result?.data.courses);
-      console.log("datacourse", result?.data.courses);
+      // console.log("datacourse", result?.data.courses);
       setTotalPages(result?.data.paginationData.totalPages);
       setLoading(false);
     };
     fetchData();
   }, [currentPage]);
 
-  console.log("course", courses);
+  // console.log("course", courses);
 
   const breadcrumbsHome = () => {
     router.push("/");
@@ -328,7 +328,7 @@ export default function ProfileUser({ params }: any) {
     router.push("/list-mentor");
   };
 
-  console.log("data", DataMentor);
+  // console.log("data", DataMentor);
 
   return (
     <>

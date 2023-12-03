@@ -28,7 +28,6 @@ const HowItWork = () => {
     router.push(`/profile-mentor/${data.mentorInfo.mentorId}`);
   };
 
-  console.log("top", topMentors);
   useEffect(() => {
     const fetchData = async () => {
       const responseData = await http.get(

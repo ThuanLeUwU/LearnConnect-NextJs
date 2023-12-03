@@ -42,7 +42,7 @@ export default function Home() {
 
   const { loading, courses, totalPages, currentPage, setCurrentPage } =
     useDataHomeFetcher();
-  console.log("user token", jwtToken);
+  // console.log("user token", jwtToken);
   return (
     <>
       <div className="bg-[#e7f8ee]">
@@ -54,13 +54,6 @@ export default function Home() {
           }}
         >
           <div className="px-20">
-            <div className="-translate-y-10">
-              <img
-                className="animation-round "
-                src="/images/shape-8.png"
-                alt="Shape"
-              ></img>
-            </div>
             <h4 className="text-[#309255] font-medium text-lg mb-5">
               Start your favourite course
             </h4>

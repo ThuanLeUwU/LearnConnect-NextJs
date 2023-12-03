@@ -293,7 +293,7 @@ const MajorSepcialize = () => {
 
   const handleUpdateMajor = (data: any) => {
     setFormUpdateMajor(true);
-    console.log("data", data);
+    // console.log("data", data);
     setMajor(data);
   };
 
@@ -475,7 +475,7 @@ const MajorSepcialize = () => {
     setFormUpdateSpecialize(true);
     setSpecialization(data);
     setSpecializeId(data.id);
-    console.log("t", data);
+    // console.log("t", data);
   };
 
   const handleUpdateSpecializeClick = (data: any) => {
@@ -661,6 +661,7 @@ const MajorSepcialize = () => {
             page4={"/staff-page/moderation"}
             page5={"#"}
             page6={"/staff-page/staff-revenue"}
+            page7={"/staff-page/staff-transaction"}
           />
           {/* <StaffRatingTable />
            */}

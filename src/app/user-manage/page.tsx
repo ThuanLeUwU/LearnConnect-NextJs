@@ -57,7 +57,7 @@ export type User = {
 };
 
 export default function UserManagePage() {
-  const { user, jwtToken } = UserAuth();
+  const { user, jwtToken, userData } = UserAuth();
   const [allUser, setAllUser] = useState<User[]>([]);
   // console.log("all user", allUser);
 
@@ -74,7 +74,7 @@ export default function UserManagePage() {
     pageSize: 10, // Số dòng mỗi trang
   });
   // console.log("sort,",allUser);
-  console.log("Admin Token", jwtToken);
+  // console.log("Admin Token", jwtToken);
 
   const handleRequestSort = (event: any, property: any) => {
     const isAsc = orderBy === property && order === "asc";
@@ -118,7 +118,7 @@ export default function UserManagePage() {
       setMounted(true);
     };
     fetchData();
-  }, []);
+  }, [userData]);
 
   const menuItem = [
     // {
@@ -235,7 +235,7 @@ export default function UserManagePage() {
             icon={<EditOutlined />}
             onClick={() => showModal(record)}
           >
-            Update
+            Edit
           </Button>
           <Button type="primary" danger icon={<StopOutlined />}>
             Ban
