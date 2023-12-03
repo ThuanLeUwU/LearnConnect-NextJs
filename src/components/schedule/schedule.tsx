@@ -110,8 +110,8 @@ const Schedule: React.FC<ScheduleData> = ({ scheduleData }) => {
       <ul className="events">
         <button onClick={() => handleEventClick({ start: start, end: end })}>
           {start &&
-            start.map((s) => (
-              <li className="text-start">
+            start.map((s, index) => (
+              <li className="text-start" key={index}>
                 <Badge
                   status={"success" as BadgeProps["status"]}
                   text={`Start learn ${s.courseName}`}
@@ -120,8 +120,8 @@ const Schedule: React.FC<ScheduleData> = ({ scheduleData }) => {
             ))}
 
           {end &&
-            end.map((s) => (
-              <li className="text-start">
+            end.map((s, index) => (
+              <li className="text-start" key={index}>
                 <Badge
                   status={"error" as BadgeProps["status"]}
                   text={`end learn ${s.courseName}`}
