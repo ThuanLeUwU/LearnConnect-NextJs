@@ -296,16 +296,9 @@ const DetailsContent = ({ params }: any) => {
 
       render: (text, record) => {
         return (
-          <>
-            <a
-              onClick={() => {
-                routerPush(record.id);
-                console.log("tne", record.id);
-              }}
-            >
-              Link
-            </a>
-          </>
+          <a href={text} target="_blank" rel="noopener noreferrer">
+            Link
+          </a>
         );
       },
     },
@@ -325,30 +318,20 @@ const DetailsContent = ({ params }: any) => {
       // align: "center",
       render: (text, record) => (
         <Space>
-          {record.status === 0 && (
-            <Button danger onClick={() => handleBanLecture(record)}>
-              Ban
-            </Button>
-          )}
-          {record.status === 1 && (
-            <>
-              <Button onClick={() => handleAcceptLecture(record)}>
-                Accept
-              </Button>
-              <Button
-                style={{
-                  backgroundColor: "#ffa04e",
-                  borderColor: "#ffa04e",
-                  color: "#fff",
-                }}
-                onClick={() => handleRejectLecture(record)}
-              >
-                Reject
-              </Button>
-            </>
-          )}
-          {record.status === 2 && <>-</>}
-          {record.status === 3 && <Button>Unban</Button>}
+          <Button
+            type="default"
+            style={{
+              backgroundColor: "",
+              borderColor: "",
+              color: "black",
+            }}
+            onClick={() => {
+              routerPush(record.id);
+              console.log("tne", record.id);
+            }}
+          >
+            Video Analysis
+          </Button>
         </Space>
       ),
     },

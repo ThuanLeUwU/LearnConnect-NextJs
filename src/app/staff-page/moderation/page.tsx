@@ -129,28 +129,28 @@ const ModerationContent = () => {
                 <div className="flex flex-col gap-5 mx-5">
                   {listCourseModeration.map((item) => (
                     <>
-                      <div className="rounded-lg border-solid border-2 flex flex-row justify-between p-5 gap-5 hover:border-[#48b544] shadow-[10px_10px_20px_10px_rgba(0,0,0,0.15)] m-3">
-                        <div className="">
+                      <button
+                        onClick={() => {
+                          DetailContent(item.id);
+                        }}
+                        className="flex rounded-lg border-solid border-2 justify-between items-center p-5 gap-5 hover:border-[#48b544] shadow-[10px_10px_20px_10px_rgba(0,0,0,0.15)] m-3 text-lg text-left"
+                      >
+                        <div className="w-1/12 font-bold border-gray-300 break-all">
                           <img
                             src={item.imageUrl}
                             className="h-[120px] w-[120px] rounded-lg"
                           />
                         </div>
-                        <button
-                          onClick={() => {
-                            DetailContent(item.id);
-                          }}
-                          className="w-[400px] font-semibold text-xl text-left flex items-start"
-                        >
+                        <div className="w-4/12 bg-white p-4 font-semibold text-xl">
                           {item.name}
-                        </button>
-                        <div className="items-center flex font-semibold">
+                        </div>
+                        <div className="w-2/12 bg-white p-4">
                           {item.mentorName}
                         </div>
-                        <div className="items-center flex font-semibold">
+                        <div className="w-2/12 bg-white p-4">
                           {item.specializationName}
                         </div>
-                        <div className="items-center flex">
+                        <div className="w-1/12 bg-white p-4">
                           {item.status === 0 && (
                             <Tag
                               color="#389E0D"
@@ -184,7 +184,7 @@ const ModerationContent = () => {
                             </Tag>
                           )}
                         </div>
-                        <div className="flex flex-col justify-center items-center">
+                        <div className="w-2/12 bg-white p-4 flex flex-col justify-center items-center">
                           <div>
                             {item.createDate
                               ? new Date(item.createDate).toLocaleTimeString(
@@ -205,7 +205,7 @@ const ModerationContent = () => {
                               : ""}{" "}
                           </div>
                         </div>
-                      </div>
+                      </button>
                     </>
                   ))}
                 </div>

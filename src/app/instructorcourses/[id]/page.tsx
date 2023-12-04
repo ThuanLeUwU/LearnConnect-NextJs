@@ -1119,11 +1119,11 @@ const Dashboard = ({ params }: any) => {
                   <p
                     className={`${InstructorCourseStyle.featured_bottom_title}`}
                   >
-                    <div className="flex flex-col">
+                    <div className="flex flex-row justify-between items-center">
                       <div>{course?.name}</div>{" "}
                       <div className="flex justify-center items-center text-2xl">
                         <Tag
-                          className=""
+                          className="text-lg"
                           color={getStatusColor(course?.status)}
                         >
                           {getStatusText(course?.status)}

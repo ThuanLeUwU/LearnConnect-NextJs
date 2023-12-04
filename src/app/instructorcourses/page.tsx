@@ -389,7 +389,7 @@ const InstructorCourse = () => {
               <div className={`${InstructorCourseStyle.course_tab_btn}`}>
                 <Button
                   type="default"
-                  className={`${InstructorCourseStyle.create_btn} z-10`}
+                  className={`${InstructorCourseStyle.create_btn}`}
                   onClick={showModal}
                 >
                   New Course
@@ -414,7 +414,12 @@ const InstructorCourse = () => {
                           <div
                             className={`${InstructorCourseStyle.course_item} `}
                           >
-                            <div className="flex">
+                            <div
+                              className="flex"
+                              onClick={() => {
+                                handleClick(item);
+                              }}
+                            >
                               <div>
                                 <button
                                   onClick={() => {
@@ -492,7 +497,7 @@ const InstructorCourse = () => {
                                 className={`${InstructorCourseStyle.course_tracker_4}`}
                               >
                                 <p className="flex justify-center">Action </p>
-                                <span className="flex  gap-2">
+                                <span className="flex gap-2 z-50">
                                   <Button
                                     // type="primary"
                                     style={{
