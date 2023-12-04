@@ -253,6 +253,7 @@ const DetailsContent = ({ params }: any) => {
     setRejectCourse(false);
     setBanCourse(false);
     setUnBanCourse(false);
+    setApproveTestModal(false);
     setRejectTestModal(false);
   };
 
@@ -568,20 +569,13 @@ const DetailsContent = ({ params }: any) => {
                       >
                         Reject
                       </button>
-                      <button
+                      {/* <button
                         className="bg-white text-black border rounded-lg border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-6 py-2"
                         onClick={handleBan}
                       >
                         Ban
-                      </button>
+                      </button> */}
                     </>
-                  ) : course?.status === 3 ? (
-                    <button
-                      className="bg-white text-black border rounded-lg border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-6 py-2 mr-5"
-                      onClick={handleUnBan}
-                    >
-                      Unban
-                    </button>
                   ) : (
                     <></>
                   )}
@@ -1213,7 +1207,7 @@ const DetailsContent = ({ params }: any) => {
             destroyOnClose={true}
             title={
               <div className="text-lg">
-                Are you sure you want to Approve this Lecture?
+                Are you sure you want to Approve this Test?
               </div>
             }
             open={approveTestModal}
@@ -1272,7 +1266,7 @@ const DetailsContent = ({ params }: any) => {
             destroyOnClose={true}
             title={
               <div className="text-lg">
-                Are you sure you want to Reject this Course?
+                Are you sure you want to Reject this Test?
               </div>
             }
             open={rejectTestModal}

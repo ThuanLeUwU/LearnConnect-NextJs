@@ -605,6 +605,11 @@ const Dashboard = ({ params }: any) => {
       title: "Requests",
       href: "/request-history",
     },
+    {
+      image: "/menu-icon/receipt.png",
+      title: "Requests",
+      href: "/order-history",
+    },
   ];
 
   const [showQuestionForm, setShowQuestionForm] = useState(false);
@@ -1153,6 +1158,11 @@ const Dashboard = ({ params }: any) => {
                       >
                         Enrollment: {course?.totalEnrollment}
                       </p>
+                      <p
+                        className={`${InstructorCourseStyle.featured_bottom_amount}`}
+                      >
+                        Lectures : {course?.lectureCount}
+                      </p>
                     </div>
                     <div>
                       <p
@@ -1234,31 +1244,33 @@ const Dashboard = ({ params }: any) => {
                     Test
                   </button>
                 </li>
-                <li
-                  className={`cursor-pointer rounded-md ${
-                    activeTab === "tab3"
-                      ? "bg-[#309255] text-white"
-                      : "bg-white"
-                  }`}
-                  onClick={() => handleTabClick("tab3")}
-                >
-                  <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#309255]">
-                    Reviews
-                  </button>
-                </li>
+                {course?.status === 0 && (
+                  <li
+                    className={`cursor-pointer rounded-md ${
+                      activeTab === "tab3"
+                        ? "bg-[#309255] text-white"
+                        : "bg-white"
+                    }`}
+                    onClick={() => handleTabClick("tab3")}
+                  >
+                    <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#309255]">
+                      Reviews
+                    </button>
+                  </li>
+                )}
               </ul>
             </div>
             {activeTab === "tab1" && (
               <div className={`${InstructorCourseStyle.lecture}`}>
-                {course?.lectureCount !== lectures.length ? (
+                {/* {course?.lectureCount !== lectures.length ? (
                   <div className="flex justify-between mb-5">
                     <Button onClick={showModal}> New Lectures</Button>
                   </div>
-                ) : (
-                  <div className="flex justify-between mb-5">
-                    <Button disabled> New Lectures</Button>
-                  </div>
-                )}
+                ) : ( */}
+                <div className="flex justify-between mb-5">
+                  <Button onClick={showModal}> New Lectures</Button>
+                </div>
+                {/* )} */}
 
                 {loading ? (
                   <Spin size="large" />
@@ -1326,15 +1338,19 @@ const Dashboard = ({ params }: any) => {
                               </div>
                               <h3 className="text-xl font-semibold mt-2 text-center ">
                                 <div className=" flex flex-col items-center justify-center mb-2">
-                                  <div className="flex flex-row justify-center items-center gap-2 ">
+                                  <div className="flex justify-center items-center gap-2 ">
                                     <div className="text-3xl flex flex-col gap-2">
                                       <div>Title: {item.test.title} </div>
-                                      <Tag
-                                        className="flex justify-center text-2xl"
-                                        color={getStatusColor(item.test.status)}
-                                      >
-                                        {getStatusText(item.test.status)}
-                                      </Tag>
+                                      <div className="flex justify-center ">
+                                        <Tag
+                                          className="text-2xl"
+                                          color={getStatusColor(
+                                            item.test.status
+                                          )}
+                                        >
+                                          {getStatusText(item.test.status)}
+                                        </Tag>
+                                      </div>
                                     </div>
                                   </div>
 

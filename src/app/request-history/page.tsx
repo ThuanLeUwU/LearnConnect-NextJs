@@ -157,6 +157,11 @@ const Reviews = () => {
       title: "Requests",
       href: "/request-history",
     },
+    {
+      image: "/menu-icon/receipt.png",
+      title: "Order History",
+      href: "/order-history",
+    },
   ];
 
   const showModal = () => {

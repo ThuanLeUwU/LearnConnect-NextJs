@@ -114,6 +114,11 @@ const InstructorCourse = () => {
       title: "Requests",
       href: "/request-history",
     },
+    {
+      image: "/menu-icon/receipt.png",
+      title: "Order History",
+      href: "/order-history",
+    },
   ];
 
   const [dashboardCourse, setDashboardCourse] = useState("");
@@ -397,7 +402,9 @@ const InstructorCourse = () => {
               </div>
             </div>
             {listCourseInstructor.length === 0 ? (
-              <Empty />
+              <div className="py-5">
+                <Empty />
+              </div>
             ) : (
               <>
                 {loading ? (
