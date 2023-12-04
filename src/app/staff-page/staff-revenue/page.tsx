@@ -705,7 +705,7 @@ const StaffRevenue = () => {
               </div>
             </div>
             <div className="text-center font-semibold text-5xl pb-5 pl-5">
-              Table Details
+              Income of mentors
             </div>
             <Table
               dataSource={revenueOneMentor}

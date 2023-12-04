@@ -70,7 +70,7 @@ const LectureModeration = ({ params }: any) => {
       try {
         http
           .get(
-            `https://learnconnectapitest.azurewebsites.net/api/content-moderation/moderation?lectureId=${LectureId}`
+            `https://learnconnectapitest.azurewebsites.net/api/content-moderation/get-moderation?lectureId=${LectureId}`
           )
           .then((res) => {
             setModerationLecture(res.data);
