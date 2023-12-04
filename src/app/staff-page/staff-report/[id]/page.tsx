@@ -171,7 +171,7 @@ const StaffReportID = ({ params }: any) => {
             </div> */}
               <div className="ml-auto">
                 <button
-                  className="mx-5 my-3 px-5 py-3 bg-red-500 rounded-lg text-white"
+                  className="mx-5 my-3 px-5 py-3 border-2 text-black border-red-500 bg-white rounded-lg hover:bg-red-500 hover:text-white"
                   onClick={handleBanClick}
                 >
                   Ban this {target}

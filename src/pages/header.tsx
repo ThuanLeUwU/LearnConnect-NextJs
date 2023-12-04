@@ -226,7 +226,7 @@ const Header = () => {
               {userData?.role === 2 ? (
                 <button
                   onClick={handleSwitchRole}
-                  className="text-white border border-solid border-[#309255] shadow-lg border-opacity-20 rounded-lg bg-[#309255] py-1 px-3"
+                  className="text-black border-2 border-[#309255] shadow-lg hover:text-white hover:bg-[#309255] rounded-lg bg-[#fff] py-1 px-3"
                 >
                   Switch role {role === 3 ? "mentor" : "student"}
                 </button>
@@ -235,7 +235,7 @@ const Header = () => {
               )}
               {userData?.role === 0 ? (
                 <button
-                  className="text-white border border-solid border-[#309255] border-opacity-20 rounded-lg bg-[#309255] py-1 px-3"
+                  className="text-black border-2 border-[#309255] shadow-lg hover:text-white hover:bg-[#309255] rounded-lg bg-[#fff] py-1 px-3"
                   onClick={showModal}
                 >
                   Create Account for staff
@@ -651,7 +651,7 @@ const Header = () => {
 
                     <div>
                       {userData?.role == 3 ? (
-                        <div className={`${headerStyles.regis_btn}`}>
+                        <div className="border-2 border-[#309255] px-2 py-1 rounded-lg bg-[#fff] hover:bg-[#309255] hover:text-white mr-5">
                           <Button onClick={handleClickBecomeMentor}>
                             Become a Mentor
                           </Button>
