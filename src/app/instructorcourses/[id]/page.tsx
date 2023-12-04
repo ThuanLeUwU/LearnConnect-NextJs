@@ -607,7 +607,7 @@ const Dashboard = ({ params }: any) => {
     },
     {
       image: "/menu-icon/receipt.png",
-      title: "Requests",
+      title: "Order History",
       href: "/order-history",
     },
   ];
