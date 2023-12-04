@@ -102,7 +102,7 @@ export default function ProfileUser() {
                               : "text-red-600"
                           }`}
                         >
-                          {notification.isRead ? "Read" : "Unread"}
+                          {/* {notification.isRead ? "Read" : "Unread"} */}
                         </p>
                       </div>
                     ))}

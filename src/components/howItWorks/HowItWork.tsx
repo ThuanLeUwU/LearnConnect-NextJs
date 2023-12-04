@@ -81,6 +81,7 @@ const HowItWork = () => {
                       src={item.mentorInfo.mentorImage}
                       // className="w-[100px] "
                       size={120}
+                      className="border-[#e7f8ee] border "
                     />
                   </button>
                   <div className="flex flex-col items-center">

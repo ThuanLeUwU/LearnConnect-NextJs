@@ -152,38 +152,43 @@ const Schedule: React.FC<ScheduleData> = ({ scheduleData }) => {
           <p className="font-bold text-2xl ">Event Details</p>
         </div>
         {selectedEvent?.start && selectedEvent.start.length > 0 && (
-          <div className="border border-[] bg-[#e7f8ee] px-4 py-2 mt-2 rounded-lg">
-            <p className="font-bold text-2xl mt-3">
-              Start Today: <span className="font-normal">{currentDate}</span>
-            </p>
+          <div className=" border-t border-t-[#309255] px-4 py-2 mt-2">
             {selectedEvent.start.map((s, index) => (
               <div key={index}>
-                <button
-                  onClick={() => {
-                    handleMoveToCourse(s?.courseId);
-                  }}
-                >
-                  {" "}
-                  <p className="hover:underline text-xl font-bold mt-1">
-                    {s?.courseName}
-                  </p>
-                </button>
+                <div className="flex justify-between">
+                  <button
+                    onClick={() => {
+                      handleMoveToCourse(s?.courseId);
+                    }}
+                  >
+                    {" "}
+                    <p className="hover:underline text-xl font-bold mt-2">
+                      {s?.courseName}
+                    </p>
+                  </button>
+                  {index === 0 && (
+                    <p className="border-[#309255] border py-1 px-2 font-normal rounded-lg text-[#309255] mt-2">
+                      Start
+                    </p>
+                  )}
+                </div>
                 {editMode === s.id ? (
                   <div className="flex">
                     <TextArea
                       defaultValue={s?.note}
                       onChange={(e) => setEditedNote(e.target.value)}
-                      className="w-11/12 flex"
+                      className="w-11/12 flex my-2"
+                      autoSize={{ minRows: 4, maxRows: 15 }}
                     />
                     <div className="flex-col flex justify-between">
                       <button
-                        className="text-xl ml-2 text-red-500"
+                        className="text-xl ml-2 text-red-500 my-2"
                         onClick={() => setEditMode(0)}
                       >
                         <AiOutlineClose />
                       </button>
                       <button
-                        className="text-2xl ml-2 text-green-500"
+                        className="text-2xl ml-2 text-green-500 my-2"
                         onClick={() => {
                           EditEvent(s);
                           setEditMode(0);
@@ -219,38 +224,43 @@ const Schedule: React.FC<ScheduleData> = ({ scheduleData }) => {
           </div>
         )}
         {selectedEvent?.end && selectedEvent.end.length > 0 && (
-          <div className="border border-[] bg-[#edc4c2] px-4 py-2 mt-2 rounded-lg">
-            <p className="font-bold text-2xl mt-3">
-              Finish Today: <span className="font-normal">{currentDate}</span>
-            </p>
+          <div className=" border-t border-t-red-700 px-4 py-2 mt-2">
             {selectedEvent.end.map((s, index) => (
               <div key={index}>
-                <button
-                  onClick={() => {
-                    handleMoveToCourse(s?.courseId);
-                  }}
-                >
-                  {" "}
-                  <p className="hover:underline text-xl font-bold mt-1">
-                    {s?.courseName}
-                  </p>
-                </button>
-                {editMode === s.id ? (
+                <div className="flex justify-between">
+                  <button
+                    onClick={() => {
+                      handleMoveToCourse(s?.courseId);
+                    }}
+                  >
+                    {" "}
+                    <p className="hover:underline text-xl font-bold mt-2">
+                      {s?.courseName}
+                    </p>
+                  </button>
+                  {index === 0 && (
+                    <p className="border-red-700 border py-1 px-2 font-normal rounded-lg text-red-700 mt-2">
+                      Finish
+                    </p>
+                  )}
+                </div>
+                {editMode === -s.id ? (
                   <div className="flex">
                     <TextArea
                       defaultValue={s?.note}
                       onChange={(e) => setEditedNote(e.target.value)}
-                      className="w-11/12 flex"
+                      autoSize={{ minRows: 4, maxRows: 15 }}
+                      className="w-11/12 flex my-2"
                     />
-                    <div className="flex-col flex justify-between">
+                    <div className="flex-col flex justify-between ">
                       <button
-                        className="text-xl ml-2 text-red-500"
+                        className="text-xl ml-2 text-red-500 my-2"
                         onClick={() => setEditMode(0)}
                       >
                         <AiOutlineClose />
                       </button>
                       <button
-                        className="text-2xl ml-2 text-green-500"
+                        className="text-2xl ml-2 text-green-500 my-2"
                         onClick={() => {
                           EditEvent(s);
                           setEditMode(0);
@@ -266,18 +276,18 @@ const Schedule: React.FC<ScheduleData> = ({ scheduleData }) => {
                     <div className="flex">
                       <button
                         className="bg-white min-w-[30px] text-black border border-[#E0E0E0] hover:border-red-500 rounded-lg hover:text-black transition duration-300 p-2 flex ml-auto"
-                        onClick={() => setEditMode(s.id)}
+                        onClick={() => setEditMode(-s.id)}
                       >
                         <CiEdit />
                       </button>
                       <button
-                        className="bg-white min-w-[30px] text-black border border-[#E0E0E0] hover:border-red-500 rounded-lg hover:text-black transition duration-300 p-2 flex ml-2 "
+                        className="bg-white min-w-[30px] text-black border border-[#E0E0E0] hover:border-red-500 rounded-lg hover:text-black transition duration-300 p-2 flex ml-2"
                         onClick={() => {
                           DeleteEvent(s.id);
                         }}
                       >
                         <MdDelete />
-                      </button>{" "}
+                      </button>
                     </div>
                   </div>
                 )}
