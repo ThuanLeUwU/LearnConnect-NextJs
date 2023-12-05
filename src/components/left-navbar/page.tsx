@@ -29,7 +29,7 @@ const LeftNavbar = ({ page1, page2, page3, page4, page5, page6, page7 }) => {
     },
     {
       image: "/menu-icon/book-bookmark.png",
-      title: "Major&Specialize",
+      title: "Major&Specialization",
       href: `${page5}`,
     },
     {
@@ -39,7 +39,7 @@ const LeftNavbar = ({ page1, page2, page3, page4, page5, page6, page7 }) => {
     },
     {
       image: "/menu-icon/receipt.png",
-      title: "Transaction",
+      title: "Order History",
       href: `${page7}`,
     },
   ];

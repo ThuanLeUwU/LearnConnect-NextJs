@@ -1,25 +1,10 @@
 "use client";
 import Image from "next/image";
-import styles from "../user-manage/styles.module.scss";
 import Link from "next/link";
-import InstructorCourseStyle from "./styles.module.scss";
-import {
-  JSXElementConstructor,
-  PromiseLikeOfReactNode,
-  ReactElement,
-  ReactNode,
-  ReactPortal,
-  useEffect,
-  useState,
-} from "react";
+import InstructorCourseStyle from "./styles/style.module.scss";
+import { useEffect, useState } from "react";
 import { UserAuth } from "../context/AuthContext";
 import {
-  Box,
-  Card,
-  CircularProgress,
-  Paper,
-  Table,
-  TableBody,
   TableCell,
   TableContainer,
   TableHead,
@@ -33,14 +18,29 @@ import { format, parseISO } from "date-fns";
 import axios from "axios";
 import Head from "next/head";
 import PropTypes from "prop-types";
-import { Button, Form, Modal, Tag, Table as AntTable, Space } from "antd";
+import {
+  Button,
+  Form,
+  Modal,
+  Tag,
+  Table as AntTable,
+  Space,
+  Breadcrumb,
+  Tooltip,
+  Input,
+  Spin,
+} from "antd";
 import {
   EditOutlined,
+  SearchOutlined,
   StopOutlined,
   UserDeleteOutlined,
 } from "@ant-design/icons";
+import debounce from "lodash/debounce";
+import { useRouter } from "next/navigation";
 
 export type User = {
+  listUser: any;
   id: string | number;
   password: string;
   email: string;
@@ -100,25 +100,43 @@ export default function UserManagePage() {
 
   const [selected, setSelected] = useState();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await axios.get(
-        `https://learnconnectapitest.azurewebsites.net/api/user`
-      );
-      // const headers = {
-      //   'Authorization': 'Bearer ' + getCookie('accessToken')
-      // }
-      // const response = await axios.get(`https://evenu.herokuapp.com/api/students`, {
-      //   headers
-      // })
-      const sortedData = response.data.sort((a, b) => a.role - b.role);
-      // setUserData(sortedData);
-      setAllUser(sortedData);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState<any>();
+  console.log("tehe", searchResults);
+  console.log("tehe", searchTerm);
+  const handleSearch = () => {
+    setSearchResults(searchTerm);
+  };
+  const users = [
+    { id: 1, username: "user1" },
+    { id: 2, username: "user2" },
+    { id: 3, username: "user3" },
+    // Add more user data as needed
+  ];
 
-      setMounted(true);
-    };
-    fetchData();
-  }, [userData]);
+  useEffect(() => {
+    if (userData) {
+      const fetchData = async () => {
+        const response = await axios.get(
+          `https://learnconnectapitest.azurewebsites.net/api/user/search?searchQuery=${searchTerm}&currentPage=1&pageSize=9999`
+        );
+        // const headers = {
+        //   'Authorization': 'Bearer ' + getCookie('accessToken')
+        // }
+        // const response = await axios.get(`https://evenu.herokuapp.com/api/students`, {
+        //   headers
+        // })
+        const sortedData = response.data.listUser.sort(
+          (a, b) => a.role - b.role
+        );
+        // setUserData(sortedData);
+        setAllUser(sortedData);
+
+        setMounted(true);
+      };
+      fetchData();
+    }
+  }, [userData, searchTerm]);
 
   const menuItem = [
     // {
@@ -126,11 +144,13 @@ export default function UserManagePage() {
     //   href: "/instructorcourses",
     // },
     {
-      image: "/menu-icon/icon-2.png",
+      image: "/images/user.png",
+      title: "Users",
       href: "/user-manage",
     },
     {
-      image: "/menu-icon/icon-3.png",
+      image: "/images/chart-user.png",
+      title: "Dashboard",
       href: "/dashboard",
     },
     // {
@@ -229,15 +249,27 @@ export default function UserManagePage() {
       key: "action",
       render: (record) => (
         <Space size="middle">
+          {record.role === 0 || record.role === 1 ? (
+            <Button
+              type="primary"
+              style={{ color: "black" }}
+              icon={<EditOutlined />}
+              onClick={() => showModal(record)}
+            >
+              Edit
+            </Button>
+          ) : (
+            <></>
+          )}
+
           <Button
             type="primary"
-            style={{ color: "black" }}
-            icon={<EditOutlined />}
-            onClick={() => showModal(record)}
+            danger
+            onClick={() => {
+              detailsUser(record.id);
+            }}
+            icon={<StopOutlined />}
           >
-            Edit
-          </Button>
-          <Button type="primary" danger icon={<StopOutlined />}>
             Ban
           </Button>
           {/* Add more action buttons if needed */}
@@ -249,48 +281,86 @@ export default function UserManagePage() {
   const handlePageChange = (current, pageSize) => {
     setPagination({ current, pageSize });
   };
+
+  const router = useRouter();
+
+  const detailsUser = (id) => {
+    router.push(`/user-manage/${id}`);
+  };
+
   return (
     <>
-      <Head>
-        <title>Admin nè</title>
-      </Head>
-      <div className={`${InstructorCourseStyle.content_wrapper}`}>
-        <div className={`${InstructorCourseStyle.sidebar_wrapper}`}>
-          <div className={`${InstructorCourseStyle.sidebar_list}`}>
-            {menuItem.map((item, index) => {
-              return (
-                <Link
-                  key={index}
-                  href={item.href}
-                  className={`${InstructorCourseStyle.sidebar_active}`}
-                >
-                  <img src={item.image} alt="image"></img>
-                </Link>
-              );
-            })}
-          </div>
-        </div>
-        <div className={`${InstructorCourseStyle.body_wrapper}`}>
-          <div className="ml-3">
-            <Typography variant="h3">User Manager</Typography>
-          </div>
-          <div className={`${InstructorCourseStyle.body_container}`}>
-            <AntTable
-              columns={columns}
-              dataSource={allUser}
-              pagination={{ ...pagination, onChange: handlePageChange }}
-              className="mx-5 shadow-[5px_15px_25px_10px_rgba(0,0,0,0.15)] mt-2 rounded-lg"
+      {!userData ? (
+        <Spin size="large" />
+      ) : (
+        <div className="w-full">
+          <div className={`${InstructorCourseStyle.content_wrapper}`}>
+            <div className={`${InstructorCourseStyle.sidebar_wrapper}`}>
+              <div className={`${InstructorCourseStyle.sidebar_list}`}>
+                {menuItem.map((item, index) => {
+                  return (
+                    <Tooltip title={item.title} key={index}>
+                      <Link
+                        href={item.href}
+                        className={`${InstructorCourseStyle.sidebar_active}`}
+                      >
+                        <img src={item.image} alt="image"></img>
+                      </Link>
+                    </Tooltip>
+                  );
+                })}
+              </div>
+            </div>
+            <div className={`${InstructorCourseStyle.body_wrapper}`}>
+              {/* DashBoard */}
+              <div
+                className={`${InstructorCourseStyle.course_tab} bg-[#e7f8ee]`}
+              >
+                <Breadcrumb>
+                  <Breadcrumb.Item>
+                    <div className="text-start font-semibold text-4xl my-5 px-4">
+                      Users Management
+                    </div>
+                  </Breadcrumb.Item>
+                </Breadcrumb>
+                <div className="flex flex-row justify-between gap-2">
+                  <Input
+                    className="w-[300px]"
+                    placeholder="Search by username"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                  <Button
+                    type="primary"
+                    className="bg-[#4096ff]"
+                    onClick={handleSearch}
+                  >
+                    <SearchOutlined />
+                  </Button>
+                </div>
+              </div>
+              <div className="pt-10">
+                <AntTable
+                  columns={columns}
+                  dataSource={allUser}
+                  pagination={{ ...pagination, onChange: handlePageChange }}
+                  className="mx-5 shadow-[5px_15px_25px_10px_rgba(0,0,0,0.15)] mt-2 rounded-lg"
 
-              // pagination={{
-              //   pageSize: rowsPerPage,
-              //   current: page + 1,
-              //   total: allUser.length,
-              //   onChange: handleChangePage,
-              // }}
-            />
+                  // pagination={{
+                  //   pageSize: rowsPerPage,
+                  //   current: page + 1,
+                  //   total: allUser.length,
+                  //   onChange: handleChangePage,
+                  // }}
+                />
+              </div>
+
+              {/* <div className=""></div> */}
+            </div>
           </div>
         </div>
-      </div>
+      )}
+
       {/* Modal Update Role */}
       <Modal
         destroyOnClose={true}

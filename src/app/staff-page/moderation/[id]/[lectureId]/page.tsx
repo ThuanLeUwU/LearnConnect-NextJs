@@ -287,14 +287,14 @@ const LectureModeration = ({ params }: any) => {
               </div>
               <div className="flex-1 border-2 p-5 shadow-[5px_15px_25px_10px_rgba(0,0,0,0.15)] mt-2 rounded-lg flex flex-col gap-4">
                 <Space className="flex justify-end">
-                  {lecture?.status === 0 && (
+                  {/* {lecture?.status === 0 && (
                     <Button
                       danger
                       // onClick={() => handleBanLecture(record)}
                     >
                       Ban
                     </Button>
-                  )}
+                  )} */}
                   {lecture?.status === 1 && (
                     <>
                       <Button onClick={() => handleAcceptLecture()}>
@@ -317,7 +317,7 @@ const LectureModeration = ({ params }: any) => {
                       Reason : {lecture.rejectReason}
                     </div>
                   )}
-                  {lecture?.status === 3 && <Button>Unban</Button>}
+                  {/* {lecture?.status === 3 && <Button>Unban</Button>} */}
                 </Space>
                 <div className="flex justify-center text-3xl">
                   Content moderation details

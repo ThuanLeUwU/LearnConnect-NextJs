@@ -543,21 +543,24 @@ const DetailsContent = ({ params }: any) => {
 
                 <div className="flex justify-end gap-2  items-center">
                   {course?.status === 0 ? (
-                    <button
-                      className="bg-white text-black border rounded-lg border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-6 py-2"
-                      onClick={handleBan}
-                    >
-                      Ban
-                    </button>
-                  ) : course?.status === 1 ? (
+                    <></>
+                  ) : // <button
+                  //   className="bg-white text-black border rounded-lg border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-6 py-2"
+                  //   onClick={handleBan}
+                  // >
+                  //   Ban
+                  // </button>
+                  course?.status === 1 ? (
                     <>
                       {" "}
-                      <button
-                        className="bg-white text-black border rounded-lg border-[#4caf50] hover:bg-[#4caf50] hover:text-white transition duration-300 px-4 py-2"
-                        onClick={handleApprove}
-                      >
-                        Approve
-                      </button>
+                      {course.lectureCount <= lectures.length && (
+                        <button
+                          className="bg-white text-black border rounded-lg border-[#4caf50] hover:bg-[#4caf50] hover:text-white transition duration-300 px-4 py-2"
+                          onClick={handleApprove}
+                        >
+                          Approve
+                        </button>
+                      )}
                       <button
                         className="bg-white text-black border rounded-lg border-[#ffa04e] hover:bg-[#ffa04e] hover:text-white transition duration-300 px-5 py-2"
                         // style={{
@@ -724,11 +727,6 @@ const DetailsContent = ({ params }: any) => {
                             <div className="flex flex-col">
                               <div className="flex flex-row justify-end">
                                 <Space>
-                                  {item.test.status === 0 && (
-                                    <button className="bg-white text-black border rounded-lg border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-4 py-2">
-                                      Ban
-                                    </button>
-                                  )}
                                   {item.test.status === 1 && (
                                     <>
                                       {" "}
@@ -749,15 +747,6 @@ const DetailsContent = ({ params }: any) => {
                                         Reject
                                       </button>
                                     </>
-                                  )}
-                                  {item.test.status === 2 && <></>}
-                                  {item.test.status === 3 && (
-                                    <button
-                                      className="bg-white text-black border rounded-lg border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-3 py-1 mr-5"
-                                      // onClick={handleUnBan}
-                                    >
-                                      Un ban
-                                    </button>
                                   )}
                                 </Space>{" "}
                               </div>
