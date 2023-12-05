@@ -36,7 +36,6 @@ import {
   StopOutlined,
   UserDeleteOutlined,
 } from "@ant-design/icons";
-import debounce from "lodash/debounce";
 import { useRouter } from "next/navigation";
 
 export type User = {
@@ -249,28 +248,14 @@ export default function UserManagePage() {
       key: "action",
       render: (record) => (
         <Space size="middle">
-          {record.role === 0 || record.role === 1 ? (
-            <Button
-              type="primary"
-              style={{ color: "black" }}
-              icon={<EditOutlined />}
-              onClick={() => showModal(record)}
-            >
-              Edit
-            </Button>
-          ) : (
-            <></>
-          )}
-
           <Button
             type="primary"
-            danger
+            style={{ color: "black" }}
             onClick={() => {
               detailsUser(record.id);
             }}
-            icon={<StopOutlined />}
           >
-            Ban
+            View Detail
           </Button>
           {/* Add more action buttons if needed */}
         </Space>

@@ -37,6 +37,7 @@ import {
 } from "@ant-design/icons";
 import debounce from "lodash/debounce";
 import { UserAuth } from "@/app/context/AuthContext";
+import { useRouter } from "next/navigation";
 
 export type User = {
   listUser: any;
@@ -122,7 +123,7 @@ export default function DetailUser({ params }: any) {
   const [form] = Form.useForm();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const displayRoleText = (role: number) => {
+  const displayRoleText = (role: any) => {
     if (role === 0) {
       return <div className="text-red-500"> Admin</div>;
     } else if (role === 1) {
@@ -134,16 +135,17 @@ export default function DetailUser({ params }: any) {
     }
   };
 
-  const displayActive = (status: number) => {
+  const displayActive = (status: any) => {
     if (status === 0) {
-      return (
-        <Tag color="green" className="mx-2">
-          Active
-        </Tag>
-      );
+      return <div className="text-green-500">Active</div>;
     } else if (status === 1) {
-      return <Tag color="red">Inactive</Tag>;
+      return <div className="text-red-500">Inactive</div>;
     }
+  };
+  const router = useRouter();
+
+  const breadcrumbNavigation = () => {
+    router.push("/user-manage");
   };
 
   return (
@@ -171,19 +173,81 @@ export default function DetailUser({ params }: any) {
             </div>
             <div className={`${InstructorCourseStyle.body_wrapper}`}>
               {/* DashBoard */}
-              <div
-                className={`${InstructorCourseStyle.course_tab} bg-[#e7f8ee]`}
-              >
-                <Breadcrumb>
+              <div className="flex justify-between items-center px-5 bg-[#e7f8ee] mb-5">
+                <Breadcrumb className="text-start font-semibold text-4xl my-5 px-4">
                   <Breadcrumb.Item>
-                    <div className="text-start font-semibold text-4xl my-5 px-4">
-                      Users Management
-                    </div>
+                    <button onClick={breadcrumbNavigation}>User</button>
                   </Breadcrumb.Item>
                   <Breadcrumb.Item>{detailUser?.fullName}</Breadcrumb.Item>
+                  {/* <Breadcrumb.Item>React</Breadcrumb.Item> */}
                 </Breadcrumb>
               </div>
-              <div className="pt-10"></div>
+              <div className="pt-10 grid grid-cols-12 gap-4 mx-5">
+                <div className="col-span-4 border-2 rounded-lg flex flex-col shadow-[5px_15px_25px_10px_rgba(0,0,0,0.15)]">
+                  {/* Phần ảnh */}
+                  <div className="bg-gray-200 p-5 text-3xl border-b-2 border-gray-300">
+                    Avatar
+                  </div>
+                  <div className="p-5 flex justify-center">
+                    <img
+                      className="w-[300px] h-[300px]"
+                      src={detailUser?.profilePictureUrl}
+                    />{" "}
+                  </div>
+                </div>
+                <div className="col-span-8 border-2 rounded-lg flex flex-col shadow-[5px_15px_25px_10px_rgba(0,0,0,0.15)]">
+                  {/* Phần thông tin */}
+                  <div className="bg-gray-200 p-5 text-3xl border-b-2 border-gray-300">
+                    Account Information
+                  </div>
+                  <div className="p-5">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className=" p-4">
+                        <h2 className="text-lg font-semibold mb-2">Name</h2>
+                        {/* <Input disabled value={detailUser?.fullName} /> */}
+                        <div className="border-2 rounded-lg border-gray-300 bg-gray-200">
+                          <div className=" px-5 py-2 w-full">
+                            {detailUser?.fullName}
+                          </div>
+                        </div>
+
+                        {/* Thêm dữ liệu tên ở đây */}
+                      </div>
+                      <div className=" p-4">
+                        <h2 className="text-lg font-semibold mb-2">Email</h2>
+                        <div className="border-2 rounded-lg border-gray-300 bg-gray-200">
+                          <div className=" px-5 py-2 w-full">
+                            {detailUser?.email}
+                          </div>
+                        </div>
+                        {/* Thêm dữ liệu email ở đây */}
+                      </div>
+                      <div className=" p-4">
+                        <h2 className="text-lg font-semibold mb-2">Status</h2>
+                        <div className="border-2 rounded-lg border-gray-300 bg-gray-200">
+                          <div className=" px-5 py-2 w-full">
+                            {displayActive(detailUser?.status)}
+                          </div>
+                        </div>
+                        {/* Thêm dữ liệu trạng thái ở đây */}
+                      </div>
+                      <div className=" p-4">
+                        <h2 className="text-lg font-semibold mb-2">Role</h2>
+                        <div className="border-2 rounded-lg border-gray-300 bg-gray-200">
+                          <div className=" px-5 py-2 w-full">
+                            {displayRoleText(detailUser?.role)}
+                          </div>
+                        </div>
+                        {/* Thêm dữ liệu vai trò ở đây */}
+                      </div>
+                    </div>
+
+                    <button className="flex justify-center w-full border-2 mt-4 py-2 text-lg font-medium border-red-400 rounded-lg hover:bg-red-500 hover:text-white">
+                      Deactivate This User
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

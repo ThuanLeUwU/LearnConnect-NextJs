@@ -226,6 +226,7 @@ const Dashboard = ({ params }: any) => {
           setLoading(false);
           setIsModerating(true);
           form.resetFields();
+          setSource("");
           handleCreateCancel();
         });
     }, 3000);
@@ -266,7 +267,7 @@ const Dashboard = ({ params }: any) => {
             }
           )
           .then(() => {
-            // form.resetFields();
+            form.resetFields();
             // handleCreateCancel();
             // toast.success("Create Lecture Successfully");
             // http

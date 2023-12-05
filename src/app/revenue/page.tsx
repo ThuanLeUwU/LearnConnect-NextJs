@@ -512,8 +512,8 @@ const Revenue = () => {
                       size="large"
                       defaultValue={selected1}
                       onChange={handleChangeSelected1}
-                      style={{ width: 120 }}
-                      className="mx-5 w-[120px]"
+                      style={{ width: 150 }}
+                      className="mx-5 "
                     >
                       {timeLine.map((option, index) => (
                         // <div key={index}>hahaha {option.date}</div>
@@ -571,8 +571,8 @@ const Revenue = () => {
                       size="large"
                       defaultValue={selected2}
                       onChange={handleChangeSelected2}
-                      style={{ width: 120 }}
-                      className="mx-5 w-[120px]"
+                      style={{ width: 150 }}
+                      className="mx-5"
                     >
                       {timeLine.map((option, index) => (
                         // <div key={index}>hahaha {option.date}</div>
