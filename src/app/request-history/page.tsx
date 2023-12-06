@@ -450,11 +450,11 @@ const Reviews = () => {
                   rules={[
                     { required: true, message: "Please input Description" },
                   ]}
-                  label="Description"
+                  label="Experiment"
                   name="reason"
                   labelAlign="left"
                 >
-                  <Input placeholder="Input Degree, Diploma, Certificate, Qualification" />
+                  <Input.TextArea rows={3} placeholder="Input Experiment" />
                 </Form.Item>
                 <Form.Item
                   rules={[{ required: true, message: "Please input Document" }]}
@@ -605,7 +605,7 @@ const Reviews = () => {
                                             Specialization
                                           </TableCell>
                                           <TableCell className="w-[600px] text-[14px]">
-                                            Description
+                                            Experiment
                                           </TableCell>
                                           <TableCell className="text-[14px] w-[200px]">
                                             Image of Document
@@ -780,7 +780,7 @@ const Reviews = () => {
                                             Specialization
                                           </TableCell>
                                           <TableCell className="w-[600px] text-[14px]">
-                                            Description
+                                            Experiment
                                           </TableCell>
                                           <TableCell className="text-[14px] w-[200px]">
                                             Image of Document

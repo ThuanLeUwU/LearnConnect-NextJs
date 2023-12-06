@@ -604,19 +604,16 @@ const MentorRequest = () => {
                   onFinish={(values) => handleConfirmBan(values.rejectReason)}
                 >
                   <Form.Item
-                    label="Reject Reason"
+                    label="Reason"
                     name="rejectReason"
                     rules={[
                       {
                         required: false,
-                        message: "Please provide a reject reason!",
+                        message: "Please provide a reason!",
                       },
                     ]}
                   >
-                    <Input.TextArea
-                      placeholder="Enter reject reason..."
-                      rows={4}
-                    />
+                    <Input.TextArea placeholder="Enter reason..." rows={4} />
                   </Form.Item>
                   <Space className="justify-end w-full">
                     <Form.Item className="mb-0">
@@ -720,7 +717,7 @@ const MentorRequest = () => {
                 destroyOnClose={true}
                 title={
                   <div className="text-lg">
-                    Are you sure you want to ban this course ?
+                    Do you want to perform {action} action?
                   </div>
                 }
                 open={isConfirmationModalOpen}
@@ -742,19 +739,16 @@ const MentorRequest = () => {
                   onFinish={(values) => handleConfirmBan(values.rejectReason)}
                 >
                   <Form.Item
-                    label="Reject Reason"
+                    label="Reason"
                     name="rejectReason"
                     rules={[
                       {
                         required: false,
-                        message: "Please provide a reject reason!",
+                        message: "Please provide a reason!",
                       },
                     ]}
                   >
-                    <Input.TextArea
-                      placeholder="Enter reject reason..."
-                      rows={4}
-                    />
+                    <Input.TextArea placeholder="Enter reason..." rows={4} />
                   </Form.Item>
                   <Space className="justify-end w-full">
                     <Form.Item className="mb-0">
