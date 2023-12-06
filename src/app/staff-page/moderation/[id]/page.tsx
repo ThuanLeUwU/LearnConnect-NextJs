@@ -253,6 +253,7 @@ const DetailsContent = ({ params }: any) => {
     setRejectCourse(false);
     setBanCourse(false);
     setUnBanCourse(false);
+    setApproveTestModal(false);
     setRejectTestModal(false);
   };
 
@@ -296,16 +297,9 @@ const DetailsContent = ({ params }: any) => {
 
       render: (text, record) => {
         return (
-          <>
-            <a
-              onClick={() => {
-                routerPush(record.id);
-                console.log("tne", record.id);
-              }}
-            >
-              Link
-            </a>
-          </>
+          <a href={text} target="_blank" rel="noopener noreferrer">
+            Link
+          </a>
         );
       },
     },
@@ -325,30 +319,20 @@ const DetailsContent = ({ params }: any) => {
       // align: "center",
       render: (text, record) => (
         <Space>
-          {record.status === 0 && (
-            <Button danger onClick={() => handleBanLecture(record)}>
-              Ban
-            </Button>
-          )}
-          {record.status === 1 && (
-            <>
-              <Button onClick={() => handleAcceptLecture(record)}>
-                Accept
-              </Button>
-              <Button
-                style={{
-                  backgroundColor: "#ffa04e",
-                  borderColor: "#ffa04e",
-                  color: "#fff",
-                }}
-                onClick={() => handleRejectLecture(record)}
-              >
-                Reject
-              </Button>
-            </>
-          )}
-          {record.status === 2 && <>-</>}
-          {record.status === 3 && <Button>Unban</Button>}
+          <Button
+            type="default"
+            style={{
+              backgroundColor: "",
+              borderColor: "",
+              color: "black",
+            }}
+            onClick={() => {
+              routerPush(record.id);
+              console.log("tne", record.id);
+            }}
+          >
+            Video Analysis
+          </Button>
         </Space>
       ),
     },
@@ -559,21 +543,24 @@ const DetailsContent = ({ params }: any) => {
 
                 <div className="flex justify-end gap-2  items-center">
                   {course?.status === 0 ? (
-                    <button
-                      className="bg-white text-black border rounded-lg border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-6 py-2"
-                      onClick={handleBan}
-                    >
-                      Ban
-                    </button>
-                  ) : course?.status === 1 ? (
+                    <></>
+                  ) : // <button
+                  //   className="bg-white text-black border rounded-lg border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-6 py-2"
+                  //   onClick={handleBan}
+                  // >
+                  //   Ban
+                  // </button>
+                  course?.status === 1 ? (
                     <>
                       {" "}
-                      <button
-                        className="bg-white text-black border rounded-lg border-[#4caf50] hover:bg-[#4caf50] hover:text-white transition duration-300 px-4 py-2"
-                        onClick={handleApprove}
-                      >
-                        Approve
-                      </button>
+                      {course.lectureCount <= lectures.length && (
+                        <button
+                          className="bg-white text-black border rounded-lg border-[#4caf50] hover:bg-[#4caf50] hover:text-white transition duration-300 px-4 py-2"
+                          onClick={handleApprove}
+                        >
+                          Approve
+                        </button>
+                      )}
                       <button
                         className="bg-white text-black border rounded-lg border-[#ffa04e] hover:bg-[#ffa04e] hover:text-white transition duration-300 px-5 py-2"
                         // style={{
@@ -585,20 +572,13 @@ const DetailsContent = ({ params }: any) => {
                       >
                         Reject
                       </button>
-                      <button
+                      {/* <button
                         className="bg-white text-black border rounded-lg border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-6 py-2"
                         onClick={handleBan}
                       >
                         Ban
-                      </button>
+                      </button> */}
                     </>
-                  ) : course?.status === 3 ? (
-                    <button
-                      className="bg-white text-black border rounded-lg border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-6 py-2 mr-5"
-                      onClick={handleUnBan}
-                    >
-                      Unban
-                    </button>
                   ) : (
                     <></>
                   )}
@@ -747,11 +727,6 @@ const DetailsContent = ({ params }: any) => {
                             <div className="flex flex-col">
                               <div className="flex flex-row justify-end">
                                 <Space>
-                                  {item.test.status === 0 && (
-                                    <button className="bg-white text-black border rounded-lg border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-4 py-2">
-                                      Ban
-                                    </button>
-                                  )}
                                   {item.test.status === 1 && (
                                     <>
                                       {" "}
@@ -772,15 +747,6 @@ const DetailsContent = ({ params }: any) => {
                                         Reject
                                       </button>
                                     </>
-                                  )}
-                                  {item.test.status === 2 && <></>}
-                                  {item.test.status === 3 && (
-                                    <button
-                                      className="bg-white text-black border rounded-lg border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-3 py-1 mr-5"
-                                      // onClick={handleUnBan}
-                                    >
-                                      Un ban
-                                    </button>
                                   )}
                                 </Space>{" "}
                               </div>
@@ -1230,7 +1196,7 @@ const DetailsContent = ({ params }: any) => {
             destroyOnClose={true}
             title={
               <div className="text-lg">
-                Are you sure you want to Approve this Lecture?
+                Are you sure you want to Approve this Test?
               </div>
             }
             open={approveTestModal}
@@ -1289,7 +1255,7 @@ const DetailsContent = ({ params }: any) => {
             destroyOnClose={true}
             title={
               <div className="text-lg">
-                Are you sure you want to Reject this Course?
+                Are you sure you want to Reject this Test?
               </div>
             }
             open={rejectTestModal}

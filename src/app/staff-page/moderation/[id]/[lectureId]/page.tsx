@@ -2,11 +2,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-import Modal from "@mui/material/Modal";
-import Button from "@mui/material/Button";
 import InstructorCourseStyle from "./styles.module.scss";
 import { toast } from "sonner";
-import { Breadcrumb, Spin, Tag } from "antd";
+import { Breadcrumb, Button, Form, Input, Modal, Space, Spin, Tag } from "antd";
 import LeftNavbar from "@/components/left-navbar/page";
 import MentorRequest from "@/components/mentor-request/page";
 import { UserAuth } from "@/app/context/AuthContext";
@@ -72,7 +70,7 @@ const LectureModeration = ({ params }: any) => {
       try {
         http
           .get(
-            `https://learnconnectapitest.azurewebsites.net/api/content-moderation/moderation?lectureId=${LectureId}`
+            `https://learnconnectapitest.azurewebsites.net/api/content-moderation/get-moderation?lectureId=${LectureId}`
           )
           .then((res) => {
             setModerationLecture(res.data);
@@ -146,6 +144,91 @@ const LectureModeration = ({ params }: any) => {
     }
   };
 
+  const getStatusText2 = (status) => {
+    switch (status) {
+      case 0:
+        return (
+          <Tag color="green" className="text-lg">
+            Valid
+          </Tag>
+        );
+      case 1:
+        return (
+          <Tag color="red" className="text-lg">
+            Invalid
+          </Tag>
+        );
+      default:
+        return "Unknown Status";
+    }
+  };
+
+  const [acceptModal, setAcceptModal] = useState(false);
+  const [form] = Form.useForm();
+
+  const handleAcceptLecture = () => {
+    setAcceptModal(true);
+  };
+
+  const handleModalCancel = () => {
+    setAcceptModal(false);
+    setRejectModal(false);
+  };
+
+  const handleAcceptClick = () => {
+    try {
+      http
+        .post(
+          `https://learnconnectapitest.azurewebsites.net/api/lecture/process-lecture-request?lectureId=${LectureId}&acceptRequest=true`
+        )
+        .then(() => {
+          {
+            handleModalCancel();
+            toast.success("Approve Lecture Successfully");
+            router.push(`/staff-page/moderation/${idCourse}`);
+          }
+        });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const [rejectModal, setRejectModal] = useState(false);
+
+  const handleRejectLecture = () => {
+    setRejectModal(true);
+  };
+
+  const handleRejectClick = (data: any) => {
+    const formData = new FormData();
+    formData.append("note", data.reason);
+    try {
+      http
+        .post(
+          `https://learnconnectapitest.azurewebsites.net/api/lecture/process-lecture-request?lectureId=${LectureId}&acceptRequest=false&note=${data.reason}`,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        )
+        .then(() => {
+          {
+            handleModalCancel();
+            toast.success("Reject Lecture Successfully");
+            // http.get(`/lecture/by-course/${idCourse}`).then((response) => {
+            //   setLecture(response.data);
+            //   setLoading(false);
+            //   // form.resetFields();
+            // });
+            router.push(`/staff-page/moderation/${idCourse}`);
+          }
+        });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <>
       {!userData ? (
@@ -179,12 +262,12 @@ const LectureModeration = ({ params }: any) => {
 
             <div className="mx-5 flex flex-row gap-10">
               <div className="flex-1 border-2 p-5 shadow-[5px_15px_25px_10px_rgba(0,0,0,0.15)] mt-2 rounded-lg">
-                <div className="text-2xl">
-                  Title: {lecture?.title} {getStatusText(lecture?.status)}
+                <div className="text-2xl flex flex-row justify-between">
+                  <div>Lecture: {lecture?.title}</div>{" "}
+                  <div> {getStatusText(lecture?.status)}</div>
                 </div>
-                <div className="text-xl">Description: {lecture?.content}</div>
                 {lecture?.contentUrl && (
-                  <div className="pt-10">
+                  <div className="py-10">
                     {" "}
                     <video
                       width="full"
@@ -197,8 +280,45 @@ const LectureModeration = ({ params }: any) => {
                     </video>
                   </div>
                 )}
+                <div className="text-xl">
+                  <span>Description:</span>
+                  <div>{lecture?.content}</div>
+                </div>
               </div>
-              <div className="flex-1 border-2 p-5 shadow-[5px_15px_25px_10px_rgba(0,0,0,0.15)] mt-2 rounded-lg">
+              <div className="flex-1 border-2 p-5 shadow-[5px_15px_25px_10px_rgba(0,0,0,0.15)] mt-2 rounded-lg flex flex-col gap-4">
+                <Space className="flex justify-end">
+                  {/* {lecture?.status === 0 && (
+                    <Button
+                      danger
+                      // onClick={() => handleBanLecture(record)}
+                    >
+                      Ban
+                    </Button>
+                  )} */}
+                  {lecture?.status === 1 && (
+                    <>
+                      <Button onClick={() => handleAcceptLecture()}>
+                        Accept
+                      </Button>
+                      <Button
+                        style={{
+                          backgroundColor: "#ffa04e",
+                          borderColor: "#ffa04e",
+                          color: "#fff",
+                        }}
+                        onClick={() => handleRejectLecture()}
+                      >
+                        Reject
+                      </Button>
+                    </>
+                  )}
+                  {lecture?.status === 2 && (
+                    <div className="text-xl ">
+                      Reason : {lecture.rejectReason}
+                    </div>
+                  )}
+                  {/* {lecture?.status === 3 && <Button>Unban</Button>} */}
+                </Space>
                 <div className="flex justify-center text-3xl">
                   Content moderation details
                 </div>
@@ -206,56 +326,52 @@ const LectureModeration = ({ params }: any) => {
                   <Spin />
                 ) : (
                   <div>
-                    <div className="flex flex-col gap-5">
-                      <div className="flex flex-row justify-start items-center">
-                        <span className="flex-1 text-2xl">Content Length:</span>
-                        <span className="flex-1 text-xl">
+                    <div className="border-2">
+                      <div className="grid grid-cols-12  border-b border-gray-300">
+                        <div className="col-span-4 font-bold border-r border-gray-300 p-4 break-all">
+                          Content Length:
+                        </div>
+                        <div className="col-span-8 bg-white p-4">
+                          {" "}
                           {moderationLecture?.contentModeration.contentLength}
-                        </span>
+                        </div>
                       </div>
-                      <div className="flex flex-row justify-start items-center">
-                        <span className="flex-1 text-2xl">
+
+                      <div className="grid grid-cols-12  border-b border-gray-300">
+                        <div className="col-span-4 font-bold border-r border-gray-300 p-4 break-all">
                           Percent Explicit:
-                        </span>
-                        <span className="flex-1 text-xl">
+                        </div>
+                        <div className="col-span-8 bg-white p-4">
                           {moderationLecture?.contentModeration.percentExplicit}
-                        </span>
+                        </div>
                       </div>
-                      <div className="flex flex-row justify-start items-center">
-                        <span className="flex-1 text-2xl">Percent Unsafe:</span>
-                        <span className="flex-1 text-xl">
+
+                      <div className="grid grid-cols-12 border-b border-gray-300">
+                        <div className="col-span-4 font-bold border-r border-gray-300 p-4 break-all">
+                          Percent Unsafe:
+                        </div>
+                        <div className="col-span-8 bg-white p-4">
                           {moderationLecture?.contentModeration.percentUnsafe}
-                        </span>
+                        </div>
                       </div>
-                      <div className="flex flex-row justify-start items-center">
-                        <span className="flex-1 text-2xl">Reject Reason:</span>
-                        <span className="flex-1 text-xl">
-                          {moderationLecture?.contentModeration.rejectReason}
-                        </span>
+
+                      <div className="grid grid-cols-12  border-b border-gray-300">
+                        <div className="col-span-4 font-bold border-r border-gray-300 p-4 break-all">
+                          Status:
+                        </div>
+                        <div className="col-span-8 bg-white p-4">
+                          {getStatusText2(
+                            moderationLecture?.contentModeration.status
+                          )}
+                        </div>
                       </div>
-                      <div className="flex flex-row justify-start items-center">
-                        <span className="flex-1 text-2xl">Preview Date:</span>
-                        <span className="flex-1 text-xl">
-                          {moderationLecture?.contentModeration.previewDate}
-                        </span>
-                      </div>
-                      <div className="flex flex-row justify-start items-center">
-                        <span className="flex-1 text-2xl">Status:</span>
-                        <span className="flex-1 text-xl">
-                          {moderationLecture?.contentModeration.status}
-                        </span>
-                      </div>
-                      <div className="flex flex-row justify-start items-center">
-                        <span className="flex-1 text-2xl">Preview By:</span>
-                        <span className="flex-1 text-xl">
-                          {moderationLecture?.contentModeration.previewBy}
-                        </span>
-                      </div>
-                      <div className="flex flex-row justify-start items-center">
-                        <span className="flex-1 text-2xl">Flag Details:</span>
-                        {/* <ul>
-        <!-- You can loop through flag details here if it's an array -->
-      </ul> */}
+                      <div className="grid grid-cols-12 border-gray-300">
+                        <div className="col-span-4 font-bold border-r border-gray-300 p-4 break-all">
+                          Flag Details:
+                        </div>
+                        <div className="col-span-8 bg-white p-4 min-h-[200px]">
+                          {moderationLecture?.contentModeration.percentExplicit}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -267,6 +383,131 @@ const LectureModeration = ({ params }: any) => {
           {/* <div>hehe</div> */}
         </div>
       )}
+      <Modal
+        destroyOnClose={true}
+        title={
+          <div className="text-lg">
+            Are you sure you want to Approve this Lecture?
+          </div>
+        }
+        open={acceptModal}
+        // onOk={handleOk}
+        width="35%"
+        onCancel={handleModalCancel}
+        footer={false}
+        style={{
+          top: "30%",
+        }}
+      >
+        <Form
+          autoComplete="off"
+          form={form}
+          labelCol={{ span: 4 }}
+          wrapperCol={{ span: 16 }}
+          layout="horizontal"
+          className="mt-5"
+          style={{ width: "100%" }}
+          onFinish={handleAcceptClick}
+        >
+          <Space className="justify-end w-full">
+            <Form.Item className="mb-0">
+              <Space>
+                <Button
+                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                  onClick={handleModalCancel}
+                  style={{
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #E0E0E0",
+                    color: "black",
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                  htmlType="submit"
+                  style={{
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #4caf50",
+                    color: "#fff",
+                  }}
+                >
+                  Confirm
+                </Button>
+              </Space>
+            </Form.Item>
+          </Space>
+        </Form>
+      </Modal>
+
+      <Modal
+        destroyOnClose={true}
+        title={
+          <div className="text-lg">
+            Are you sure you want to Reject this Lecture?
+          </div>
+        }
+        open={rejectModal}
+        // onOk={handleOk}
+        width="35%"
+        onCancel={handleModalCancel}
+        footer={false}
+        style={{
+          top: "30%",
+        }}
+      >
+        <Form
+          autoComplete="off"
+          form={form}
+          labelCol={{ span: 4 }}
+          wrapperCol={{ span: 20 }}
+          layout="horizontal"
+          className="mt-5"
+          style={{ width: "100%" }}
+          onFinish={handleRejectClick}
+        >
+          <Form.Item
+            rules={[{ required: true, message: "Please input Reason!" }]}
+            label="Reason"
+            name="reason"
+          >
+            <Input.TextArea rows={4} placeholder="Write your Reason" />
+          </Form.Item>
+
+          <Space className="justify-end w-full">
+            <Form.Item className="mb-0">
+              <Space>
+                <Button
+                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                  onClick={handleModalCancel}
+                  style={{
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #E0E0E0",
+                    color: "black",
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                  htmlType="submit"
+                  style={{
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #4caf50",
+                    color: "#fff",
+                  }}
+                >
+                  Confirm
+                </Button>
+              </Space>
+            </Form.Item>
+          </Space>
+        </Form>
+      </Modal>
     </>
   );
 };

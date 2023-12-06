@@ -17,6 +17,7 @@
   padding-top: 20px;
   padding-bottom: 80px;
   position: relative;
+  // justify-content: space-evenly;
   // gap: 20px;
 }
 
@@ -66,7 +67,11 @@
 }
 
 .body_container {
+  max-width: 1200px;
   padding: 0 15px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
 }
 
 .body_message {
@@ -90,7 +95,6 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  // margin-top: 35px;
   padding: 0 15px;
 
   &_title {
@@ -101,6 +105,7 @@
   }
 
   &_btn {
+    padding-top: 20px;
   }
 }
 
@@ -130,16 +135,11 @@
 
 .course_item {
   border: 1px solid rgba(48, 146, 85, 0.2);
-
   border-radius: 10px;
   padding: 15px;
   margin-top: 30px;
   display: flex;
   justify-content: space-between;
-  box-shadow: 10px 5px 20px 5px rgba(0, 0, 0, 0.15);
-  &:hover {
-    border: 2px solid rgba(7, 47, 22, 0.2);
-  }
   // align-items: center;
 
   & img {
@@ -269,11 +269,10 @@
 //feartured
 .featured {
   display: block;
-  border-radius: 10px;
   margin: 20px 20px 20px 20px;
   flex: 2;
   -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
-  box-shadow: 5px 10px 20px 10px rgba(201, 201, 201, 0.47);
+  box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
   padding: 10px;
 
   &_top {
@@ -311,7 +310,7 @@
     }
 
     &_amount {
-      font-size: 20px;
+      font-size: 30px;
     }
 
     &_desc {

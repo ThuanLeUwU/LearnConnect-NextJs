@@ -70,6 +70,11 @@ const Reviews = () => {
       title: "Requests",
       href: "/request-history",
     },
+    {
+      image: "/menu-icon/receipt.png",
+      title: "Order History",
+      href: "/order-history",
+    },
   ];
 
   const [reviews, setReviews] = useState<Review[]>([]);
@@ -96,7 +101,7 @@ const Reviews = () => {
           <Spin size="large" />
         </div>
       ) : (
-        <div className={`${InstructorCourseStyle.content_wrapper}`}>
+        <div className={`${InstructorCourseStyle.content_wrapper} `}>
           <div className={`${InstructorCourseStyle.sidebar_wrapper}`}>
             <div className={`${InstructorCourseStyle.sidebar_list}`}>
               {menuItem.map((item, index) => {
@@ -127,7 +132,7 @@ const Reviews = () => {
                 <Breadcrumb>
                   <Breadcrumb.Item>
                     <div className="text-start font-semibold text-4xl my-5 px-4">
-                      Ratings About Me
+                      Reviews About Me
                     </div>
                   </Breadcrumb.Item>
                 </Breadcrumb>

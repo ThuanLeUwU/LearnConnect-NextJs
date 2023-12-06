@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { Breadcrumb, Spin, Table, Tag } from "antd";
+import { Breadcrumb, DatePicker, Spin, Table, Tag } from "antd";
 import LeftNavbar from "@/components/left-navbar/page";
 import MentorRequest from "@/components/mentor-request/page";
 import { UserAuth } from "@/app/context/AuthContext";
@@ -9,6 +9,7 @@ import { SortOrder } from "antd/es/table/interface";
 import { http } from "@/api/http";
 import moment from "moment";
 import "moment/locale/vi";
+import dayjs from "dayjs";
 
 export type Transaction = {
   userBuy: string;
@@ -41,15 +42,18 @@ const StaffTransaction = () => {
     setPagination({ current, pageSize });
   };
 
+  const today = dayjs();
+
   const [transaction, setTransaction] = useState<Transaction[]>([]);
+  const [date, setDate] = useState<dayjs.Dayjs>(today);
 
   useEffect(() => {
     try {
       http
         .get(
-          `https://learnconnectapitest.azurewebsites.net/api/payment-transaction/transaction-history-staff?filterDate=${
-            activeTab === "revenue" ? "2023-11-18" : "2023-11-11"
-          }&filterType=${activeTab}`
+          `https://learnconnectapitest.azurewebsites.net/api/payment-transaction/transaction-history-staff?filterDate=${date.format(
+            "YYYY-MM-DD"
+          )}&filterType=${activeTab}`
         )
         .then((res) => {
           setTransaction(res.data);
@@ -57,7 +61,7 @@ const StaffTransaction = () => {
     } catch (e) {
       console.log(e);
     }
-  }, [activeTab, userData]);
+  }, [activeTab, userData, date]);
 
   const data = [
     {
@@ -133,6 +137,10 @@ const StaffTransaction = () => {
     },
   ];
 
+  const disabledDate = (current: dayjs.Dayjs | null) => {
+    return current ? current.isAfter(today) : false;
+  };
+
   const getStatusColor = (status) => {
     switch (status) {
       case 0:
@@ -199,6 +207,12 @@ const StaffTransaction = () => {
     },
   ];
 
+  const handleDateChange = (date: dayjs.Dayjs, dateString: string) => {
+    console.log("Selected Dates:", date.format("YYYY-MM-DD"));
+    console.log("Formatted Dates:", dateString);
+    setDate(date);
+  };
+
   return (
     <>
       {!userData ? (
@@ -223,10 +237,17 @@ const StaffTransaction = () => {
                 <Breadcrumb>
                   <Breadcrumb.Item>
                     <div className="text-start font-semibold text-4xl my-5 px-4">
-                      Transaction
+                      Order History
                     </div>
                   </Breadcrumb.Item>
                 </Breadcrumb>
+                <DatePicker
+                  onChange={handleDateChange}
+                  format="YYYY-MM-DD"
+                  defaultValue={today}
+                  disabledDate={disabledDate}
+                  style={{ height: "40px" }}
+                />
               </div>
             </div>
             <div className="flex justify-center py-2 rounded-md">

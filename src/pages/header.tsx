@@ -472,7 +472,16 @@ const Header = () => {
                               className="block px-4 py-2 text-sm text-gray-700  hover:bg-gray-100 rounded-tl-lg rounded-tr-lg hover:rounded-bl-lg hover:rounded-br-lg"
                               onClick={closeDropdown}
                             >
-                              Transactions
+                              Order History
+                            </Link>
+                          </li>
+                          <li>
+                            <Link
+                              href="/progress"
+                              className="block px-4 py-2 text-sm text-gray-700  hover:bg-gray-100 rounded-tl-lg rounded-tr-lg hover:rounded-bl-lg hover:rounded-br-lg"
+                              onClick={closeDropdown}
+                            >
+                              Progress
                             </Link>
                           </li>
                         </>

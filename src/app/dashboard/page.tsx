@@ -11,6 +11,7 @@ import { UserAuth } from "../context/AuthContext";
 import dynamic from "next/dynamic";
 import { ApexOptions } from "apexcharts";
 import { TotalStatistic } from "../revenue/page";
+import { format } from "date-fns";
 
 // Load ReactApexChart dynamically to avoid server-side rendering issues
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
@@ -207,13 +208,13 @@ const Dashboard = () => {
       },
       yaxis: {
         title: {
-          text: "Số Lượng",
+          text: "Number",
         },
       },
     },
     series: [
       {
-        name: "Số Lượng",
+        name: "Number",
         data: [] as number[],
       },
     ],
@@ -280,7 +281,7 @@ const Dashboard = () => {
     // ];
 
     const categories = newUser.map((entry) =>
-      new Date(entry.date).toISOString().slice(0, 10)
+      format(new Date(entry.date), "MMM dd")
     );
     const data = newUser.map((entry) => entry.newUser);
 

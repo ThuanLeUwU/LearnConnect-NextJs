@@ -126,50 +126,50 @@ const MajorSepcialize = () => {
         </Tag>
       ),
     },
-    // {
-    //   title: <div className="flex justify-center">Action</div>,
-    //   key: "actions",
-    //   width: 200,
-    //   render: (text, record) => (
-    //     <Space>
-    //       <Button onClick={() => handleUpdateMajor(record)}>Update</Button>
-    //       {/* {record.isActive === true ? (
-    //         <button
-    //           className="bg-white text-black border rounded-md border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-2 py-1"
-    //           onClick={() => {
-    //             handleDisableMajorModal(record);
-    //           }}
-    //         >
-    //           Disable
-    //         </button>
-    //       ) : (
-    //         <button
-    //           onClick={() => handleEnableMajorModal(record)}
-    //           className="bg-white text-black border rounded-md border-green-500 hover:bg-green-500 hover:text-white transition duration-300 px-2 py-1"
-    //         >
-    //           Enable
-    //         </button>
-    //       )} */}
+    {
+      title: <div>Action</div>,
+      key: "actions",
+      width: 200,
+      render: (text, record) => (
+        <Space>
+          <Button onClick={() => handleUpdateMajor(record)}>Update</Button>
+          {/* {record.isActive === true ? (
+            <button
+              className="bg-white text-black border rounded-md border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-2 py-1"
+              onClick={() => {
+                handleDisableMajorModal(record);
+              }}
+            >
+              Disable
+            </button>
+          ) : (
+            <button
+              onClick={() => handleEnableMajorModal(record)}
+              className="bg-white text-black border rounded-md border-green-500 hover:bg-green-500 hover:text-white transition duration-300 px-2 py-1"
+            >
+              Enable
+            </button>
+          )} */}
 
-    //       <button
-    //         // className="flex items-end"
-    //         style={{
-    //           backgroundColor: "red",
-    //           color: "black",
-    //           width: "40px", // Thiết lập chiều rộng mong muốn
-    //           height: "30px",
-    //           borderRadius: "5px", // Thiết lập chiều cao mong muốn
-    //         }}
-    //         onClick={() => {
-    //           handleDeleteMajorModal(record);
-    //         }}
-    //       >
-    //         <DeleteOutlined className="item-center flex justify-center" />
-    //       </button>
-    //       {/* <Button danger>Delete</Button> */}
-    //     </Space>
-    //   ),
-    // },
+          {/* <button
+            // className="flex items-end"
+            style={{
+              backgroundColor: "red",
+              color: "black",
+              width: "40px", // Thiết lập chiều rộng mong muốn
+              height: "30px",
+              borderRadius: "5px", // Thiết lập chiều cao mong muốn
+            }}
+            onClick={() => {
+              handleDeleteMajorModal(record);
+            }}
+          >
+            <DeleteOutlined className="item-center flex justify-center" />
+          </button> */}
+          {/* <Button danger>Delete</Button> */}
+        </Space>
+      ),
+    },
   ];
 
   const columns2 = [
@@ -207,49 +207,49 @@ const MajorSepcialize = () => {
         </Tag>
       ),
     },
-    // {
-    //   title: <div className="flex justify-center">Action</div>,
-    //   key: "actions",
-    //   width: 200,
-    //   render: (text, record) => (
-    //     <Space>
-    //       <Button onClick={() => handleUpdateSpecialize(record)}>Update</Button>
-    //       {/* {record.isActive === true ? (
-    //         // <Button danger onClick={() => handleDisableMajor(record)}>
-    //         //   Disable
-    //         // </Button>
+    {
+      title: <div>Action</div>,
+      key: "actions",
+      width: 200,
+      render: (text, record) => (
+        <Space>
+          <Button onClick={() => handleUpdateSpecialize(record)}>Update</Button>
+          {/* {record.isActive === true ? (
+            // <Button danger onClick={() => handleDisableMajor(record)}>
+            //   Disable
+            // </Button>
 
-    //         <button
-    //           className="bg-white text-black border rounded-md border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-2 py-1"
-    //           onClick={() => handleDisableSpecializeModal(record)}
-    //         >
-    //           Disable
-    //         </button>
-    //       ) : (
-    //         <button
-    //           onClick={() => handleEnableSpecializeModal(record)}
-    //           className="bg-white text-black border rounded-md border-green-500 hover:bg-green-500 hover:text-white transition duration-300 px-2 py-1"
-    //         >
-    //           Enable
-    //         </button>
-    //       )} */}
-    //       <button
-    //         // className="flex items-end"\
-    //         onClick={() => handleDeleteSpecializeModal(record)}
-    //         style={{
-    //           backgroundColor: "red",
-    //           color: "black",
-    //           width: "40px", // Thiết lập chiều rộng mong muốn
-    //           height: "30px",
-    //           borderRadius: "5px", // Thiết lập chiều cao mong muốn
-    //         }}
-    //       >
-    //         <DeleteOutlined className="item-center flex justify-center" />
-    //       </button>
-    //       {/* <Button danger>Delete</Button> */}
-    //     </Space>
-    //   ),
-    // },
+            <button
+              className="bg-white text-black border rounded-md border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-2 py-1"
+              onClick={() => handleDisableSpecializeModal(record)}
+            >
+              Disable
+            </button>
+          ) : (
+            <button
+              onClick={() => handleEnableSpecializeModal(record)}
+              className="bg-white text-black border rounded-md border-green-500 hover:bg-green-500 hover:text-white transition duration-300 px-2 py-1"
+            >
+              Enable
+            </button>
+          )} */}
+          {/* <button
+            // className="flex items-end"\
+            onClick={() => handleDeleteSpecializeModal(record)}
+            style={{
+              backgroundColor: "red",
+              color: "black",
+              width: "40px", // Thiết lập chiều rộng mong muốn
+              height: "30px",
+              borderRadius: "5px", // Thiết lập chiều cao mong muốn
+            }}
+          >
+            <DeleteOutlined className="item-center flex justify-center" />
+          </button> */}
+          {/* <Button danger>Delete</Button> */}
+        </Space>
+      ),
+    },
   ];
 
   const handleCreateMajor = () => {

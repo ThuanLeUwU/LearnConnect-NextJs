@@ -5,6 +5,7 @@ import { Button } from "react-bootstrap";
 import {
   Avatar,
   Breadcrumb,
+  Empty,
   Modal,
   Select,
   Space,
@@ -150,6 +151,11 @@ const Revenue = () => {
       title: "Requests",
       href: "/request-history",
     },
+    {
+      image: "/menu-icon/receipt.png",
+      title: "Order History",
+      href: "/order-history",
+    },
   ];
   const [selected1, setSelected1] = useState<string>("Last Day");
   const handleChangeSelected1 = (e: any) => {
@@ -171,24 +177,24 @@ const Revenue = () => {
   const [date, setDate] = useState<string | null>(null);
   // console.log("homnay", date);
 
-  // useEffect(() => {
-  //   if (Array.isArray(listDate) && listDate.length > 0) {
-  //     setDate(listDate[listDate.length - 1].date);
-  //     // console.log("homnay1", listDate[listDate.length - 1].date);
-  //     http
-  //       .get(
-  //         `https://learnconnectapitest.azurewebsites.net/api/payment-transaction/revenue-mentor?mentorUserId=${id}&filterDate=${new Date(
-  //           listDate[listDate.length - 1].date
-  //         )
-  //           .toISOString()
-  //           .slice(0, 10)}`
-  //       )
-  //       .then((res) => {
-  //         setEachCourse(res.data[0].revenueCourse);
-  //       });
-  //   }
-  // }, [listDate, id]);
-  // const [isMenuOpen, setIsMenuOpen] = useState(false);
+  useEffect(() => {
+    if (Array.isArray(listDate) && listDate.length > 0) {
+      setDate(listDate[listDate.length - 1].date);
+      // console.log("homnay1", listDate[listDate.length - 1].date);
+      http
+        .get(
+          `https://learnconnectapitest.azurewebsites.net/api/payment-transaction/revenue-mentor?mentorUserId=${id}&filterDate=${new Date(
+            listDate[listDate.length - 1].date
+          )
+            .toISOString()
+            .slice(0, 10)}`
+        )
+        .then((res) => {
+          setEachCourse(res.data[0].revenueCourse);
+        });
+    }
+  }, [listDate, id]);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { Option } = Select;
 
   const [revenueEachCourse, setRevenueEachCourse] = useState<Revenue>();
@@ -407,30 +413,6 @@ const Revenue = () => {
     }
   };
 
-  useEffect(() => {
-    // Dữ liệu giả định
-    const sampleData: EnrollmentData[] = [
-      { name: "Course A", enrollment: 5 },
-      { name: "Course B", enrollment: 2 },
-      { name: "Course C", enrollment: 6 },
-      { name: "Course D", enrollment: 4 },
-    ];
-
-    // Xử lý dữ liệu
-    const processedData: Array<Array<string | number>> = [
-      ["Course", "Enrollment"],
-    ];
-    let localMaxRevenue = 0;
-
-    sampleData.forEach((course) => {
-      processedData.push([course.name, course.enrollment]);
-      localMaxRevenue = Math.max(localMaxRevenue, course.enrollment);
-    });
-
-    setMaxEnrollment(localMaxRevenue);
-    setChartEnroll(processedData);
-  }, []);
-
   return (
     <>
       {!userData ? (
@@ -530,8 +512,8 @@ const Revenue = () => {
                       size="large"
                       defaultValue={selected1}
                       onChange={handleChangeSelected1}
-                      style={{ width: 120 }}
-                      className="mx-5 w-[120px]"
+                      style={{ width: 150 }}
+                      className="mx-5 "
                     >
                       {timeLine.map((option, index) => (
                         // <div key={index}>hahaha {option.date}</div>
@@ -545,31 +527,36 @@ const Revenue = () => {
                     </Button>
                   </div>
                 </div>
-                <div
-                  style={{
-                    width: "100%",
-                    maxWidth: "1280px",
-                    margin: "0 auto",
-                  }}
-                >
-                  <Chart
-                    width={"100%"}
-                    height={"800px"}
-                    chartType="BarChart"
-                    loader={<div>Loading Chart</div>}
-                    data={chartData}
-                    options={{
-                      chartArea: { width: "60%" },
-                      hAxis: {
-                        title: "Income",
-                        minValue: 0,
-                      },
-                      vAxis: {
-                        title: "Course",
-                      },
+                {courseStatistic1.length === 0 ? (
+                  <Empty />
+                ) : (
+                  <div
+                    style={{
+                      width: "100%",
+                      maxWidth: "1280px",
+                      margin: "0 auto",
                     }}
-                  />
-                </div>
+                  >
+                    <Chart
+                      width={"100%"}
+                      height={"800px"}
+                      chartType="BarChart"
+                      loader={<div>Loading Chart</div>}
+                      data={chartData}
+                      options={{
+                        chartArea: { width: "60%" },
+                        hAxis: {
+                          title: "Income",
+                          minValue: 0,
+                        },
+                        vAxis: {
+                          title: "Course",
+                        },
+                      }}
+                    />
+                  </div>
+                )}
+
                 {/* <div className="relative flex justify-center">
                   <Bar data={chartData} options={options}></Bar>
                 </div> */}
@@ -584,8 +571,8 @@ const Revenue = () => {
                       size="large"
                       defaultValue={selected2}
                       onChange={handleChangeSelected2}
-                      style={{ width: 120 }}
-                      className="mx-5 w-[120px]"
+                      style={{ width: 150 }}
+                      className="mx-5"
                     >
                       {timeLine.map((option, index) => (
                         // <div key={index}>hahaha {option.date}</div>
@@ -599,31 +586,36 @@ const Revenue = () => {
                     </Button>
                   </div>
                 </div>
-                <div
-                  style={{
-                    width: "100%",
-                    maxWidth: "1280px",
-                    margin: "0 auto",
-                  }}
-                >
-                  <Chart
-                    width={"100%"}
-                    height={"800px"}
-                    chartType="BarChart"
-                    loader={<div>Loading Chart</div>}
-                    data={chartEnroll}
-                    options={{
-                      chartArea: { width: "60%" },
-                      hAxis: {
-                        title: "Enrollment",
-                        minValue: 0,
-                      },
-                      vAxis: {
-                        title: "Course",
-                      },
+                {courseStatistic2?.length === 0 ? (
+                  <Empty />
+                ) : (
+                  <div
+                    style={{
+                      width: "100%",
+                      maxWidth: "1280px",
+                      margin: "0 auto",
                     }}
-                  />
-                </div>
+                  >
+                    <Chart
+                      width={"100%"}
+                      height={"800px"}
+                      chartType="BarChart"
+                      loader={<div>Loading Chart</div>}
+                      data={chartEnroll}
+                      options={{
+                        chartArea: { width: "60%" },
+                        hAxis: {
+                          title: "Enrollment",
+                          minValue: 0,
+                        },
+                        vAxis: {
+                          title: "Course",
+                        },
+                      }}
+                    />
+                  </div>
+                )}
+
                 {/* <div className="relative flex justify-center">
                   <Bar data={chartData} options={options}></Bar>
                 </div> */}
@@ -674,14 +666,14 @@ const Revenue = () => {
               </div>
             </div>
           </div> */}
-          <Modal
+          {/* <Modal
             title="List Enrollment"
             open={isModal}
             onCancel={handleCancel}
             footer={false}
           >
             <Table columns={columns} dataSource={enrollList} />
-          </Modal>
+          </Modal> */}
         </div>
       )}
     </>

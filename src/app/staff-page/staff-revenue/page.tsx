@@ -30,6 +30,7 @@ import Chart from "react-google-charts";
 import dynamic from "next/dynamic";
 import { ApexOptions } from "apexcharts";
 import { TotalStatistic } from "@/app/revenue/page";
+import { format } from "date-fns";
 
 // Load ReactApexChart dynamically to avoid server-side rendering issues
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
@@ -386,7 +387,7 @@ const StaffRevenue = () => {
 
   useEffect(() => {
     const categories = courseStatistic2.map((entry) =>
-      new Date(entry.date).toISOString().slice(0, 10)
+      format(new Date(entry.date), "MMM dd")
     );
 
     setMixChart({
@@ -462,7 +463,7 @@ const StaffRevenue = () => {
     // Simulated data
 
     const categories = courseStatistic3.map((entry) =>
-      new Date(entry.date).toISOString().slice(0, 10)
+      format(new Date(entry.date), "MMM dd")
     );
     const freeCoursesData = courseStatistic3.map(
       (entry) => entry.newCoursesFree
@@ -705,7 +706,7 @@ const StaffRevenue = () => {
               </div>
             </div>
             <div className="text-center font-semibold text-5xl pb-5 pl-5">
-              Table Details
+              Income of mentors
             </div>
             <Table
               dataSource={revenueOneMentor}
