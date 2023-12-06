@@ -245,7 +245,7 @@ const Header = () => {
               )}
               <Modal
                 title="Create Account for Staff"
-                visible={isModalVisible}
+                open={isModalVisible}
                 onCancel={() => setIsModalVisible(false)}
                 footer={false}
               >
