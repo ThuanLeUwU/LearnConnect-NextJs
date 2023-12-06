@@ -770,7 +770,7 @@ const MajorSepcialize = () => {
                   },
                 ]}
               >
-                <Input />
+                <Input placeholder="Input Major Name" />
               </Form.Item>
               <Form.Item
                 name="description"
@@ -782,7 +782,7 @@ const MajorSepcialize = () => {
                   },
                 ]}
               >
-                <Input />
+                <Input.TextArea rows={2} placeholder="Input Description" />
               </Form.Item>
               <div className="flex gap-5 justify-end">
                 {/* Thêm các trường dữ liệu khác cần thiết vào đây */}
@@ -1065,7 +1065,7 @@ const MajorSepcialize = () => {
                   },
                 ]}
               >
-                <Input />
+                <Input.TextArea rows={2} />
               </Form.Item>
               <div className="flex gap-5 justify-end">
                 {/* Thêm các trường dữ liệu khác cần thiết vào đây */}
