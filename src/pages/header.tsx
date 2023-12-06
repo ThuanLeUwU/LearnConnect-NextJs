@@ -640,7 +640,7 @@ const Header = () => {
                           }`}
                         >
                           <button onClick={() => handleTabChange("favorites")}>
-                            My Favorites
+                            My Schedule
                           </button>
                         </li>
                         <li

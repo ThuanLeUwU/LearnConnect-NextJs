@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "../../app/./globals.css";
 import type { Dayjs } from "dayjs";
 import type { BadgeProps, CalendarProps } from "antd";
-import { Badge, Calendar, Modal, Input } from "antd";
+import { Badge, Calendar, Modal, Input, Button, Space, Form } from "antd";
 import { format } from "date-fns";
 import { useRouter } from "next/navigation";
 import { http } from "@/api/http";
@@ -23,9 +23,10 @@ type ScheduleData = {
     status: number;
     userId: number;
   }[];
+  fetchSchedule: () => void;
 };
 
-const Schedule: React.FC<ScheduleData> = ({ scheduleData }) => {
+const Schedule: React.FC<ScheduleData> = ({ scheduleData, fetchSchedule }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<any>();
   const [editedNote, setEditedNote] = useState<string>("");
@@ -33,6 +34,8 @@ const Schedule: React.FC<ScheduleData> = ({ scheduleData }) => {
   const currentDate = format(new Date(), "MMMM d, yyyy");
   const { TextArea } = Input;
   const [editMode, setEditMode] = useState(0);
+  const [open, setOpen] = useState(false);
+  const [form] = Form.useForm();
 
   const handleEventClick = (event: any) => {
     console.log("Event", event);
@@ -46,8 +49,10 @@ const Schedule: React.FC<ScheduleData> = ({ scheduleData }) => {
         `https://learnconnectapitest.azurewebsites.net/api/schedule/${id}`
       )
       .then(() => {
+        setOpen(true);
         toast.success("Delete Event Success");
         setModalVisible(false);
+        fetchSchedule();
       });
   };
 
@@ -68,6 +73,7 @@ const Schedule: React.FC<ScheduleData> = ({ scheduleData }) => {
     setModalVisible(false);
     setSelectedEvent(null);
     setEditMode(0);
+    setOpen(false);
   };
 
   if (!scheduleData) {
@@ -211,7 +217,7 @@ const Schedule: React.FC<ScheduleData> = ({ scheduleData }) => {
                       <button
                         className="bg-white min-w-[30px] text-black border border-[#E0E0E0] hover:border-red-500 rounded-lg hover:text-black transition duration-300 p-2 flex ml-2"
                         onClick={() => {
-                          DeleteEvent(s.id);
+                          setOpen(true);
                         }}
                       >
                         <MdDelete />
@@ -219,6 +225,69 @@ const Schedule: React.FC<ScheduleData> = ({ scheduleData }) => {
                     </div>
                   </div>
                 )}
+                <Modal
+                  destroyOnClose={true}
+                  title={
+                    <div className="text-lg">Do you want to Delete Event?</div>
+                  }
+                  open={open}
+                  // onOk={handleOk}
+                  width="35%"
+                  onCancel={() => {
+                    setOpen(false);
+                  }}
+                  footer={false}
+                  style={{
+                    top: "30%",
+                  }}
+                >
+                  <Form
+                    autoComplete="off"
+                    form={form}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 20 }}
+                    layout="horizontal"
+                    className="mt-5"
+                    style={{ width: "100%" }}
+                    onFinish={() => {
+                      DeleteEvent(s.id);
+                      setOpen(false);
+                    }}
+                  >
+                    <Space className="justify-end w-full">
+                      <Form.Item className="mb-0">
+                        <Space>
+                          <Button
+                            className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                            onClick={() => {
+                              setOpen(false);
+                            }}
+                            style={{
+                              // backgroundColor: "#4caf50",
+                              // borderColor: "#4caf50",
+                              border: "2px solid #E0E0E0",
+                              color: "black",
+                            }}
+                          >
+                            Cancel
+                          </Button>
+                          <Button
+                            className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                            htmlType="submit"
+                            style={{
+                              // backgroundColor: "#4caf50",
+                              // borderColor: "#4caf50",
+                              border: "2px solid #4caf50",
+                              color: "#fff",
+                            }}
+                          >
+                            Confirm
+                          </Button>
+                        </Space>
+                      </Form.Item>
+                    </Space>
+                  </Form>
+                </Modal>
               </div>
             ))}
           </div>
@@ -283,7 +352,7 @@ const Schedule: React.FC<ScheduleData> = ({ scheduleData }) => {
                       <button
                         className="bg-white min-w-[30px] text-black border border-[#E0E0E0] hover:border-red-500 rounded-lg hover:text-black transition duration-300 p-2 flex ml-2"
                         onClick={() => {
-                          DeleteEvent(s.id);
+                          setOpen(true);
                         }}
                       >
                         <MdDelete />
@@ -291,6 +360,69 @@ const Schedule: React.FC<ScheduleData> = ({ scheduleData }) => {
                     </div>
                   </div>
                 )}
+                <Modal
+                  destroyOnClose={true}
+                  title={
+                    <div className="text-lg">Do you want to Delete Event?</div>
+                  }
+                  open={open}
+                  // onOk={handleOk}
+                  width="35%"
+                  onCancel={() => {
+                    setOpen(false);
+                  }}
+                  footer={false}
+                  style={{
+                    top: "30%",
+                  }}
+                >
+                  <Form
+                    autoComplete="off"
+                    form={form}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 20 }}
+                    layout="horizontal"
+                    className="mt-5"
+                    style={{ width: "100%" }}
+                    onFinish={() => {
+                      DeleteEvent(s.id);
+                      setOpen(false);
+                    }}
+                  >
+                    <Space className="justify-end w-full">
+                      <Form.Item className="mb-0">
+                        <Space>
+                          <Button
+                            className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                            onClick={() => {
+                              setOpen(false);
+                            }}
+                            style={{
+                              // backgroundColor: "#4caf50",
+                              // borderColor: "#4caf50",
+                              border: "2px solid #E0E0E0",
+                              color: "black",
+                            }}
+                          >
+                            Cancel
+                          </Button>
+                          <Button
+                            className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                            htmlType="submit"
+                            style={{
+                              // backgroundColor: "#4caf50",
+                              // borderColor: "#4caf50",
+                              border: "2px solid #4caf50",
+                              color: "#fff",
+                            }}
+                          >
+                            Confirm
+                          </Button>
+                        </Space>
+                      </Form.Item>
+                    </Space>
+                  </Form>
+                </Modal>
               </div>
             ))}
           </div>
