@@ -31,11 +31,9 @@ const Footer = () => {
         /> */}
 
         <div className="container">
-          <div className={`${headerStyles.grid}`}>
-            <div
-              className={`${headerStyles.footer_widget} flex flex-col justify-center`}
-            >
-              <div className={`${headerStyles.footer_widget_address} `}>
+          <div className="flex flex-row justify-between">
+            <div className={`flex flex-col justify-center py-5`}>
+              <div className={`${headerStyles.footer_widget_address}`}>
                 <h4 className={`${headerStyles.footer_widget_title} `}>
                   FPT University HCMC
                 </h4>
@@ -59,10 +57,10 @@ const Footer = () => {
               </div>
             </div>
 
-            <div className="">
+            <div className=" flex items-center">
               <img
-                src="/images/logo-1.png"
-                className={`${headerStyles.footer_widget} w-[300px] float-right`}
+                src="/images/LogoRemoveBG.png"
+                className={`${headerStyles.footer_widget} w-[200px]  float-right`}
                 alt="logo"
               />
             </div>

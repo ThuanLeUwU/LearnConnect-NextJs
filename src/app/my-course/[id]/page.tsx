@@ -130,7 +130,6 @@ export default function AfterEnroll({ params }: any) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
   const idCourse = params.id;
-  console.log("idCourse", idCourse);
   const [courses, setCourses] = useState<Course>();
   const [isTestOpen, setIsTestOpen] = useState(false);
   const showModal = () => {
@@ -146,7 +145,6 @@ export default function AfterEnroll({ params }: any) {
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [idDelete, setIdDelete] = useState(0);
   const handleOk = async (data: any) => {
-    // console.log(e)
     setIsModalOpen(false);
     const formdata = new FormData();
     formdata.append("reportReason", selected || "1");
@@ -155,8 +153,6 @@ export default function AfterEnroll({ params }: any) {
       formdata.append("reportImage", formDataImage);
     }
     try {
-      // console.log("formDataImage1", formDataImage);
-      // console.log("image1", image);
       await axios.post(
         `https://learnconnectapitest.azurewebsites.net/api/report/report-course?userId=${id}&courseId=${idCourse}`,
         formdata,
@@ -176,8 +172,6 @@ export default function AfterEnroll({ params }: any) {
         toast.error("Report fail");
       });
     }
-
-    // console.log("fomdata", selected);
   };
 
   const handleCancel = () => {
@@ -340,18 +334,15 @@ export default function AfterEnroll({ params }: any) {
   };
 
   const handleSubmit = async (data: any) => {
-    // const numericValue = parseFloat(value);
     const formdata = new FormData();
     formdata.append("rating", value.toString());
-    // console.log("rate");
+
     formdata.append(
       "comment",
       data.description !== undefined ? data.description : null
     );
 
     try {
-      // console.log("formDataImage1", formDataImage);
-      // console.log("image1", image);
       await http.post(
         `/rating/rating-course?userId=${id}&courseId=${idCourse}`,
         formdata,

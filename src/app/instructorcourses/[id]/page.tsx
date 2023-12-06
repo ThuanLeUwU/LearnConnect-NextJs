@@ -75,10 +75,8 @@ export type Rating = {
 
 const Dashboard = ({ params }: any) => {
   const idCourse = params.id;
-  // console.log("param", params);
-  const { id, userData, jwtToken } = UserAuth();
 
-  //   console.log(" idcourse", idCourse);
+  const { id, userData, jwtToken } = UserAuth();
 
   //create lecture
   const [loading, setLoading] = useState(true);
@@ -126,11 +124,9 @@ const Dashboard = ({ params }: any) => {
 
   const handleUpdateType = (data: number) => {
     setUpdateType(data);
-    // setType(data);
   };
 
   const handleDeleteModal = (record: any) => {
-    // console.log("record", record);
     setSelectedItem(record);
     setOneLecture(record);
     setDeleteVisible(true);
@@ -235,10 +231,8 @@ const Dashboard = ({ params }: any) => {
   useEffect(() => {
     if (isModerating === false) {
       toast.success("Moderation Video Complete!");
-      console.log("moder", isModerating);
     } else if (isModerating === true) {
       toast.info("Create Lecture Successfully! Video is moderating ... ");
-      // console.log("moder", isModerating);
     }
   }, [isModerating]);
 
@@ -291,9 +285,8 @@ const Dashboard = ({ params }: any) => {
 
   //get list lecture
   const [lectures, setLectures] = useState<Lecture[]>([]);
-  // console.log("lecture", lectures);
+
   useEffect(() => {
-    // Gọi API để lấy danh sách người dùng
     http
       .get(
         `https://learnconnectapitest.azurewebsites.net/api/lecture/by-course/${idCourse}`
@@ -311,7 +304,6 @@ const Dashboard = ({ params }: any) => {
   //type
   const [type, setType] = useState<number>(1);
   const { Option } = Select;
-  // console.log("type", type);
 
   const Type = [
     { id: 1, title: "Video" },
@@ -382,33 +374,25 @@ const Dashboard = ({ params }: any) => {
   // };
 
   //List Of Question
-  // const [infoTest, setInfoTest] = useState<Test>();
-  // console.log("test", infoTest);
   const [listQuestion, setListQuestion] = useState<Test[]>([]);
   const [allQuestions, setAllQuestions] = useState<Test[]>([]);
-  // console.log("all", allQuestions);
-  const [idTest, setIdTest] = useState<Test>();
-  // console.log("list", idTest);
 
-  // console.log("Questions", listQuestion);
+  const [idTest, setIdTest] = useState<Test>();
+
   useEffect(() => {
-    // Gọi API để lấy danh sách người dùng
     http
       .get(`/test/get-tests-by-course?courseId=${idCourse}`)
       .then((response) => {
-        // setInfoTest(response.data.questions);
         setListQuestion(response.data);
         setAllQuestions(response.data[0].questions);
         setIdTest(response.data[0].test.id);
-        // console.log("vải ò", response.data);
         listQuestion.forEach((item) => {
           const totalQuestion = item.test.totalQuestion;
-          // console.log("Total Questions:", totalQuestion);
         });
         setLoading(false);
       })
       .catch((error) => {
-        console.log("Error fetching user data:", error);
+        console.error("Error fetching user data:", error);
         setLoading(false);
       });
   }, []);
@@ -521,9 +505,7 @@ const Dashboard = ({ params }: any) => {
     http
       .get(`/rating/listRatingOfCourse/${idCourse}`)
       .then((response) => {
-        // setInfoTest(response.data.questions);
         setListRating(response.data);
-        // console.log("rating", response.data);
         setLoading(false);
       })
       .catch((error) => {
@@ -533,7 +515,6 @@ const Dashboard = ({ params }: any) => {
   }, [idCourse]);
 
   const [test, setTest] = useState<TestTitle>();
-  console.log("test", test);
 
   useEffect(() => {
     http
@@ -621,21 +602,13 @@ const Dashboard = ({ params }: any) => {
 
   const [showAnswerForm, setShowAnswerForm] = useState(false);
   const [mano, setmano] = useState<number>(0);
-  // console.log("mano", mano);
 
   const handleNewAnswerClick = (data: any) => {
     setShowAnswerForm(true);
     setmano(data);
   };
   const [questionId, setQuestionId] = useState<number>(0);
-  // console.log("question", questionId);
-  // useEffect(() => {
-  //   if (showAnswerForm && questionId !== 0) {
-  //     http.get(
-  //       `https://learnconnectapitest.azurewebsites.net/api/question/${questionId}`
-  //     );
-  //   }
-  // }, [showAnswerForm, questionId]);
+
   const [showUpdateQuestion, setShowUpdateQuestion] = useState(false);
   const handleUpdateQuestionClick = (data: any) => {
     setShowUpdateQuestion(true);
@@ -644,7 +617,6 @@ const Dashboard = ({ params }: any) => {
 
   const [showUpdateAnswer, setShowUpdateAnswer] = useState(false);
   const [AnswerId, setAnswerId] = useState<number>(0);
-  // console.log("answer", AnswerId);
 
   const handleUpdateAnswerClick = (data: any) => {
     setShowUpdateAnswer(true);
@@ -652,7 +624,6 @@ const Dashboard = ({ params }: any) => {
   };
 
   const handleFormQuestionSubmit = (data: any) => {
-    // Xử lý dữ liệu khi form được gửi
     const formDataQ = new FormData();
     formDataQ.append("questionText", data.question);
     const formDataA = new FormData();
@@ -679,29 +650,24 @@ const Dashboard = ({ params }: any) => {
               setAllQuestions(response.data[0].questions);
               setIdTest(response.data[0].test.id);
             });
-          // http.get();
+
           setShowQuestionForm(false);
           toast.success("create question successfully!");
         });
     } catch (err) {
       console.error(err);
     }
-    // console.log("Received values:", values);
-    // Đóng form sau khi xử lý
   };
 
   const [isChecked, setIsChecked] = useState<boolean>(false);
   const handleSetIsChecked = (value: boolean) => {
-    // console.log("CALL: ", value);
     setIsChecked(value);
   };
-  // console.log("check", isChecked);
 
   const handleFormAnswerSubmit = (data: any) => {
     const formData = new FormData();
     formData.append("answerText", data.answer);
     formData.append("isCorrect", isChecked.toString());
-    // console.log("nani2", isChecked.toString());
 
     try {
       http
@@ -743,14 +709,11 @@ const Dashboard = ({ params }: any) => {
   const handleInputChange = (event) => {
     // Xử lý sự kiện khi có sự thay đổi trong ô input
     setUpdateQuestion(event.target.value);
-    // console.log("tehje", event.target.value);
     setHasChanged(true);
   };
 
   const handleAnswerChange = (event) => {
     setUpdateAnswer(event.target.value);
-
-    // console.log("tehje", event.target.value);
     setHasChanged2(true);
   };
 
@@ -758,8 +721,6 @@ const Dashboard = ({ params }: any) => {
   const [hasChanged2, setHasChanged2] = useState(false);
 
   const handleSaveData = (data: any) => {
-    // console.log("tui nè má", data);
-    // console.log("Data saved successfully:", updateQuestion);
     const formData = new FormData();
     formData.append("questionText", updateQuestion);
     try {
@@ -792,9 +753,6 @@ const Dashboard = ({ params }: any) => {
   };
 
   const handleSaveData2 = (data: any, isCheckedCustom: boolean) => {
-    // console.log("tui nè má", data);
-    // setAnswerId(0);
-    // console.log("nani", isCheckedCustom);
     const formData = new FormData();
     formData.append("answerText", updateAnswer);
     formData.append("isCorrect", isCheckedCustom.toString());
@@ -827,21 +785,18 @@ const Dashboard = ({ params }: any) => {
     } catch (err) {
       toast.error("Update Fail !");
     }
-    // setHasChanged(false);
-    // Modal.destroyAll();
   };
 
   const handleBlur = (data: any) => {
-    // console.log("tao nè", data);
     if (hasChanged) {
       Modal.confirm({
         title: "Confirm",
         content: "Do you want to save these changes?",
         okButtonProps: {
           style: {
-            background: "#4caf50", // Màu nền của nút "OK"
-            borderColor: "#4caf50", // Màu viền của nút "OK"
-            color: "#fff", // Màu chữ của nút "OK"
+            background: "#4caf50",
+            borderColor: "#4caf50",
+            color: "#fff",
           },
         },
         onOk: () => {
@@ -857,11 +812,10 @@ const Dashboard = ({ params }: any) => {
     setShowUpdateQuestion(false);
   };
   useEffect(() => {
-    console.log("check", isChecked);
+    // console.log("check", isChecked)
   }, [isChecked]);
 
   const handleBlur2 = (data: any) => {
-    // console.log("DÈAULT: ", isChecked);
     let isCheckVal = isChecked;
     if (hasChanged2) {
       Modal.confirm({
@@ -882,21 +836,18 @@ const Dashboard = ({ params }: any) => {
         ),
         okButtonProps: {
           style: {
-            background: "#4caf50", // Màu nền của nút "OK"
-            borderColor: "#4caf50", // Màu viền của nút "OK"
-            color: "#fff", // Màu chữ của nút "OK"
+            background: "#4caf50",
+            borderColor: "#4caf50",
+            color: "#fff",
           },
         },
         onOk: (...args: any[]) => {
-          // console.log("SEND: ", isCheckVal);
           handleSaveData2(data, isCheckVal);
         },
         onCancel: () => {
           setHasChanged2(false);
           setQuestionId(0);
           setAnswerId(0);
-          // setUpdateQuestion("");
-          // handleSetIsChecked(false);
         },
       });
     }
@@ -912,7 +863,6 @@ const Dashboard = ({ params }: any) => {
   };
 
   const handleDeleteAnswer = (data: any) => {
-    // console.log("hehe", data);
     try {
       http
         .delete(
@@ -1002,12 +952,10 @@ const Dashboard = ({ params }: any) => {
 
   const handleRowClick = (record) => {
     // Xử lý khi click vào một hàng (item)
-    console.log("Clicked item:", record);
-    // Thực hiện các hành động khác cần thiết
+    // console.log("Clicked item:", record);
   };
 
   const handleDeleteLecture = (data: any) => {
-    // console.log("má m", data.id);
     try {
       http
         .delete(
@@ -1026,7 +974,7 @@ const Dashboard = ({ params }: any) => {
             });
         });
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 
@@ -1041,7 +989,6 @@ const Dashboard = ({ params }: any) => {
     const formData = new FormData();
     formData.append("title", data.title || test?.title);
     formData.append("description", data.description || test?.description);
-    console.log("formdata", data.title, data.description);
 
     try {
       http

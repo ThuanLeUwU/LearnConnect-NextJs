@@ -10,7 +10,6 @@ http.interceptors.request.use(function (req) {
   // const { jwtToken } = UserAuth();
 
   const token = localStorage.getItem("token");
-  // console.log("WTF",token)
 
   if (token) {
     req.headers["Authorization"] = `Bearer ${token}`;
