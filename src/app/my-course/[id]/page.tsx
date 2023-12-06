@@ -287,7 +287,6 @@ export default function AfterEnroll({ params }: any) {
             const learningProcess = res?.data.status;
             if (learningProcess === 1) {
               setIsComplete(false);
-              console.log("123");
             } else {
               setIsComplete(true);
             }
@@ -404,6 +403,10 @@ export default function AfterEnroll({ params }: any) {
       setMaxTime(videoRef.current.played.end(0));
       setTotalTime(Math.floor(videoRef.current.duration));
     }
+    if (Math.floor(e.target.currentTime) >= totalTime * 0.9) {
+      setIsComplete(true);
+      setMaxTime(totalTime);
+    }
     if (
       (Math.floor(e.target.currentTime) > 1 &&
         Math.floor(e.target.currentTime) % 5 == 0) ||
@@ -418,13 +421,12 @@ export default function AfterEnroll({ params }: any) {
         )}&maxTime=${Math.floor(maxTime)}&totalTime=${totalTime}`
       );
     }
-    if (Math.floor(e.target.currentTime) === totalTime) {
-      setIsComplete(true);
-    }
+
     if (activeVideoIndex + 1 === learned) {
       setPercentage((maxTime / totalTime) * 100);
-      if (maxTime > totalTime * 1) {
+      if (maxTime >= totalTime * 0.9) {
         setLearned(learned + 1);
+        setPercentage(0);
       }
     }
   };
@@ -535,10 +537,6 @@ export default function AfterEnroll({ params }: any) {
         setComment(res?.data.reverse());
         setIdLecture(lectureId);
       });
-    console.log("reply", reply);
-    console.log("comment", comment);
-    console.log("Clicked Lecture Id:", lectureId);
-    console.log("Clicked Lecture Id11111:", IdLecture);
   };
 
   const submitComment = async () => {
@@ -876,7 +874,7 @@ export default function AfterEnroll({ params }: any) {
                         </Form>
                       </Modal>
                     </div>
-                    {activeVideoIndex === 0 ? (
+                    {activeVideoIndex + 1 !== 0 ? (
                       <div className="w-full mx-auto mb-3 shadow-lg rounded-lg">
                         <div className="flex justify-center bg-[#e7f8ee] p-3 rounded-lg mt-5">
                           <ul className="tabs flex space-x-5">
@@ -1493,6 +1491,7 @@ export default function AfterEnroll({ params }: any) {
                             : ""
                         }`}
                         onClick={() => {
+                          setMaxTime(0);
                           changeVideoSource(item, index);
                           setPDF(item.contentType);
                           consoleLogLectureId(item.id);
