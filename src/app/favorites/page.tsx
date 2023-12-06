@@ -277,7 +277,12 @@ const MyCourse = () => {
               Add New
             </button>
             <div className="border border-[rgba(48, 146, 85, 0.2)] mt-2 px-2 rounded-lg">
-              <Schedule scheduleData={scheduleData} />
+              <Schedule
+                scheduleData={scheduleData}
+                fetchSchedule={() => {
+                  fetchDataSchedule();
+                }}
+              />
             </div>
             <div className="min-h-[1000px]">
               {courses.length === 0 ? (
