@@ -375,6 +375,7 @@ const Dashboard = ({ params }: any) => {
 
   //List Of Question
   const [listQuestion, setListQuestion] = useState<Test[]>([]);
+  console.log("vải ò", listQuestion);
   const [allQuestions, setAllQuestions] = useState<Test[]>([]);
 
   const [idTest, setIdTest] = useState<Test>();
