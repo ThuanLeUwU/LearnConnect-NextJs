@@ -59,8 +59,6 @@ export default function CourseDetailPage({ params }: any) {
   const [averageRating, setAverageRating] = useState(0);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const idUser = id;
-  // console.log("id user is", idUser);
-  // console.log("id course is", idCourse);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -116,11 +114,6 @@ export default function CourseDetailPage({ params }: any) {
 
     try {
       const response = await http.post(url);
-      // console.log("Response from API:", response.data);
-      // console.log("url", url);
-      // const responseDataPayment = await axios.get(response.data);
-      // console.log("responseDataPayment", responseDataPayment.data);
-
       if (response.data) {
         const newTab = window.open(response.data, "_blank");
         if (newTab) {
@@ -564,11 +557,10 @@ export default function CourseDetailPage({ params }: any) {
                           "https://learnconnect.vercel.app/after-payment"
                           // "http://localhost:3000/after-payment"
                         );
-                        // console.log("Enrollment confirmed");
+
                         setIsModalVisible(false);
                       }}
                       onCancel={() => {
-                        // console.log("Enrollment canceled");
                         setIsModalVisible(false);
                       }}
                       okButtonProps={{

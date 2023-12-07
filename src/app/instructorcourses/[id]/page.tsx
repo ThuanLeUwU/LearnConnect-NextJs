@@ -113,6 +113,7 @@ const Dashboard = ({ params }: any) => {
   const [oneLecture, setOneLecture] = useState<Lecture>();
   const [updateType, setUpdateType] = useState(oneLecture?.contentType);
   const [updateSrc, setUpdateSrc] = useState<string>("");
+  const [lectures, setLectures] = useState<Lecture[]>([]);
 
   const handleUpdateModal = (record: any) => {
     setSelectedItem(record);
@@ -148,7 +149,7 @@ const Dashboard = ({ params }: any) => {
         console.error("Error fetching user data:", error);
         setLoading(false);
       });
-  }, [id]);
+  }, [id, lectures]);
 
   // const [updateType, setUpdateType] = useState(oneLecture?.contentType);
 
@@ -284,7 +285,6 @@ const Dashboard = ({ params }: any) => {
   };
 
   //get list lecture
-  const [lectures, setLectures] = useState<Lecture[]>([]);
 
   useEffect(() => {
     http

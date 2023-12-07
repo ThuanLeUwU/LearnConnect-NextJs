@@ -104,7 +104,7 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
   const logOut = () => {
     signOut(auth);
     setUser(null);
-    // console.log("logOut");
+
     localStorage.removeItem("token");
     setJwtToken("");
     setId("");
@@ -114,7 +114,7 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
 
   const setUserLogin = (user, token) => {
     setUser(null);
-    // console.log("setUserLogin");
+
     localStorage.setItem("token", token);
     setJwtToken(token);
     setId(user?.id);
@@ -162,7 +162,6 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
 
     if (token) {
       const decodedToken = jwt.decode(token);
-      // console.log("token 12312", decodedToken);
 
       http
         .get(`user/${decodedToken?.Id}`)
@@ -177,7 +176,6 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
-      // console.log("token", currentUser?.getIdToken());
 
       if (currentUser) {
         currentUser.getIdToken().then((token) => {
@@ -191,9 +189,7 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
                 },
               }
             );
-            // setJwtToken(responseData?.data);
             localStorage.setItem("token", responseData?.data.data);
-            // console.log("useEffect");
             const api_token = responseData?.data.data;
             var jwt = require("jsonwebtoken");
             var decoded = jwt.decode(api_token);
@@ -202,7 +198,7 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
             const userRole = decoded.role;
             setId(userId);
             setRole(parseInt(userRole));
-            // console.log("user role", parseInt(userRole));
+
             const fetchUser = async (userId: string) => {
               const responseUser = await http.get(`/user/${userId}`);
               setUserData(responseUser?.data);

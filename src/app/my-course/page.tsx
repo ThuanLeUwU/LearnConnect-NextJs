@@ -35,8 +35,6 @@ export default function MyCourse() {
 
   const { jwtToken, id } = UserAuth();
   axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
-  // console.log("jwtToken", jwtToken);
-  // console.log("user id: ", id);
   const breadcrumbsHome = () => {
     router.push("/");
   };

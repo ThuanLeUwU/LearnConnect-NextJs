@@ -155,7 +155,6 @@ export default function EditProfile() {
       profilePictureUrl: profilePictureUrl,
       status: status,
     };
-    // console.log("usder data:", updatedUserData);
     axios
       .put(
         `https://learnconnectapitest.azurewebsites.net/api/user/${id}`,

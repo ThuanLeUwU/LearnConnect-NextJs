@@ -74,12 +74,9 @@ const InstructorCourse = () => {
     //   router.push(`/`);
     // }
   });
-  // getMessageToken();
-  // console.log("id", id);
-  // console.log("id", user);
+
   const [visible, setVisible] = useState(false);
 
-  // console.log("set", listCourseInstructor);
   const {
     loading,
     listCourseInstructor,
@@ -177,7 +174,7 @@ const InstructorCourse = () => {
       formData.append("shortDescription", data.shortDes);
       formData.append("price", data.price);
       formData.append("contentLength", data.length);
-      formData.append("lectureCount", data.lecture);
+      formData.append("lectureCount", "0");
       formData.append("specializationId", selected.toString());
       if (formDataImage !== undefined) {
         formData.append("courseImage", formDataImage);
@@ -231,9 +228,9 @@ const InstructorCourse = () => {
     if (!isJpgOrPng) {
       toast.error("You can only upload JPG/PNG file!");
     }
-    const isLt20M = file.size / 1024 / 1024 < 20;
+    const isLt20M = file.size / 1024 / 1024 < 5;
     if (!isLt20M) {
-      toast.error("Image must smaller than 20MB!");
+      toast.error("Image must smaller than 5MB!");
     }
     return isJpgOrPng && isLt20M;
   };
@@ -265,13 +262,9 @@ const InstructorCourse = () => {
   const [updateModal, setUpdateModal] = useState(false);
   const [course, setCourse] = useState<Course>();
 
-  // console.log("course,", course);
-  // const [previousCate, setPreviousCate] = useState(course?.categoryId);
   const [updateCate, setUpdateCate] = useState(course?.specializationId);
-  // console.log("catebefore", course?.categoryId);
-  // console.log("update", updateCate);
+
   const [updateImage, setUpdateImage] = useState(course?.imageUrl);
-  // const {preivousImage} = useState(course?.imageUrl);
 
   const showUpdateModal = (data: any) => {
     setUpdateModal(true);
@@ -295,7 +288,6 @@ const InstructorCourse = () => {
     );
     formData.append("contentLength", data.length || course?.contentLength);
     formData.append("price", data.price || course?.price);
-    // console.log("price", data.price);
     formData.append("lectureCount", data.lecture || course?.lectureCount);
     formData.append("specializationId", selected.toString());
     if (formDataImage !== undefined) {
@@ -355,6 +347,9 @@ const InstructorCourse = () => {
   };
 
   // if (!id) return <Spin size="large" className="flex justify-center" />;
+  const routerCreateNewCourse = () => {
+    router.push("/instructorcourses/new-course");
+  };
 
   return (
     <>
@@ -395,7 +390,8 @@ const InstructorCourse = () => {
                 <Button
                   type="default"
                   className={`${InstructorCourseStyle.create_btn}`}
-                  onClick={showModal}
+                  // onClick={showModal}
+                  onClick={routerCreateNewCourse}
                 >
                   New Course
                 </Button>
@@ -513,25 +509,12 @@ const InstructorCourse = () => {
                                     }}
                                     onClick={() => {
                                       showUpdateModal(item);
-                                      // console.log("t nè", user);
                                     }}
                                   >
                                     Update
                                   </Button>
-                                  {/* <Button
-                                    danger
-                                    type="primary"
-                                    style={{ color: "black" }}
-                                    onClick={() => handleClickOpen(item)}
-                                  >
-                                    Delete
-                                  </Button> */}
                                 </span>
                               </div>
-                              {/* <div>
-                      <p>Status</p>
-                      <span>{displayActive(item.status)}</span>
-                    </div> */}
                             </div>
                           </div>
                         </div>
@@ -592,7 +575,14 @@ const InstructorCourse = () => {
                 {/* <span>{errorMassage}</span> */}
               </div>
               <Form.Item
-                rules={[{ required: true, message: "Please input Name!" }]}
+                rules={[
+                  { required: true, message: "Please input Name!" },
+                  {
+                    min: 6,
+                    max: 150,
+                    message: "Name must be between 6 and 150 characters",
+                  },
+                ]}
                 label="Name"
                 name="name"
               >
@@ -612,8 +602,9 @@ const InstructorCourse = () => {
               <Form.Item
                 rules={[
                   { required: true, message: "Please estimate the time!" },
+                  { type: "number", min: 10, message: "At least 10 minutes" },
                 ]}
-                label="Length(mins)"
+                label="Length (mins)"
                 name="length"
               >
                 <InputNumber
@@ -623,23 +614,6 @@ const InstructorCourse = () => {
                   controls={false}
                   // formatter={(value) => `${value} mins`}
                   // parser={(value) => value!.replace("mins", "")}
-                />
-              </Form.Item>
-              <Form.Item
-                rules={[
-                  {
-                    required: true,
-                    message: "Please estimate number of lectures!",
-                  },
-                ]}
-                label="Lectures"
-                name="lecture"
-              >
-                <InputNumber
-                  placeholder="Input Number of Lectures!"
-                  className="w-[200px]"
-                  min={0}
-                  controls={false}
                 />
               </Form.Item>
               <Form.Item
@@ -786,14 +760,6 @@ const InstructorCourse = () => {
                   // parser={(value) => value!.replace("mins", "")}
                 />
               </Form.Item>
-              <Form.Item label="Lectures" name="lecture">
-                <InputNumber
-                  className="w-[200px]"
-                  min={0}
-                  controls={false}
-                  defaultValue={course?.lectureCount}
-                />
-              </Form.Item>
               <Form.Item label="Price(VND):" name="price">
                 <InputNumber
                   style={{ width: 200 }}
@@ -840,45 +806,6 @@ const InstructorCourse = () => {
               </Space>
             </Form>
           </Modal>
-
-          {/* Dialog */}
-          {/* <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-describedby="alert-dialog-slide-description"
-      >
-        <DialogTitle
-          sx={{ backgroundColor: "#ff0000", fontSize: "20px", color: "white" }}
-        >
-          {" "}
-          WARNING!!!{" "}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            <Typography>
-              Do you want to Delete {`${course?.name}`} course?
-            </Typography>
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Typography
-            onClick={handleClose}
-            sx={{
-              marginRight: "12px",
-              cursor: "pointer",
-              ":hover": {
-                textDecoration: "underline",
-              },
-            }}
-          >
-            cancel
-          </Typography>
-
-          <Button danger onClick={() => handleDelete(course)} type="primary">
-            Remove
-          </Button>
-        </DialogActions>
-      </Dialog> */}
 
           <Modal
             destroyOnClose={true}
