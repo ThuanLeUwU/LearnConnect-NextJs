@@ -114,6 +114,7 @@ export default function EditProfile() {
 
   const handlePayPalIdChange = (e: ChangeEvent<HTMLInputElement>) => {
     setPaypalId(e.target.value);
+    console.log("e.target.value", e.target.value);
   };
 
   const handlePayPalAddressChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -205,13 +206,21 @@ export default function EditProfile() {
         setTimeout(() => {
           toast.success("Edit Successfully!!!");
         });
-        router.push("/profile");
+        if (userData?.role === 2) {
+          router.push(`/profile-mentor/${id}`);
+        } else {
+          router.push(`/profile`);
+        }
       })
       .catch((error) => {
         setTimeout(() => {
           toast.error("Edit Unsuccessfully!!!");
         });
-        router.push("/profile");
+        if (userData?.role === 2) {
+          router.push(`/profile-mentor/${id}`);
+        } else {
+          router.push(`/profile`);
+        }
         if (error.response) {
           console.error("Server responded with an error:", error.response.data);
           console.error("Status code:", error.response.status);
@@ -231,7 +240,11 @@ export default function EditProfile() {
     router.push("/");
   };
   const breadcrumbsProfile = () => {
-    router.push("/profile");
+    if (userData?.role === 2) {
+      router.push(`/profile-mentor/${id}`);
+    } else {
+      router.push(`/profile`);
+    }
   };
 
   return (
@@ -332,7 +345,7 @@ export default function EditProfile() {
                   <input
                     type="number"
                     id="paypalId"
-                    value={paypalId1}
+                    defaultValue={paypalId1}
                     onChange={handlePayPalIdChange}
                     className="bg-[#fff] border border-[#30925533] text-[#000] text-base rounded-lg block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-[#309255]"
                     placeholder="Your Phone Number"
