@@ -4,16 +4,32 @@ import ".././globals.css";
 import useDataPaymentFetcher from "@/components/pagination/useDataPaymentFetcher";
 import Paginate from "@/components/pagination/pagination";
 import axios from "axios";
-import { Breadcrumb, Spin, Table, Tooltip } from "antd";
+import { Breadcrumb, Spin, Table, Tag, Tooltip } from "antd";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { UserAuth } from "../context/AuthContext";
 import { SortOrder } from "antd/es/table/interface";
 import moment from "moment";
+import { http } from "@/api/http";
+import ProgressBar from "@ramonak/react-progress-bar";
+
+export type Progress = {
+  purchased: number;
+  onGoing: number;
+  done: number;
+  courseInfo: any;
+  courseName: string;
+  courseImage: string;
+  completion: string;
+  grade: number;
+  startDate: string;
+  endDate: string;
+  status: number;
+};
 
 const StudyProgress = () => {
   const router = useRouter();
-  const { role } = UserAuth();
+  const { role, id, userData } = UserAuth();
   useEffect(() => {
     if (role === 0) {
       router.push(`/user-manage`);
@@ -36,8 +52,37 @@ const StudyProgress = () => {
   const { jwtToken } = UserAuth();
   axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
 
+  const [progress, setProgress] = useState<Progress>();
+  console.log("1", progress);
+  const [detailProgress, setDetailProgress] = useState<Progress[]>([]);
+  console.log("2", detailProgress);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const responseData = await http.get(
+          `https://learnconnectapitest.azurewebsites.net/api/learning-process/statistics-learning-process?userId=${id}`
+        );
+        setProgress(responseData.data);
+        setDetailProgress(responseData.data.courseInfo);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchData();
+  }, [userData]);
+
   const breadcrumbsHome = () => {
     router.push("/");
+  };
+
+  const getStatusText = (status) => {
+    if (status === 0) {
+      return <Tag color="blue">On-going </Tag>;
+    } else if (status === 3) {
+      return <Tag color="green">On-going </Tag>;
+    }
+    // Add more conditions as needed
+    return "";
   };
 
   const columns = [
@@ -50,9 +95,24 @@ const StudyProgress = () => {
     },
     {
       title: "% Completion",
-      dataIndex: "completionPercentage",
-      key: "completionPercentage",
-      sorter: (a, b) => a.completionPercentage - b.completionPercentage,
+      dataIndex: "completion",
+      key: "completion",
+      sorter: (a, b) => a.completion - b.completion,
+      render: (text) => (
+        <div className="">
+          {/* <p className="text-[#52565b] text-[14px]">{text}% Complete</p> */}
+
+          <div className="rating-progress-bar mt-2">
+            <ProgressBar
+              completed={text}
+              bgColor="#309255"
+              height="15px"
+              // labelAlignment="outside"
+              labelSize="12px"
+            />
+          </div>
+        </div>
+      ),
       sortDirections: ["ascend", "descend"] as SortOrder[],
     },
     {
@@ -78,7 +138,13 @@ const StudyProgress = () => {
       sorter: (a, b) =>
         new Date(a.endDate).getTime() - new Date(b.endDate).getTime(),
       sortDirections: ["ascend", "descend"] as SortOrder[],
-      render: (text) => moment(text).locale("en").format("LLL"),
+      render: (text) => {
+        if (!text) {
+          return <>-</>; // Trả về chuỗi trống nếu endDate là null
+        } else {
+          return moment(text).locale("en").format("LLL");
+        }
+      },
     },
 
     {
@@ -87,75 +153,8 @@ const StudyProgress = () => {
       key: "status",
       sorter: (a, b) => a.status.localeCompare(b.status),
       sortDirections: ["ascend", "descend"] as SortOrder[],
+      render: (status) => getStatusText(status),
     },
-  ];
-
-  const courseData = [
-    {
-      key: "1",
-      courseName: "React Fundamentals",
-      status: "In Progress",
-      startDate: "2023-01-01",
-      endDate: "2023-02-01",
-      grade: "10",
-      completionPercentage: "49",
-    },
-    {
-      key: "1",
-      courseName: "React Fundamentals",
-      status: "In Progress",
-      startDate: "2023-01-01",
-      endDate: "2023-02-01",
-      grade: "8",
-      completionPercentage: "21",
-    },
-    {
-      key: "1",
-      courseName: "React Fundamentals",
-      status: "In Progress",
-      startDate: "2023-01-01",
-      endDate: "2023-02-01",
-      grade: "5",
-      completionPercentage: "23",
-    },
-    {
-      key: "1",
-      courseName: "React Fundamentals",
-      status: "In Progress",
-      startDate: "2023-01-01",
-      endDate: "2023-02-01",
-      grade: "7",
-      completionPercentage: "81",
-    },
-    {
-      key: "1",
-      courseName: "React Fundamentals",
-      status: "Done",
-      startDate: "2023-01-01",
-      endDate: "2023-02-01",
-      grade: "0",
-      completionPercentage: "51",
-    },
-    {
-      key: "1",
-      courseName: "React Fundamentals",
-      status: "In Progress",
-      startDate: "2023-01-01",
-      endDate: "2023-02-01",
-      grade: "4",
-      completionPercentage: "23",
-    },
-    {
-      key: "1",
-      courseName: "React Fundamentals",
-      status: "In Progress",
-      startDate: "2023-01-01",
-      endDate: "2023-02-01",
-      grade: "2",
-      completionPercentage: "42",
-    },
-
-    // Add more course entries as needed
   ];
 
   const [pagination, setPagination] = useState({
@@ -201,7 +200,9 @@ const StudyProgress = () => {
               <div className="p-4 text-4xl text-orange-400 font-semibold">
                 Purchased
               </div>
-              <div className="bg-white p-4 text-3xl">2 Courses</div>
+              <div className="bg-white p-4 text-3xl">
+                {progress?.purchased} Courses
+              </div>
             </div>
             <div className="flex justify-center">
               <img src="/images/purchasing.png" className="w-[96px] h-[96px]" />
@@ -210,7 +211,9 @@ const StudyProgress = () => {
           <div className="flex flex-row justify-between p-5 items-center rounded-lg border-solid border-2 shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)]">
             <div className="flex flex-col ">
               <div className=" p-4 text-4xl text-[#6EC2F7]">On-going</div>
-              <div className="bg-white p-4 text-3xl">2 Courses</div>
+              <div className="bg-white p-4 text-3xl">
+                {progress?.onGoing} Courses
+              </div>
             </div>
             <div className="flex justify-center">
               <img
@@ -222,7 +225,9 @@ const StudyProgress = () => {
           <div className="flex flex-row justify-between p-5 items-center rounded-lg border-solid border-2 shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)]">
             <div className="flex flex-col ">
               <div className="text-[#21D375] p-4 text-4xl">Done</div>
-              <div className="bg-white p-4 text-3xl">1 Course</div>
+              <div className="bg-white p-4 text-3xl">
+                {progress?.done} Course
+              </div>
             </div>
             <div className="flex justify-center">
               <img src="/images/done.png" className="w-[96px] h-[96px]" />
@@ -240,7 +245,7 @@ const StudyProgress = () => {
         ) : (
           <div className="w-full overflow-x-auto min-h-[300px] shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)] rounded-lg border-solid border-2">
             <Table
-              dataSource={courseData}
+              dataSource={detailProgress}
               columns={columns}
               pagination={{ ...pagination, onChange: handlePageChange }}
             />

@@ -34,8 +34,10 @@ import Link from "next/link";
 import { Specialize } from "../page";
 import UploadFirebase from "@/components/uploadfirebase/uploadfirebase";
 import { Lecture } from "@/app/my-course/[id]/page";
-import { PlusOutlined } from "@ant-design/icons";
+import { InfoCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { Test } from "@/components/test/test";
+import { Course } from "@/components/courses/courses";
+import { AiOutlineCheckCircle } from "react-icons/ai";
 
 export type User = {
   id: string | number;
@@ -206,6 +208,22 @@ export default function CreateCourse() {
   };
 
   const [formDataImage, setFormDataImage] = useState();
+  const [course, setCourse] = useState<Course>();
+
+  useEffect(() => {
+    http
+      .get(
+        `https://learnconnectapitest.azurewebsites.net/api/course/get-course-by-mentor/mentorUserId/${id}/course/${courseId}`
+      )
+      .then((response) => {
+        setCourse(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching user data:", error);
+      });
+  }, [courseId]);
+
+  console.log("j z toi", course);
 
   const handleSubmit = async (data: any) => {
     if (formDataImage === undefined) {
@@ -233,6 +251,9 @@ export default function CreateCourse() {
           })
           .then((res) => {
             setCourseId(res.data.id);
+            setStep1Completed(true);
+            setDisableButton(false);
+            setCourse(res.data);
           });
         form.resetFields();
         setTimeout(() => {
@@ -366,7 +387,7 @@ export default function CreateCourse() {
         .then((response) => {
           setLectures(response.data);
           setIsModerating(true);
-          form.resetFields();
+          // form.resetFields();
           setSource("");
         });
     }, 3000);
@@ -507,7 +528,7 @@ export default function CreateCourse() {
             .then((response) => {
               setAllOffTest(response.data);
               //   setAllQuestions(response.data[0].questions);
-
+              setStep3Completed(true);
               setShowAnswerForm(false);
             });
           // http.get();
@@ -521,6 +542,35 @@ export default function CreateCourse() {
 
   const handleCheckboxChange = (e) => {
     handleSetIsChecked(e.target.checked);
+  };
+
+  const [activeStep, setActiveStep] = useState(1);
+  const [step1Completed, setStep1Completed] = useState(false);
+  const [step3Completed, setStep3Completed] = useState(false);
+
+  const [disableButton, setDisableButton] = useState(true);
+
+  const handleStepClick = (step) => {
+    setActiveStep(step);
+  };
+
+  const isStepActive = (step) => {
+    if (!finishStep) {
+      return step === activeStep;
+    } else {
+      return step === 0;
+    }
+  };
+  const [finishStep, setFinishStep] = useState(false);
+  const FinishForm = () => {
+    setInforCourse(false);
+    setLectureTab(false);
+    setTestTab(false);
+    setFinishStep(true);
+  };
+
+  const routerDetailCourse = () => {
+    router.push(`/instructorcourses/${courseId}`);
   };
 
   return (
@@ -563,7 +613,15 @@ export default function CreateCourse() {
                 </Breadcrumb>
               </div>
               <div className="flex flex-row gap-4 justify-evenly my-5">
-                <div className="border-2 rounded-lg p-5">
+                <div
+                  className={`border-2 rounded-lg p-5 bg-gray-200 ${
+                    isStepActive(1)
+                      ? " shadow-lg transition-transform transform  translate-y-[-16px]"
+                      : ""
+                  } ${
+                    step1Completed ? "bg-green-500 duration-300 transition" : ""
+                  }`}
+                >
                   <div className="flex justify-center text-3xl">Step 1:</div>
                   <div className="flex justify-center text-xl">
                     Course Information
@@ -572,7 +630,17 @@ export default function CreateCourse() {
                 <div className="flex items-center">
                   <img src="/images/shape-17.png" />
                 </div>
-                <div className="border-2 rounded-lg p-5">
+                <div
+                  className={`border-2 rounded-lg p-5 bg-gray-200 ${
+                    isStepActive(2)
+                      ? " shadow-lg transition-transform transform duration-300 translate-y-[-16px]"
+                      : ""
+                  } ${
+                    lectures.length >= 3
+                      ? "bg-green-500 duration-300 transition"
+                      : ""
+                  }`}
+                >
                   <div className="flex justify-center text-3xl">Step 2:</div>
                   <div className="flex justify-center text-xl">
                     Lecture Information
@@ -581,7 +649,15 @@ export default function CreateCourse() {
                 <div className="flex items-center">
                   <img src="/images/shape-17.png" />
                 </div>
-                <div className="border-2 rounded-lg p-5">
+                <div
+                  className={`border-2 rounded-lg p-5 bg-gray-200 ${
+                    isStepActive(3)
+                      ? " shadow-lg transition-transform transform duration-300 translate-y-[-16px]"
+                      : ""
+                  } ${
+                    step3Completed ? "bg-green-500 duration-300 transition" : ""
+                  }`}
+                >
                   <div className="flex justify-center text-3xl">Step 3:</div>
                   <div className="flex justify-center text-xl">
                     Test Information
@@ -589,581 +665,789 @@ export default function CreateCourse() {
                 </div>
               </div>
               <div className="">
-                <div className="container border border-[#309255] my-3 rounded-lg mt-3">
-                  {inforCourse === true && (
-                    <>
-                      <Form
-                        disabled={courseId !== 0 && true}
-                        autoComplete="off"
-                        form={form}
-                        labelCol={{ span: 6 }}
-                        labelAlign={"left"}
-                        wrapperCol={{ span: 18 }}
-                        layout="horizontal"
-                        className="p-5"
-                        style={{ width: "100%" }}
-                        onFinish={handleSubmit}
-                      >
-                        <div
-                          style={{ display: "flex" }}
-                          className="flex justify-center"
-                        >
-                          <Image
-                            width="60%"
-                            height={300}
-                            src={image}
-                            className="overflow-hidden"
-                          />
-                        </div>
-                        <div
-                          className="flex flex-col items-center pt-2 pb-2"
-                          style={{ display: "flex" }}
-                        >
-                          <Upload
-                            accept="image/png, image/jpeg"
-                            onChange={handleChange}
-                            action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
+                {!finishStep ? (
+                  <div className="container border border-[#309255] my-3 rounded-lg mt-3">
+                    {inforCourse === true && (
+                      <>
+                        {courseId !== 0 ? (
+                          <Form
+                            disabled
+                            autoComplete="off"
+                            form={form}
+                            labelCol={{ span: 5 }}
+                            labelAlign={"left"}
+                            wrapperCol={{ span: 19 }}
+                            layout="horizontal"
+                            className="p-5"
+                            style={{ width: "100%" }}
                           >
-                            <Button>Upload</Button>
-                          </Upload>
+                            <div
+                              style={{ display: "flex", marginBottom: "20px" }}
+                              className="flex justify-center"
+                            >
+                              <Image
+                                width="60%"
+                                height={300}
+                                src={course?.imageUrl}
+                                className="overflow-hidden"
+                              />
+                            </div>
+                            {/* <div
+                            className="flex flex-col items-center pt-2 pb-2"
+                            style={{ display: "flex" }}
+                          >
+                            <Upload
+                              accept="image/png, image/jpeg"
+                              onChange={handleChange}
+                              action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
+                            >
+                              <Button>Upload</Button>
+                            </Upload>
+                          </div> */}
+                            <Form.Item label="Name">
+                              <Input value={course?.name} />
+                            </Form.Item>
+                            <Form.Item label="Specialization">
+                              <Input value={course?.specializationName} />
+                            </Form.Item>
+                            <Form.Item label="Length (mins)">
+                              <InputNumber
+                                className="w-[290px]"
+                                controls={false}
+                                value={course?.contentLength}
+                              />
+                            </Form.Item>
+                            <Form.Item label="Price(VND):">
+                              <InputNumber
+                                style={{ width: 200 }}
+                                controls={false}
+                                value={course?.price}
+                              />
+                            </Form.Item>
+                            <Form.Item label="Short Description">
+                              <Input.TextArea
+                                rows={2}
+                                value={course?.shortDescription}
+                              />
+                            </Form.Item>
+                            <Form.Item label="Description">
+                              <Input.TextArea
+                                rows={4}
+                                value={course?.specializationName}
+                              />
+                            </Form.Item>
+                          </Form>
+                        ) : (
+                          <Form
+                            autoComplete="off"
+                            form={form}
+                            labelCol={{ span: 5 }}
+                            labelAlign={"left"}
+                            wrapperCol={{ span: 19 }}
+                            layout="horizontal"
+                            className="p-5"
+                            style={{ width: "100%" }}
+                            onFinish={handleSubmit}
+                          >
+                            <div
+                              style={{ display: "flex" }}
+                              className="flex justify-center"
+                            >
+                              <Image
+                                width="60%"
+                                height={300}
+                                src={image}
+                                className="overflow-hidden"
+                              />
+                            </div>
+                            <div
+                              className="flex flex-col items-center pt-2 pb-2"
+                              style={{ display: "flex" }}
+                            >
+                              <Upload
+                                accept="image/png, image/jpeg"
+                                onChange={handleChange}
+                                action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
+                              >
+                                <Button>Upload</Button>
+                              </Upload>
+                            </div>
+                            <Form.Item
+                              rules={[
+                                {
+                                  required: true,
+                                  message: "Please input Name!",
+                                },
+                                {
+                                  min: 6,
+                                  max: 150,
+                                  message:
+                                    "Name must be between 6 and 150 characters",
+                                },
+                              ]}
+                              label="Name"
+                              name="name"
+                            >
+                              <Input placeholder="Name Course" />
+                            </Form.Item>
+                            <Form.Item label="Specialization">
+                              <Select onChange={handleChangeCate}>
+                                {listCategory.map((option) => {
+                                  return (
+                                    <Option
+                                      key={option.specId}
+                                      value={option.specId}
+                                    >
+                                      {option.specName}
+                                    </Option>
+                                  );
+                                })}
+                              </Select>
+                            </Form.Item>
+                            <Form.Item
+                              rules={[
+                                {
+                                  required: true,
+                                  message: "Please estimate the time!",
+                                },
+                                {
+                                  type: "number",
+                                  min: 10,
+                                  message: "At least 10 minutes",
+                                },
+                              ]}
+                              label="Length (mins)"
+                              name="length"
+                            >
+                              <InputNumber
+                                placeholder="Input estimate the time!"
+                                min={0}
+                                className="w-[290px]"
+                                controls={false}
+                              />
+                            </Form.Item>
+                            <Form.Item
+                              rules={[
+                                {
+                                  required: true,
+                                  message: "Please Input Price",
+                                },
+                              ]}
+                              label="Price(VND):"
+                              name="price"
+                            >
+                              <InputNumber
+                                placeholder="Input Price!"
+                                style={{ width: 200 }}
+                                min={0}
+                                controls={false}
+                              />
+                            </Form.Item>
+                            <Form.Item
+                              rules={[
+                                {
+                                  required: true,
+                                  message: "Please Type Short Description",
+                                },
+                              ]}
+                              label="Short Description"
+                              name="shortDes"
+                            >
+                              <Input.TextArea
+                                rows={2}
+                                placeholder="Input Some Short Description"
+                              />
+                            </Form.Item>
+                            <Form.Item label="Description" name="description">
+                              <Input.TextArea
+                                rows={4}
+                                placeholder="Input More Description"
+                              />
+                            </Form.Item>
+                            <Space className="justify-end w-full">
+                              <Form.Item className="mb-0">
+                                <Space>
+                                  <Button
+                                    className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                                    htmlType="submit"
+                                    style={{
+                                      border: "2px solid #4caf50",
+                                      color: "#fff",
+                                    }}
+                                  >
+                                    Create
+                                  </Button>
+                                </Space>
+                              </Form.Item>
+                            </Space>
+                          </Form>
+                        )}
+
+                        <div className="flex justify-center p-5">
+                          <button
+                            className="border-2 flex rounded-lg justify-center p-2 w-20 hover:bg-gray-200"
+                            onClick={() => {
+                              {
+                                !disableButton && setInforCourse(false);
+                                !disableButton && setLectureTab(true);
+                                !disableButton && handleStepClick(2);
+                              }
+                              {
+                                disableButton &&
+                                  toast.warning(
+                                    "Please Complete Course Information Form First"
+                                  );
+                              }
+                            }}
+                          >
+                            Next
+                          </button>
                         </div>
-                        <Form.Item
-                          rules={[
-                            { required: true, message: "Please input Name!" },
-                            {
-                              min: 6,
-                              max: 150,
-                              message:
-                                "Name must be between 6 and 150 characters",
-                            },
-                          ]}
-                          label="Name"
-                          name="name"
-                        >
-                          <Input placeholder="Name Course" />
-                        </Form.Item>
-                        <Form.Item label="Specialization">
-                          <Select onChange={handleChangeCate}>
-                            {listCategory.map((option) => {
-                              return (
-                                <Option
-                                  key={option.specId}
-                                  value={option.specId}
-                                >
-                                  {option.specName}
-                                </Option>
-                              );
-                            })}
-                          </Select>
-                        </Form.Item>
-                        <Form.Item
-                          rules={[
-                            {
-                              required: true,
-                              message: "Please estimate the time!",
-                            },
-                            {
-                              type: "number",
-                              min: 10,
-                              message: "At least 10 minutes",
-                            },
-                          ]}
-                          label="Length (mins)"
-                          name="length"
-                        >
-                          <InputNumber
-                            placeholder="Input estimate the time!"
-                            min={0}
-                            className="w-[290px]"
-                            controls={false}
-                          />
-                        </Form.Item>
-                        <Form.Item
-                          rules={[
-                            {
-                              required: true,
-                              message: "Please Input Price",
-                            },
-                          ]}
-                          label="Price(VND):"
-                          name="price"
-                        >
-                          <InputNumber
-                            placeholder="Input Price!"
-                            style={{ width: 200 }}
-                            min={0}
-                            controls={false}
-                          />
-                        </Form.Item>
-                        <Form.Item
-                          rules={[
-                            {
-                              required: true,
-                              message: "Please Type Short Description",
-                            },
-                          ]}
-                          label="Short Description"
-                          name="shortDes"
-                        >
-                          <Input.TextArea
-                            rows={2}
-                            placeholder="Input Some Short Description"
-                          />
-                        </Form.Item>
-                        <Form.Item label="Description" name="description">
-                          <Input.TextArea
-                            rows={4}
-                            placeholder="Input More Description"
-                          />
-                        </Form.Item>
-                        <Space className="justify-end w-full">
-                          <Form.Item className="mb-0">
-                            <Space>
-                              <Button
-                                className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
-                                htmlType="submit"
-                                style={{
-                                  border: "2px solid #4caf50",
-                                  color: "#fff",
+                      </>
+                    )}
+                    {lectureTabs === true && (
+                      <>
+                        <div className="flex flex-col gap-2">
+                          <div className="border-2 p-5 mt-5 rounded-xl flex flex-row gap-2 bg-gray-200">
+                            <div className="w-8 h-8">
+                              <img src="/menu-icon/info.png" />
+                            </div>
+                            <div className="flex flex-col text-lg">
+                              <div>
+                                - The course must have at least 3 lectures, each
+                                lecture must contain video.
+                              </div>
+                              <div>- Maximum size for each video is 200MB.</div>
+                            </div>
+                          </div>
+                          <div className="">
+                            <div className="flex flex-row p-5">
+                              <Form
+                                autoComplete="off"
+                                form={form}
+                                labelCol={{ span: 4 }}
+                                wrapperCol={{ span: 16 }}
+                                layout="horizontal"
+                                className="mt-5"
+                                style={{ width: 600 }}
+                                onFinish={(e) => {
+                                  handleLecture(e);
+                                  handleSuccessModeration();
                                 }}
                               >
-                                Create
-                              </Button>
-                            </Space>
-                          </Form.Item>
-                        </Space>
-                      </Form>
-                      <div className="flex justify-center p-5">
-                        <button
-                          className="border-2 flex justify-center p-5"
-                          onClick={() => {
-                            setInforCourse(false);
-                            setLectureTab(true);
-                          }}
-                        >
-                          Next
-                        </button>
-                      </div>
-                    </>
-                  )}
-                  {lectureTabs === true && (
-                    <>
-                      <div className="flex flex-row p-5">
-                        <Form
-                          autoComplete="off"
-                          form={form}
-                          labelCol={{ span: 4 }}
-                          wrapperCol={{ span: 16 }}
-                          layout="horizontal"
-                          className="mt-5"
-                          style={{ width: 600 }}
-                          onFinish={(e) => {
-                            handleLecture(e);
-                            handleSuccessModeration();
-                          }}
-                        >
-                          <Form.Item
-                            rules={[
-                              { required: true, message: "Please input Name!" },
-                            ]}
-                            label="Title"
-                            name="title"
-                          >
-                            <Input placeholder="Input Title Lecture" />
-                          </Form.Item>
-                          <Form.Item
-                            rules={[
-                              { required: true, message: "Please input Name!" },
-                            ]}
-                            label="Content"
-                            name="content"
-                          >
-                            <Input.TextArea
-                              rows={4}
-                              placeholder="Input More Details Content"
-                            />
-                          </Form.Item>
-                          <Form.Item label="Type">
-                            <Select
-                              onChange={handleChangeType}
-                              defaultValue={type}
-                            >
-                              {Type.map((option) => {
-                                return (
-                                  <Option key={option.id} value={option.id}>
-                                    {option.title}
-                                  </Option>
-                                );
-                              })}
-                            </Select>
-                          </Form.Item>
-                          {type === 1 ? (
-                            <div>
-                              <div
-                                style={{ display: "flex" }}
-                                className="flex justify-center"
-                              >
-                                {source && (
-                                  <video
-                                    width={400}
-                                    height={300}
-                                    src={source}
-                                    controls
-                                  />
-                                )}
-                              </div>
-                              <div
-                                className="flex justify-center pt-2 pb-2"
-                                style={{ display: "flex" }}
-                              >
-                                <UploadFirebase
-                                  fileName={`Course${courseId}_Lecture${
-                                    lectures.length + 1
-                                  }_${Math.floor(
-                                    new Date().getTime() -
-                                      new Date(2020, 0, 1).getSeconds()
-                                  )}`}
-                                  returnUrl={setSource}
-                                />
-                              </div>
-                            </div>
-                          ) : (
-                            // </Form.Item>
-                            <Form.Item label="Document">
-                              <div
-                                className="flex justify-center pt-2 pb-2"
-                                style={{ display: "flex" }}
-                              >
-                                <Upload
-                                  // accept="image/png, image/jpeg"
-                                  // ref={inputRef}
-                                  // accept=".mov,.mp4"
-                                  accept=".pdf"
-                                  // onChange={handleFileChange}
-                                  // beforeUpload={beforeUpload}
-                                  // headers={{ Authorization: authorization }}
-                                  action="https://learnconnectapitest.azurewebsites.net/api/Upload/video"
+                                <Form.Item
+                                  rules={[
+                                    {
+                                      required: true,
+                                      message: "Please input Name!",
+                                    },
+                                  ]}
+                                  label="Title"
+                                  name="title"
                                 >
-                                  <Button>Upload</Button>
-                                </Upload>
-                              </div>
-                            </Form.Item>
-                          )}
-                          <Space className="justify-end w-full pr-[90px]">
-                            <Form.Item className="mb-0">
-                              <Space>
-                                <Button
-                                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1 flex items-center"
-                                  htmlType="submit"
-                                  style={{
-                                    // backgroundColor: "#4caf50",
-                                    // borderColor: "#4caf50",
-                                    border: "2px solid #4caf50",
-                                    color: "#fff",
-                                  }}
-                                >
-                                  <PlusOutlined /> Add Lecture
-                                </Button>
-                              </Space>
-                            </Form.Item>
-                          </Space>
-                        </Form>
-                        <Table
-                          className="flex-1"
-                          dataSource={lectures}
-                          columns={columns}
-                          onRow={(record, rowIndex) => {
-                            return {
-                              onClick: () => handleRowClick(record), // Xử lý sự kiện click
-                            };
-                          }}
-                        />
-                      </div>
-                      <div className="flex justify-center p-5">
-                        <button
-                          className="border-2 flex justify-center p-5"
-                          onClick={() => {
-                            setInforCourse(true);
-                            setLectureTab(false);
-                          }}
-                        >
-                          Previous
-                        </button>
-                        <button
-                          className="border-2 flex justify-center p-5"
-                          onClick={() => {
-                            setTestTab(true);
-                            setLectureTab(false);
-                          }}
-                        >
-                          Next
-                        </button>
-                      </div>
-                    </>
-                  )}
-                  {testTabs === true && (
-                    <>
-                      {allOfTest.length === 0 ? (
-                        <>
-                          {titleFormTest === true && (
-                            <Form
-                              autoComplete="off"
-                              form={form}
-                              labelCol={{ span: 5 }}
-                              wrapperCol={{ span: 18 }}
-                              layout="horizontal"
-                              className="mt-5"
-                              style={{ width: "100%" }}
-                              onFinish={handleCreateTestTitle}
-                            >
-                              <Form.Item
-                                rules={[
-                                  {
-                                    required: true,
-                                    message: "Please input Title ! ",
-                                  },
-                                  {
-                                    max: 500,
-                                    message: "Maximum 500 characters allowed!",
-                                  },
-                                ]}
-                                label="Title"
-                                name="title"
-                              >
-                                <Input placeholder="Put title of Test here !" />
-                              </Form.Item>
-
-                              <Form.Item
-                                rules={[
-                                  {
-                                    required: true,
-                                    message: "Please input Name !",
-                                  },
-                                  {
-                                    max: 500,
-                                    message: "Maximum 500 characters allowed !",
-                                  },
-                                ]}
-                                label="Description"
-                                name="description"
-                              >
-                                <Input.TextArea placeholder="Type some description here !" />
-                              </Form.Item>
-
-                              <Space className="justify-end w-full">
-                                <Form.Item className="mb-0">
-                                  <Space>
-                                    <Button
-                                      className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
-                                      htmlType="submit"
-                                      style={{
-                                        border: "2px solid #4caf50",
-                                        color: "#fff",
-                                      }}
-                                    >
-                                      <PlusOutlined /> Add Test
-                                    </Button>
-                                  </Space>
+                                  <Input placeholder="Input Title Lecture" />
                                 </Form.Item>
-                              </Space>
-                            </Form>
-                          )}
-                        </>
-                      ) : (
-                        <>
-                          <>
-                            {allOfTest.map((item) => (
-                              <div key={item.test.id} className="mb-4 mt-6">
-                                <div className="flex flex-col">
-                                  <h3 className="text-xl font-semibold mt-2 text-center ">
-                                    <div className=" flex flex-col items-center justify-center mb-2">
-                                      <div className="flex justify-center items-center gap-2 ">
-                                        <div className="text-3xl flex flex-col gap-2">
-                                          <div>Title: {item.test.title} </div>
-                                        </div>
-                                      </div>
-
-                                      <br />
-                                      <div>
-                                        Description: {item.test.description}
-                                      </div>
-                                    </div>
-                                  </h3>
-                                </div>
-                                {item.questions.map((q, index) => (
-                                  <div
-                                    key={q.question.id}
-                                    className="mb-2 my-8 p-4 border-2 rounded-lg border-gray-200 shadow-[10px_10px_20px_10px_rgba(0,0,0,0.15)] "
+                                <Form.Item
+                                  rules={[
+                                    {
+                                      required: true,
+                                      message: "Please input Name!",
+                                    },
+                                  ]}
+                                  label="Content"
+                                  name="content"
+                                >
+                                  <Input.TextArea
+                                    rows={4}
+                                    placeholder="Input More Details Content"
+                                  />
+                                </Form.Item>
+                                <Form.Item label="Type">
+                                  <Select
+                                    onChange={handleChangeType}
+                                    defaultValue={type}
                                   >
-                                    <div className="mb-1 font-medium text-[18px] flex flex-row justify-between">
-                                      <div className="flex flex-row gap-2">
-                                        {index + 1}.{" "}
-                                        <div className="w-full">
-                                          {q.question.questionText}
-                                        </div>
-                                      </div>
-                                      <div className="gap-2 flex items-center">
-                                        <Button
-                                          onClick={() => {
-                                            handleNewAnswerClick(q.question.id);
-                                          }}
-                                          className="flex flex-row items-center"
+                                    {Type.map((option) => {
+                                      return (
+                                        <Option
+                                          key={option.id}
+                                          value={option.id}
                                         >
-                                          {/* <div></div> */}
-                                          <PlusOutlined /> Add Answer
-                                        </Button>
-                                      </div>
-                                    </div>
-                                    {showAnswerForm &&
-                                      questionId === q.question.id && (
-                                        <Form
-                                          onFinish={handleFormAnswerSubmit}
-                                          style={{
-                                            width: "80%",
-                                            alignItems: "start",
-                                          }}
-                                        >
-                                          <div className="flex flex-col justify-end">
-                                            <Form.Item
-                                              name="answer"
-                                              label="Answer"
-                                              rules={[
-                                                {
-                                                  required: true,
-                                                  message:
-                                                    "Please input your question!",
-                                                },
-                                              ]}
-                                            >
-                                              <Input
-                                                className={` border-2 p-2 text-left rounded-lg ${
-                                                  isChecked
-                                                    ? "border-green-500 bg-green-100"
-                                                    : ""
-                                                }`}
-                                              />
-                                            </Form.Item>
-                                            <Checkbox
-                                              className="flex items-end justify-end"
-                                              checked={isChecked}
-                                              onChange={handleCheckboxChange}
-                                            >
-                                              Correct Answer
-                                            </Checkbox>
-                                          </div>
-                                          <div className="flex justify-end gap-2 mt-2">
-                                            <Button onClick={handleCancel}>
-                                              Cancel
-                                            </Button>
-                                            <Button
-                                              style={{
-                                                backgroundColor: "#4caf50",
-                                                color: "#fff",
-                                              }}
-                                              type="primary"
-                                              htmlType="submit"
-                                            >
-                                              Submit
-                                            </Button>
-                                          </div>
-                                        </Form>
+                                          {option.title}
+                                        </Option>
+                                      );
+                                    })}
+                                  </Select>
+                                </Form.Item>
+                                {type === 1 ? (
+                                  <div>
+                                    <div
+                                      style={{ display: "flex" }}
+                                      className="flex justify-center"
+                                    >
+                                      {source && (
+                                        <video
+                                          width={400}
+                                          height={300}
+                                          src={source}
+                                          controls
+                                        />
                                       )}
-                                    <div className="px-4 grid grid-cols-2 gap-4">
-                                      {q.answers.map((answer, ansIndex) => (
-                                        <>
-                                          <div className="flex gap-2 justify-center align-middle items-center mt-3">
-                                            <div
-                                              className={` border-2 p-2 flex-auto text-left rounded-lg ${
-                                                answer.isCorrect === true
-                                                  ? "border-green-500 bg-green-100"
-                                                  : ""
-                                              }`}
-                                            >
-                                              {answer.answerText}
-                                            </div>
-                                          </div>
-                                        </>
-                                      ))}
+                                    </div>
+                                    <div
+                                      className="flex justify-center pt-2 pb-2"
+                                      style={{ display: "flex" }}
+                                    >
+                                      <UploadFirebase
+                                        fileName={`Course${courseId}_Lecture${
+                                          lectures.length + 1
+                                        }_${Math.floor(
+                                          new Date().getTime() -
+                                            new Date(2020, 0, 1).getSeconds()
+                                        )}`}
+                                        returnUrl={setSource}
+                                      />
                                     </div>
                                   </div>
-                                ))}
-                                <>
-                                  <div className="flex justify-between mb-5 mt-10">
-                                    <Button onClick={handleNewQuestionClick}>
-                                      Add Question
-                                    </Button>
-                                  </div>
-
-                                  <div className=" flex justify-center">
-                                    {showQuestionForm && (
-                                      <Form
-                                        onFinish={handleFormQuestionSubmit}
+                                ) : (
+                                  // </Form.Item>
+                                  <Form.Item label="Document">
+                                    <div
+                                      className="flex justify-center pt-2 pb-2"
+                                      style={{ display: "flex" }}
+                                    >
+                                      <Upload
+                                        // accept="image/png, image/jpeg"
+                                        // ref={inputRef}
+                                        // accept=".mov,.mp4"
+                                        accept=".pdf"
+                                        // onChange={handleFileChange}
+                                        // beforeUpload={beforeUpload}
+                                        // headers={{ Authorization: authorization }}
+                                        action="https://learnconnectapitest.azurewebsites.net/api/Upload/video"
+                                      >
+                                        <Button>Upload</Button>
+                                      </Upload>
+                                    </div>
+                                  </Form.Item>
+                                )}
+                                <Space className="justify-end w-full pr-[90px]">
+                                  <Form.Item className="mb-0">
+                                    <Space>
+                                      <Button
+                                        className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1 flex items-center"
+                                        htmlType="submit"
                                         style={{
-                                          width: "80%",
-                                          alignItems: "center",
+                                          // backgroundColor: "#4caf50",
+                                          // borderColor: "#4caf50",
+                                          border: "2px solid #4caf50",
+                                          color: "#fff",
                                         }}
                                       >
-                                        <Form.Item
-                                          name="question"
-                                          label="Question"
-                                          rules={[
-                                            {
-                                              required: true,
-                                              message:
-                                                "Please input your question!",
-                                            },
-                                          ]}
-                                        >
-                                          <Input />
-                                        </Form.Item>
-                                        <div className="flex gap-5 justify-end">
-                                          {/* Thêm các trường dữ liệu khác cần thiết vào đây */}
+                                        <PlusOutlined /> Add Lecture
+                                      </Button>
+                                    </Space>
+                                  </Form.Item>
+                                </Space>
+                              </Form>
+                              <Table
+                                className="flex-1"
+                                dataSource={lectures}
+                                columns={columns}
+                                onRow={(record, rowIndex) => {
+                                  return {
+                                    onClick: () => handleRowClick(record), // Xử lý sự kiện click
+                                  };
+                                }}
+                              />
+                            </div>
+                            <div className="flex justify-center p-2 gap-5">
+                              <button
+                                className="border-2 rounded-lg flex justify-center p-2 w-20 hover:bg-gray-200"
+                                onClick={() => {
+                                  setInforCourse(true);
+                                  setLectureTab(false);
+                                  handleStepClick(1);
+                                }}
+                              >
+                                Previous
+                              </button>
+                              <button
+                                className="border-2 flex rounded-lg justify-center p-2 w-20 hover:bg-gray-200"
+                                onClick={() => {
+                                  setTestTab(true);
+                                  setLectureTab(false);
+                                  handleStepClick(3);
+                                }}
+                              >
+                                Next
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </>
+                    )}
+                    {testTabs === true && (
+                      <>
+                        <div>
+                          <div className="border-2 p-5 mt-5 rounded-xl flex flex-row gap-2 bg-gray-200">
+                            <div className="w-8 h-8">
+                              <img src="/menu-icon/info.png" />
+                            </div>
+                            <div className="flex flex-col text-lg">
+                              <div>
+                                - Test must have at least 1 question, and a
+                                question must have more than 1 answer.
+                              </div>
+                            </div>
+                          </div>
+                          <div>
+                            {allOfTest.length === 0 ? (
+                              <>
+                                {titleFormTest === true && (
+                                  <Form
+                                    autoComplete="off"
+                                    form={form}
+                                    labelCol={{ span: 5 }}
+                                    wrapperCol={{ span: 18 }}
+                                    layout="horizontal"
+                                    className="mt-5"
+                                    style={{ width: "100%" }}
+                                    onFinish={handleCreateTestTitle}
+                                  >
+                                    <Form.Item
+                                      rules={[
+                                        {
+                                          required: true,
+                                          message: "Please input Title ! ",
+                                        },
+                                        {
+                                          max: 500,
+                                          message:
+                                            "Maximum 500 characters allowed!",
+                                        },
+                                      ]}
+                                      label="Title"
+                                      name="title"
+                                    >
+                                      <Input placeholder="Put title of Test here !" />
+                                    </Form.Item>
+
+                                    <Form.Item
+                                      rules={[
+                                        {
+                                          required: true,
+                                          message: "Please input Name !",
+                                        },
+                                        {
+                                          max: 500,
+                                          message:
+                                            "Maximum 500 characters allowed !",
+                                        },
+                                      ]}
+                                      label="Description"
+                                      name="description"
+                                    >
+                                      <Input.TextArea placeholder="Type some description here !" />
+                                    </Form.Item>
+
+                                    <Space className="justify-end w-full">
+                                      <Form.Item className="mb-0">
+                                        <Space>
                                           <Button
-                                            className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
-                                            onClick={handleCancel}
-                                            style={{
-                                              border: "2px solid #E0E0E0",
-                                              color: "black",
-                                            }}
-                                          >
-                                            Cancel
-                                          </Button>
-                                          <Button
-                                            className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                                            className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1 flex items-center"
                                             htmlType="submit"
                                             style={{
-                                              // backgroundColor: "#4caf50",
-                                              // borderColor: "#4caf50",
                                               border: "2px solid #4caf50",
                                               color: "#fff",
                                             }}
                                           >
-                                            Submit
+                                            <PlusOutlined /> Add Test
+                                          </Button>
+                                        </Space>
+                                      </Form.Item>
+                                    </Space>
+                                  </Form>
+                                )}
+                              </>
+                            ) : (
+                              <>
+                                <>
+                                  {allOfTest.map((item) => (
+                                    <div
+                                      key={item.test.id}
+                                      className="mb-4 mt-6"
+                                    >
+                                      <div className="flex flex-col">
+                                        <h3 className="text-xl font-semibold mt-2 text-center ">
+                                          <div className=" flex flex-col items-center justify-center mb-2">
+                                            <div className="flex justify-center items-center gap-2 ">
+                                              <div className="text-3xl flex flex-col gap-2">
+                                                <div>
+                                                  Title: {item.test.title}{" "}
+                                                </div>
+                                              </div>
+                                            </div>
+
+                                            <br />
+                                            <div>
+                                              Description:{" "}
+                                              {item.test.description}
+                                            </div>
+                                          </div>
+                                        </h3>
+                                      </div>
+                                      {item.questions.map((q, index) => (
+                                        <div
+                                          key={q.question.id}
+                                          className="mb-2 my-8 p-4 border-2 rounded-lg border-gray-200 shadow-[10px_10px_20px_10px_rgba(0,0,0,0.15)] "
+                                        >
+                                          <div className="mb-1 font-medium text-[18px] flex flex-row justify-between">
+                                            <div className="flex flex-row gap-2">
+                                              {index + 1}.{" "}
+                                              <div className="w-full">
+                                                {q.question.questionText}
+                                              </div>
+                                            </div>
+                                            <div className="gap-2 flex items-center">
+                                              <Button
+                                                onClick={() => {
+                                                  handleNewAnswerClick(
+                                                    q.question.id
+                                                  );
+                                                }}
+                                                className="flex flex-row items-center"
+                                              >
+                                                {/* <div></div> */}
+                                                <PlusOutlined /> Add Answer
+                                              </Button>
+                                            </div>
+                                          </div>
+                                          {showAnswerForm &&
+                                            questionId === q.question.id && (
+                                              <Form
+                                                onFinish={
+                                                  handleFormAnswerSubmit
+                                                }
+                                                style={{
+                                                  width: "80%",
+                                                  alignItems: "start",
+                                                }}
+                                              >
+                                                <div className="flex flex-col justify-end">
+                                                  <Form.Item
+                                                    name="answer"
+                                                    label="Answer"
+                                                    rules={[
+                                                      {
+                                                        required: true,
+                                                        message:
+                                                          "Please input your question!",
+                                                      },
+                                                    ]}
+                                                  >
+                                                    <Input
+                                                      className={` border-2 p-2 text-left rounded-lg ${
+                                                        isChecked
+                                                          ? "border-green-500 bg-green-100"
+                                                          : ""
+                                                      }`}
+                                                    />
+                                                  </Form.Item>
+                                                  <Checkbox
+                                                    className="flex items-end justify-end"
+                                                    checked={isChecked}
+                                                    onChange={
+                                                      handleCheckboxChange
+                                                    }
+                                                  >
+                                                    Correct Answer
+                                                  </Checkbox>
+                                                </div>
+                                                <div className="flex justify-end gap-2 mt-2">
+                                                  <Button
+                                                    onClick={handleCancel}
+                                                  >
+                                                    Cancel
+                                                  </Button>
+                                                  <Button
+                                                    style={{
+                                                      backgroundColor:
+                                                        "#4caf50",
+                                                      color: "#fff",
+                                                    }}
+                                                    type="primary"
+                                                    htmlType="submit"
+                                                  >
+                                                    Submit
+                                                  </Button>
+                                                </div>
+                                              </Form>
+                                            )}
+                                          <div className="px-4 grid grid-cols-2 gap-4">
+                                            {q.answers.map(
+                                              (answer, ansIndex) => (
+                                                <>
+                                                  <div className="flex gap-2 justify-center align-middle items-center mt-3">
+                                                    <div
+                                                      className={` border-2 p-2 flex-auto text-left rounded-lg ${
+                                                        answer.isCorrect ===
+                                                        true
+                                                          ? "border-green-500 bg-green-100"
+                                                          : ""
+                                                      }`}
+                                                    >
+                                                      {answer.answerText}
+                                                    </div>
+                                                  </div>
+                                                </>
+                                              )
+                                            )}
+                                          </div>
+                                        </div>
+                                      ))}
+                                      <>
+                                        <div className="flex justify-between mb-5 mt-10">
+                                          <Button
+                                            onClick={handleNewQuestionClick}
+                                          >
+                                            Add Question
                                           </Button>
                                         </div>
-                                      </Form>
-                                    )}
-                                  </div>
+
+                                        <div className=" flex justify-center">
+                                          {showQuestionForm && (
+                                            <Form
+                                              onFinish={
+                                                handleFormQuestionSubmit
+                                              }
+                                              style={{
+                                                width: "80%",
+                                                alignItems: "center",
+                                              }}
+                                            >
+                                              <Form.Item
+                                                name="question"
+                                                label="Question"
+                                                rules={[
+                                                  {
+                                                    required: true,
+                                                    message:
+                                                      "Please input your question!",
+                                                  },
+                                                ]}
+                                              >
+                                                <Input />
+                                              </Form.Item>
+                                              <div className="flex gap-5 justify-end">
+                                                {/* Thêm các trường dữ liệu khác cần thiết vào đây */}
+                                                <Button
+                                                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                                                  onClick={handleCancel}
+                                                  style={{
+                                                    border: "2px solid #E0E0E0",
+                                                    color: "black",
+                                                  }}
+                                                >
+                                                  Cancel
+                                                </Button>
+                                                <Button
+                                                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                                                  htmlType="submit"
+                                                  style={{
+                                                    // backgroundColor: "#4caf50",
+                                                    // borderColor: "#4caf50",
+                                                    border: "2px solid #4caf50",
+                                                    color: "#fff",
+                                                  }}
+                                                >
+                                                  Submit
+                                                </Button>
+                                              </div>
+                                            </Form>
+                                          )}
+                                        </div>
+                                      </>
+                                    </div>
+                                  ))}
                                 </>
-                              </div>
-                            ))}
-                          </>
-                        </>
-                      )}
-                      <div className="flex justify-center p-5">
-                        <button
-                          className="border-2 flex justify-center p-5"
-                          onClick={() => {
-                            setTestTab(false);
-                            setLectureTab(true);
-                          }}
-                        >
-                          Previous
-                        </button>
+                              </>
+                            )}
+                            <div className="flex justify-center p-2 gap-5">
+                              <button
+                                className="border-2 flex rounded-lg justify-center p-2 w-20 hover:bg-gray-200"
+                                onClick={() => {
+                                  setTestTab(false);
+                                  setLectureTab(true);
+                                  handleStepClick(2);
+                                }}
+                              >
+                                Previous
+                              </button>
+                              <button
+                                className="border-2 flex rounded-lg justify-center p-2 w-20 hover:bg-gray-200"
+                                onClick={() => {
+                                  {
+                                    console.log(
+                                      "huh",
+                                      lectures.length,
+                                      allOfTest.length
+                                    );
+                                    lectures.length < 3 ||
+                                    allOfTest.length === 0
+                                      ? toast.warning(
+                                          "Questions or lectures does not enough"
+                                        )
+                                      : FinishForm();
+                                  }
+                                }}
+                              >
+                                Finish
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                ) : (
+                  <>
+                    <div className="text-center flex justify-center">
+                      <div className="w-[500px]">
+                        <AiOutlineCheckCircle className="text-6xl mx-auto text-[#309255]" />
+                        <h1 className="text-3xl font-bold mb-4">
+                          Create Course successfully !
+                        </h1>
+                        <div className="text-center">
+                          <p className="text-lg text-gray-600">
+                            You have successfully created{" "}
+                            <span className="text-[#309255] font-bold">
+                              {course?.name}
+                            </span>{" "}
+                            course. Please wait for the review results from our
+                            system. Thank you for your contribution.
+                            Additionally, you can update the course content
+                            later by clicking on the course.
+                          </p>
+                        </div>
+                        <div className="mt-5">
+                          <button
+                            className="bg-green-600 text-white font-bold py-2 px-4 rounded-lg mr-4"
+                            onClick={routerDetailCourse}
+                          >
+                            Go to Course
+                          </button>
+                          <button
+                            className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+                            onClick={routerCourses}
+                          >
+                            Back to Home
+                          </button>
+                        </div>
                       </div>
-                    </>
-                  )}
-                </div>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>

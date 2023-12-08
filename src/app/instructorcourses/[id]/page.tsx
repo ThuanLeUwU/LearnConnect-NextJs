@@ -375,7 +375,7 @@ const Dashboard = ({ params }: any) => {
 
   //List Of Question
   const [listQuestion, setListQuestion] = useState<Test[]>([]);
-  console.log("vải ò", listQuestion);
+  // console.log("vải ò", listQuestion);
   const [allQuestions, setAllQuestions] = useState<Test[]>([]);
 
   const [idTest, setIdTest] = useState<Test>();
@@ -386,7 +386,7 @@ const Dashboard = ({ params }: any) => {
       .then((response) => {
         setListQuestion(response.data);
         setAllQuestions(response.data[0].questions);
-        setIdTest(response.data[0].test.id);
+        setIdTest(response.data[0].test.iyd);
         listQuestion.forEach((item) => {
           const totalQuestion = item.test.totalQuestion;
         });
@@ -516,14 +516,6 @@ const Dashboard = ({ params }: any) => {
   }, [idCourse]);
 
   const [test, setTest] = useState<TestTitle>();
-
-  useEffect(() => {
-    http
-      .get(`/test/get-tests-by-course?courseId=${idCourse}`)
-      .then((response) => {
-        setTest(response.data[0].test);
-      });
-  }, []);
 
   const [testTitleModal, setTestTitleModal] = useState(false);
 

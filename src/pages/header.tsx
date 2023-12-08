@@ -375,7 +375,7 @@ const Header = () => {
                               Math.floor(tmp / 86400) > 1 ? "s" : ""
                             } ago`;
                           } else if (tmp > 3600) {
-                            timeString = `${Math.floor(tmp / 3600)} hours${
+                            timeString = `${Math.floor(tmp / 3600)} hour${
                               Math.floor(tmp / 3600) > 1 ? "s" : ""
                             } ago`;
                           } else if (tmp > 60) {
