@@ -152,7 +152,7 @@ const MyCourse = () => {
                 <button onClick={breadcrumbsHome}>Home</button>
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                <span>My Favorites</span>
+                <span>My Schedule</span>
               </Breadcrumb.Item>
             </Breadcrumb>{" "}
           </div>

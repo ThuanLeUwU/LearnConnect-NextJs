@@ -42,7 +42,6 @@ export default function Home() {
 
   const { loading, courses, totalPages, currentPage, setCurrentPage } =
     useDataHomeFetcher();
-  // console.log("user token", jwtToken);
   return (
     <>
       <div className="bg-[#e7f8ee]">

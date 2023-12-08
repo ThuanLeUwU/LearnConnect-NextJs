@@ -245,7 +245,7 @@ const Header = () => {
               )}
               <Modal
                 title="Create Account for Staff"
-                visible={isModalVisible}
+                open={isModalVisible}
                 onCancel={() => setIsModalVisible(false)}
                 footer={false}
               >
@@ -639,11 +639,11 @@ const Header = () => {
                         </li>
                         <li
                           className={`${
-                            activeTab === "favorites" &&
+                            activeTab === "schedule" &&
                             "border-b-4 border-[#309255]"
                           }`}
                         >
-                          <button onClick={() => handleTabChange("favorites")}>
+                          <button onClick={() => handleTabChange("schedule")}>
                             My Schedule
                           </button>
                         </li>

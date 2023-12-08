@@ -121,7 +121,6 @@ const Dashboard = () => {
   };
 
   const [listUser, setListUser] = useState<UserData[]>([]);
-  console.log("heheeeeee", listUser);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -221,7 +220,6 @@ const Dashboard = () => {
   });
 
   const [newUser, setNewUser] = useState<ListUser[]>([]);
-  console.log("hehe", newUser);
 
   const [totalStatistic, setTotalStatistic] = useState<TotalStatistic>();
 

@@ -231,9 +231,9 @@ const Reviews = () => {
     if (!isJpgOrPng) {
       toast.error("You can only upload JPG/PNG file!");
     }
-    const isLt2M = file.size / 1024 / 1024 < 2;
+    const isLt2M = file.size / 1024 / 1024 < 5;
     if (!isLt2M) {
-      toast.error("Image must smaller than 2MB!");
+      toast.error("Image must smaller than 5MB!");
     }
     return isJpgOrPng && isLt2M;
   };
@@ -450,7 +450,7 @@ const Reviews = () => {
                   rules={[
                     { required: true, message: "Please input Description" },
                   ]}
-                  label="Experiment"
+                  label="Experience"
                   name="reason"
                   labelAlign="left"
                 >
@@ -605,7 +605,7 @@ const Reviews = () => {
                                             Specialization
                                           </TableCell>
                                           <TableCell className="w-[600px] text-[14px]">
-                                            Experiment
+                                            Experience
                                           </TableCell>
                                           <TableCell className="text-[14px] w-[200px]">
                                             Image of Document
@@ -780,7 +780,7 @@ const Reviews = () => {
                                             Specialization
                                           </TableCell>
                                           <TableCell className="w-[600px] text-[14px]">
-                                            Experiment
+                                            Experience
                                           </TableCell>
                                           <TableCell className="text-[14px] w-[200px]">
                                             Image of Document
