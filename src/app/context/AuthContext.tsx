@@ -51,6 +51,7 @@ export enum UserRole {
 interface AuthContextValue {
   user: FirebaseUser | null;
   jwtToken: string;
+  requestBecomeMentor: boolean;
   id: string;
   role: number;
   userData: User | null;
@@ -63,6 +64,7 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue>({
   user: null,
+  requestBecomeMentor: false,
   jwtToken: "",
   id: "",
   role: -1,
@@ -80,6 +82,7 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
   // const [authToken, _] = useLocalStorage("token", "neasdasd");
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [jwtToken, setJwtToken] = useState("");
+  const [requestBecomeMentor, setRequestBecomeMentor] = useState(false);
   const [id, setId] = useState("");
   const [role, setRole] = useState(-1);
   const [userData, setUserData] = useState<User | null>(null);
@@ -197,6 +200,11 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
             localStorage.setItem("token", responseData?.data.data);
             // console.log("useEffect");
             const api_token = responseData?.data.data;
+            setRequestBecomeMentor(responseData?.data.isRequestBecomeMentor);
+            console.log(
+              "requestBecomeMentor",
+              responseData?.data.isRequestBecomeMentor
+            );
             var jwt = require("jsonwebtoken");
             var decoded = jwt.decode(api_token);
             setJwtToken(api_token);
@@ -222,6 +230,7 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
     <AuthContext.Provider
       value={{
         user,
+        requestBecomeMentor,
         jwtToken,
         id,
         role,
