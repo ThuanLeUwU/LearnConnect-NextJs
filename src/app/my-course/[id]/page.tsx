@@ -1544,7 +1544,7 @@ export default function AfterEnroll({ params }: any) {
                       {!(isComplete && testVideo.length + 1 === learned) && (
                         <FaLock className="my-auto" />
                       )}{" "}
-                      <span>Test</span>
+                      <span>Practice Test</span>
                     </button>
 
                     <p className="ml-auto my-auto">

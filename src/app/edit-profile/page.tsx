@@ -9,7 +9,7 @@ import {
 import ".././globals.css";
 import { UserAuth } from "../context/AuthContext";
 import axios from "axios";
-import { Breadcrumb, Modal, message } from "antd";
+import { Breadcrumb, Input, Modal, Select, message } from "antd";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -228,25 +228,8 @@ export default function EditProfile() {
       <div className="container">
         <div className="bg-[#fff]">
           <div className="container mx-auto max-w-screen-lg py-20">
-            <div className="pt-6 px-10 pb-16 border border-solid border-opacity-20 border-[#30925533] rounded-lg">
+            <div className="pt-6 px-10 pb-16 border border-solid border-opacity-20 border-[#30925533] rounded-lg shadow-lg">
               <form onSubmit={handleSubmit}>
-                {/* <div className="mb-6">
-                <label
-                  htmlFor="first_name"
-                  className="block mb-2 text-base font-medium text-[#000]"
-                >
-                  Full Name
-                </label>
-                <input
-                  type="text"
-                  id="first_name"
-                  value={fullName}
-                  onChange={handleFullNameChange}
-                  className="bg-[#fff] border border-[#30925533] text-[#000] text-base rounded-lg block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-[#309255]"
-                  placeholder="Your Name"
-                  required
-                />
-              </div> */}
                 <div className="mb-6">
                   <label
                     htmlFor="gender"

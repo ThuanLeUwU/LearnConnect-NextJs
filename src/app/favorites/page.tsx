@@ -67,6 +67,7 @@ const MyCourse = () => {
   } = useDataFavoritesFetcher();
 
   const { jwtToken, userData } = UserAuth();
+  console.log("student token", jwtToken);
   const [form] = Form.useForm();
   const { Option } = Select;
 

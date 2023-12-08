@@ -459,7 +459,11 @@ const Header = () => {
                         <>
                           <li>
                             <Link
-                              href="/profile"
+                              href={
+                                userData?.role === 2
+                                  ? `/profile-mentor/${userData?.id}`
+                                  : "/profile"
+                              }
                               className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-tl-lg rounded-tr-lg hover:rounded-bl-lg hover:rounded-br-lg"
                               onClick={closeDropdown}
                             >

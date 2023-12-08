@@ -27,6 +27,8 @@ interface AuthContextProps {
 }
 
 export type User = {
+  mentor: any;
+  user: any;
   id: string | number;
   password: string;
   email: string;
