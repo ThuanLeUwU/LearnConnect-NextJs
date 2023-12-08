@@ -82,7 +82,9 @@ export default function ListMentor() {
                           className="swiper-wrapper mb-3 shadow-lg  w-full rounded-lg hover:border-[#309255] hover:bg-[#e7f8ee]"
                           key={mentorItem.id}
                           onClick={() =>
-                            handleSwiperWrapperClick(mentorItem.mentorInfo.id)
+                            handleSwiperWrapperClick(
+                              mentorItem.mentorInfo.userId
+                            )
                           }
                         >
                           <div className="single-review border border-opacity-20 border-[#30925533] p-7 rounded-md flex flex-col items-start w-full">
