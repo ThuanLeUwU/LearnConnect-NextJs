@@ -178,7 +178,6 @@ export default function ProfileUser({ params }: any) {
     const fetchUserData = async () => {
       try {
         const response = await http.get(
-          // `https://learnconnectapitest.azurewebsites.net/api/user/${id}`
           `https://learnconnectapitest.azurewebsites.net/api/mentor/get-info/${idMentor}`
         );
         SetDataUser(response.data);

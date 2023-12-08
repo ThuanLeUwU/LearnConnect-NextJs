@@ -56,7 +56,7 @@ export type Category = {
 
 const InstructorCourse = () => {
   const router = useRouter();
-  const { id, user, role, userData } = UserAuth();
+  const { id, user, role, userData, jwtToken } = UserAuth();
   useEffect(() => {
     if (role === 0) {
       router.push(`/user-manage`);
@@ -241,6 +241,8 @@ const InstructorCourse = () => {
   //List category
   // const [selected, setSelected] = useState(null);
   const [selected, setSelected] = useState<number>(0);
+  console.log("Token Mentor", jwtToken);
+
   const { Option } = Select;
   const [listCategory, setListCategory] = useState<Specialize[]>([]);
   useEffect(() => {

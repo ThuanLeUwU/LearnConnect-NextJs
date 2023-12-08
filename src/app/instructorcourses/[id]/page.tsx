@@ -77,7 +77,7 @@ const Dashboard = ({ params }: any) => {
   const idCourse = params.id;
   // console.log("param", params);
   const { id, userData, jwtToken } = UserAuth();
-
+  console.log("Token Mentor", jwtToken);
   //   console.log(" idcourse", idCourse);
 
   //create lecture

@@ -12,6 +12,7 @@ import axios from "axios";
 import { Breadcrumb, Input, Modal, Select, message } from "antd";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { http } from "@/api/http";
 
 export type User = {
   id: string | number;
@@ -47,6 +48,7 @@ export default function EditProfile() {
   });
   const { id, userData, refetchUser, jwtToken } = UserAuth();
   axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
+  console.log("UserData", userData);
   const [fullName, setFullName] = useState(userData?.fullName);
   const [gender, setGender] = useState(userData?.gender || 0);
   const [phoneNumber, setPhoneNumber] = useState(userData?.phoneNumber || "");
@@ -60,6 +62,10 @@ export default function EditProfile() {
   const [profilePictureUrl, setProfilePictureUrl] = useState(
     userData?.profilePictureUrl || ""
   );
+  const [paypalId, setPaypalId] = useState("");
+  const [paypalAddress, setPaypalAddress] = useState("");
+  const [paypalId1, setPaypalId1] = useState("");
+  const [paypalAddress1, setPaypalAddress1] = useState("");
   const [isSuccessModalVisible, setIsSuccessModalVisible] = useState(false);
   const [isErrorModalVisible, setIsErrorModalVisible] = useState(false);
 
@@ -81,12 +87,37 @@ export default function EditProfile() {
   //   setFullName(e.target.value);
   // };
 
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await http.get(
+          `https://learnconnectapitest.azurewebsites.net/api/mentor/get-info/${userData?.id}`
+        );
+        setPaypalId1(response.data.mentor.paypalId);
+        setPaypalAddress1(response.data.mentor.paypalAddress);
+        console.log("PaypalId", response.data.mentor.paypalId);
+        console.log("PaypalId", response.data.mentor.paypalAddress);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+    fetchUserData();
+  });
+
   const handleGenderChange = (e: ChangeEvent<HTMLSelectElement>) => {
     setGender(parseInt(e.target.value));
   };
 
   const handlePhoneNumberChange = (e: ChangeEvent<HTMLInputElement>) => {
     setPhoneNumber(e.target.value);
+  };
+
+  const handlePayPalIdChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setPaypalId(e.target.value);
+  };
+
+  const handlePayPalAddressChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setPaypalAddress(e.target.value);
   };
 
   const handleBioDescriptionChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -103,6 +134,8 @@ export default function EditProfile() {
       setGender(parsedData.gender);
       setPhoneNumber(parsedData.phoneNumber);
       setBioDescription(parsedData.bioDescription);
+      setPaypalId(parsedData.paypalId);
+      setPaypalAddress(parsedData.paypalAddress);
     }
   }, []);
 
@@ -115,6 +148,8 @@ export default function EditProfile() {
       gender,
       phoneNumber,
       bioDescription,
+      paypalId,
+      paypalAddress,
     };
     localStorage.setItem("editProfileData", JSON.stringify(dataToSave));
   }, [
@@ -125,6 +160,8 @@ export default function EditProfile() {
     gender,
     phoneNumber,
     bioDescription,
+    paypalId,
+    paypalAddress,
   ]);
 
   useEffect(() => {
@@ -154,8 +191,10 @@ export default function EditProfile() {
       bioDescription: bioDescription,
       profilePictureUrl: profilePictureUrl,
       status: status,
+      paypalId: paypalId,
+      paypalAddress: paypalAddress,
     };
-    // console.log("usder data:", updatedUserData);
+    console.log("usder data:", updatedUserData);
     axios
       .put(
         `https://learnconnectapitest.azurewebsites.net/api/user/${id}`,
@@ -280,6 +319,39 @@ export default function EditProfile() {
                     onChange={handleBioDescriptionChange}
                     className="bg-[#fff] border border-[#30925533] text-[#000] text-base rounded-lg block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-[#309255] h-[200px]"
                     placeholder="Your Biography"
+                    required
+                  />
+                </div>
+                <div className="mb-6">
+                  <label
+                    htmlFor="paypalId"
+                    className="block mb-2 text-base font-medium text-[#000]"
+                  >
+                    PayPal ID
+                  </label>
+                  <input
+                    type="number"
+                    id="paypalId"
+                    value={paypalId1}
+                    onChange={handlePayPalIdChange}
+                    className="bg-[#fff] border border-[#30925533] text-[#000] text-base rounded-lg block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-[#309255]"
+                    placeholder="Your Phone Number"
+                    required
+                  />
+                </div>
+                <div className="mb-6">
+                  <label
+                    htmlFor="paypalAddress"
+                    className="block mb-2 text-base font-medium text-[#000]"
+                  >
+                    Email Address
+                  </label>
+                  <input
+                    id="paypalAddress"
+                    value={paypalAddress}
+                    onChange={handlePayPalAddressChange}
+                    className="bg-[#fff] border border-[#30925533] text-[#000] text-base rounded-lg block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-[#309255]"
+                    placeholder="Your Phone Number"
                     required
                   />
                 </div>
