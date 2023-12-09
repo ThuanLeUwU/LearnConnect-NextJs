@@ -53,7 +53,7 @@ const Transaction = () => {
                 <button onClick={breadcrumbsHome}>Home</button>
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                <span>Order History</span>
+                <span>Transaction History</span>
               </Breadcrumb.Item>
             </Breadcrumb>{" "}
           </div>

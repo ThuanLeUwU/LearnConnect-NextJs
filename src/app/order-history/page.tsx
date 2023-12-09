@@ -111,7 +111,7 @@ const OrderHistory = () => {
     },
     {
       image: "/menu-icon/receipt.png",
-      title: "Order History",
+      title: "Transaction History",
       href: "/order-history",
     },
   ];
@@ -257,7 +257,7 @@ const OrderHistory = () => {
                   <Breadcrumb>
                     <Breadcrumb.Item>
                       <div className="text-start font-semibold text-4xl my-5 px-4">
-                        Order History
+                        Transaction History
                       </div>
                     </Breadcrumb.Item>
                   </Breadcrumb>

@@ -582,7 +582,7 @@ const Dashboard = ({ params }: any) => {
     },
     {
       image: "/menu-icon/receipt.png",
-      title: "Order History",
+      title: "Transaction History",
       href: "/order-history",
     },
   ];

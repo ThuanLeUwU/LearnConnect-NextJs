@@ -553,7 +553,7 @@ const DetailsContent = ({ params }: any) => {
                   course?.status === 1 ? (
                     <>
                       {" "}
-                      {course.lectureCount <= lectures.length && (
+                      {3 <= lectures.length && (
                         <button
                           className="bg-white text-black border rounded-lg border-[#4caf50] hover:bg-[#4caf50] hover:text-white transition duration-300 px-4 py-2"
                           onClick={handleApprove}
