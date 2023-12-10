@@ -335,6 +335,7 @@ export default function EditProfile() {
                     required
                   />
                 </div>
+                <></>
                 <div className="mb-6">
                   <label
                     htmlFor="paypalId"
@@ -348,7 +349,7 @@ export default function EditProfile() {
                     defaultValue={paypalId1}
                     onChange={handlePayPalIdChange}
                     className="bg-[#fff] border border-[#30925533] text-[#000] text-base rounded-lg block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-[#309255]"
-                    placeholder="Your Phone Number"
+                    placeholder="Your Paypal ID"
                     required
                   />
                 </div>
@@ -357,14 +358,14 @@ export default function EditProfile() {
                     htmlFor="paypalAddress"
                     className="block mb-2 text-base font-medium text-[#000]"
                   >
-                    Email Address
+                    Paypal Address:
                   </label>
                   <input
                     id="paypalAddress"
                     value={paypalAddress}
                     onChange={handlePayPalAddressChange}
                     className="bg-[#fff] border border-[#30925533] text-[#000] text-base rounded-lg block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-[#309255]"
-                    placeholder="Your Phone Number"
+                    placeholder="Your Email Paypal Address"
                     required
                   />
                 </div>

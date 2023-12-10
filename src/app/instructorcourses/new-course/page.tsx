@@ -291,9 +291,7 @@ export default function CreateCourse() {
               },
             }
           )
-          .then(() => {
-            form.resetFields();
-          });
+          .then(() => {});
       } catch (err) {
         setTimeout(() => {
           toast.error("Create Lecture fail");
@@ -387,7 +385,7 @@ export default function CreateCourse() {
         .then((response) => {
           setLectures(response.data);
           setIsModerating(true);
-          // form.resetFields();
+          form.resetFields();
           setSource("");
         });
     }, 3000);

@@ -945,7 +945,7 @@ const Dashboard = ({ params }: any) => {
 
   const handleRowClick = (record) => {
     // Xử lý khi click vào một hàng (item)
-    // console.log("Clicked item:", record);
+    console.log("Clicked item:", record);
   };
 
   const handleDeleteLecture = (data: any) => {

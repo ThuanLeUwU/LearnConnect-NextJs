@@ -107,7 +107,9 @@ const StudyProgress = () => {
               completed={text}
               bgColor="#309255"
               height="15px"
-              // labelAlignment="outside"
+              width="60%"
+              labelAlignment="outside"
+              labelColor="black"
               labelSize="12px"
             />
           </div>

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 
 import InstructorCourseStyle from "./styles.module.scss";
@@ -12,6 +12,8 @@ import { useRouter } from "next/navigation";
 import { http } from "@/api/http";
 import { Course } from "@/components/courses/courses";
 import { Lecture } from "@/app/my-course/[id]/page";
+import ProgressBar from "@ramonak/react-progress-bar";
+import { ClockCircleOutlined } from "@ant-design/icons";
 
 export type ModerationAI = {
   contentModeration: any;
@@ -27,6 +29,15 @@ export type ModerationAI = {
   lectureId: number;
   flagDetails: any;
   flags: any;
+};
+
+export type Flag = {
+  flags: any;
+  id: number;
+  title: string;
+  description: string;
+  atTime: number;
+  contentModerationId: number;
 };
 
 const LectureModeration = ({ params }: any) => {
@@ -64,6 +75,8 @@ const LectureModeration = ({ params }: any) => {
   }, [LectureId, idCourse]);
 
   const [moderationLecture, setModerationLecture] = useState<ModerationAI>();
+  const [flagContent, setFlagContent] = useState<Flag[]>([]);
+  console.log("jeje", flagContent);
 
   useEffect(() => {
     if (idCourse !== "") {
@@ -74,6 +87,7 @@ const LectureModeration = ({ params }: any) => {
           )
           .then((res) => {
             setModerationLecture(res.data);
+            setFlagContent(res.data.flags);
             setLoading(true);
           });
       } catch (e) {
@@ -229,6 +243,38 @@ const LectureModeration = ({ params }: any) => {
     }
   };
 
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const handleTimeChange = (time: number) => {
+    if (videoRef.current) {
+      videoRef.current.currentTime = time;
+    }
+  };
+
+  const getDangerColor = (description) => {
+    switch (description.toLowerCase()) {
+      case "possible":
+        return "#f7eb71"; // Màu cho mức độ thấp
+      case "likely":
+        return "Orange"; // Màu cho mức độ trung bình
+      case "verylikely":
+        return "red"; // Màu cho mức độ cao
+      default:
+        return "black"; // Màu mặc định hoặc xử lý ngoại lệ khác nếu cần
+    }
+  };
+
+  const formatTime = (time: any) => {
+    const hours = Math.floor(time / 3600);
+    const minutes = Math.floor((time % 3600) / 60);
+    const remainingSeconds = time % 60;
+
+    const formattedTime = `${hours}:${minutes < 10 ? "0" : ""}${minutes}:${
+      remainingSeconds < 10 ? "0" : ""
+    }${remainingSeconds}`;
+    return formattedTime;
+  };
+
   return (
     <>
       {!userData ? (
@@ -267,7 +313,7 @@ const LectureModeration = ({ params }: any) => {
                   <div> {getStatusText(lecture?.status)}</div>
                 </div>
                 {lecture?.contentUrl && (
-                  <div className="py-10">
+                  <div className="py-10 w-full">
                     {" "}
                     <video
                       width="full"
@@ -275,6 +321,7 @@ const LectureModeration = ({ params }: any) => {
                       controls
                       id="courseVideo"
                       controlsList="nodownload"
+                      ref={videoRef}
                     >
                       <source src={lecture?.contentUrl} type="video/mp4" />
                     </video>
@@ -327,7 +374,7 @@ const LectureModeration = ({ params }: any) => {
                 ) : (
                   <div>
                     <div className="border-2">
-                      <div className="grid grid-cols-12  border-b border-gray-300">
+                      {/* <div className="grid grid-cols-12  border-b border-gray-300">
                         <div className="col-span-4 font-bold border-r border-gray-300 p-4 break-all">
                           Content Length:
                         </div>
@@ -335,14 +382,25 @@ const LectureModeration = ({ params }: any) => {
                           {" "}
                           {moderationLecture?.contentModeration.contentLength}
                         </div>
-                      </div>
+                      </div> */}
 
                       <div className="grid grid-cols-12  border-b border-gray-300">
                         <div className="col-span-4 font-bold border-r border-gray-300 p-4 break-all">
                           Percent Explicit:
                         </div>
                         <div className="col-span-8 bg-white p-4">
-                          {moderationLecture?.contentModeration.percentExplicit}
+                          <ProgressBar
+                            completed={
+                              moderationLecture?.contentModeration
+                                .percentExplicit
+                            }
+                            bgColor="#309255"
+                            height="15px"
+                            width="60%"
+                            labelAlignment="outside"
+                            labelColor="black"
+                            labelSize="12px"
+                          />
                         </div>
                       </div>
 
@@ -351,11 +409,21 @@ const LectureModeration = ({ params }: any) => {
                           Percent Unsafe:
                         </div>
                         <div className="col-span-8 bg-white p-4">
-                          {moderationLecture?.contentModeration.percentUnsafe}
+                          <ProgressBar
+                            completed={
+                              moderationLecture?.contentModeration.percentUnsafe
+                            }
+                            bgColor="red"
+                            height="15px"
+                            width="60%"
+                            labelAlignment="outside"
+                            labelColor="black"
+                            labelSize="12px"
+                          />
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-12  border-b border-gray-300">
+                      {/* <div className="grid grid-cols-12  border-b border-gray-300">
                         <div className="col-span-4 font-bold border-r border-gray-300 p-4 break-all">
                           Status:
                         </div>
@@ -364,13 +432,43 @@ const LectureModeration = ({ params }: any) => {
                             moderationLecture?.contentModeration.status
                           )}
                         </div>
-                      </div>
+                      </div> */}
                       <div className="grid grid-cols-12 border-gray-300">
                         <div className="col-span-4 font-bold border-r border-gray-300 p-4 break-all">
-                          Flag Details:
+                          Details:
                         </div>
                         <div className="col-span-8 bg-white p-4 min-h-[200px]">
-                          {moderationLecture?.contentModeration.percentExplicit}
+                          {/* {moderationLecture?.contentModeration} */}
+                          <div className="flex flex-col gap-4">
+                            {flagContent.map((item, index) => (
+                              <div
+                                key={index}
+                                className="flex flex-row gap-4 items-center"
+                              >
+                                <div className="font-medium text-lg">
+                                  {item.title} :
+                                </div>
+                                <div
+                                  style={{
+                                    backgroundColor: getDangerColor(
+                                      item.description
+                                    ),
+                                  }}
+                                  className="flex-1 border-2 px-2 rounded-lg text-center text-black font-medium"
+                                >
+                                  {item.description}
+                                </div>
+                                at
+                                <button
+                                  className="flex-1 text-lg hover:underline"
+                                  onClick={() => handleTimeChange(item.atTime)}
+                                >
+                                  <ClockCircleOutlined />{" "}
+                                  {formatTime(item.atTime)}
+                                </button>
+                              </div>
+                            ))}
+                          </div>
                         </div>
                       </div>
                     </div>

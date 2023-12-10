@@ -564,7 +564,7 @@ const StaffRevenue = () => {
               </div>
 
               <div className="mt-10 mx-10 flex flex-row gap-4 justify-between">
-                <div className="p-5 rounded-lg border-solid border-2 shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)] flex flex-row max-w-[320px] min-h-[200px] justify-between">
+                <div className="p-5 rounded-lg border-solid border-2 shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)] flex flex-row w-[320px] min-h-[200px] justify-between">
                   <div className="flex flex-col gap-4">
                     <div className="text-xl font-medium">Total Courses</div>
                     <div className="text-5xl">
@@ -578,7 +578,7 @@ const StaffRevenue = () => {
                     />
                   </div>
                 </div>
-                <div className="p-5 rounded-lg border-solid border-2 shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)] flex flex-row max-w-[320px] min-h-[200px] justify-between">
+                <div className="p-5 rounded-lg border-solid border-2 shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)] flex flex-row w-[320px] min-h-[200px] justify-between">
                   <div className="flex flex-col gap-4">
                     <div className="text-xl font-medium">Total Mentors</div>
                     <div className="text-5xl">
@@ -592,7 +592,7 @@ const StaffRevenue = () => {
                     />
                   </div>
                 </div>
-                <div className="p-5 rounded-lg border-solid border-2 shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)] flex flex-row max-w-[320px] min-h-[200px] justify-between">
+                <div className="p-5 rounded-lg border-solid border-2 shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)] flex flex-row w-[320px] min-h-[200px] justify-between">
                   <div className="flex flex-col gap-4">
                     <div className="text-xl font-medium">Total Enrollments</div>
                     <div className="text-5xl">
@@ -606,7 +606,7 @@ const StaffRevenue = () => {
                     />
                   </div>
                 </div>
-                <div className="p-5 rounded-lg border-solid border-2 shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)] flex flex-row max-w-[320px] min-h-[200px] justify-between">
+                <div className="p-5 rounded-lg border-solid border-2 shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)] flex flex-row w-[320px] min-h-[200px] justify-between">
                   <div className="flex flex-col gap-4">
                     <div className="text-xl font-medium">Revenue (VND)</div>
                     <div className="text-3xl">
