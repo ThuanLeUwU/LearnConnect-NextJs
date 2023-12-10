@@ -48,7 +48,7 @@ export default function EditProfile() {
   });
   const { id, userData, refetchUser, jwtToken } = UserAuth();
   axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
-  console.log("UserData", userData);
+  // console.log("UserData", userData);
   const [fullName, setFullName] = useState(userData?.fullName);
   const [gender, setGender] = useState(userData?.gender || 0);
   const [phoneNumber, setPhoneNumber] = useState(userData?.phoneNumber || "");
@@ -95,8 +95,6 @@ export default function EditProfile() {
         );
         setPaypalId1(response.data.mentor.paypalId);
         setPaypalAddress1(response.data.mentor.paypalAddress);
-        console.log("PaypalId", response.data.mentor.paypalId);
-        console.log("PaypalId", response.data.mentor.paypalAddress);
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -114,7 +112,6 @@ export default function EditProfile() {
 
   const handlePayPalIdChange = (e: ChangeEvent<HTMLInputElement>) => {
     setPaypalId(e.target.value);
-    console.log("e.target.value", e.target.value);
   };
 
   const handlePayPalAddressChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -195,7 +192,7 @@ export default function EditProfile() {
       paypalId: paypalId,
       paypalAddress: paypalAddress,
     };
-    console.log("usder data:", updatedUserData);
+    // console.log("usder data:", updatedUserData);
     axios
       .put(
         `https://learnconnectapitest.azurewebsites.net/api/user/${id}`,
@@ -335,39 +332,44 @@ export default function EditProfile() {
                     required
                   />
                 </div>
-                <div className="mb-6">
-                  <label
-                    htmlFor="paypalId"
-                    className="block mb-2 text-base font-medium text-[#000]"
-                  >
-                    PayPal ID
-                  </label>
-                  <input
-                    type="number"
-                    id="paypalId"
-                    defaultValue={paypalId1}
-                    onChange={handlePayPalIdChange}
-                    className="bg-[#fff] border border-[#30925533] text-[#000] text-base rounded-lg block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-[#309255]"
-                    placeholder="Your Phone Number"
-                    required
-                  />
-                </div>
-                <div className="mb-6">
-                  <label
-                    htmlFor="paypalAddress"
-                    className="block mb-2 text-base font-medium text-[#000]"
-                  >
-                    Email Address
-                  </label>
-                  <input
-                    id="paypalAddress"
-                    value={paypalAddress}
-                    onChange={handlePayPalAddressChange}
-                    className="bg-[#fff] border border-[#30925533] text-[#000] text-base rounded-lg block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-[#309255]"
-                    placeholder="Your Phone Number"
-                    required
-                  />
-                </div>
+                {userData?.role === 2 && (
+                  <>
+                    <div className="mb-6">
+                      <label
+                        htmlFor="paypalId"
+                        className="block mb-2 text-base font-medium text-[#000]"
+                      >
+                        PayPal ID
+                      </label>
+                      <input
+                        type="number"
+                        id="paypalId"
+                        defaultValue={paypalId1}
+                        onChange={handlePayPalIdChange}
+                        className="bg-[#fff] border border-[#30925533] text-[#000] text-base rounded-lg block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-[#309255]"
+                        placeholder="Your Phone Number"
+                        required
+                      />
+                    </div>
+                    <div className="mb-6">
+                      <label
+                        htmlFor="paypalAddress"
+                        className="block mb-2 text-base font-medium text-[#000]"
+                      >
+                        Email Address
+                      </label>
+                      <input
+                        id="paypalAddress"
+                        defaultValue={paypalAddress1}
+                        onChange={handlePayPalAddressChange}
+                        className="bg-[#fff] border border-[#30925533] text-[#000] text-base rounded-lg block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-[#309255]"
+                        placeholder="Your Phone Number"
+                        required
+                      />
+                    </div>
+                  </>
+                )}
+
                 <button
                   type="submit"
                   className="bg-[#309255] text-[18px] px-[35px] py-[15px] mt-[15px] rounded-lg text-[#fff] hover:bg-[#000] transition-all duration-300 ease-in-out delay-0"
