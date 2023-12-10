@@ -162,16 +162,17 @@ export default function ProfileUser({ params }: any) {
 
   let API_URL =
     "https://learnconnectapitest.azurewebsites.net/api/course/get-courses-by-mentor?userId=";
-  if (isOwner) {
-    API_URL =
-      "https://learnconnectapitest.azurewebsites.net/api/course/get-courses-by-mentorUserId?userId=";
-  }
+  // if (isOwner) {
+  //   API_URL =
+  //     "https://learnconnectapitest.azurewebsites.net/api/course/get-courses-by-mentorUserId?userId=";
+  // }
 
   const pagesize = 4;
   const [rating, setRating] = useState<Rating[]>([]);
   // console.log("data:", userData?.fullName);
   // console.log("picture :", userData?.profilePictureUrl);
   const [DataUser, SetDataUser] = useState<User>();
+  console.log("data", DataUser);
   // const [];
 
   useEffect(() => {
@@ -182,16 +183,16 @@ export default function ProfileUser({ params }: any) {
         );
         SetDataUser(response.data);
         setAverageRating(response.data.mentor.averageRating);
-        setPaypalId(response.data.mentor.paypalId);
-        setPaypalAddress(response.data.mentor.paypalAddress);
+        setPaypalId(response.data.mentor.accountNumber);
+        setPaypalAddress(response.data.mentor.bankName);
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
     };
-    if (id) {
-      fetchUserData();
-    }
-  }, [id]);
+    // if (id) {
+    fetchUserData();
+    // }
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -206,7 +207,11 @@ export default function ProfileUser({ params }: any) {
   }, []);
 
   const handleClickMoveToCourse = (courseId: string | number) => {
-    router.push(`/course-detail/${courseId}`);
+    if (userData?.role === 2) {
+      router.push(`/instructorcourses/${courseId}`);
+    } else {
+      router.push(`/course-detail/${courseId}`);
+    }
   };
 
   useEffect(() => {
@@ -365,6 +370,10 @@ export default function ProfileUser({ params }: any) {
     router.push("/");
   };
 
+  const breadcrumbsHomeMentor = () => {
+    router.push("/instructorcourses");
+  };
+
   const handleTabChange = (key: string) => {
     setCurrentTab(key);
   };
@@ -383,12 +392,28 @@ export default function ProfileUser({ params }: any) {
         >
           <div>
             <Breadcrumb className="font-semibold text-3xl py-5 px-64 flex-auto">
-              <Breadcrumb.Item>
-                <button onClick={breadcrumbsHome}>Home</button>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                <span>Profile</span>
-              </Breadcrumb.Item>
+              {userData?.role === 2 ? (
+                <>
+                  <Breadcrumb.Item>
+                    <button onClick={breadcrumbsHomeMentor}>Home</button>
+                  </Breadcrumb.Item>
+                  <Breadcrumb.Item>
+                    <span>Profile</span>
+                  </Breadcrumb.Item>
+                </>
+              ) : (
+                <>
+                  <Breadcrumb.Item>
+                    <button onClick={breadcrumbsHome}>Home</button>
+                  </Breadcrumb.Item>
+                  <Breadcrumb.Item>
+                    <span>Mentor</span>
+                  </Breadcrumb.Item>
+                  <Breadcrumb.Item>
+                    <span>{DataUser?.user.fullName}</span>
+                  </Breadcrumb.Item>
+                </>
+              )}
             </Breadcrumb>{" "}
           </div>
           <div
@@ -438,7 +463,7 @@ export default function ProfileUser({ params }: any) {
           )}
         </div>
         <div className="col-span-9 border rounded-lg my-5 shadow-lg">
-          {userData && (
+          {DataUser && (
             <div className="bg-[#fff] rounded-lg shadow-lg h-full">
               <div className="text-white flex flex-col lg:flex-row rounded-t px-4 lg:p-8">
                 <Tabs
