@@ -33,6 +33,7 @@ export type Course = {
   note: string;
   mentorName: string;
   mentorId: number;
+  mentorUserId: number;
   mentorProfilePictureUrl: string;
   totalRatingCount: number;
   enrolled: boolean;

@@ -16,6 +16,7 @@ export type TopMentor = {
   mentorName: string;
   mentorImage: string;
   averageRating: number;
+  mentorUserId: number;
 };
 
 const HowItWork = () => {
@@ -25,7 +26,7 @@ const HowItWork = () => {
 
   const onClickMentor = (data) => {
     // console.log("tao nè", data);
-    router.push(`/profile-mentor/${data.mentorInfo.mentorId}`);
+    router.push(`/profile-mentor/${data.mentorInfo.mentorUserId}`);
   };
 
   useEffect(() => {

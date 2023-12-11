@@ -62,7 +62,8 @@ export default function CourseDetailPage({ params }: any) {
 
   useEffect(() => {
     const fetchData = async () => {
-      let url = `https://learnconnectapitest.azurewebsites.net/api/course/user/${idUser}/course/${idCourse}`;
+      // let url = `https://learnconnectapitest.azurewebsites.net/api/course/user/${idUser}/course/${idCourse}`;
+      let url = `https://learnconnectapitest.azurewebsites.net/api/course/${idCourse}?userId=${idUser}`;
       if (!idUser) {
         url = `https://learnconnectapitest.azurewebsites.net/api/course/${idCourse}`;
       }
@@ -84,8 +85,14 @@ export default function CourseDetailPage({ params }: any) {
   }, []);
 
   const handlePushMentor = () => {
-    if (courses && courses.mentorId) {
-      router.push(`/profile-mentor/${courses.mentorId}`);
+    if (userData) {
+      if (courses && courses.mentorUserId) {
+        router.push(`/profile-mentor/${courses.mentorUserId}`);
+      }
+    } else {
+      if (courses && courses.mentorId) {
+        router.push(`/profile-mentor/${courses.mentorId}`);
+      }
     }
   };
 
