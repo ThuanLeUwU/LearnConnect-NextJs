@@ -335,40 +335,44 @@ export default function EditProfile() {
                     required
                   />
                 </div>
-                <></>
-                <div className="mb-6">
-                  <label
-                    htmlFor="paypalId"
-                    className="block mb-2 text-base font-medium text-[#000]"
-                  >
-                    PayPal ID
-                  </label>
-                  <input
-                    type="number"
-                    id="paypalId"
-                    defaultValue={paypalId1}
-                    onChange={handlePayPalIdChange}
-                    className="bg-[#fff] border border-[#30925533] text-[#000] text-base rounded-lg block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-[#309255]"
-                    placeholder="Your Paypal ID"
-                    required
-                  />
-                </div>
-                <div className="mb-6">
-                  <label
-                    htmlFor="paypalAddress"
-                    className="block mb-2 text-base font-medium text-[#000]"
-                  >
-                    Paypal Address:
-                  </label>
-                  <input
-                    id="paypalAddress"
-                    value={paypalAddress}
-                    onChange={handlePayPalAddressChange}
-                    className="bg-[#fff] border border-[#30925533] text-[#000] text-base rounded-lg block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-[#309255]"
-                    placeholder="Your Email Paypal Address"
-                    required
-                  />
-                </div>
+                {userData?.role === 2 && (
+                  <>
+                    <div className="mb-6">
+                      <label
+                        htmlFor="paypalId"
+                        className="block mb-2 text-base font-medium text-[#000]"
+                      >
+                        PayPal ID
+                      </label>
+                      <input
+                        type="number"
+                        id="paypalId"
+                        defaultValue={paypalId1}
+                        onChange={handlePayPalIdChange}
+                        className="bg-[#fff] border border-[#30925533] text-[#000] text-base rounded-lg block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-[#309255]"
+                        placeholder="Your Paypal ID"
+                        required
+                      />
+                    </div>
+                    <div className="mb-6">
+                      <label
+                        htmlFor="paypalAddress"
+                        className="block mb-2 text-base font-medium text-[#000]"
+                      >
+                        Paypal Address:
+                      </label>
+                      <input
+                        id="paypalAddress"
+                        value={paypalAddress1}
+                        onChange={handlePayPalAddressChange}
+                        className="bg-[#fff] border border-[#30925533] text-[#000] text-base rounded-lg block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-[#309255]"
+                        placeholder="Your Email Paypal Address"
+                        required
+                      />
+                    </div>
+                  </>
+                )}
+
                 <button
                   type="submit"
                   className="bg-[#309255] text-[18px] px-[35px] py-[15px] mt-[15px] rounded-lg text-[#fff] hover:bg-[#000] transition-all duration-300 ease-in-out delay-0"

@@ -175,7 +175,7 @@ const Courses = ({
             </div>
             <div className="author-name">
               <div className="min-h-[60px]">
-                <button className="font-bold" onClick={handleClick}>
+                <button className="font-bold text-left" onClick={handleClick}>
                   {name}
                 </button>
                 {/* <a className="font-bold" onClick={handleClick}>

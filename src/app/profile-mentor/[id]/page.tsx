@@ -183,8 +183,8 @@ export default function ProfileUser({ params }: any) {
         );
         SetDataUser(response.data);
         setAverageRating(response.data.mentor.averageRating);
-        setPaypalId(response.data.mentor.accountNumber);
-        setPaypalAddress(response.data.mentor.bankName);
+        setPaypalId(response.data.mentor.paypalId);
+        setPaypalAddress(response.data.mentor.paypalAddress);
       } catch (error) {
         console.error("Error fetching user data:", error);
       }

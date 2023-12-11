@@ -294,7 +294,32 @@ const StaffRevenue = () => {
       chart: {
         stacked: false,
         toolbar: {
-          show: false,
+          show: true,
+          offsetX: 0,
+          offsetY: 0,
+          tools: {
+            download: true,
+            selection: false,
+            zoom: false,
+            zoomin: true,
+            zoomout: true,
+            pan: false,
+          },
+          export: {
+            csv: {
+              filename: "Revenue Statistic",
+              columnDelimiter: ",",
+              headerCategory: "Date",
+              headerValue: "value",
+            },
+            svg: {
+              filename: "Statistic",
+            },
+            png: {
+              filename: "Statistic",
+            },
+          },
+          autoSelected: "zoom" as "zoom",
         },
       },
       xaxis: {
@@ -419,9 +444,37 @@ const StaffRevenue = () => {
       chart: {
         type: "bar" as "bar",
         stacked: true,
+        toolbar: {
+          show: true,
+          offsetX: 0,
+          offsetY: 0,
+          tools: {
+            download: true,
+            selection: false,
+            zoom: false,
+            zoomin: true,
+            zoomout: true,
+            pan: false,
+          },
+          export: {
+            csv: {
+              filename: "Course Statistic",
+              columnDelimiter: ",",
+              headerCategory: "Date",
+              headerValue: "value",
+            },
+            svg: {
+              filename: "Statistic",
+            },
+            png: {
+              filename: "Statistic",
+            },
+          },
+          autoSelected: "zoom" as "zoom",
+        },
       },
       xaxis: {
-        categories: [] as string[], // Dữ liệu ngày
+        categories: [] as string[],
       },
       yaxis: {
         title: {
@@ -462,7 +515,7 @@ const StaffRevenue = () => {
   useEffect(() => {
     // Simulated data
 
-    const categories = courseStatistic3.map((entry) =>
+    const date = courseStatistic3.map((entry) =>
       format(new Date(entry.date), "MMM dd")
     );
     const freeCoursesData = courseStatistic3.map(
@@ -475,7 +528,7 @@ const StaffRevenue = () => {
       options: {
         ...stackedChart.options,
         xaxis: {
-          categories: categories,
+          categories: date,
         },
       },
       series: [
@@ -700,20 +753,8 @@ const StaffRevenue = () => {
                     </div>
                   </div>
                 </div>
-                {/* <div className="relative flex justify-center">
-                  <Bar data={chartData} options={options}></Bar>
-                </div> */}
               </div>
             </div>
-            <div className="text-center font-semibold text-5xl pb-5 pl-5">
-              Income of mentors
-            </div>
-            <Table
-              dataSource={revenueOneMentor}
-              columns={columns}
-              pagination={{ ...pagination, onChange: handlePageChange }}
-              className="mx-5 shadow-[5px_15px_25px_10px_rgba(0,0,0,0.15)] mt-2 rounded-lg"
-            />
           </div>
 
           <Modal

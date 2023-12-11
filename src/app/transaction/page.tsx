@@ -125,7 +125,11 @@ const Transaction = () => {
                       )}
                     </td>
                     <td className="border px-4 py-3 text-center font-bold">
-                      {item.paymentTransaction.transactionId}
+                      {item.paymentTransaction.transactionId === null ? (
+                        <>-</>
+                      ) : (
+                        item.paymentTransaction.transactionId
+                      )}
                     </td>
                     <td className="border px-4 py-3 text-center font-bold">
                       <div>
@@ -149,15 +153,17 @@ const Transaction = () => {
                     </td>
                     <td className="border px-4 py-3 text-center font-bold">
                       <div>
-                        {item.paymentTransaction.successDate
-                          ? new Date(
-                              item.paymentTransaction.successDate
-                            ).toLocaleDateString("en-GB", {
-                              day: "numeric",
-                              month: "long",
-                              year: "numeric",
-                            })
-                          : ""}
+                        {item.paymentTransaction.successDate ? (
+                          new Date(
+                            item.paymentTransaction.successDate
+                          ).toLocaleDateString("en-GB", {
+                            day: "numeric",
+                            month: "long",
+                            year: "numeric",
+                          })
+                        ) : (
+                          <>-</>
+                        )}
                       </div>
                       <div>
                         {item.paymentTransaction.successDate
