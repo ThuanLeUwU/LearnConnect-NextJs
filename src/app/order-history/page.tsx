@@ -76,7 +76,7 @@ const OrderHistory = () => {
     try {
       http
         .get(
-          `https://learnconnectapitest.azurewebsites.net/api/payment-transaction/revenue-mentor?mentorUserId=${id}&filterDate=${date.format(
+          `https://learnconnectapi.azurewebsites.net/api/payment-transaction/revenue-mentor?mentorUserId=${id}&filterDate=${date.format(
             "YYYY-MM-DD"
           )}`
         )

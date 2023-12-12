@@ -183,7 +183,7 @@ const Revenue = () => {
       // console.log("homnay1", listDate[listDate.length - 1].date);
       http
         .get(
-          `https://learnconnectapitest.azurewebsites.net/api/payment-transaction/revenue-mentor?mentorUserId=${id}&filterDate=${new Date(
+          `https://learnconnectapi.azurewebsites.net/api/payment-transaction/revenue-mentor?mentorUserId=${id}&filterDate=${new Date(
             listDate[listDate.length - 1].date
           )
             .toISOString()
@@ -208,7 +208,7 @@ const Revenue = () => {
 
     http
       .get(
-        `https://learnconnectapitest.azurewebsites.net/api/payment-transaction/revenue-mentor?mentorUserId=${id}&filterDate=${selectedDate}`
+        `https://learnconnectapi.azurewebsites.net/api/payment-transaction/revenue-mentor?mentorUserId=${id}&filterDate=${selectedDate}`
       )
       // setIsMenuOpen(false);
       .then((response) => {
@@ -314,7 +314,7 @@ const Revenue = () => {
     try {
       http
         .get(
-          `https://learnconnectapitest.azurewebsites.net/api/payment-transaction/statistic-mentor?mentorUserId=${id}&filterType=${
+          `https://learnconnectapi.azurewebsites.net/api/payment-transaction/statistic-mentor?mentorUserId=${id}&filterType=${
             selected1 === "Last Day" ? "day" : selected1
           }&sortBy=revenue&sortOrder=${sortOrder1}`
         )
@@ -377,7 +377,7 @@ const Revenue = () => {
     try {
       http
         .get(
-          `https://learnconnectapitest.azurewebsites.net/api/payment-transaction/statistic-mentor?mentorUserId=${id}&filterType=${
+          `https://learnconnectapi.azurewebsites.net/api/payment-transaction/statistic-mentor?mentorUserId=${id}&filterType=${
             selected2 === "Last Day" ? "day" : selected2
           }&sortBy=totalenroll&sortOrder=${sortOrder2}`
         )

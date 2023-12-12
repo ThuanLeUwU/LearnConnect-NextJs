@@ -83,7 +83,7 @@ export default function ProfileUser({ params }: any) {
   const [DataMentor, SetDataMentor] = useState<User>();
   const [courses, setCourses] = useState<CourseItemProfile[]>([]);
   const API_URL =
-    "https://learnconnectapitest.azurewebsites.net/api/course/get-courses-by-mentor?mentorId=";
+    "https://learnconnectapi.azurewebsites.net/api/course/get-courses-by-mentor?mentorId=";
   const pagesize = 4;
   const pathName = usePathname();
   const searchParams = useSearchParams();
@@ -199,7 +199,7 @@ export default function ProfileUser({ params }: any) {
     }
     try {
       await axios.post(
-        `https://learnconnectapitest.azurewebsites.net/api/report/report-mentor?userId=${id}&mentorId=${idMentor}`,
+        `https://learnconnectapi.azurewebsites.net/api/report/report-mentor?userId=${id}&mentorId=${idMentor}`,
         formdata,
         {
           headers: {
@@ -233,7 +233,7 @@ export default function ProfileUser({ params }: any) {
       // console.log("formDataImage1", formDataImage);
       // console.log("image1", image);
       await http.post(
-        `https://learnconnectapitest.azurewebsites.net/api/rating/rating-mentor?userId=${id}&mentorId=${idMentor}`,
+        `https://learnconnectapi.azurewebsites.net/api/rating/rating-mentor?userId=${id}&mentorId=${idMentor}`,
         // `/rating/rating-course?userId=${id}&courseId=${idCourse}`,
         formdata,
         {
@@ -274,7 +274,7 @@ export default function ProfileUser({ params }: any) {
     const fetchUserData = async () => {
       try {
         const response = await axios.get(
-          `https://learnconnectapitest.azurewebsites.net/api/mentor/${idMentor}`
+          `https://learnconnectapi.azurewebsites.net/api/mentor/${idMentor}`
         );
         SetDataMentor(response?.data);
         // console.log("data mentor", response?.data);
@@ -564,7 +564,7 @@ export default function ProfileUser({ params }: any) {
                           accept="image/png, image/jpeg"
                           onChange={handleChange}
                           beforeUpload={beforeUpload}
-                          action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
+                          action="https://learnconnectapi.azurewebsites.net/api/Upload/image"
                           listType="picture-card"
                         >
                           Upload

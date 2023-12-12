@@ -185,7 +185,7 @@ const Header = () => {
     formData.append("password", data.password);
     try {
       await http.post(
-        `https://learnconnectapitest.azurewebsites.net/api/user/create-account-staff`,
+        `https://learnconnectapi.azurewebsites.net/api/user/create-account-staff`,
         formData,
         {
           headers: {

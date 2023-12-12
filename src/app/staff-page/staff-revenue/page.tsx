@@ -110,7 +110,7 @@ const StaffRevenue = () => {
     try {
       http
         .post(
-          `https://learnconnectapitest.azurewebsites.net/api/PayPal/pay-revenue?mentorId=${payToMentor}`,
+          `https://learnconnectapi.azurewebsites.net/api/PayPal/pay-revenue?mentorId=${payToMentor}`,
           {
             headers: {
               "Content-Type": "multipart/form-data",
@@ -121,7 +121,7 @@ const StaffRevenue = () => {
           toast.success("Payment Successfully !!!");
           http
             .get(
-              "https://learnconnectapitest.azurewebsites.net/api/payment-transaction/aoumt-to-pay-of-mentors-today"
+              "https://learnconnectapi.azurewebsites.net/api/payment-transaction/aoumt-to-pay-of-mentors-today"
             )
             .then((res) => {
               setRevenueOneMentor(res.data);
@@ -188,7 +188,7 @@ const StaffRevenue = () => {
     try {
       http
         .get(
-          "https://learnconnectapitest.azurewebsites.net/api/payment-transaction/aoumt-to-pay-of-mentors-today"
+          "https://learnconnectapi.azurewebsites.net/api/payment-transaction/aoumt-to-pay-of-mentors-today"
         )
         .then((res) => {
           setRevenueOneMentor(res.data);
@@ -396,7 +396,7 @@ const StaffRevenue = () => {
     try {
       http
         .get(
-          `https://learnconnectapitest.azurewebsites.net/api/payment-transaction/statistic-staff?filterType=${
+          `https://learnconnectapi.azurewebsites.net/api/payment-transaction/statistic-staff?filterType=${
             selected2 === "Last Day" ? "day" : selected2
           }`
         )
@@ -498,7 +498,7 @@ const StaffRevenue = () => {
     try {
       http
         .get(
-          `https://learnconnectapitest.azurewebsites.net/api/payment-transaction/statistic-staff?filterType=${
+          `https://learnconnectapi.azurewebsites.net/api/payment-transaction/statistic-staff?filterType=${
             selected3 === "Last Day" ? "day" : selected3
           }`
         )

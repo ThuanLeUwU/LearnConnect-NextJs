@@ -63,12 +63,12 @@ const Quiz = (props) => {
     const fetchQuestions = async () => {
       try {
         const response = await http.get(
-          `https://learnconnectapitest.azurewebsites.net/api/test/get-tests-by-course?courseId=${idCourse}`
+          `https://learnconnectapi.azurewebsites.net/api/test/get-tests-by-course?courseId=${idCourse}`
         );
         setQuestionsTest(response.data);
 
         const userAnswersResponse = await http.get(
-          `https://learnconnectapitest.azurewebsites.net/api/user-answer/get-list-answer-by-course?userId=${userData?.id}&courseId=${idCourse}`
+          `https://learnconnectapi.azurewebsites.net/api/user-answer/get-list-answer-by-course?userId=${userData?.id}&courseId=${idCourse}`
         );
         // console.log("userAnswersResponse", userAnswersResponse.data.length);
         if (userAnswersResponse.data.length !== 0) {
@@ -129,7 +129,7 @@ const Quiz = (props) => {
       });
     });
 
-    const urlAPI = `https://learnconnectapitest.azurewebsites.net/api/user-answer?userId=${userData?.id}&courseId=${idCourse}`;
+    const urlAPI = `https://learnconnectapi.azurewebsites.net/api/user-answer?userId=${userData?.id}&courseId=${idCourse}`;
 
     try {
       const response = await axios.post(urlAPI, selectedAnswers);
@@ -151,7 +151,7 @@ const Quiz = (props) => {
       averageScore = (100 / totalQuestions) * count;
     }
     const userId = userData?.id;
-    const url = `https://learnconnectapitest.azurewebsites.net/api/learning-performance/user/${userId}/course/${idCourse}`;
+    const url = `https://learnconnectapi.azurewebsites.net/api/learning-performance/user/${userId}/course/${idCourse}`;
     try {
       const response = await http.put(url, {
         score: averageScore,
@@ -217,9 +217,7 @@ const Quiz = (props) => {
   useEffect(() => {
     try {
       http
-        .get(
-          `https://learnconnectapitest.azurewebsites.net/api/course/${idCourse}`
-        )
+        .get(`https://learnconnectapi.azurewebsites.net/api/course/${idCourse}`)
         .then((res) => {
           setOneCourse(res.data);
         });

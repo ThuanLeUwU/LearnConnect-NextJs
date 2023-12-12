@@ -97,7 +97,7 @@ const CourseItem = ({
               </div>
             </div>
             <div className="min-h-[60px]">
-              <h4 className="mt-[13px] mb-2 text-[#52565b] text-[16px] hover:text-[#309255] font-bold">
+              <h4 className="mt-[13px] mb-2 text-[#52565b] text-[16px] hover:text-[#309255] font-bold text-left">
                 <button onClick={handleClick}>{name}</button>
               </h4>
             </div>

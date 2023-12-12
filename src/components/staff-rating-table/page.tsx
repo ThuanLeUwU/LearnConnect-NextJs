@@ -49,7 +49,7 @@ const StaffRatingTable = () => {
       token = localStorage.getItem("token");
       try {
         const responseData = await http.get(
-          `https://learnconnectapitest.azurewebsites.net/api/rating/allListRatings?ratingType=${selectedType}`
+          `https://learnconnectapi.azurewebsites.net/api/rating/allListRatings?ratingType=${selectedType}`
         );
         setRating(responseData?.data);
       } catch (error) {
@@ -67,7 +67,7 @@ const StaffRatingTable = () => {
   const handleRatingStatusUpdate = async (id, status) => {
     try {
       await axios.put(
-        `https://learnconnectapitest.azurewebsites.net/api/rating/update-rating-status?id=${id}&status=${status}`
+        `https://learnconnectapi.azurewebsites.net/api/rating/update-rating-status?id=${id}&status=${status}`
       );
       fetchData();
       setTimeout(() => {
@@ -84,7 +84,7 @@ const StaffRatingTable = () => {
     if (confirmed) {
       try {
         await axios.put(
-          `https://learnconnectapitest.azurewebsites.net/api/rating/update-rating-status?id=${selectedRatingId}&status=0`
+          `https://learnconnectapi.azurewebsites.net/api/rating/update-rating-status?id=${selectedRatingId}&status=0`
         );
         fetchData();
         setTimeout(() => {

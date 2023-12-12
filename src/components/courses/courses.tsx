@@ -109,7 +109,7 @@ const Courses = ({
     if (isLiked) {
       http
         .delete(
-          `https://learnconnectapitest.azurewebsites.net/api/favorite-course/un-set-favorite?userId=${userData?.id}&courseId=${id}`
+          `https://learnconnectapi.azurewebsites.net/api/favorite-course/un-set-favorite?userId=${userData?.id}&courseId=${id}`
         )
         .then((response) => {
           setTimeout(() => {
@@ -122,14 +122,11 @@ const Courses = ({
         });
     } else {
       http
-        .post(
-          "https://learnconnectapitest.azurewebsites.net/api/favorite-course",
-          {
-            id: 0,
-            favoriteCourseId: id,
-            userId: userData?.id,
-          }
-        )
+        .post("https://learnconnectapi.azurewebsites.net/api/favorite-course", {
+          id: 0,
+          favoriteCourseId: id,
+          userId: userData?.id,
+        })
         .then((response) => {
           setTimeout(() => {
             toast.success("Added to favorites successful");

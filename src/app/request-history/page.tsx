@@ -195,7 +195,7 @@ const Reviews = () => {
     const fetchMajor = async () => {
       try {
         const response = await axios.get(
-          `https://learnconnectapitest.azurewebsites.net/api/major/get-majors-not-request-yet/${userData?.id}`
+          `https://learnconnectapi.azurewebsites.net/api/major/get-majors-not-request-yet/${userData?.id}`
         );
         setMajor(response.data);
       } catch (error) {
@@ -210,7 +210,7 @@ const Reviews = () => {
       const fetchSpecializations = async () => {
         try {
           const response = await axios.get(
-            `https://learnconnectapitest.azurewebsites.net/api/specialization-of-mentor/get-specializations-not-request-yet/${userData?.id}/${selectedMajor}`
+            `https://learnconnectapi.azurewebsites.net/api/specialization-of-mentor/get-specializations-not-request-yet/${userData?.id}/${selectedMajor}`
           );
           setSpecialization(response.data);
         } catch (error) {
@@ -251,7 +251,7 @@ const Reviews = () => {
       token = localStorage.getItem("token");
       try {
         const responseData = await http.get<MentorData[]>(
-          `https://learnconnectapitest.azurewebsites.net/api/mentor/specializations-request/${userData?.id}/${selectedType}`
+          `https://learnconnectapi.azurewebsites.net/api/mentor/specializations-request/${userData?.id}/${selectedType}`
         );
         setMentor(responseData?.data);
         // console.log("mentor", mentor);
@@ -281,7 +281,7 @@ const Reviews = () => {
 
     try {
       await axios.post(
-        `https://learnconnectapitest.azurewebsites.net/api/mentor/add-specialization-by-mentor?userId=${userData?.id}&specializationId=${specialization}`,
+        `https://learnconnectapi.azurewebsites.net/api/mentor/add-specialization-by-mentor?userId=${userData?.id}&specializationId=${specialization}`,
         formData,
         {
           headers: {
@@ -474,7 +474,7 @@ const Reviews = () => {
                     accept="image/png, image/jpeg"
                     onChange={handleChange}
                     beforeUpload={beforeUpload}
-                    action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
+                    action="https://learnconnectapi.azurewebsites.net/api/Upload/image"
                     listType="picture-card"
                   >
                     Document

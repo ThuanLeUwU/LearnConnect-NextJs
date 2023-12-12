@@ -43,7 +43,7 @@ const useDataFavoritesFetcher = () => {
   const { id, userData } = UserAuth();
   const [courses, setCourses] = useState<CourseItem[]>([]);
   // const [favorite, setFavorite] = useState<Favorite>();
-  const API_URL = `https://learnconnectapitest.azurewebsites.net/api/favorite-course/get-favorite-courses-by-user?userId=`;
+  const API_URL = `https://learnconnectapi.azurewebsites.net/api/favorite-course/get-favorite-courses-by-user?userId=`;
   const pagesize = 6;
   const [totalPages, setTotalPages] = useState(10);
   const [loading, setLoading] = useState(true);

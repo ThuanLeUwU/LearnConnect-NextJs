@@ -17,7 +17,7 @@ export type CourseItem = {
 const useDataCourseProfileMentor = () => {
   const [courses, setCourses] = useState<CourseItem[]>([]);
   const API_URL =
-    "https://learnconnectapitest.azurewebsites.net/api/course/get-top-enrolled-courses";
+    "https://learnconnectapi.azurewebsites.net/api/course/get-top-enrolled-courses";
   const pagesize = 6;
   const [totalPages, setTotalPages] = useState(10);
   const [loading, setLoading] = useState(true);

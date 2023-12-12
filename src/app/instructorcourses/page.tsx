@@ -319,7 +319,7 @@ const InstructorCourse = () => {
   const handleDelete = async (data: any) => {
     try {
       await axios.put(
-        `https://learnconnectapitest.azurewebsites.net/api/course/update-course-status?courseId=${data.id}&status=1`,
+        `https://learnconnectapi.azurewebsites.net/api/course/update-course-status?courseId=${data.id}&status=1`,
         {
           headers: {
             "Content-Type": "multipart/form-data",
@@ -570,7 +570,7 @@ const InstructorCourse = () => {
                 <Upload
                   accept="image/png, image/jpeg"
                   onChange={handleChange}
-                  action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
+                  action="https://learnconnectapi.azurewebsites.net/api/Upload/image"
                 >
                   <Button>Upload</Button>
                 </Upload>
@@ -724,7 +724,7 @@ const InstructorCourse = () => {
                   onChange={handleChange}
                   beforeUpload={beforeUpload}
                   // headers={{ Authorization: authorization }}
-                  action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
+                  action="https://learnconnectapi.azurewebsites.net/api/Upload/image"
                 >
                   <Button>Upload</Button>
                 </Upload>

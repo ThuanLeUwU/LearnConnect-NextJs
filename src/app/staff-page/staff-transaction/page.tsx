@@ -51,7 +51,7 @@ const StaffTransaction = () => {
     try {
       http
         .get(
-          `https://learnconnectapitest.azurewebsites.net/api/payment-transaction/transaction-history-staff?filterDate=${date.format(
+          `https://learnconnectapi.azurewebsites.net/api/payment-transaction/transaction-history-staff?filterDate=${date.format(
             "YYYY-MM-DD"
           )}&filterType=${activeTab}`
         )
