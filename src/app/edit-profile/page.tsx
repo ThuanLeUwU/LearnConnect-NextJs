@@ -7,7 +7,7 @@ import {
   useState,
 } from "react";
 import ".././globals.css";
-import { UserAuth } from "../context/AuthContext";
+import { UserAuth, UserRole } from "../context/AuthContext";
 import axios from "axios";
 import { Breadcrumb, Input, Modal, Select, message } from "antd";
 import { useRouter } from "next/navigation";
@@ -234,7 +234,22 @@ export default function EditProfile() {
       });
   };
   const breadcrumbsHome = () => {
-    router.push("/");
+    switch (role) {
+      case UserRole.Student:
+        router.push("/");
+        break;
+      case UserRole.Mentor:
+        router.push("/instructorcourses");
+        break;
+      case UserRole.Staff:
+        router.push("/staff-page");
+        break;
+      case UserRole.Admin:
+        router.push("/user-manage");
+        break;
+      default:
+        break;
+    }
   };
   const breadcrumbsProfile = () => {
     if (userData?.role === 2) {

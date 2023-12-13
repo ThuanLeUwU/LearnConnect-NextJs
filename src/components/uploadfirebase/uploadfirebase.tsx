@@ -91,6 +91,7 @@ const UploadFirebase = ({
           id="fileInput"
           onChange={handleFileChange}
           style={{ display: "none" }}
+          accept="video/*"
         />
         <span>Upload</span>
       </label>

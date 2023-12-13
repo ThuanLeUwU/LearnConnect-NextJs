@@ -109,17 +109,24 @@ const Header = () => {
     }
   };
 
+  const fetchNotificationData = async () => {
+    try {
+      const response = await http.get(`/notification/byUserId/${id}`);
+      setNotificationContent(response.data);
+    } catch (error) {
+      console.error("Error fetching Notification Data:", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchNotificationData = async () => {
-      try {
-        const response = await http.get(`/notification/byUserId/${id}`);
-        setNotificationContent(response.data);
-      } catch (error) {
-        console.error("Error fetching Notification Data:", error);
-      }
-    };
     if (id) {
-      fetchNotificationData();
+      fetchNotificationData(); // Gọi lần đầu tiên khi id thay đổi
+      const intervalId = setInterval(() => {
+        fetchNotificationData(); // Gọi mỗi 3 giây
+      }, 3000);
+
+      // Clear interval khi component unmount
+      return () => clearInterval(intervalId);
     }
   }, [id]);
 
@@ -361,7 +368,7 @@ const Header = () => {
                         {notificationContent.slice(0, 7).map((item) => {
                           const date = new Date(item.timeStamp);
                           const now = Date.now();
-                          const tmp = (now - date.getTime()) / 1000;
+                          const tmp = Math.round((now - date.getTime()) / 1000);
 
                           let timeString = `${tmp} second${
                             tmp > 1 ? "s" : ""

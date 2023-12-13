@@ -269,6 +269,19 @@ const DetailsContent = ({ params }: any) => {
       dataIndex: "title",
       key: "title",
       sorter: (a, b) => a.title.localeCompare(b.title),
+      render: (text, record) => (
+        <>
+          {text.length > 50 ? (
+            <>
+              <a type="link" onClick={() => showModal(text)}>
+                {`${text.slice(0, 50)}...`}
+              </a>
+            </>
+          ) : (
+            text
+          )}
+        </>
+      ),
     },
     {
       title: "Content",
@@ -296,11 +309,7 @@ const DetailsContent = ({ params }: any) => {
       key: "contentUrl",
 
       render: (text, record) => {
-        return (
-          <a href={text} target="_blank" rel="noopener noreferrer">
-            Link
-          </a>
-        );
+        return <span>Link</span>;
       },
     },
     {

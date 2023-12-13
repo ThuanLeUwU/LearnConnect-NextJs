@@ -7,7 +7,7 @@ import axios from "axios";
 import { Breadcrumb, Spin, Tooltip } from "antd";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { UserAuth } from "../context/AuthContext";
+import { UserAuth, UserRole } from "../context/AuthContext";
 
 const Transaction = () => {
   const router = useRouter();
@@ -35,7 +35,22 @@ const Transaction = () => {
   axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
 
   const breadcrumbsHome = () => {
-    router.push("/");
+    switch (role) {
+      case UserRole.Student:
+        router.push("/");
+        break;
+      case UserRole.Mentor:
+        router.push("/instructorcourses");
+        break;
+      case UserRole.Staff:
+        router.push("/staff-page");
+        break;
+      case UserRole.Admin:
+        router.push("/user-manage");
+        break;
+      default:
+        break;
+    }
   };
 
   return (

@@ -104,6 +104,7 @@ const Dashboard = ({ params }: any) => {
     setDeleteAnswerModal(false);
     setSource("");
     setUpdateTestModal(false);
+    setModalVisible(false);
   };
 
   //update
@@ -415,11 +416,37 @@ const Dashboard = ({ params }: any) => {
       title: "Title",
       dataIndex: "title",
       key: "title",
+      render: (text, record) => (
+        <>
+          {text.length > 50 ? (
+            <>
+              <a type="link" onClick={() => showContentModal(text)}>
+                {`${text.slice(0, 50)}...`}
+              </a>
+            </>
+          ) : (
+            text
+          )}
+        </>
+      ),
     },
     {
       title: "Content",
       dataIndex: "content",
       key: "title",
+      render: (text, record) => (
+        <>
+          {text.length > 50 ? (
+            <>
+              <a type="link" onClick={() => showContentModal(text)}>
+                {`${text.slice(0, 50)}...`}
+              </a>
+            </>
+          ) : (
+            text
+          )}
+        </>
+      ),
     },
     {
       title: "URL",
@@ -468,6 +495,14 @@ const Dashboard = ({ params }: any) => {
       ),
     },
   ];
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedContent, setSelectedContent] = useState("");
+
+  const showContentModal = (content) => {
+    setSelectedContent(content);
+    setModalVisible(true);
+  };
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -2303,6 +2338,14 @@ const Dashboard = ({ params }: any) => {
                 </Form.Item>
               </Space>
             </Form>
+          </Modal>
+          <Modal
+            title="Details"
+            open={modalVisible}
+            onCancel={handleCancel}
+            footer={null}
+          >
+            <p>{selectedContent}</p>
           </Modal>
         </div>
       )}
