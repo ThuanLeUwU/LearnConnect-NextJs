@@ -185,7 +185,7 @@ const Header = () => {
     formData.append("password", data.password);
     try {
       await http.post(
-        `https://learnconnectapitest.azurewebsites.net/api/user/create-account-staff`,
+        `https://learnconnectapi.azurewebsites.net/api/user/create-account-staff`,
         formData,
         {
           headers: {
@@ -375,7 +375,7 @@ const Header = () => {
                               Math.floor(tmp / 86400) > 1 ? "s" : ""
                             } ago`;
                           } else if (tmp > 3600) {
-                            timeString = `${Math.floor(tmp / 3600)} hours${
+                            timeString = `${Math.floor(tmp / 3600)} hour${
                               Math.floor(tmp / 3600) > 1 ? "s" : ""
                             } ago`;
                           } else if (tmp > 60) {
@@ -476,7 +476,7 @@ const Header = () => {
                               className="block px-4 py-2 text-sm text-gray-700  hover:bg-gray-100 rounded-tl-lg rounded-tr-lg hover:rounded-bl-lg hover:rounded-br-lg"
                               onClick={closeDropdown}
                             >
-                              Order History
+                              Transaction History
                             </Link>
                           </li>
                           <li>

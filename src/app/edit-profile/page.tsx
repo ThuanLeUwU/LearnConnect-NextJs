@@ -91,7 +91,7 @@ export default function EditProfile() {
     const fetchUserData = async () => {
       try {
         const response = await http.get(
-          `https://learnconnectapitest.azurewebsites.net/api/mentor/get-info/${userData?.id}`
+          `https://learnconnectapi.azurewebsites.net/api/mentor/get-info/${userData?.id}`
         );
         setPaypalId1(response.data.mentor.paypalId);
         setPaypalAddress1(response.data.mentor.paypalAddress);
@@ -195,7 +195,7 @@ export default function EditProfile() {
     // console.log("usder data:", updatedUserData);
     axios
       .put(
-        `https://learnconnectapitest.azurewebsites.net/api/user/${id}`,
+        `https://learnconnectapi.azurewebsites.net/api/user/${id}`,
         updatedUserData
       )
       .then((response) => {
@@ -347,7 +347,7 @@ export default function EditProfile() {
                         defaultValue={paypalId1}
                         onChange={handlePayPalIdChange}
                         className="bg-[#fff] border border-[#30925533] text-[#000] text-base rounded-lg block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-[#309255]"
-                        placeholder="Your Phone Number"
+                        placeholder="Your Paypal ID"
                         required
                       />
                     </div>
@@ -356,14 +356,14 @@ export default function EditProfile() {
                         htmlFor="paypalAddress"
                         className="block mb-2 text-base font-medium text-[#000]"
                       >
-                        Email Address
+                        Paypal Address:
                       </label>
                       <input
                         id="paypalAddress"
-                        defaultValue={paypalAddress1}
+                        value={paypalAddress1}
                         onChange={handlePayPalAddressChange}
                         className="bg-[#fff] border border-[#30925533] text-[#000] text-base rounded-lg block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-[#309255]"
-                        placeholder="Your Phone Number"
+                        placeholder="Your Email Paypal Address"
                         required
                       />
                     </div>

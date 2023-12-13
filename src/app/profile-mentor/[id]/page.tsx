@@ -161,24 +161,25 @@ export default function ProfileUser({ params }: any) {
   }, [userData]);
 
   let API_URL =
-    "https://learnconnectapitest.azurewebsites.net/api/course/get-courses-by-mentor?userId=";
-  if (isOwner) {
-    API_URL =
-      "https://learnconnectapitest.azurewebsites.net/api/course/get-courses-by-mentorUserId?userId=";
-  }
+    "https://learnconnectapi.azurewebsites.net/api/course/get-courses-by-mentor?userId=";
+  // if (isOwner) {
+  //   API_URL =
+  //     "https://learnconnectapi.azurewebsites.net/api/course/get-courses-by-mentorUserId?userId=";
+  // }
 
   const pagesize = 4;
   const [rating, setRating] = useState<Rating[]>([]);
   // console.log("data:", userData?.fullName);
   // console.log("picture :", userData?.profilePictureUrl);
   const [DataUser, SetDataUser] = useState<User>();
+  console.log("data", DataUser);
   // const [];
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const response = await http.get(
-          `https://learnconnectapitest.azurewebsites.net/api/mentor/get-info/${idMentor}`
+          `https://learnconnectapi.azurewebsites.net/api/mentor/get-info/${idMentor}`
         );
         SetDataUser(response.data);
         console.log("Datauser", response.data);
@@ -189,13 +190,15 @@ export default function ProfileUser({ params }: any) {
         console.error("Error fetching user data:", error);
       }
     };
+    // if (id) {
     fetchUserData();
+    // }
   }, []);
 
   useEffect(() => {
     const fetchData = async () => {
       const responseData = await http.get(
-        `https://learnconnectapitest.azurewebsites.net/api/rating/listRatingOfMentor/${idMentor}`
+        `https://learnconnectapi.azurewebsites.net/api/rating/listRatingOfMentor/${idMentor}`
       );
       setRating(responseData?.data);
       console.log("rating", responseData?.data);
@@ -205,7 +208,11 @@ export default function ProfileUser({ params }: any) {
   }, []);
 
   const handleClickMoveToCourse = (courseId: string | number) => {
-    router.push(`/course-detail/${courseId}`);
+    if (userData?.role === 2) {
+      router.push(`/instructorcourses/${courseId}`);
+    } else {
+      router.push(`/course-detail/${courseId}`);
+    }
   };
 
   useEffect(() => {
@@ -231,7 +238,7 @@ export default function ProfileUser({ params }: any) {
     }
     try {
       await axios.post(
-        `https://learnconnectapitest.azurewebsites.net/api/report/report-mentor?userId=${id}&mentorId=${idMentor}`,
+        `https://learnconnectapi.azurewebsites.net/api/report/report-mentor?userId=${id}&mentorId=${idMentor}`,
         formdata,
         {
           headers: {
@@ -265,7 +272,7 @@ export default function ProfileUser({ params }: any) {
       // console.log("formDataImage1", formDataImage);
       // console.log("image1", image);
       await http.post(
-        `https://learnconnectapitest.azurewebsites.net/api/rating/rating-mentor?userId=${id}&mentorId=${idMentor}`,
+        `https://learnconnectapi.azurewebsites.net/api/rating/rating-mentor?userId=${id}&mentorId=${idMentor}`,
         // `/rating/rating-course?userId=${id}&courseId=${idCourse}`,
         formdata,
         {
@@ -364,6 +371,10 @@ export default function ProfileUser({ params }: any) {
     router.push("/");
   };
 
+  const breadcrumbsHomeMentor = () => {
+    router.push("/instructorcourses");
+  };
+
   const handleTabChange = (key: string) => {
     setCurrentTab(key);
   };
@@ -382,12 +393,28 @@ export default function ProfileUser({ params }: any) {
         >
           <div>
             <Breadcrumb className="font-semibold text-3xl py-5 px-64 flex-auto">
-              <Breadcrumb.Item>
-                <button onClick={breadcrumbsHome}>Home</button>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                <span>Profile</span>
-              </Breadcrumb.Item>
+              {userData?.role === 2 ? (
+                <>
+                  <Breadcrumb.Item>
+                    <button onClick={breadcrumbsHomeMentor}>Home</button>
+                  </Breadcrumb.Item>
+                  <Breadcrumb.Item>
+                    <span>Profile</span>
+                  </Breadcrumb.Item>
+                </>
+              ) : (
+                <>
+                  <Breadcrumb.Item>
+                    <button onClick={breadcrumbsHome}>Home</button>
+                  </Breadcrumb.Item>
+                  <Breadcrumb.Item>
+                    <span>Mentor</span>
+                  </Breadcrumb.Item>
+                  <Breadcrumb.Item>
+                    <span>{DataUser?.user.fullName}</span>
+                  </Breadcrumb.Item>
+                </>
+              )}
             </Breadcrumb>{" "}
           </div>
           <div
@@ -437,97 +464,101 @@ export default function ProfileUser({ params }: any) {
           )}
         </div>
         <div className="col-span-9 border rounded-lg my-5 shadow-lg">
-          <div className="bg-[#fff] rounded-lg shadow-lg h-full">
-            <div className="text-white flex flex-col lg:flex-row rounded-t px-4 lg:p-8">
-              <Tabs
-                activeKey={currentTab}
-                onChange={handleTabChange}
-                className="h-auto"
-              >
-                <TabPane tab="Biography" key="1">
-                  <div className="author-content pl-4 my-auto text-black">
-                    <p className="font-semibold text-lg mb-2">Biography</p>
-                    <h5 className="text-lg my-1">
-                      {DataUser?.user.bioDescription}
-                    </h5>
-                  </div>
-                </TabPane>
-                <TabPane tab="Specialization" key="2">
-                  <div className="author-content pl-4 my-auto ">
-                    <p className="font-semibold text-lg mb-2">Specialization</p>
-                    {DataUser?.specialization &&
-                      DataUser.specialization.map((spec, index) => (
-                        <p key={index} className="text-xl my-1 text-black">
-                          <div className="flex">
-                            <GoDotFill className="flex my-auto mr-2" />
-                            {spec.specName}
-                          </div>
-                        </p>
-                      ))}
-                  </div>
-                </TabPane>
-                <TabPane tab="Contact" key="3">
-                  <div className="author-content pl-4 my-auto">
-                    <p className="font-semibold text-xl mb-2">Contact</p>
-                    <h5 className="text-lg my-1">
-                      <span className="font-bold">Email:</span>{" "}
-                      {DataUser?.user.email}
-                    </h5>
-                    {DataUser?.phoneNumber !== null && (
-                      <p className="text-lg my-1">
-                        <span className="font-bold">Phone: </span>
-                        {DataUser?.user.phoneNumber}
-                      </p>
-                    )}
-                  </div>
-                </TabPane>
-                {isOwner && (
-                  <TabPane tab="Payment Information" key="4">
-                    <div className="author-content pl-4 my-auto ">
-                      <p className="font-semibold text-xl mb-2">
-                        Payment Information
-                      </p>
-                      <p className="text-lg my-1">
-                        <span className="font-bold">PayPal ID: </span>
-                        {paypalId}
-                      </p>
-                      <p className="text-lg my-1">
-                        <span className="font-bold">PayPal Address: </span>
-                        {paypalAddress}
-                      </p>
+          {userData && (
+            <div className="bg-[#fff] rounded-lg shadow-lg h-full">
+              <div className="text-white flex flex-col lg:flex-row rounded-t px-4 lg:p-8">
+                <Tabs
+                  activeKey={currentTab}
+                  onChange={handleTabChange}
+                  className="h-auto"
+                >
+                  <TabPane tab="Biography" key="1">
+                    <div className="author-content pl-4 my-auto text-black">
+                      <p className="font-semibold text-lg mb-2">Biography</p>
+                      <h5 className="text-lg my-1">
+                        {DataUser?.user.bioDescription}
+                      </h5>
                     </div>
                   </TabPane>
-                )}
-              </Tabs>
-              {!isOwner && (
-                <div className="ml-auto text-black">
-                  <button onClick={toggleDropdown}>
-                    <AiOutlineBars className="border border-opacity-20 border-[#fff] rounded-lg text-4xl text-black" />
-                  </button>
-                  {isDropdownOpen && (
-                    <div id="dropdown-menu" className="modal-overlay absolute">
-                      <div className="bg-white border border-gray-300 rounded shadow-lg">
-                        <div className="p-2 text-black flex flex-col">
-                          <button
-                            className="px-3 py-2 mb-1 hover:bg-[#e7f8ee]"
-                            onClick={showModal}
-                          >
-                            Report
-                          </button>
-                          <button
-                            className="px-3 py-2 hover:bg-[#e7f8ee]"
-                            onClick={showModalRating}
-                          >
-                            Rating
-                          </button>
+                  <TabPane tab="Specialization" key="2">
+                    <div className="author-content pl-4 my-auto ">
+                      <p className="font-semibold text-lg mb-2">
+                        Specialization
+                      </p>
+                      {DataUser?.specialization &&
+                        DataUser.specialization.map((spec, index) => (
+                          <p key={index} className="text-lg my-1 text-black">
+                            <div className="flex">
+                              <GoDotFill className="flex my-auto mr-2" />
+                              {spec.specName}
+                            </div>
+                          </p>
+                        ))}
+                    </div>
+                  </TabPane>
+                  <TabPane tab="Contact" key="3">
+                    <div className="author-content pl-4 my-auto">
+                      <p className="font-semibold text-lg mb-2">Contact</p>
+                      <h5 className="text-lg my-1">
+                        <span className="font-bold">Email:</span>{" "}
+                        {DataUser?.user.email}
+                      </h5>
+                      {DataUser?.phoneNumber !== null && (
+                        <p className="text-lg my-1">
+                          <span className="font-bold">Phone: </span>
+                          {DataUser?.user.phoneNumber}
+                        </p>
+                      )}
+                    </div>
+                  </TabPane>
+                  {isOwner && (
+                    <TabPane tab="Payment Information" key="4">
+                      <div className="author-content pl-4 my-auto ">
+                        <p className="text-lg my-1">
+                          <span className="font-bold">PayPal ID: </span>
+                          {paypalId}
+                        </p>
+                        <p className="text-lg my-1">
+                          <span className="font-bold">PayPal Address: </span>
+                          {paypalAddress}
+                        </p>
+                      </div>
+                    </TabPane>
+                  )}
+                </Tabs>
+                {!isOwner && (
+                  <div className="ml-auto text-black">
+                    <button onClick={toggleDropdown}>
+                      <AiOutlineBars className="border border-opacity-20 border-[#fff] rounded-lg text-4xl text-black" />
+                    </button>
+                    {isDropdownOpen && (
+                      <div
+                        id="dropdown-menu"
+                        className="modal-overlay absolute"
+                      >
+                        <div className="bg-white border border-gray-300 rounded shadow-lg">
+                          <div className="p-2 text-black flex flex-col">
+                            <button
+                              className="px-3 py-2 mb-1 hover:bg-[#e7f8ee]"
+                              onClick={showModal}
+                            >
+                              Report
+                            </button>
+                            <button
+                              className="px-3 py-2 hover:bg-[#e7f8ee]"
+                              onClick={showModalRating}
+                            >
+                              Rating
+                            </button>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  )}
-                </div>
-              )}
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
       <div className="container">
@@ -732,7 +763,7 @@ export default function ProfileUser({ params }: any) {
                 accept="image/png, image/jpeg"
                 onChange={handleChange}
                 beforeUpload={beforeUpload}
-                action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
+                action="https://learnconnectapi.azurewebsites.net/api/Upload/image"
                 listType="picture-card"
               >
                 Upload

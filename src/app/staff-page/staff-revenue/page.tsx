@@ -110,7 +110,7 @@ const StaffRevenue = () => {
     try {
       http
         .post(
-          `https://learnconnectapitest.azurewebsites.net/api/PayPal/pay-revenue?mentorId=${payToMentor}`,
+          `https://learnconnectapi.azurewebsites.net/api/PayPal/pay-revenue?mentorId=${payToMentor}`,
           {
             headers: {
               "Content-Type": "multipart/form-data",
@@ -121,7 +121,7 @@ const StaffRevenue = () => {
           toast.success("Payment Successfully !!!");
           http
             .get(
-              "https://learnconnectapitest.azurewebsites.net/api/payment-transaction/aoumt-to-pay-of-mentors-today"
+              "https://learnconnectapi.azurewebsites.net/api/payment-transaction/aoumt-to-pay-of-mentors-today"
             )
             .then((res) => {
               setRevenueOneMentor(res.data);
@@ -188,7 +188,7 @@ const StaffRevenue = () => {
     try {
       http
         .get(
-          "https://learnconnectapitest.azurewebsites.net/api/payment-transaction/aoumt-to-pay-of-mentors-today"
+          "https://learnconnectapi.azurewebsites.net/api/payment-transaction/aoumt-to-pay-of-mentors-today"
         )
         .then((res) => {
           setRevenueOneMentor(res.data);
@@ -294,7 +294,32 @@ const StaffRevenue = () => {
       chart: {
         stacked: false,
         toolbar: {
-          show: false,
+          show: true,
+          offsetX: 0,
+          offsetY: 0,
+          tools: {
+            download: true,
+            selection: false,
+            zoom: false,
+            zoomin: true,
+            zoomout: true,
+            pan: false,
+          },
+          export: {
+            csv: {
+              filename: "Revenue Statistic",
+              columnDelimiter: ",",
+              headerCategory: "Date",
+              headerValue: "value",
+            },
+            svg: {
+              filename: "Statistic",
+            },
+            png: {
+              filename: "Statistic",
+            },
+          },
+          autoSelected: "zoom" as "zoom",
         },
       },
       xaxis: {
@@ -371,7 +396,7 @@ const StaffRevenue = () => {
     try {
       http
         .get(
-          `https://learnconnectapitest.azurewebsites.net/api/payment-transaction/statistic-staff?filterType=${
+          `https://learnconnectapi.azurewebsites.net/api/payment-transaction/statistic-staff?filterType=${
             selected2 === "Last Day" ? "day" : selected2
           }`
         )
@@ -419,9 +444,37 @@ const StaffRevenue = () => {
       chart: {
         type: "bar" as "bar",
         stacked: true,
+        toolbar: {
+          show: true,
+          offsetX: 0,
+          offsetY: 0,
+          tools: {
+            download: true,
+            selection: false,
+            zoom: false,
+            zoomin: true,
+            zoomout: true,
+            pan: false,
+          },
+          export: {
+            csv: {
+              filename: "Course Statistic",
+              columnDelimiter: ",",
+              headerCategory: "Date",
+              headerValue: "value",
+            },
+            svg: {
+              filename: "Statistic",
+            },
+            png: {
+              filename: "Statistic",
+            },
+          },
+          autoSelected: "zoom" as "zoom",
+        },
       },
       xaxis: {
-        categories: [] as string[], // Dữ liệu ngày
+        categories: [] as string[],
       },
       yaxis: {
         title: {
@@ -445,7 +498,7 @@ const StaffRevenue = () => {
     try {
       http
         .get(
-          `https://learnconnectapitest.azurewebsites.net/api/payment-transaction/statistic-staff?filterType=${
+          `https://learnconnectapi.azurewebsites.net/api/payment-transaction/statistic-staff?filterType=${
             selected3 === "Last Day" ? "day" : selected3
           }`
         )
@@ -462,7 +515,7 @@ const StaffRevenue = () => {
   useEffect(() => {
     // Simulated data
 
-    const categories = courseStatistic3.map((entry) =>
+    const date = courseStatistic3.map((entry) =>
       format(new Date(entry.date), "MMM dd")
     );
     const freeCoursesData = courseStatistic3.map(
@@ -475,7 +528,7 @@ const StaffRevenue = () => {
       options: {
         ...stackedChart.options,
         xaxis: {
-          categories: categories,
+          categories: date,
         },
       },
       series: [
@@ -564,7 +617,7 @@ const StaffRevenue = () => {
               </div>
 
               <div className="mt-10 mx-10 flex flex-row gap-4 justify-between">
-                <div className="p-5 rounded-lg border-solid border-2 shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)] flex flex-row max-w-[320px] min-h-[200px] justify-between">
+                <div className="p-5 rounded-lg border-solid border-2 shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)] flex flex-row w-[320px] min-h-[200px] justify-between">
                   <div className="flex flex-col gap-4">
                     <div className="text-xl font-medium">Total Courses</div>
                     <div className="text-5xl">
@@ -578,7 +631,7 @@ const StaffRevenue = () => {
                     />
                   </div>
                 </div>
-                <div className="p-5 rounded-lg border-solid border-2 shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)] flex flex-row max-w-[320px] min-h-[200px] justify-between">
+                <div className="p-5 rounded-lg border-solid border-2 shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)] flex flex-row w-[320px] min-h-[200px] justify-between">
                   <div className="flex flex-col gap-4">
                     <div className="text-xl font-medium">Total Mentors</div>
                     <div className="text-5xl">
@@ -592,7 +645,7 @@ const StaffRevenue = () => {
                     />
                   </div>
                 </div>
-                <div className="p-5 rounded-lg border-solid border-2 shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)] flex flex-row max-w-[320px] min-h-[200px] justify-between">
+                <div className="p-5 rounded-lg border-solid border-2 shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)] flex flex-row w-[320px] min-h-[200px] justify-between">
                   <div className="flex flex-col gap-4">
                     <div className="text-xl font-medium">Total Enrollments</div>
                     <div className="text-5xl">
@@ -606,7 +659,7 @@ const StaffRevenue = () => {
                     />
                   </div>
                 </div>
-                <div className="p-5 rounded-lg border-solid border-2 shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)] flex flex-row max-w-[320px] min-h-[200px] justify-between">
+                <div className="p-5 rounded-lg border-solid border-2 shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)] flex flex-row w-[320px] min-h-[200px] justify-between">
                   <div className="flex flex-col gap-4">
                     <div className="text-xl font-medium">Revenue (VND)</div>
                     <div className="text-3xl">
@@ -700,20 +753,8 @@ const StaffRevenue = () => {
                     </div>
                   </div>
                 </div>
-                {/* <div className="relative flex justify-center">
-                  <Bar data={chartData} options={options}></Bar>
-                </div> */}
               </div>
             </div>
-            <div className="text-center font-semibold text-5xl pb-5 pl-5">
-              Income of mentors
-            </div>
-            <Table
-              dataSource={revenueOneMentor}
-              columns={columns}
-              pagination={{ ...pagination, onChange: handlePageChange }}
-              className="mx-5 shadow-[5px_15px_25px_10px_rgba(0,0,0,0.15)] mt-2 rounded-lg"
-            />
           </div>
 
           <Modal

@@ -2,7 +2,7 @@ import { UserAuth } from "@/app/context/AuthContext";
 import axios from "axios";
 
 export const http = axios.create({
-  baseURL: "https://learnconnectapitest.azurewebsites.net/api",
+  baseURL: "https://learnconnectapi.azurewebsites.net/api",
   withCredentials: false,
 });
 

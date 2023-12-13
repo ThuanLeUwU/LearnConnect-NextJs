@@ -72,7 +72,7 @@ const Reviews = () => {
     },
     {
       image: "/menu-icon/receipt.png",
-      title: "Order History",
+      title: "Transaction History",
       href: "/order-history",
     },
   ];

@@ -76,7 +76,7 @@ const OrderHistory = () => {
     try {
       http
         .get(
-          `https://learnconnectapitest.azurewebsites.net/api/payment-transaction/revenue-mentor?mentorUserId=${id}&filterDate=${date.format(
+          `https://learnconnectapi.azurewebsites.net/api/payment-transaction/revenue-mentor?mentorUserId=${id}&filterDate=${date.format(
             "YYYY-MM-DD"
           )}`
         )
@@ -111,7 +111,7 @@ const OrderHistory = () => {
     },
     {
       image: "/menu-icon/receipt.png",
-      title: "Order History",
+      title: "Transaction History",
       href: "/order-history",
     },
   ];
@@ -257,7 +257,7 @@ const OrderHistory = () => {
                   <Breadcrumb>
                     <Breadcrumb.Item>
                       <div className="text-start font-semibold text-4xl my-5 px-4">
-                        Order History
+                        Transaction History
                       </div>
                     </Breadcrumb.Item>
                   </Breadcrumb>

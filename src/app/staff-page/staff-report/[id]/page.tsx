@@ -47,7 +47,7 @@ const StaffReportID = ({ params }: any) => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `https://learnconnectapitest.azurewebsites.net/api/report/get-reports?targetId=${idCourse}&reportType=${target}`
+          `https://learnconnectapi.azurewebsites.net/api/report/get-reports?targetId=${idCourse}&reportType=${target}`
         );
         // console.log("API Response:", response.data);
         setReportData(response.data);
@@ -66,7 +66,7 @@ const StaffReportID = ({ params }: any) => {
       const fetchData = async () => {
         try {
           const response = await axios.get(
-            `https://learnconnectapitest.azurewebsites.net/api/course/${idCourse}`
+            `https://learnconnectapi.azurewebsites.net/api/course/${idCourse}`
           );
           // console.log("API Response:", response.data);
           setCourse(response.data);
@@ -87,7 +87,7 @@ const StaffReportID = ({ params }: any) => {
       const fetchData = async () => {
         try {
           const response = await axios.get(
-            `https://learnconnectapitest.azurewebsites.net/api/mentor/${idCourse}`
+            `https://learnconnectapi.azurewebsites.net/api/mentor/${idCourse}`
           );
           // console.log("API Response:", response.data);
           setMentor(response.data);
@@ -109,7 +109,7 @@ const StaffReportID = ({ params }: any) => {
       let apiUrl;
 
       if (target === "course") {
-        apiUrl = `https://learnconnectapitest.azurewebsites.net/api/course/ban-course?courseId=${idCourse}&status=true`;
+        apiUrl = `https://learnconnectapi.azurewebsites.net/api/course/ban-course?courseId=${idCourse}&status=true`;
       }
 
       const response = await axios.post(apiUrl);

@@ -62,9 +62,10 @@ export default function CourseDetailPage({ params }: any) {
 
   useEffect(() => {
     const fetchData = async () => {
-      let url = `https://learnconnectapitest.azurewebsites.net/api/course/user/${idUser}/course/${idCourse}`;
+      // let url = `https://learnconnectapi.azurewebsites.net/api/course/user/${idUser}/course/${idCourse}`;
+      let url = `https://learnconnectapi.azurewebsites.net/api/course/${idCourse}?userId=${idUser}`;
       if (!idUser) {
-        url = `https://learnconnectapitest.azurewebsites.net/api/course/${idCourse}`;
+        url = `https://learnconnectapi.azurewebsites.net/api/course/${idCourse}`;
       }
       const responseData = await http.get(url);
       setCourses(responseData?.data);
@@ -75,7 +76,7 @@ export default function CourseDetailPage({ params }: any) {
   useEffect(() => {
     const fetchData = async () => {
       const responseData = await http.get(
-        `https://learnconnectapitest.azurewebsites.net/api/lecture/by-course/${idCourse}`
+        `https://learnconnectapi.azurewebsites.net/api/lecture/by-course/${idCourse}`
       );
       setLectures(responseData?.data);
     };
@@ -84,8 +85,14 @@ export default function CourseDetailPage({ params }: any) {
   }, []);
 
   const handlePushMentor = () => {
-    if (courses && courses.mentorId) {
-      router.push(`/profile-mentor/${courses.mentorId}`);
+    if (userData) {
+      if (courses && courses.mentorUserId) {
+        router.push(`/profile-mentor/${courses.mentorUserId}`);
+      }
+    } else {
+      if (courses && courses.mentorId) {
+        router.push(`/profile-mentor/${courses.mentorId}`);
+      }
     }
   };
 
@@ -108,7 +115,7 @@ export default function CourseDetailPage({ params }: any) {
     courseId: any,
     returnUrl: string | number | boolean
   ) => {
-    const url = `https://learnconnectapitest.azurewebsites.net/api/enrollment/Enroll?userId=${userId}&courseId=${courseId}&returnUrl=${encodeURIComponent(
+    const url = `https://learnconnectapi.azurewebsites.net/api/enrollment/Enroll?userId=${userId}&courseId=${courseId}&returnUrl=${encodeURIComponent(
       returnUrl
     )}`;
 

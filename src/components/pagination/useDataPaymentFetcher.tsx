@@ -22,7 +22,7 @@ const useDataPaymentFetcher = () => {
   const [transaction, setTransaction] = useState<Transaction[]>([]);
   // console.log("my transaction", transaction);
 
-  const API_URL = `https://learnconnectapitest.azurewebsites.net/api/payment-transaction/by-user/`;
+  const API_URL = `https://learnconnectapi.azurewebsites.net/api/payment-transaction/by-user/`;
   const pagesize = 6;
   const [totalPages, setTotalPages] = useState(10);
   const [loading, setLoading] = useState(true);

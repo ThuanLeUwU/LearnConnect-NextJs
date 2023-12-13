@@ -51,7 +51,7 @@ const StaffTransaction = () => {
     try {
       http
         .get(
-          `https://learnconnectapitest.azurewebsites.net/api/payment-transaction/transaction-history-staff?filterDate=${date.format(
+          `https://learnconnectapi.azurewebsites.net/api/payment-transaction/transaction-history-staff?filterDate=${date.format(
             "YYYY-MM-DD"
           )}&filterType=${activeTab}`
         )
@@ -147,6 +147,9 @@ const StaffTransaction = () => {
         return "green"; // Màu xanh cho trạng thái Active
       case 1:
         return "red"; // Màu đỏ hồng cho trạng thái Banned
+
+      case 2:
+        return "gray";
       default:
         return "defaultColor"; // Màu mặc định nếu status không phù hợp với bất kỳ trạng thái nào
     }
@@ -158,6 +161,8 @@ const StaffTransaction = () => {
         return "Success";
       case 1:
         return "Error";
+      case 2:
+        return "Pending";
       default:
         return "Unknown Status";
     }
@@ -237,7 +242,7 @@ const StaffTransaction = () => {
                 <Breadcrumb>
                   <Breadcrumb.Item>
                     <div className="text-start font-semibold text-4xl my-5 px-4">
-                      Order History
+                      Transaction History
                     </div>
                   </Breadcrumb.Item>
                 </Breadcrumb>

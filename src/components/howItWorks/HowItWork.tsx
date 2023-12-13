@@ -16,6 +16,7 @@ export type TopMentor = {
   mentorName: string;
   mentorImage: string;
   averageRating: number;
+  mentorUserId: number;
 };
 
 const HowItWork = () => {
@@ -25,13 +26,13 @@ const HowItWork = () => {
 
   const onClickMentor = (data) => {
     // console.log("tao nè", data);
-    router.push(`/profile-mentor/${data.mentorInfo.mentorId}`);
+    router.push(`/profile-mentor/${data.mentorInfo.mentorUserId}`);
   };
 
   useEffect(() => {
     const fetchData = async () => {
       const responseData = await http.get(
-        `https://learnconnectapitest.azurewebsites.net/api/mentor/top-3-mentors`
+        `https://learnconnectapi.azurewebsites.net/api/mentor/top-3-mentors`
       );
       setTopMentors(responseData.data);
       // const sortedMentors = responseData.data.sort(
