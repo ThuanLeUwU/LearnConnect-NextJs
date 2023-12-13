@@ -1,6 +1,6 @@
 "use client";
 import ".././globals.css";
-import { UserAuth } from "../context/AuthContext";
+import { UserAuth, UserRole } from "../context/AuthContext";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import useDataNotificationsFetcher from "@/components/pagination/useDataNotificationsFetcher";
@@ -19,12 +19,30 @@ export default function ProfileUser() {
     currentPage,
     setCurrentPage,
   } = useDataNotificationsFetcher();
-  const { id, jwtToken } = UserAuth();
+  const { id, jwtToken, role } = UserAuth();
   axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
   const router = useRouter();
   // console.log("notificationContent", notificationContent);
+  const returnHome = () => {
+    switch (role) {
+      case UserRole.Student:
+        router.push("/");
+        break;
+      case UserRole.Mentor:
+        router.push("/instructorcourses");
+        break;
+      case UserRole.Staff:
+        router.push("/staff-page");
+        break;
+      case UserRole.Admin:
+        router.push("/user-manage");
+        break;
+      default:
+        break;
+    }
+  };
   const breadcrumbsHome = () => {
-    router.push("/");
+    // router.push("/");
   };
 
   return (
@@ -39,7 +57,7 @@ export default function ProfileUser() {
           <div>
             <Breadcrumb className="font-semibold text-3xl py-5 px-64 flex-auto">
               <Breadcrumb.Item>
-                <button onClick={breadcrumbsHome}>Home</button>
+                <button onClick={returnHome}>Home</button>
               </Breadcrumb.Item>
               <Breadcrumb.Item>
                 <span>Notifications</span>

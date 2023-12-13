@@ -70,6 +70,12 @@ interface Bank {
   logo: string;
 }
 
+interface ScanImage {
+  fullName: string;
+  cardId: string;
+  createDate: string;
+}
+
 export const RegisterForm = () => {
   const router = useRouter();
   const { role, requestBecomeMentor } = UserAuth();
@@ -99,7 +105,9 @@ export const RegisterForm = () => {
   const [identifyData, setIdentifyData] = useState();
 
   const [backImage, setBackImage] = useState<string>();
+  // console.log("back", backImage);
   const [BackData, setBackData] = useState();
+  // console.log("back", BackData);
 
   const [documentImage, setDocumentImage] = useState<string>();
   const [DocumentData, setDocumentData] = useState();
@@ -144,18 +152,45 @@ export const RegisterForm = () => {
     }
     setFileList(info.fileList);
   };
+  const [scanId, setScanId] = useState<ScanImage>();
+
+  const [scanImage, setScanImage] = useState();
+  console.log("backne", scanImage);
+
   const handleChangeBackImg = (info: any) => {
     if (info.file.status === "uploading") {
       return;
     }
     if (info.file.status === "done") {
+      setScanImage(info.file.response);
       setBackData(info.file.originFileObj);
       getBase64(info.file.originFileObj, (url) => {
         setBackImage(url);
       });
     }
+    // console.log("backne", info.file.response);
     setFileList1(info.fileList);
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.post(
+          `https://learnconnectapi.azurewebsites.net/api/verification-document/scan-image`,
+          scanImage,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        setScanId(response.data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+    fetchData();
+  }, [scanImage]);
 
   const handleChangeDocumentData = (info: any) => {
     if (info.file.status === "uploading") {
@@ -215,8 +250,13 @@ export const RegisterForm = () => {
       specialization,
       reason,
     } = values;
-    formData.append("identityCardFrontDescription", CardFront);
-    formData.append("identityCardBackDescription", IssueDate);
+    if (scanId?.cardId !== undefined) {
+      formData.append("identityCardFrontDescription", scanId?.cardId);
+    }
+
+    if (scanId?.createDate !== undefined) {
+      formData.append("identityCardFrontDescription", scanId?.createDate);
+    }
     if (identifyData !== undefined) {
       formData.append("identityCardFrontUrl", identifyData);
     }
@@ -367,39 +407,7 @@ export const RegisterForm = () => {
                       autoSize={{ minRows: 5, maxRows: 6 }}
                     />
                   </Form.Item>
-                  <Form.Item
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please input Identify Number",
-                      },
-                      {
-                        pattern: /^[0-9]{12,12}$/,
-                        message: "Identity Number must be exactly 12 digits",
-                      },
-                    ]}
-                    label="Identity Number"
-                    name="CardFront"
-                    labelAlign="left"
-                  >
-                    <Input type="number" placeholder="Input Identity Number" />
-                  </Form.Item>
 
-                  <Form.Item
-                    rules={[
-                      { required: true, message: "Please input Issue Date" },
-                    ]}
-                    label="Issue Date"
-                    name="IssueDate"
-                    labelAlign="left"
-                  >
-                    <DatePicker
-                      style={{ width: "100%" }}
-                      disabledDate={(current) =>
-                        current && current > moment().endOf("day")
-                      }
-                    />
-                  </Form.Item>
                   <Form.Item
                     rules={[
                       {
@@ -446,6 +454,50 @@ export const RegisterForm = () => {
                     >
                       {uploadButtonBackContent}
                     </Upload>
+                  </Form.Item>
+                  <Form.Item
+                    // rules={[
+                    //   {
+                    //     required: true,
+                    //     message: "Please input Identify Number",
+                    //   },
+                    //   {
+                    //     pattern: /^[0-9]{12,12}$/,
+                    //     message: "Identity Number must be exactly 12 digits",
+                    //   },
+                    // ]}
+                    label="Identity Number"
+                    // name="CardFront"
+                    labelAlign="left"
+                  >
+                    <Input
+                      disabled
+                      type="number"
+                      // placeholder="Input Identity Number"
+                      value={scanId?.cardId}
+                    />
+                  </Form.Item>
+
+                  <Form.Item
+                    // rules={[
+                    //   { required: true, message: "Please input Issue Date" },
+                    // ]}
+                    label="Issue Date"
+                    // name="IssueDate"
+                    labelAlign="left"
+                  >
+                    {/* <DatePicker
+                      style={{ width: "100%" }}
+                      disabledDate={(current) =>
+                        current && current > moment().endOf("day")
+                      }
+                    /> */}
+                    <Input
+                      disabled
+                      // type="number"
+                      // placeholder="Input Identity Number"
+                      value={scanId?.createDate}
+                    />
                   </Form.Item>
                 </Form>
               </TabPane>

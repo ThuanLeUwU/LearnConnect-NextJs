@@ -226,6 +226,7 @@ export default function CreateCourse() {
   console.log("j z toi", course);
 
   const handleSubmit = async (data: any) => {
+    // console.log("anian", data.specialization);
     if (formDataImage === undefined) {
       toast.error("Please Input Image");
     } else if (selected === 0) {
@@ -238,7 +239,7 @@ export default function CreateCourse() {
       formData.append("price", data.price);
       formData.append("contentLength", data.length);
       formData.append("lectureCount", "0");
-      formData.append("specializationId", selected.toString());
+      formData.append("specializationId", data.specialization);
       if (formDataImage !== undefined) {
         formData.append("courseImage", formDataImage);
       }
@@ -268,13 +269,14 @@ export default function CreateCourse() {
   };
 
   const handleLecture = async (data: any) => {
+    // console.log("hehe", data.type);
     if (!source) {
       toast.error("Please Input Your Video Content!");
     } else {
       const formData = new FormData();
       formData.append("title", data.title);
       formData.append("content", data.content);
-      formData.append("contentType", type.toString());
+      formData.append("contentType", data.type);
       formData.append("contentUrl", source);
       // if (formDataSource !== undefined) {
       //   formData.append("contentUrl", formDataSource);
@@ -547,6 +549,7 @@ export default function CreateCourse() {
   const [step3Completed, setStep3Completed] = useState(false);
 
   const [disableButton, setDisableButton] = useState(true);
+  const [disableButton2, setDisableButton2] = useState(true);
 
   const handleStepClick = (step) => {
     setActiveStep(step);
@@ -570,6 +573,8 @@ export default function CreateCourse() {
   const routerDetailCourse = () => {
     router.push(`/instructorcourses/${courseId}`);
   };
+
+  const [selectedType, setSelectedType] = useState<number | null>(null);
 
   return (
     <>
@@ -614,14 +619,14 @@ export default function CreateCourse() {
                 <div
                   className={`border-2 rounded-lg p-5 bg-gray-200 ${
                     isStepActive(1)
-                      ? " shadow-lg transition-transform transform  translate-y-[-16px]"
+                      ? " shadow-lg transition-transform transform translate-y-[-16px]"
                       : ""
                   } ${
-                    step1Completed ? "bg-green-500 duration-300 transition" : ""
+                    step1Completed ? "bg-[#309255] duration-300 transition" : ""
                   }`}
                 >
-                  <div className="flex justify-center text-3xl">Step 1:</div>
-                  <div className="flex justify-center text-xl">
+                  <div className="flex text-xl">Step 1:</div>
+                  <div className="flex justify-center text-3xl">
                     Course Information
                   </div>
                 </div>
@@ -635,12 +640,12 @@ export default function CreateCourse() {
                       : ""
                   } ${
                     lectures.length >= 3
-                      ? "bg-green-500 duration-300 transition"
+                      ? "bg-[#309255] duration-300 transition"
                       : ""
                   }`}
                 >
-                  <div className="flex justify-center text-3xl">Step 2:</div>
-                  <div className="flex justify-center text-xl">
+                  <div className="flex text-xl">Step 2:</div>
+                  <div className="flex justify-center text-3xl">
                     Lecture Information
                   </div>
                 </div>
@@ -653,11 +658,11 @@ export default function CreateCourse() {
                       ? " shadow-lg transition-transform transform duration-300 translate-y-[-16px]"
                       : ""
                   } ${
-                    step3Completed ? "bg-green-500 duration-300 transition" : ""
+                    step3Completed ? "bg-[#309255] duration-300 transition" : ""
                   }`}
                 >
-                  <div className="flex justify-center text-3xl">Step 3:</div>
-                  <div className="flex justify-center text-xl">
+                  <div className="flex text-xl">Step 3:</div>
+                  <div className="flex justify-center text-3xl">
                     Test Information
                   </div>
                 </div>
@@ -702,36 +707,54 @@ export default function CreateCourse() {
                               <Button>Upload</Button>
                             </Upload>
                           </div> */}
-                            <Form.Item label="Name">
+                            <Form.Item
+                              label={<div className="text-xl">Name</div>}
+                            >
                               <Input value={course?.name} />
                             </Form.Item>
-                            <Form.Item label="Specialization">
+                            <Form.Item
+                              label={
+                                <div className="text-xl">Specialization</div>
+                              }
+                            >
                               <Input value={course?.specializationName} />
                             </Form.Item>
-                            <Form.Item label="Length (mins)">
+                            <Form.Item
+                              label={
+                                <div className="text-xl">Length (mins)</div>
+                              }
+                            >
                               <InputNumber
                                 className="w-[290px]"
                                 controls={false}
                                 value={course?.contentLength}
                               />
                             </Form.Item>
-                            <Form.Item label="Price(VND):">
+                            <Form.Item
+                              label={<div className="text-xl">Price (VND)</div>}
+                            >
                               <InputNumber
                                 style={{ width: 200 }}
                                 controls={false}
                                 value={course?.price}
                               />
                             </Form.Item>
-                            <Form.Item label="Short Description">
+                            <Form.Item
+                              label={
+                                <div className="text-xl">Short Description</div>
+                              }
+                            >
                               <Input.TextArea
-                                rows={2}
+                                autoSize={{ minRows: 2 }}
                                 value={course?.shortDescription}
                               />
                             </Form.Item>
-                            <Form.Item label="Description">
+                            <Form.Item
+                              label={<div className="text-xl">Description</div>}
+                            >
                               <Input.TextArea
-                                rows={4}
-                                value={course?.specializationName}
+                                autoSize={{ minRows: 4 }}
+                                value={course?.description}
                               />
                             </Form.Item>
                           </Form>
@@ -783,13 +806,27 @@ export default function CreateCourse() {
                                     "Name must be between 6 and 150 characters",
                                 },
                               ]}
-                              label="Name"
+                              label={<div className="text-xl">Name</div>}
                               name="name"
                             >
                               <Input placeholder="Name Course" />
                             </Form.Item>
-                            <Form.Item label="Specialization">
-                              <Select onChange={handleChangeCate}>
+                            <Form.Item
+                              label={
+                                <div className="text-xl">Specialization</div>
+                              }
+                              name="specialization"
+                              rules={[
+                                {
+                                  required: true,
+                                  message: "Please select a Specialization!",
+                                },
+                              ]}
+                            >
+                              <Select
+                                onChange={handleChangeCate}
+                                placeholder="Select Specialization"
+                              >
                                 {listCategory.map((option) => {
                                   return (
                                     <Option
@@ -814,7 +851,9 @@ export default function CreateCourse() {
                                   message: "At least 10 minutes",
                                 },
                               ]}
-                              label="Length (mins)"
+                              label={
+                                <div className="text-xl">Length (mins)</div>
+                              }
                               name="length"
                             >
                               <InputNumber
@@ -831,7 +870,7 @@ export default function CreateCourse() {
                                   message: "Please Input Price",
                                 },
                               ]}
-                              label="Price(VND):"
+                              label={<div className="text-xl">Price (VND)</div>}
                               name="price"
                             >
                               <InputNumber
@@ -848,17 +887,30 @@ export default function CreateCourse() {
                                   message: "Please Type Short Description",
                                 },
                               ]}
-                              label="Short Description"
+                              label={
+                                <div className="text-xl">Short Description</div>
+                              }
                               name="shortDes"
                             >
                               <Input.TextArea
-                                rows={2}
+                                // rows={2}
+                                autoSize={{ minRows: 2 }}
                                 placeholder="Input Some Short Description"
                               />
                             </Form.Item>
-                            <Form.Item label="Description" name="description">
+                            <Form.Item
+                              label={<div className="text-xl">Description</div>}
+                              name="description"
+                              rules={[
+                                {
+                                  required: true,
+                                  message: "Please Input Short Description",
+                                },
+                              ]}
+                            >
                               <Input.TextArea
-                                rows={4}
+                                // rows={4}
+                                autoSize={{ minRows: 4 }}
                                 placeholder="Input More Description"
                               />
                             </Form.Item>
@@ -924,10 +976,11 @@ export default function CreateCourse() {
                                 autoComplete="off"
                                 form={form}
                                 labelCol={{ span: 4 }}
-                                wrapperCol={{ span: 16 }}
+                                wrapperCol={{ span: 18 }}
                                 layout="horizontal"
-                                className="mt-5"
-                                style={{ width: 600 }}
+                                labelAlign={"left"}
+                                className="mt-5 text-2xl"
+                                style={{ width: "60%" }}
                                 onFinish={(e) => {
                                   handleLecture(e);
                                   handleSuccessModeration();
@@ -940,7 +993,7 @@ export default function CreateCourse() {
                                       message: "Please input Name!",
                                     },
                                   ]}
-                                  label="Title"
+                                  label={<div className="text-xl">Title</div>}
                                   name="title"
                                 >
                                   <Input placeholder="Input Title Lecture" />
@@ -952,18 +1005,47 @@ export default function CreateCourse() {
                                       message: "Please input Name!",
                                     },
                                   ]}
-                                  label="Content"
+                                  label={<div className="text-xl">Content</div>}
                                   name="content"
                                 >
                                   <Input.TextArea
-                                    rows={4}
+                                    // rows={4}
                                     placeholder="Input More Details Content"
+                                    autoSize={{ minRows: 4 }}
                                   />
                                 </Form.Item>
-                                <Form.Item label="Type">
+                                {/* <Form.Item
+                                  label={<div className="text-xl">Type</div>}
+                                >
                                   <Select
                                     onChange={handleChangeType}
                                     defaultValue={type}
+                                  >
+                                    {Type.map((option) => {
+                                      return (
+                                        <Option
+                                          key={option.id}
+                                          value={option.id}
+                                        >
+                                          {option.title}
+                                        </Option>
+                                      );
+                                    })}
+                                  </Select>
+                                </Form.Item> */}
+                                <Form.Item
+                                  label={<div className="text-xl">Type</div>}
+                                  name="type"
+                                  rules={[
+                                    {
+                                      required: true,
+                                      message: "Please select a Type!",
+                                    },
+                                  ]}
+                                >
+                                  <Select
+                                    onChange={(value) => setSelectedType(value)}
+                                    placeholder="Select Type"
                                   >
                                     {Type.map((option) => {
                                       return (
@@ -985,7 +1067,7 @@ export default function CreateCourse() {
                                     >
                                       {source && (
                                         <video
-                                          width={400}
+                                          width="90%"
                                           height={300}
                                           src={source}
                                           controls
@@ -1029,7 +1111,7 @@ export default function CreateCourse() {
                                     </div>
                                   </Form.Item>
                                 )}
-                                <Space className="justify-end w-full pr-[90px]">
+                                <Space className="justify-end w-full pr-[60px]">
                                   <Form.Item className="mb-0">
                                     <Space>
                                       <Button
@@ -1073,9 +1155,19 @@ export default function CreateCourse() {
                               <button
                                 className="border-2 flex rounded-lg justify-center p-2 w-20 hover:bg-gray-200"
                                 onClick={() => {
-                                  setTestTab(true);
-                                  setLectureTab(false);
-                                  handleStepClick(3);
+                                  // setTestTab(true);
+                                  // setLectureTab(false);
+                                  // handleStepClick(3);
+                                  {
+                                    lectures.length >= 3 && setTestTab(true);
+                                    lectures.length >= 3 &&
+                                      setLectureTab(false);
+                                    lectures.length >= 3 && handleStepClick(3);
+                                  }
+                                  {
+                                    lectures.length < 3 &&
+                                      toast.warning("Not enough Lectures!");
+                                  }
                                 }}
                               >
                                 Next
@@ -1106,9 +1198,10 @@ export default function CreateCourse() {
                                   <Form
                                     autoComplete="off"
                                     form={form}
-                                    labelCol={{ span: 5 }}
+                                    labelCol={{ span: 4 }}
                                     wrapperCol={{ span: 18 }}
                                     layout="horizontal"
+                                    labelAlign="left"
                                     className="mt-5"
                                     style={{ width: "100%" }}
                                     onFinish={handleCreateTestTitle}
@@ -1125,7 +1218,9 @@ export default function CreateCourse() {
                                             "Maximum 500 characters allowed!",
                                         },
                                       ]}
-                                      label="Title"
+                                      label={
+                                        <div className="text-xl">Title</div>
+                                      }
                                       name="title"
                                     >
                                       <Input placeholder="Put title of Test here !" />
@@ -1135,7 +1230,7 @@ export default function CreateCourse() {
                                       rules={[
                                         {
                                           required: true,
-                                          message: "Please input Name !",
+                                          message: "Please input Description !",
                                         },
                                         {
                                           max: 500,
@@ -1143,10 +1238,17 @@ export default function CreateCourse() {
                                             "Maximum 500 characters allowed !",
                                         },
                                       ]}
-                                      label="Description"
+                                      label={
+                                        <div className="text-xl">
+                                          Description
+                                        </div>
+                                      }
                                       name="description"
                                     >
-                                      <Input.TextArea placeholder="Type some description here !" />
+                                      <Input.TextArea
+                                        autoSize={{ minRows: 2 }}
+                                        placeholder="Input some description here !"
+                                      />
                                     </Form.Item>
 
                                     <Space className="justify-end w-full">
@@ -1456,12 +1558,13 @@ export default function CreateCourse() {
         onOk={handleOk}
         onCancel={handleCancel}
         width="40%"
+        // className="bg-gray-200"
         footer={false}
       >
         <div className="flex flex-col gap-5">
-          <div className="text-4xl">Title: {lecture?.title}</div>
-          <p className="text-2xl">Content: {lecture?.content}</p>
+          <p className="text-2xl">Title: {lecture?.title}</p>
           <video width="full" height={400} src={lecture?.contentUrl} controls />
+          <p className="text-xl">Description: {lecture?.content}</p>
         </div>
       </Modal>
     </>

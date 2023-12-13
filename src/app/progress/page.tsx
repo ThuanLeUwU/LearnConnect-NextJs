@@ -7,7 +7,7 @@ import axios from "axios";
 import { Breadcrumb, Spin, Table, Tag, Tooltip } from "antd";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { UserAuth } from "../context/AuthContext";
+import { UserAuth, UserRole } from "../context/AuthContext";
 import { SortOrder } from "antd/es/table/interface";
 import moment from "moment";
 import { http } from "@/api/http";
@@ -72,7 +72,22 @@ const StudyProgress = () => {
   }, [userData]);
 
   const breadcrumbsHome = () => {
-    router.push("/");
+    switch (role) {
+      case UserRole.Student:
+        router.push("/");
+        break;
+      case UserRole.Mentor:
+        router.push("/instructorcourses");
+        break;
+      case UserRole.Staff:
+        router.push("/staff-page");
+        break;
+      case UserRole.Admin:
+        router.push("/user-manage");
+        break;
+      default:
+        break;
+    }
   };
 
   const getStatusText = (status) => {
