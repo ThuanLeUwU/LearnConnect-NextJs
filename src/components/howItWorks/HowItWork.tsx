@@ -64,7 +64,6 @@ const HowItWork = () => {
       <div className="container">
         <>
           <div className="section-title shape-03 text-center">
-            <h5 className="sub-title">Over 1,235+ Course</h5>
             <h2 className="main-title">
               Top 3 Mentors has <span> Highest Rating </span>
             </h2>

@@ -404,6 +404,18 @@ const Dashboard = ({ params }: any) => {
     setActiveTab(tabName);
   };
 
+  const [videoUrl, setVideoUrl] = useState<string>("");
+
+  const handleOpenModal = (url) => {
+    setVideoUrl(url);
+    setModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setVideoUrl("");
+    setModalVisible(false);
+  };
+
   //table lecture
   const columns = [
     {
@@ -452,6 +464,7 @@ const Dashboard = ({ params }: any) => {
       title: "URL",
       dataIndex: "contentUrl",
       key: "contentUrl",
+      render: (text) => <a onClick={() => handleOpenModal(text)}>Link</a>,
     },
     {
       title: "Type",
@@ -2339,6 +2352,24 @@ const Dashboard = ({ params }: any) => {
             footer={null}
           >
             <p>{selectedContent}</p>
+          </Modal>
+
+          <Modal
+            title="Video"
+            visible={modalVisible}
+            onCancel={handleCloseModal}
+            footer={null}
+          >
+            {videoUrl && (
+              <iframe
+                width="100%"
+                height="315"
+                src={videoUrl}
+                title="Video"
+                frameBorder="0"
+                allowFullScreen
+              />
+            )}
           </Modal>
         </div>
       )}

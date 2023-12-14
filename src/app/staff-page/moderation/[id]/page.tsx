@@ -49,6 +49,22 @@ const DetailsContent = ({ params }: any) => {
 
   const [lectures, setLectures] = useState<Lecture[]>([]);
 
+  const getStatusCount = () => {
+    const statusCount = lectures.reduce(
+      (accumulator, item) =>
+        item.status === 0 || item.status === 1 ? accumulator + 1 : accumulator,
+      0
+    );
+    return statusCount;
+  };
+
+  const [showApproved, setShowApproved] = useState(false);
+
+  useEffect(() => {
+    const statusCount = getStatusCount();
+    setShowApproved(statusCount >= 3);
+  }, [lectures]);
+
   useEffect(() => {
     // Gọi API để lấy danh sách người dùng
     http
@@ -415,6 +431,7 @@ const DetailsContent = ({ params }: any) => {
   const [listQuestion, setListQuestion] = useState<Test[]>([]);
   const [allQuestions, setAllQuestions] = useState<Test[]>([]);
   const [idTest, setIdTest] = useState<Test>();
+  const [testStatus, setTestStatus] = useState<number>(0);
   useEffect(() => {
     // Gọi API để lấy danh sách người dùng
     http
@@ -424,6 +441,7 @@ const DetailsContent = ({ params }: any) => {
         setListQuestion(response.data);
         setAllQuestions(response.data[0].questions);
         setIdTest(response.data[0].test.id);
+        setTestStatus(response.data[0].test.status);
         // console.log("vải ò", response.data);
         setLoading(false);
       })
@@ -454,6 +472,7 @@ const DetailsContent = ({ params }: any) => {
               setListQuestion(response.data);
               setAllQuestions(response.data[0].questions);
               setIdTest(response.data[0].test.id);
+              setTestStatus(response.data[0].test.status);
               setApproveTestModal(false);
               toast.success("Approve Test Successfully!");
             })
@@ -487,6 +506,7 @@ const DetailsContent = ({ params }: any) => {
               setListQuestion(response.data);
               setAllQuestions(response.data[0].questions);
               setIdTest(response.data[0].test.id);
+              setTestStatus(response.data[0].test.status);
               setRejectTestModal(false);
               toast.success("Approve Test Successfully!");
             })
@@ -553,14 +573,16 @@ const DetailsContent = ({ params }: any) => {
                   course?.status === 1 ? (
                     <>
                       {" "}
-                      {3 <= lectures.length && (
-                        <button
-                          className="bg-white text-black border rounded-lg border-[#4caf50] hover:bg-[#4caf50] hover:text-white transition duration-300 px-4 py-2"
-                          onClick={handleApprove}
-                        >
-                          Approve
-                        </button>
-                      )}
+                      {showApproved &&
+                        listQuestion.length !== 0 &&
+                        testStatus === 0 && (
+                          <button
+                            className="bg-white text-black border rounded-lg border-[#4caf50] hover:bg-[#4caf50] hover:text-white transition duration-300 px-4 py-2"
+                            onClick={handleApprove}
+                          >
+                            Approve
+                          </button>
+                        )}
                       <button
                         className="bg-white text-black border rounded-lg border-[#ffa04e] hover:bg-[#ffa04e] hover:text-white transition duration-300 px-5 py-2"
                         // style={{
