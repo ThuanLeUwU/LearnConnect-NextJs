@@ -115,6 +115,9 @@ const StaffReportID = ({ params }: any) => {
       if (target === "course") {
         apiUrl = `https://learnconnectapi.azurewebsites.net/api/course/ban-course?courseId=${idCourse}`;
       }
+      if (target === "mentor") {
+        apiUrl = `https://learnconnectapi.azurewebsites.net/api/mentor/ban-mentor?mentorUserId=${idCourse}`;
+      }
       const response = await axios.post(apiUrl, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -158,7 +161,6 @@ const StaffReportID = ({ params }: any) => {
           />
 
           <div className="w-full mt-4">
-            {/* <div className="flex"> */}
             <div className="flex justify-between items-center px-5 bg-[#e7f8ee] mb-5">
               <Breadcrumb className="text-start font-semibold text-4xl my-5 px-4">
                 <Breadcrumb.Item>
@@ -171,12 +173,6 @@ const StaffReportID = ({ params }: any) => {
                   <Breadcrumb.Item>{mentor?.user.fullName}</Breadcrumb.Item>
                 )}
               </Breadcrumb>
-
-              {/* <div className="">
-              <button className="mx-5 my-3 px-5 py-3 rounded-lg text-black bg-[#e7f8ee]">
-                <GrFormPrevious className="text-2xl" />
-              </button>
-            </div> */}
               <div className="ml-auto">
                 <button
                   className="mx-5 my-3 px-5 py-3 border-2 text-black border-red-500 bg-white rounded-lg hover:bg-red-500 hover:text-white"
