@@ -452,13 +452,6 @@ const Dashboard = ({ params }: any) => {
       title: "URL",
       dataIndex: "contentUrl",
       key: "contentUrl",
-      render: (text, record) => {
-        return (
-          <a href={text} target="_blank" rel="noopener noreferrer">
-            Link
-          </a>
-        );
-      },
     },
     {
       title: "Type",

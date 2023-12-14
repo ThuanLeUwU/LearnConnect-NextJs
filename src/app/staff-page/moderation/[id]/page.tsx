@@ -304,15 +304,6 @@ const DetailsContent = ({ params }: any) => {
       ),
     },
     {
-      title: "URL",
-      dataIndex: "contentUrl",
-      key: "contentUrl",
-
-      render: (text, record) => {
-        return <span>Link</span>;
-      },
-    },
-    {
       title: "Type",
       dataIndex: "contentType",
       key: "contentType",
@@ -340,7 +331,7 @@ const DetailsContent = ({ params }: any) => {
               console.log("tne", record.id);
             }}
           >
-            Video Analysis
+            Analysis
           </Button>
         </Space>
       ),

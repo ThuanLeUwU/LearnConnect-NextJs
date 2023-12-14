@@ -22,6 +22,8 @@ export type Notification = {
   isRead: boolean;
   timeStamp: string;
   userId: number;
+  notification: any;
+  countUnRead: any;
 };
 const Header = () => {
   const [click, setClick] = useState(false);
@@ -33,6 +35,9 @@ const Header = () => {
   const [notificationContent, setNotificationContent] = useState<
     Notification[]
   >([]);
+  const [notiUnread, setNotiUnread] = useState<Notification>();
+
+  console.log("v", notiUnread?.countUnRead);
   const [form] = Form.useForm();
 
   const [isLogin, setIsLogin] = useState(false);
@@ -112,7 +117,8 @@ const Header = () => {
   const fetchNotificationData = async () => {
     try {
       const response = await http.get(`/notification/byUserId/${id}`);
-      setNotificationContent(response.data);
+      setNotificationContent(response.data[0].notification);
+      setNotiUnread(response.data[0]);
     } catch (error) {
       console.error("Error fetching Notification Data:", error);
     }
@@ -355,7 +361,24 @@ const Header = () => {
                 </Form>
               </Modal>
               <li className={`${headerStyles.header_notification}`}>
-                <button onClick={toggleDropdownNotification}>
+                <button
+                  onClick={toggleDropdownNotification}
+                  className="relative"
+                >
+                  {notiUnread?.countUnRead !== 0 && (
+                    <>
+                      {notiUnread?.countUnRead <= 9 ? (
+                        <div className="absolute top-0 right-0 bg-red-500 w-5 h-5 text-white rounded-full text-[12px] px-1 flex items-center justify-center">
+                          {notiUnread?.countUnRead}
+                        </div>
+                      ) : (
+                        <div className="absolute top-0 right-0 bg-red-500 w-5 h-5 text-white rounded-full text-[10px] px-1 flex items-center justify-center">
+                          {/* {notiUnread?.countUnRead} */} 9+
+                        </div>
+                      )}
+                    </>
+                  )}
+
                   <AiFillBell />
                 </button>
                 {notification && (

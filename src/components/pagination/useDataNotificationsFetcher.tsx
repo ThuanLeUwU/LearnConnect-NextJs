@@ -8,12 +8,15 @@ export type Notification = {
   isRead: boolean;
   timeStamp: string;
   userId: number;
+  countUnRead: number;
+  notification: any;
 };
 const useDataNotificationsFetcher = () => {
   const { id } = UserAuth();
   const [notificationContent, setNotificationContent] = useState<
     Notification[]
   >([]);
+  // console.log("haha", notificationContent[0].notification);
 
   const API_URL = `
 https://learnconnectapi.azurewebsites.net/api/notification/byUserId-pagination/`;
@@ -30,7 +33,7 @@ https://learnconnectapi.azurewebsites.net/api/notification/byUserId-pagination/`
           // `${API_URL}`
         );
         // setCourses(result?.data.listCourse);
-        setNotificationContent(result?.data.notifications);
+        setNotificationContent(result?.data.notifications[0].notification);
         setTotalPages(result?.data.paginationData.totalPages);
         // console.log("total page", totalPages);
 
