@@ -252,8 +252,12 @@ export default function CreateCourse() {
           })
           .then((res) => {
             setCourseId(res.data.id);
+            setInforCourse(false);
+            setLectureTab(true);
+            handleStepClick(2);
+
             setStep1Completed(true);
-            setDisableButton(false);
+            // setDisableButton(false);
             setCourse(res.data);
           });
         form.resetFields();
@@ -625,7 +629,8 @@ export default function CreateCourse() {
                       ? " shadow-lg transition-transform transform translate-y-[-16px]"
                       : ""
                   } ${
-                    step1Completed && "bg-green-400 duration-300 transition"
+                    step1Completed &&
+                    "bg-green-300 duration-300 transition-colors"
                   }`}
                 >
                   <div className="flex text-xl">Step 1:</div>
@@ -643,7 +648,7 @@ export default function CreateCourse() {
                       : ""
                   } ${
                     lectures.length >= 3
-                      ? "bg-[#309255] duration-300 transition"
+                      ? "bg-green-300 duration-300 transition"
                       : ""
                   }`}
                 >
@@ -661,7 +666,7 @@ export default function CreateCourse() {
                       ? " shadow-lg transition-transform transform duration-300 translate-y-[-16px]"
                       : ""
                   } ${
-                    step3Completed ? "bg-[#309255] duration-300 transition" : ""
+                    step3Completed ? "bg-green-300 duration-300 transition" : ""
                   }`}
                 >
                   <div className="flex text-xl">Step 3:</div>
@@ -936,26 +941,20 @@ export default function CreateCourse() {
                           </Form>
                         )}
 
-                        <div className="flex justify-center p-5">
-                          <button
-                            className="border-2 flex rounded-lg justify-center p-2 w-20 hover:bg-gray-200"
-                            onClick={() => {
-                              {
-                                !disableButton && setInforCourse(false);
-                                !disableButton && setLectureTab(true);
-                                !disableButton && handleStepClick(2);
-                              }
-                              {
-                                disableButton &&
-                                  toast.warning(
-                                    "Please Complete Course Information Form First"
-                                  );
-                              }
-                            }}
-                          >
-                            Next
-                          </button>
-                        </div>
+                        {courseId !== 0 && (
+                          <div className="flex justify-center p-5">
+                            <button
+                              className="border-2 flex rounded-lg justify-center p-2 w-20 hover:bg-gray-200"
+                              onClick={() => {
+                                setInforCourse(false);
+                                setLectureTab(true);
+                                handleStepClick(2);
+                              }}
+                            >
+                              Next
+                            </button>
+                          </div>
+                        )}
                       </>
                     )}
                     {lectureTabs === true && (
