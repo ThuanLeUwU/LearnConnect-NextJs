@@ -268,7 +268,7 @@ export default function CreateCourse() {
     }
   };
 
-  const handleLecture = async (data: any) => {
+  const handleLecture = (data: any) => {
     // console.log("hehe", data.type);
     if (!source) {
       toast.error("Please Input Your Video Content!");
@@ -283,7 +283,7 @@ export default function CreateCourse() {
       // }
 
       try {
-        await http
+        http
           .post(
             `https://learnconnectapi.azurewebsites.net/api/lecture/create-new-lecture?userId=${id}&courseId=${courseId}`,
             formData,
@@ -293,7 +293,9 @@ export default function CreateCourse() {
               },
             }
           )
-          .then(() => {});
+          .then(() => {
+            setIsModerating(false);
+          });
       } catch (err) {
         setTimeout(() => {
           toast.error("Create Lecture fail");
@@ -390,7 +392,7 @@ export default function CreateCourse() {
           form.resetFields();
           setSource("");
         });
-    }, 3000);
+    }, 2000);
   };
 
   useEffect(() => {
