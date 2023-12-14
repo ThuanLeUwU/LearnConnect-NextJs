@@ -396,7 +396,7 @@ export default function ProfileUser({ params }: any) {
           }}
         >
           <div>
-            <Breadcrumb className="font-semibold text-3xl py-5 px-64 flex-auto">
+            <Breadcrumb className="font-semibold text-2xl py-5 px-64 flex-auto">
               {userData?.role === 2 ? (
                 <>
                   <Breadcrumb.Item>
