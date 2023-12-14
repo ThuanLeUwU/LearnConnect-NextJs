@@ -48,7 +48,7 @@ export default function EditProfile() {
   });
   const { id, userData, refetchUser, jwtToken } = UserAuth();
   axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
-  console.log("UserData", userData);
+  // console.log("UserData", userData);
   const [fullName, setFullName] = useState(userData?.fullName);
   const [gender, setGender] = useState(userData?.gender || 0);
   const [phoneNumber, setPhoneNumber] = useState(userData?.phoneNumber || "");
@@ -95,8 +95,6 @@ export default function EditProfile() {
         );
         setPaypalId1(response.data.mentor.paypalId);
         setPaypalAddress1(response.data.mentor.paypalAddress);
-        console.log("PaypalId", response.data.mentor.paypalId);
-        console.log("PaypalId", response.data.mentor.paypalAddress);
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -114,7 +112,6 @@ export default function EditProfile() {
 
   const handlePayPalIdChange = (e: ChangeEvent<HTMLInputElement>) => {
     setPaypalId(e.target.value);
-    console.log("e.target.value", e.target.value);
   };
 
   const handlePayPalAddressChange = (e: ChangeEvent<HTMLInputElement>) => {

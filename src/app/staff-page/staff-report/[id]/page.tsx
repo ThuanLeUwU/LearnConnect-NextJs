@@ -6,7 +6,7 @@ import axios from "axios";
 import { useRouter, useSearchParams } from "next/navigation";
 import { GrFormPrevious } from "react-icons/gr";
 import { toast } from "sonner";
-import { Breadcrumb, Button, Form, Modal, Space, Spin } from "antd";
+import { Breadcrumb, Button, Form, Input, Modal, Space, Spin } from "antd";
 import { UserAuth } from "@/app/context/AuthContext";
 import { Course } from "@/components/courses/courses";
 import { Mentor } from "@/components/pagination/useDataMentorFetcher";
@@ -33,8 +33,10 @@ const StaffReportID = ({ params }: any) => {
   const [isConfirmationModalOpen, setConfirmationModalOpen] = useState(false);
   const [form] = Form.useForm();
   const { id, userData } = UserAuth();
+  const [banReason, setBanReason] = useState<string>("");
 
   const handleBanClick = () => {
+    setBanReason("");
     setConfirmationModalOpen(true);
   };
 
@@ -106,13 +108,22 @@ const StaffReportID = ({ params }: any) => {
 
   const fetchData = async () => {
     try {
+      const formData = new FormData();
+      formData.append("reason", banReason);
+      formData.append("status", "true");
       let apiUrl;
-
       if (target === "course") {
-        apiUrl = `https://learnconnectapi.azurewebsites.net/api/course/ban-course?courseId=${idCourse}&status=true`;
+        apiUrl = `https://learnconnectapi.azurewebsites.net/api/course/ban-course?courseId=${idCourse}`;
       }
-
-      const response = await axios.post(apiUrl);
+      if (target === "mentor") {
+        apiUrl = `https://learnconnectapi.azurewebsites.net/api/mentor/ban-mentor?mentorUserId=${idCourse}`;
+      }
+      const response = await axios.post(apiUrl, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      console.log("Request Payload:", JSON.stringify(response.config.data));
       setReportData(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -150,7 +161,6 @@ const StaffReportID = ({ params }: any) => {
           />
 
           <div className="w-full mt-4">
-            {/* <div className="flex"> */}
             <div className="flex justify-between items-center px-5 bg-[#e7f8ee] mb-5">
               <Breadcrumb className="text-start font-semibold text-4xl my-5 px-4">
                 <Breadcrumb.Item>
@@ -163,12 +173,6 @@ const StaffReportID = ({ params }: any) => {
                   <Breadcrumb.Item>{mentor?.user.fullName}</Breadcrumb.Item>
                 )}
               </Breadcrumb>
-
-              {/* <div className="">
-              <button className="mx-5 my-3 px-5 py-3 rounded-lg text-black bg-[#e7f8ee]">
-                <GrFormPrevious className="text-2xl" />
-              </button>
-            </div> */}
               <div className="ml-auto">
                 <button
                   className="mx-5 my-3 px-5 py-3 border-2 text-black border-red-500 bg-white rounded-lg hover:bg-red-500 hover:text-white"
@@ -204,6 +208,19 @@ const StaffReportID = ({ params }: any) => {
                 style={{ width: "100%" }}
                 onFinish={handleConfirmBan}
               >
+                <Form.Item
+                  label="reason"
+                  name="reason"
+                  rules={[
+                    { required: true, message: "Please provide a reason" },
+                  ]}
+                >
+                  <Input.TextArea
+                    value={banReason}
+                    onChange={(e) => setBanReason(e.target.value)}
+                    rows={4}
+                  />
+                </Form.Item>
                 <Space className="justify-end w-full">
                   <Form.Item className="mb-0">
                     <Space>

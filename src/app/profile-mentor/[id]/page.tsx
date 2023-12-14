@@ -182,6 +182,7 @@ export default function ProfileUser({ params }: any) {
           `https://learnconnectapi.azurewebsites.net/api/mentor/get-info/${idMentor}`
         );
         SetDataUser(response.data);
+        console.log("Datauser", response.data);
         setAverageRating(response.data.mentor.averageRating);
         setPaypalId(response.data.mentor.paypalId);
         setPaypalAddress(response.data.mentor.paypalAddress);
@@ -467,7 +468,7 @@ export default function ProfileUser({ params }: any) {
           )}
         </div>
         <div className="col-span-9 border rounded-lg my-5 shadow-lg">
-          {DataUser && (
+          {userData && (
             <div className="bg-[#fff] rounded-lg shadow-lg h-full">
               <div className="text-white flex flex-col lg:flex-row rounded-t px-4 lg:p-8">
                 <Tabs
