@@ -319,6 +319,7 @@ const Dashboard = ({ params }: any) => {
   // const inputRef = React.useRef();
   const [formDataSource, setFormDataSource] = useState();
   const [source, setSource] = useState<string>("");
+  console.log("src", source);
 
   const handleFileChange = (info: any) => {
     if (info.file.status === "uploading") {

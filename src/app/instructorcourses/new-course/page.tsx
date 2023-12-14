@@ -546,6 +546,7 @@ export default function CreateCourse() {
 
   const [activeStep, setActiveStep] = useState(1);
   const [step1Completed, setStep1Completed] = useState(false);
+  console.log("step", step1Completed);
   const [step3Completed, setStep3Completed] = useState(false);
 
   const [disableButton, setDisableButton] = useState(true);
@@ -622,7 +623,7 @@ export default function CreateCourse() {
                       ? " shadow-lg transition-transform transform translate-y-[-16px]"
                       : ""
                   } ${
-                    step1Completed ? "bg-[#309255] duration-300 transition" : ""
+                    step1Completed && "bg-green-400 duration-300 transition"
                   }`}
                 >
                   <div className="flex text-xl">Step 1:</div>

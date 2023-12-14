@@ -84,7 +84,7 @@ const UploadFirebase = ({
     <div>
       <label
         htmlFor="fileInput"
-        className="ant-btn css-dev-only-do-not-override-pr0fja ant-btn-default"
+        className="border-2 rounded-md px-3 py-1 hover:border-[#309255] hover:border-1 "
       >
         <input
           type="file"
