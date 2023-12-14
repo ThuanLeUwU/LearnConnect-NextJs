@@ -242,21 +242,25 @@ export const RegisterForm = () => {
     const formData = new FormData();
     const {
       description,
-      CardFront,
-      IssueDate,
       BankNumber,
+      // CardFront,
+      // IssueDate,
       BankName,
       major,
       specialization,
       reason,
     } = values;
+
+    console.log("vải", values);
     if (scanId?.cardId !== undefined) {
       formData.append("identityCardFrontDescription", scanId?.cardId);
     }
+    // formData.append("identityCardFrontDescription", CardFront);
 
     if (scanId?.createDate !== undefined) {
-      formData.append("identityCardFrontDescription", scanId?.createDate);
+      formData.append("identityCardBackDescription", scanId?.createDate);
     }
+    // formData.append("identityCardBackDescription", IssueDate);
     if (identifyData !== undefined) {
       formData.append("identityCardFrontUrl", identifyData);
     }
@@ -671,19 +675,20 @@ export const RegisterForm = () => {
                   <Button
                     onClick={() => {
                       const formValues = form.getFieldsValue();
-                      const requiredFields = ["CardFront", "IssueDate"];
-                      const isFormValid = requiredFields.every(
-                        (field) =>
-                          formValues[field] !== undefined &&
-                          formValues[field] !== null &&
-                          formValues[field] !== ""
-                      );
+                      // const requiredFields = ["CardFront", "IssueDate"];
+                      // // const requiredFields = [];
+                      // const isFormValid = requiredFields.every(
+                      //   (field) =>
+                      //     formValues[field] !== undefined &&
+                      //     formValues[field] !== null &&
+                      //     formValues[field] !== ""
+                      // );
 
-                      if (isFormValid) {
-                        handleSubmit(formValues);
-                      } else {
-                        toast.info("Please fill in all required fields.");
-                      }
+                      // if (isFormValid) {
+                      handleSubmit(formValues);
+                      // } else {
+                      //   toast.info("Please fill in all required fields.");
+                      // }
                     }}
                     // htmlType="submit"
                     style={{
