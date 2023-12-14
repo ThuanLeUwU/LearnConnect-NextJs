@@ -670,7 +670,7 @@ const MajorSepcialize = () => {
               <div className="flex justify-between items-center px-5 bg-[#e7f8ee] mb-5">
                 <Breadcrumb>
                   <Breadcrumb.Item>
-                    <div className="text-start font-semibold text-4xl my-5 px-4">
+                    <div className="text-start font-semibold text-2xl my-5 px-4">
                       Majors
                     </div>
                   </Breadcrumb.Item>

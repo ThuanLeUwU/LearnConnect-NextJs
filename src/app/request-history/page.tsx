@@ -503,7 +503,7 @@ const Reviews = () => {
               >
                 <Breadcrumb>
                   <Breadcrumb.Item>
-                    <div className="text-start font-semibold text-4xl my-5 px-4">
+                    <div className="text-start font-semibold text-2xl my-5 px-4">
                       Request Histories
                     </div>
                   </Breadcrumb.Item>

@@ -1065,7 +1065,7 @@ const Dashboard = ({ params }: any) => {
           </div>
           <div className={`${InstructorCourseStyle.body_wrapper}`}>
             <div className={`${InstructorCourseStyle.course_tab} bg-[#e7f8ee]`}>
-              <Breadcrumb className="text-start font-semibold text-4xl my-5 px-4">
+              <Breadcrumb className="text-start font-semibold text-2xl my-5 px-4">
                 <Breadcrumb.Item>
                   <button onClick={breadCrumbHome}>Courses</button>
                 </Breadcrumb.Item>

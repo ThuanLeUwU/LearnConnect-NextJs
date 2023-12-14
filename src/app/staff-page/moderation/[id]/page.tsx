@@ -519,7 +519,7 @@ const DetailsContent = ({ params }: any) => {
           />
           <div className="w-full my-4">
             <div className="flex justify-between items-center px-5 bg-[#e7f8ee] mb-5">
-              <Breadcrumb className="text-start font-semibold text-4xl my-5 px-4">
+              <Breadcrumb className="text-start font-semibold text-2xl my-5 px-4">
                 <Breadcrumb.Item>
                   <button onClick={breadcrumbNavigation}>Course</button>
                 </Breadcrumb.Item>

@@ -76,7 +76,6 @@ const LectureDetail = ({ params }: any) => {
 
   const [moderationLecture, setModerationLecture] = useState<ModerationAI>();
   const [flagContent, setFlagContent] = useState<Flag[]>([]);
-  console.log("jeje", flagContent);
 
   useEffect(() => {
     if (idCourse !== "") {
