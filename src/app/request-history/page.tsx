@@ -456,19 +456,25 @@ const Reviews = () => {
                 >
                   <Input.TextArea rows={3} placeholder="Input Experiment" />
                 </Form.Item>
-                <Form.Item
+                {/* <Form.Item
                   rules={[{ required: true, message: "Please input Document" }]}
                   label="Document"
                   name="DescriptionDocument"
                   labelAlign="left"
                 >
                   <Input placeholder="Input Degree, Diploma, Certificate, Qualification" />
-                </Form.Item>
+                </Form.Item> */}
                 <Form.Item
                   label="Image of ID Document"
                   name="verificationDocument"
                   getValueFromEvent={normFile}
                   labelAlign="left"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please input image of ID Document",
+                    },
+                  ]}
                 >
                   <Upload
                     accept="image/png, image/jpeg"
