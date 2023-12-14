@@ -163,12 +163,12 @@ const StaffRevenue = () => {
   const handleChangeSelected1 = (e: any) => {
     setSelected1(e);
   };
-  const [selected2, setSelected2] = useState<string>("Last Day");
+  const [selected2, setSelected2] = useState<string>("Last Week");
 
   const handleChangeSelected2 = (e: any) => {
     setSelected2(e);
   };
-  const [selected3, setSelected3] = useState<string>("Last Day");
+  const [selected3, setSelected3] = useState<string>("Last Week");
 
   const handleChangeSelected3 = (e: any) => {
     setSelected3(e);
@@ -397,7 +397,7 @@ const StaffRevenue = () => {
       http
         .get(
           `https://learnconnectapi.azurewebsites.net/api/payment-transaction/statistic-staff?filterType=${
-            selected2 === "Last Day" ? "day" : selected2
+            selected2 === "Last Week" ? "week" : selected2
           }`
         )
         .then((res) => {
@@ -499,7 +499,7 @@ const StaffRevenue = () => {
       http
         .get(
           `https://learnconnectapi.azurewebsites.net/api/payment-transaction/statistic-staff?filterType=${
-            selected3 === "Last Day" ? "day" : selected3
+            selected3 === "Last Week" ? "week" : selected3
           }`
         )
         .then((res) => {

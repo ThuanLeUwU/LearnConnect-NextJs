@@ -12,8 +12,6 @@ import {
   Tag,
   Tooltip,
 } from "antd";
-import LeftNavbar from "@/components/left-navbar/page";
-import MentorRequest from "@/components/mentor-request/page";
 import { UserAuth } from "@/app/context/AuthContext";
 import { SortOrder } from "antd/es/table/interface";
 import { http } from "@/api/http";
@@ -47,6 +45,8 @@ const OrderHistory = () => {
   };
 
   const [pagination, setPagination] = useState({
+    showSizeChanger: false, // Ẩn tuỳ chọn chọn số lượng bản ghi trên mỗi trang
+    showQuickJumper: false,
     current: 1,
     pageSize: 5, // Số dòng mỗi trang
   });
@@ -62,7 +62,12 @@ const OrderHistory = () => {
   };
 
   const handlePageChange = (current, pageSize) => {
-    setPagination({ current, pageSize });
+    setPagination({
+      showSizeChanger: false, // Ẩn tuỳ chọn chọn số lượng bản ghi trên mỗi trang
+      showQuickJumper: false,
+      current,
+      pageSize,
+    });
   };
 
   const today = dayjs();
@@ -70,15 +75,13 @@ const OrderHistory = () => {
   const [transaction, setTransaction] = useState<Transaction[]>([]);
 
   const [eachCourse, setEachCourse] = useState<Revenue[]>([]);
-  const [date, setDate] = useState<dayjs.Dayjs>(today);
+  const [date, setDate] = useState<any>("");
 
   useEffect(() => {
     try {
       http
         .get(
-          `https://learnconnectapi.azurewebsites.net/api/payment-transaction/revenue-mentor?mentorUserId=${id}&filterDate=${date.format(
-            "YYYY-MM-DD"
-          )}`
+          `https://learnconnectapi.azurewebsites.net/api/payment-transaction/revenue-mentor?mentorUserId=${id}&filterDate=${date}`
         )
         .then((res) => {
           setEachCourse(res.data[0].revenueCourse);
@@ -219,10 +222,10 @@ const OrderHistory = () => {
     },
   ];
 
-  const handleDateChange = (date: dayjs.Dayjs, dateString: string) => {
-    console.log("Selected Dates:", date.format("YYYY-MM-DD"));
+  const handleDateChange = (date: any, dateString: string) => {
+    // console.log("Selected Dates:", date.format("YYYY-MM-DD"));
     console.log("Formatted Dates:", dateString);
-    setDate(date);
+    setDate(dateString);
   };
 
   return (
@@ -264,7 +267,7 @@ const OrderHistory = () => {
                   <DatePicker
                     onChange={handleDateChange}
                     format="YYYY-MM-DD"
-                    defaultValue={today}
+                    // defaultValue={today}
                     disabledDate={disabledDate}
                     style={{ height: "40px" }}
                   />

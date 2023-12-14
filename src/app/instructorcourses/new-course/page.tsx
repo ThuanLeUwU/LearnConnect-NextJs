@@ -255,7 +255,6 @@ export default function CreateCourse() {
             setInforCourse(false);
             setLectureTab(true);
             handleStepClick(2);
-
             setStep1Completed(true);
             // setDisableButton(false);
             setCourse(res.data);
@@ -552,7 +551,7 @@ export default function CreateCourse() {
 
   const [activeStep, setActiveStep] = useState(1);
   const [step1Completed, setStep1Completed] = useState(false);
-  console.log("step", step1Completed);
+  // console.log("step", step1Completed);
   const [step3Completed, setStep3Completed] = useState(false);
 
   const [disableButton, setDisableButton] = useState(true);

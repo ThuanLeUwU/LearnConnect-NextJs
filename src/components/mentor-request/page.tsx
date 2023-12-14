@@ -106,7 +106,7 @@ const MentorRequest = () => {
   const [noteInput, setNoteInput] = useState("");
   const [pagination, setPagination] = useState({
     current: 1,
-    pageSize: 10, // Số dòng mỗi trang
+    pageSize: 5, // Số dòng mỗi trang
   });
   const [rejectReason, setRejectReason] = useState("");
 

@@ -34,32 +34,40 @@ const StaffTransaction = () => {
   };
 
   const [pagination, setPagination] = useState({
+    showSizeChanger: false, // Ẩn tuỳ chọn chọn số lượng bản ghi trên mỗi trang
+    showQuickJumper: false,
     current: 1,
-    pageSize: 5, // Số dòng mỗi trang
+    pageSize: 10, // Số dòng mỗi trang
   });
 
   const handlePageChange = (current, pageSize) => {
-    setPagination({ current, pageSize });
+    setPagination({
+      showSizeChanger: false, // Ẩn tuỳ chọn chọn số lượng bản ghi trên mỗi trang
+      showQuickJumper: false,
+      current,
+      pageSize,
+    });
   };
 
   const today = dayjs();
 
   const [transaction, setTransaction] = useState<Transaction[]>([]);
-  const [date, setDate] = useState<dayjs.Dayjs>(today);
+  const [date, setDate] = useState<any>("");
+  console.log("hmmm", date);
 
   useEffect(() => {
-    try {
-      http
-        .get(
-          `https://learnconnectapi.azurewebsites.net/api/payment-transaction/transaction-history-staff?filterDate=${date.format(
-            "YYYY-MM-DD"
-          )}&filterType=${activeTab}`
-        )
-        .then((res) => {
-          setTransaction(res.data);
-        });
-    } catch (e) {
-      console.log(e);
+    if (userData) {
+      try {
+        http
+          .get(
+            `https://learnconnectapi.azurewebsites.net/api/payment-transaction/transaction-history-staff?filterDate=${date}&filterType=${activeTab}`
+          )
+          .then((res) => {
+            setTransaction(res.data);
+          });
+      } catch (e) {
+        console.log(e);
+      }
     }
   }, [activeTab, userData, date]);
 
@@ -212,11 +220,19 @@ const StaffTransaction = () => {
     },
   ];
 
-  const handleDateChange = (date: dayjs.Dayjs, dateString: string) => {
-    console.log("Selected Dates:", date.format("YYYY-MM-DD"));
+  const handleDateChange = (date: any, dateString: string) => {
+    // console.log("Selected Dates:", date.format("YYYY-MM-DD"));
     console.log("Formatted Dates:", dateString);
-    setDate(date);
+    setDate(dateString);
   };
+
+  // const handleOpenChange = (status) => {
+  //   console.log(status);
+  //   // Nếu lựa chọn đã mở và bạn nhấp vào nút "Hủy", đặt giá trị thành null
+  //   if (!status) {
+  //     handleDateChange("", "");
+  //   }
+  // };
 
   return (
     <>
@@ -248,8 +264,9 @@ const StaffTransaction = () => {
                 </Breadcrumb>
                 <DatePicker
                   onChange={handleDateChange}
+                  // onOpenChange={handleOpenChange}
                   format="YYYY-MM-DD"
-                  defaultValue={today}
+                  // defaultValue={}
                   disabledDate={disabledDate}
                   style={{ height: "40px" }}
                 />

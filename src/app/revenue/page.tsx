@@ -157,11 +157,11 @@ const Revenue = () => {
       href: "/order-history",
     },
   ];
-  const [selected1, setSelected1] = useState<string>("Last Day");
+  const [selected1, setSelected1] = useState<string>("Last Week");
   const handleChangeSelected1 = (e: any) => {
     setSelected1(e);
   };
-  const [selected2, setSelected2] = useState<string>("Last Day");
+  const [selected2, setSelected2] = useState<string>("Last Week");
   const handleChangeSelected2 = (e: any) => {
     setSelected2(e);
   };
@@ -315,7 +315,7 @@ const Revenue = () => {
       http
         .get(
           `https://learnconnectapi.azurewebsites.net/api/payment-transaction/statistic-mentor?mentorUserId=${id}&filterType=${
-            selected1 === "Last Day" ? "day" : selected1
+            selected1 === "Last Week" ? "week" : selected1
           }&sortBy=revenue&sortOrder=${sortOrder1}`
         )
         .then((res) => {
@@ -378,7 +378,7 @@ const Revenue = () => {
       http
         .get(
           `https://learnconnectapi.azurewebsites.net/api/payment-transaction/statistic-mentor?mentorUserId=${id}&filterType=${
-            selected2 === "Last Day" ? "day" : selected2
+            selected2 === "Last Week" ? "week" : selected2
           }&sortBy=totalenroll&sortOrder=${sortOrder2}`
         )
         .then((res) => {
