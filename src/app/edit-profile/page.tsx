@@ -100,7 +100,7 @@ export default function EditProfile() {
       }
     };
     fetchUserData();
-  });
+  }, []);
 
   const handleGenderChange = (e: ChangeEvent<HTMLSelectElement>) => {
     setGender(parseInt(e.target.value));
@@ -168,6 +168,72 @@ export default function EditProfile() {
     };
   }, []);
 
+  // const handleSubmit = (e: FormEvent) => {
+  //   e.preventDefault();
+  //   if (!fullName || !phoneNumber || !bioDescription) {
+  //     toast.error("Please Fill In All Required Fields.");
+  //     return;
+  //   }
+  //   if (phoneNumber.length !== 10) {
+  //     toast.error("Phone Number Must Be 10 Digits.");
+  //     return;
+  //   }
+  //   const updatedUserData = {
+  //     id: id,
+  //     password: password,
+  //     email: email,
+  //     role: roleUser,
+  //     fullName: fullName,
+  //     phoneNumber: phoneNumber,
+  //     gender: gender || 3,
+  //     bioDescription: bioDescription,
+  //     profilePictureUrl: profilePictureUrl,
+  //     status: status,
+  //     paypalId: paypalId,
+  //     paypalAddress: paypalAddress,
+  //   };
+  //   console.log("usder data:", updatedUserData);
+  //   axios
+  //     .put(
+  //       `https://learnconnectapi.azurewebsites.net/api/user/${id}`,
+  //       updatedUserData
+  //     )
+  //     .then((response) => {
+  //       refetchUser();
+  //       setTimeout(() => {
+  //         toast.success("Edit Successfully!!!");
+  //       });
+  //       if (userData?.role === 2) {
+  //         router.push(`/profile-mentor/${id}`);
+  //       } else {
+  //         router.push(`/profile`);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       setTimeout(() => {
+  //         toast.error("Edit Unsuccessfully!!!");
+  //       });
+  //       if (userData?.role === 2) {
+  //         router.push(`/profile-mentor/${id}`);
+  //       } else {
+  //         router.push(`/profile`);
+  //       }
+  //       if (error.response) {
+  //         console.error("Server responded with an error:", error.response.data);
+  //         console.error("Status code:", error.response.status);
+  //         console.error("Request config:", error.response.config);
+  //       } else if (error.request) {
+  //         console.error(
+  //           "Request was made but no response was received:",
+  //           error.request
+  //         );
+  //       } else {
+  //         console.error("Error setting up the request:", error.message);
+  //       }
+  //       console.error("Error updating profile:", error);
+  //     });
+  // };
+
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (!fullName || !phoneNumber || !bioDescription) {
@@ -178,25 +244,22 @@ export default function EditProfile() {
       toast.error("Phone Number Must Be 10 Digits.");
       return;
     }
-    const updatedUserData = {
-      id: id,
-      password: password,
-      email: email,
-      role: roleUser,
-      fullName: fullName,
-      phoneNumber: phoneNumber,
-      gender: gender || 3,
-      bioDescription: bioDescription,
-      profilePictureUrl: profilePictureUrl,
-      status: status,
-      paypalId: paypalId,
-      paypalAddress: paypalAddress,
-    };
-    // console.log("usder data:", updatedUserData);
+    const formData = new FormData();
+    formData.append("gender", gender.toString());
+    formData.append("phoneNumber", phoneNumber.toString());
+    formData.append("biography", bioDescription);
+    formData.append("paypalId", paypalId.toString() || paypalId1.toString());
+    formData.append("paypalAddress", paypalAddress || paypalAddress1);
+
     axios
       .put(
-        `https://learnconnectapi.azurewebsites.net/api/user/${id}`,
-        updatedUserData
+        `https://learnconnectapi.azurewebsites.net/api/user/update-info-user?id=${id}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       )
       .then((response) => {
         refetchUser();
@@ -212,6 +275,7 @@ export default function EditProfile() {
       .catch((error) => {
         setTimeout(() => {
           toast.error("Edit Unsuccessfully!!!");
+          // toast.error(error.response.data);
         });
         if (userData?.role === 2) {
           router.push(`/profile-mentor/${id}`);
@@ -375,7 +439,7 @@ export default function EditProfile() {
                       </label>
                       <input
                         id="paypalAddress"
-                        value={paypalAddress1}
+                        defaultValue={paypalAddress1}
                         onChange={handlePayPalAddressChange}
                         className="bg-[#fff] border border-[#30925533] text-[#000] text-base rounded-lg block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-[#309255]"
                         placeholder="Your Email Paypal Address"

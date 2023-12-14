@@ -208,7 +208,7 @@ export default function ProfileUser({ params }: any) {
   }, []);
 
   const handleClickMoveToCourse = (courseId: string | number) => {
-    if (userData?.role === 2) {
+    if (role === 2) {
       router.push(`/instructorcourses/${courseId}`);
     } else {
       router.push(`/course-detail/${courseId}`);
@@ -371,6 +371,10 @@ export default function ProfileUser({ params }: any) {
     router.push("/");
   };
 
+  const breadcrumbsMentor = () => {
+    router.push("/profile-mentor");
+  };
+
   const breadcrumbsHomeMentor = () => {
     router.push("/instructorcourses");
   };
@@ -408,7 +412,7 @@ export default function ProfileUser({ params }: any) {
                     <button onClick={breadcrumbsHome}>Home</button>
                   </Breadcrumb.Item>
                   <Breadcrumb.Item>
-                    <span>Mentor</span>
+                    <button onClick={breadcrumbsMentor}>Mentor</button>
                   </Breadcrumb.Item>
                   <Breadcrumb.Item>
                     <span>{DataUser?.user.fullName}</span>

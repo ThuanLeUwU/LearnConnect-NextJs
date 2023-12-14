@@ -6,7 +6,7 @@ import axios from "axios";
 import { useRouter, useSearchParams } from "next/navigation";
 import { GrFormPrevious } from "react-icons/gr";
 import { toast } from "sonner";
-import { Breadcrumb, Button, Form, Modal, Space, Spin } from "antd";
+import { Breadcrumb, Button, Form, Input, Modal, Space, Spin } from "antd";
 import { UserAuth } from "@/app/context/AuthContext";
 import { Course } from "@/components/courses/courses";
 import { Mentor } from "@/components/pagination/useDataMentorFetcher";
@@ -33,8 +33,10 @@ const StaffReportID = ({ params }: any) => {
   const [isConfirmationModalOpen, setConfirmationModalOpen] = useState(false);
   const [form] = Form.useForm();
   const { id, userData } = UserAuth();
+  const [banReason, setBanReason] = useState<string>("");
 
   const handleBanClick = () => {
+    setBanReason("");
     setConfirmationModalOpen(true);
   };
 
@@ -106,13 +108,19 @@ const StaffReportID = ({ params }: any) => {
 
   const fetchData = async () => {
     try {
+      const formData = new FormData();
+      formData.append("reason", banReason);
+      formData.append("status", "true");
       let apiUrl;
-
       if (target === "course") {
-        apiUrl = `https://learnconnectapi.azurewebsites.net/api/course/ban-course?courseId=${idCourse}&status=true`;
+        apiUrl = `https://learnconnectapi.azurewebsites.net/api/course/ban-course?courseId=${idCourse}`;
       }
-
-      const response = await axios.post(apiUrl);
+      const response = await axios.post(apiUrl, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      console.log("Request Payload:", JSON.stringify(response.config.data));
       setReportData(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -204,6 +212,19 @@ const StaffReportID = ({ params }: any) => {
                 style={{ width: "100%" }}
                 onFinish={handleConfirmBan}
               >
+                <Form.Item
+                  label="reason"
+                  name="reason"
+                  rules={[
+                    { required: true, message: "Please provide a reason" },
+                  ]}
+                >
+                  <Input.TextArea
+                    value={banReason}
+                    onChange={(e) => setBanReason(e.target.value)}
+                    rows={4}
+                  />
+                </Form.Item>
                 <Space className="justify-end w-full">
                   <Form.Item className="mb-0">
                     <Space>

@@ -295,7 +295,7 @@ const LectureModeration = ({ params }: any) => {
           {/* <MentorRequest /> */}
           <div className="w-full mt-4">
             <div className="flex justify-between items-center px-5 bg-[#e7f8ee] mb-5">
-              <Breadcrumb className="text-start font-semibold text-4xl my-5 px-4">
+              <Breadcrumb className="text-start font-semibold text-3xl my-5 px-4">
                 <Breadcrumb.Item>
                   <button onClick={breadcrumbNavigation}>Course</button>
                 </Breadcrumb.Item>
