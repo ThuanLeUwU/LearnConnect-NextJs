@@ -450,7 +450,7 @@ const Revenue = () => {
                 <Breadcrumb>
                   <Breadcrumb.Item>
                     <div className="text-start font-semibold text-2xl my-5 px-4">
-                      Revenue
+                      Statistic
                     </div>
                   </Breadcrumb.Item>
                 </Breadcrumb>

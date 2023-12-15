@@ -13,6 +13,11 @@ const LeftNavbar = ({ page1, page2, page3, page4, page5, page6, page7 }) => {
       href: `${page1}`,
     },
     {
+      image: "/menu-icon/course.png",
+      title: "Courses",
+      href: `${page4}`,
+    },
+    {
       image: "/menu-icon/star.png",
       title: "Ratings",
       href: `${page2}`,
@@ -21,11 +26,6 @@ const LeftNavbar = ({ page1, page2, page3, page4, page5, page6, page7 }) => {
       image: "/menu-icon/flag-alt (2).png",
       title: "Reports",
       href: `${page3}`,
-    },
-    {
-      image: "/menu-icon/course.png",
-      title: "Courses",
-      href: `${page4}`,
     },
     {
       image: "/menu-icon/book-bookmark.png",

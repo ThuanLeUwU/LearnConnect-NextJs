@@ -142,6 +142,10 @@ const StaffReportID = ({ params }: any) => {
     }
   };
 
+  const pushToCourse = () => {
+    router.push(`/staff-page/moderation/${course?.id}`);
+  };
+
   return (
     <>
       {!userData ? (
@@ -167,7 +171,9 @@ const StaffReportID = ({ params }: any) => {
                   <button onClick={handleBack}>Report</button>
                 </Breadcrumb.Item>
                 {target === "course" && (
-                  <Breadcrumb.Item>{course?.name}</Breadcrumb.Item>
+                  <Breadcrumb.Item>
+                    <button onClick={pushToCourse}>{course?.name}</button>
+                  </Breadcrumb.Item>
                 )}
                 {target === "mentor" && (
                   <Breadcrumb.Item>{mentor?.user.fullName}</Breadcrumb.Item>

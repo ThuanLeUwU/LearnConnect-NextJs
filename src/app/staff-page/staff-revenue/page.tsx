@@ -484,11 +484,11 @@ const StaffRevenue = () => {
     },
     series: [
       {
-        name: "Fee",
+        name: "Free",
         data: [] as number[], // Dữ liệu số lượng course miễn phí
       },
       {
-        name: "Free",
+        name: "Fee",
         data: [] as number[], // Dữ liệu tổng số lượng course trừ đi số lượng course miễn phí
       },
     ],
@@ -610,7 +610,7 @@ const StaffRevenue = () => {
                 <Breadcrumb>
                   <Breadcrumb.Item>
                     <div className="text-start font-semibold text-2xl my-5 px-4">
-                      Revenue
+                      Statistic
                     </div>
                   </Breadcrumb.Item>
                 </Breadcrumb>
