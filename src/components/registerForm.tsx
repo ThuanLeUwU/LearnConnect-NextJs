@@ -251,7 +251,6 @@ export const RegisterForm = () => {
       reason,
     } = values;
 
-    console.log("vải", values);
     if (scanId?.cardId !== undefined) {
       formData.append("identityCardFrontDescription", scanId?.cardId);
     }

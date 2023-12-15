@@ -135,7 +135,7 @@ const StaffRatingTable = () => {
       width: 150,
 
       render: (ratingInfo) => (
-        <div>
+        <div className="text-[16px]">
           {new Date(ratingInfo.timeStamp).toLocaleDateString()}
           <br />
           {new Date(ratingInfo.timeStamp).toLocaleTimeString()}

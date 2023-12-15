@@ -307,7 +307,7 @@ const MentorRequest = () => {
         return dateA - dateB;
       },
       render: (specializationOfMentor, record) => (
-        <div>
+        <div className="text-[16px]">
           {new Date(
             specializationOfMentor.verificationDate
           ).toLocaleDateString()}{" "}
@@ -324,7 +324,7 @@ const MentorRequest = () => {
       key: "name",
       width: 200,
       sorter: (a, b) => {
-        const nameA = a.user.name.toUpperCase(); // Convert names to uppercase for case-insensitive sorting
+        const nameA = a.user.name.toUpperCase();
         const nameB = b.user.name.toUpperCase();
         return nameA.localeCompare(nameB);
       },
@@ -342,8 +342,9 @@ const MentorRequest = () => {
       render: (user) => <p className="text-[16px]">{user.email}</p>,
     },
     {
-      title: "Description",
-      dataIndex: "mentor",
+      title: selectedType === "mentor" ? "Description" : "Experience",
+      dataIndex:
+        selectedType === "mentor" ? "mentor" : "specializationOfMentor",
       key: "description",
       width: 600,
       sorter: (a, b) => {
@@ -374,7 +375,10 @@ const MentorRequest = () => {
         a.specializationOfMentor.status - b.specializationOfMentor.status,
 
       render: (specializationOfMentor) => (
-        <span style={{ color: getStatusColor(specializationOfMentor.status) }}>
+        <span
+          className="text-[16px]"
+          style={{ color: getStatusColor(specializationOfMentor.status) }}
+        >
           {getStatusText(specializationOfMentor.status)}
         </span>
       ),
@@ -526,18 +530,17 @@ const MentorRequest = () => {
                           <div className="pt-5" key={doc.id}>
                             {index === 0 && (
                               <div className="flex">
-                                <p className="text-xl">Font ID Image: </p>
-                                <p className="text-xl font-bold">
-                                  {doc.description}
+                                <p className="text-xl">
+                                  Identify Number: {doc.description}
                                 </p>
                               </div>
                             )}
                             {index === 1 && (
                               <div className="flex">
-                                <p className="text-xl">Back ID Image:</p>
-                                <p className="text-xl font-bold">
-                                  {formatDate(doc.description)}
+                                <p className="text-xl">
+                                  Issue Date: {formatDate(doc.description)}
                                 </p>
+                                <p className="text-xl font-bold"></p>
                               </div>
                             )}
                             <img
@@ -551,10 +554,10 @@ const MentorRequest = () => {
                           <div className="pt-5" key={doc.id}>
                             {
                               <div className="flex">
-                                <p className="text-xl">Specialization: </p>
-                                <p className="text-xl font-bold">
-                                  {doc.description}
+                                <p className="text-xl">
+                                  Experience: {doc.description}
                                 </p>
+                                <p className="text-xl font-bold"></p>
                                 {/* <p className="text-xl font-bold">
                                   {formatDate(doc.description)}
                                 </p> */}
@@ -691,9 +694,9 @@ const MentorRequest = () => {
                             key={doc.id}
                             className="w-full mx-auto overflow-hidden p-8"
                           >
-                            <p className="text-xl mb-5">
+                            {/* <p className="text-xl mb-5">
                               Specialization: {doc.description}
-                            </p>
+                            </p> */}
                             <div className="max-h-[600px] overflow-y-auto">
                               <img
                                 src={doc.documentUrl}
