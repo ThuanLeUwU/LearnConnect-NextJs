@@ -35,24 +35,19 @@ const Footer = () => {
             <div className={`flex flex-col justify-center py-5`}>
               <div className={`${headerStyles.footer_widget_address}`}>
                 <h4 className={`${headerStyles.footer_widget_title} `}>
-                  FPT University HCMC
+                  LearnConnect
                 </h4>
-
-                <p className="text-lg">
-                  Lô E2a-7, Đường D1, Đ. D1, Long Thạnh Mỹ, Thành Phố Thủ Đức,
-                  Thành phố Hồ Chí Minh
-                </p>
               </div>
               <div className="text-xl">
                 <p>
                   <i className="flaticon-email"></i>{" "}
-                  <a href="mailto:learnconnect@gmail.com">
-                    learnconnect@gmail.com
+                  <a href="mailto:contact.learnconnect@gmail.com">
+                    contact.learnconnect@gmail.com
                   </a>
                 </p>
                 <p>
                   <i className="flaticon-phone-call"></i>{" "}
-                  <a href="tel:02873005588">028 7300 5588</a>{" "}
+                  <a href="tel:0333892623">0333892623</a>{" "}
                 </p>
               </div>
             </div>
