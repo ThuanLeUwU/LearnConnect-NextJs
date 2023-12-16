@@ -485,7 +485,7 @@ export default function CourseDetailPage({ params }: any) {
                       <li className="border-b border-solid border-[#d1e6d9] py-3.5">
                         <i className="icofont-man-in-glasses"></i>{" "}
                         <strong className="text-[#212832] text-base font-medium">
-                          Instructor
+                          Mentor
                         </strong>{" "}
                         <span className="text-[#52565b] float-right text-base font-normal">
                           {courses?.mentorName}
@@ -585,7 +585,7 @@ export default function CourseDetailPage({ params }: any) {
                           <span className="font-bold">{courses?.name}</span>
                         </h3>
                         <h3 className="mt-2">
-                          Instructor Name:{" "}
+                          Mentor Name:{" "}
                           <span className="font-bold">
                             {courses?.mentorName}
                           </span>

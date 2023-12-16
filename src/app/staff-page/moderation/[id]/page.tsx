@@ -575,7 +575,7 @@ const DetailsContent = ({ params }: any) => {
                       {" "}
                       {showApproved &&
                         listQuestion.length !== 0 &&
-                        testStatus === 0 && (
+                        testStatus !== 2 && (
                           <button
                             className="bg-white text-black border rounded-lg border-[#4caf50] hover:bg-[#4caf50] hover:text-white transition duration-300 px-4 py-2"
                             onClick={handleApprove}
