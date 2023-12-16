@@ -172,15 +172,22 @@ const StaffReportID = ({ params }: any) => {
                   <button onClick={handleBack}>Report</button>
                 </Breadcrumb.Item>
                 {target === "course" && (
-                  <Breadcrumb.Item>
-                    <button onClick={pushToCourse}>{course?.name}</button>
-                  </Breadcrumb.Item>
+                  <Breadcrumb.Item>{course?.name}</Breadcrumb.Item>
                 )}
                 {target === "mentor" && (
                   <Breadcrumb.Item>{mentor?.user.fullName}</Breadcrumb.Item>
                 )}
               </Breadcrumb>
               <div className="ml-auto">
+                {target === "course" && (
+                  <button
+                    className=" my-3 px-5 py-3 border-2 text-black border-gray-200 bg-white rounded-lg hover:bg-gray-200"
+                    onClick={pushToCourse}
+                  >
+                    Go to {target}
+                  </button>
+                )}
+
                 <button
                   className="mx-5 my-3 px-5 py-3 border-2 text-black border-red-500 bg-white rounded-lg hover:bg-red-500 hover:text-white"
                   onClick={handleBanClick}

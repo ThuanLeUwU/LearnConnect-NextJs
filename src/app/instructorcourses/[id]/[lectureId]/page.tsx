@@ -1,19 +1,31 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-
-import InstructorCourseStyle from "./styles.module.scss";
+import Link from "next/link";
+import InstructorCourseStyle from "../../styles/style.module.scss";
 import { toast } from "sonner";
-import { Breadcrumb, Button, Form, Input, Modal, Space, Spin, Tag } from "antd";
-import LeftNavbar from "@/components/left-navbar/page";
-import MentorRequest from "@/components/mentor-request/page";
+import {
+  Breadcrumb,
+  Button,
+  Form,
+  Input,
+  Modal,
+  Space,
+  Spin,
+  Tag,
+  Tooltip,
+} from "antd";
 import { UserAuth } from "@/app/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { http } from "@/api/http";
 import { Course } from "@/components/courses/courses";
-import { Lecture } from "@/app/my-course/[id]/page";
+import { Comment, Lecture } from "@/app/my-course/[id]/page";
 import ProgressBar from "@ramonak/react-progress-bar";
 import { ClockCircleOutlined } from "@ant-design/icons";
+import { IoChatboxSharp } from "react-icons/io5";
+import { VscEllipsis } from "react-icons/vsc";
+import TextArea from "antd/es/input/TextArea";
+import moment from "moment";
 
 export type ModerationAI = {
   contentModeration: any;
@@ -57,6 +69,35 @@ const LectureDetail = ({ params }: any) => {
 
   const [loading, setLoading] = useState(false);
 
+  const menuItem = [
+    {
+      image: "/menu-icon/book-alt.png",
+      title: "Courses",
+      href: "/instructorcourses",
+    },
+    {
+      image: "/menu-icon/file-edit.png",
+      title: "Requests",
+      href: "/request-history",
+    },
+    {
+      image: "/menu-icon/feedback-review.png",
+      title: "Reviews",
+      href: "/review-mentor",
+    },
+
+    {
+      image: "/menu-icon/receipt.png",
+      title: "Transaction History",
+      href: "/order-history",
+    },
+    {
+      image: "/menu-icon/money-check-edit.png",
+      title: "Statistic",
+      href: "/revenue",
+    },
+  ];
+
   useEffect(() => {
     if (idCourse !== "") {
       try {
@@ -66,27 +107,6 @@ const LectureDetail = ({ params }: any) => {
           )
           .then((res) => {
             setLecture(res.data);
-            setLoading(true);
-          });
-      } catch (e) {
-        console.log(e);
-      }
-    }
-  }, [LectureId, idCourse]);
-
-  const [moderationLecture, setModerationLecture] = useState<ModerationAI>();
-  const [flagContent, setFlagContent] = useState<Flag[]>([]);
-
-  useEffect(() => {
-    if (idCourse !== "") {
-      try {
-        http
-          .get(
-            `https://learnconnectserver.azurewebsites.net/api/content-moderation/get-moderation?lectureId=${LectureId}`
-          )
-          .then((res) => {
-            setModerationLecture(res.data);
-            setFlagContent(res.data.flags);
             setLoading(true);
           });
       } catch (e) {
@@ -105,7 +125,7 @@ const LectureDetail = ({ params }: any) => {
       console.log(value);
       http
         .get(
-          `https://learnconnectserver.azurewebsites.net/api/course/get-course-pending/${value}`
+          `https://learnconnectserver.azurewebsites.net/api/course/get-course-by-mentor/mentorUserId/${id}/course/${value}`
         )
         .then((response) => {
           setCourse(response.data);
@@ -118,11 +138,11 @@ const LectureDetail = ({ params }: any) => {
   }, [LectureId]);
 
   const breadcrumbNavigation = () => {
-    router.push("/staff-page/moderation");
+    router.push("/instructorcourses");
   };
 
   const courseNavigation = () => {
-    router.push(`/staff-page/moderation/${idCourse}`);
+    router.push(`/instructorcourses/${idCourse}`);
   };
 
   const getStatusText = (status) => {
@@ -157,121 +177,98 @@ const LectureDetail = ({ params }: any) => {
     }
   };
 
-  const getStatusText2 = (status) => {
-    switch (status) {
-      case 0:
-        return (
-          <Tag color="green" className="text-lg">
-            Valid
-          </Tag>
-        );
-      case 1:
-        return (
-          <Tag color="red" className="text-lg">
-            Invalid
-          </Tag>
-        );
-      default:
-        return "Unknown Status";
+  const [comment, setComment] = useState<Comment[]>([]);
+
+  useEffect(() => {
+    if (idCourse !== "") {
+      try {
+        http
+          .get(
+            `https://learnconnectserver.azurewebsites.net/api/Comment/get-comments-by-lectureId/${LectureId}`
+          )
+          .then((res) => {
+            setComment(res?.data.reverse());
+          });
+      } catch (e) {
+        console.log(e);
+      }
     }
+  }, [LectureId, idCourse]);
+
+  const [isAnswer, setIsAnswer] = useState(false);
+  const [idDropDown, setIdDropdown] = useState<Number>();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [idDelete, setIdDelete] = useState(0);
+  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
+  const [editText, setEditText] = useState("");
+  const [replyComment, setReplyComment] = useState("");
+
+  const AnswerMode = (data) => {
+    setIsAnswer(!isAnswer);
+    setIdDropdown(data);
+
+    console.log("isanswer", isAnswer);
   };
 
-  const [acceptModal, setAcceptModal] = useState(false);
-  const [form] = Form.useForm();
-
-  const handleAcceptLecture = () => {
-    setAcceptModal(true);
+  const toggleDropdown = (data: any) => {
+    setIdDropdown(data);
+    setIsDropdownOpen(!isDropdownOpen);
   };
 
-  const handleModalCancel = () => {
-    setAcceptModal(false);
-    setRejectModal(false);
+  const EditCommentMode = () => {
+    setIsEditing(true);
   };
 
-  const handleAcceptClick = () => {
-    try {
-      http
-        .post(
-          `https://learnconnectserver.azurewebsites.net/api/lecture/process-lecture-request?lectureId=${LectureId}&acceptRequest=true`
-        )
-        .then(() => {
-          {
-            handleModalCancel();
-            toast.success("Approve Lecture Successfully");
-            router.push(`/staff-page/moderation/${idCourse}`);
-          }
-        });
-    } catch (err) {
-      console.error(err);
+  const EditComment = async (comment: any) => {
+    if (!editText) {
+      toast.error("Comment cannot be empty.");
+      return;
     }
+    comment.comment1 = editText;
+    await http
+      .put(
+        `https://learnconnectserver.azurewebsites.net/api/comment/${comment.id}`,
+        comment
+      )
+      .then(() => {
+        toast.success("Edit Comment Success");
+        setIsEditing(false);
+        http
+          .get(
+            `https://learnconnectserver.azurewebsites.net/api/Comment/get-comments-by-lectureId/${LectureId}`
+          )
+          .then((res) => {
+            setComment(res?.data.reverse());
+          });
+      });
+    setEditText("");
   };
 
-  const [rejectModal, setRejectModal] = useState(false);
-
-  const handleRejectLecture = () => {
-    setRejectModal(true);
-  };
-
-  const handleRejectClick = (data: any) => {
+  const ReplyComment = async (comment) => {
+    if (!replyComment) {
+      toast.error("Comment cannot be empty.");
+      return;
+    }
     const formData = new FormData();
-    formData.append("note", data.reason);
-    try {
-      http
-        .post(
-          `https://learnconnectserver.azurewebsites.net/api/lecture/process-lecture-request?lectureId=${LectureId}&acceptRequest=false&note=${data.reason}`,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        )
-        .then(() => {
-          {
-            handleModalCancel();
-            toast.success("Reject Lecture Successfully");
-            // http.get(`/lecture/by-course/${idCourse}`).then((response) => {
-            //   setLecture(response.data);
-            //   setLoading(false);
-            //   // form.resetFields();
-            // });
-            router.push(`/staff-page/moderation/${idCourse}`);
-          }
-        });
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  const handleTimeChange = (time: number) => {
-    if (videoRef.current) {
-      videoRef.current.currentTime = time;
-    }
-  };
-
-  const getDangerColor = (description) => {
-    switch (description.toLowerCase()) {
-      case "possible":
-        return "#f7eb71"; // Màu cho mức độ thấp
-      case "likely":
-        return "Orange"; // Màu cho mức độ trung bình
-      case "verylikely":
-        return "red"; // Màu cho mức độ cao
-      default:
-        return "black"; // Màu mặc định hoặc xử lý ngoại lệ khác nếu cần
-    }
-  };
-
-  const formatTime = (time: any) => {
-    const hours = Math.floor(time / 3600);
-    const minutes = Math.floor((time % 3600) / 60);
-    const remainingSeconds = time % 60;
-
-    const formattedTime = `${hours}:${minutes < 10 ? "0" : ""}${minutes}:${
-      remainingSeconds < 10 ? "0" : ""
-    }${remainingSeconds}`;
-    return formattedTime;
+    formData.append("comment", replyComment);
+    await http
+      .post(
+        `https://learnconnectserver.azurewebsites.net/api/comment?userId=${userData?.id}&lectureId=${LectureId}&parentCommentId=${comment}`,
+        formData
+      )
+      .then(() => {
+        toast.success("Reply Comment Success");
+        setIsAnswer(false);
+        setReplyComment("");
+        http
+          .get(
+            `https://learnconnectserver.azurewebsites.net/api/Comment/get-comments-by-lectureId/${LectureId}`
+          )
+          .then((res) => {
+            setComment(res?.data.reverse());
+          });
+      });
   };
 
   return (
@@ -281,18 +278,25 @@ const LectureDetail = ({ params }: any) => {
           <Spin size="large" />
         </div>
       ) : (
-        <div className="flex w-full">
-          <LeftNavbar
-            page1={"#"}
-            page2={"/staff-page/staff-rating"}
-            page3={"/staff-page/staff-report"}
-            page4={"/staff-page/moderation"}
-            page5={"/staff-page/list-major"}
-            page6={"/staff-page/staff-revenue"}
-            page7={"/staff-page/staff-transaction"}
-          />
-          {/* <MentorRequest /> */}
-          <div className="w-full mt-4">
+        <div className={`${InstructorCourseStyle.content_wrapper}`}>
+          <div className={`${InstructorCourseStyle.sidebar_wrapper}`}>
+            <div className={`${InstructorCourseStyle.sidebar_list}`}>
+              {menuItem.map((item, index) => {
+                return (
+                  <Tooltip key={index} title={item.title}>
+                    <Link
+                      key={index}
+                      href={item.href}
+                      className={`${InstructorCourseStyle.sidebar_active} mt-5`}
+                    >
+                      <img src={item.image} alt="image"></img>
+                    </Link>
+                  </Tooltip>
+                );
+              })}
+            </div>
+          </div>
+          <div className={`${InstructorCourseStyle.body_wrapper}`}>
             <div className="flex justify-between items-center px-5 bg-[#e7f8ee] mb-5">
               <Breadcrumb className="text-start font-semibold text-3xl my-5 px-4">
                 <Breadcrumb.Item>
@@ -308,7 +312,7 @@ const LectureDetail = ({ params }: any) => {
             <div className="mx-5 flex flex-row gap-10">
               <div className="flex-1 border-2 p-5 shadow-[5px_15px_25px_10px_rgba(0,0,0,0.15)] mt-2 rounded-lg">
                 <div className="text-2xl flex flex-row justify-between">
-                  <div>Lecture: {lecture?.title}</div>{" "}
+                  <div className="text-3xl"> {lecture?.title}</div>{" "}
                   <div> {getStatusText(lecture?.status)}</div>
                 </div>
                 {lecture?.contentUrl && (
@@ -320,14 +324,12 @@ const LectureDetail = ({ params }: any) => {
                       controls
                       id="courseVideo"
                       controlsList="nodownload"
-                      ref={videoRef}
                     >
                       <source src={lecture?.contentUrl} type="video/mp4" />
                     </video>
                   </div>
                 )}
                 <div className="text-xl">
-                  <span>Description:</span>
                   <div>{lecture?.content}</div>
                 </div>
               </div>
@@ -341,23 +343,6 @@ const LectureDetail = ({ params }: any) => {
                       Ban
                     </Button>
                   )} */}
-                  {lecture?.status === 1 && (
-                    <>
-                      <Button onClick={() => handleAcceptLecture()}>
-                        Accept
-                      </Button>
-                      <Button
-                        style={{
-                          backgroundColor: "#ffa04e",
-                          borderColor: "#ffa04e",
-                          color: "#fff",
-                        }}
-                        onClick={() => handleRejectLecture()}
-                      >
-                        Reject
-                      </Button>
-                    </>
-                  )}
                   {lecture?.status === 2 && (
                     <div className="text-xl ">
                       Reason : {lecture.rejectReason}
@@ -365,246 +350,288 @@ const LectureDetail = ({ params }: any) => {
                   )}
                   {/* {lecture?.status === 3 && <Button>Unban</Button>} */}
                 </Space>
-                <div className="flex justify-center text-3xl">
-                  Content moderation details
-                </div>
-                {!loading ? (
-                  <Spin />
-                ) : (
-                  <div>
-                    <div className="border-2">
-                      {/* <div className="grid grid-cols-12  border-b border-gray-300">
-                        <div className="col-span-4 font-bold border-r border-gray-300 p-4 break-all">
-                          Content Length:
+                <div className="flex justify-center text-3xl">Comments</div>
+                {comment &&
+                  comment.map((item, index) => (
+                    <div
+                      className="py-7 px-5 border-t border-[#30925533]"
+                      key={index}
+                    >
+                      <div className="flex">
+                        <img
+                          alt="CommentImg"
+                          src={item?.user.userImage}
+                          className="w-[70px] h-[70px] rounded-full"
+                        />
+                        <div className="my-auto pl-5">
+                          <p className="font-bold text-xl">
+                            {item?.user.userName}
+                          </p>
+                          <p className="font-light text-[#8e9298]">
+                            {moment(item?.comment.commentTime).format(
+                              "DD/MM/YYYY HH:mm:ss"
+                            )}
+                          </p>
                         </div>
-                        <div className="col-span-8 bg-white p-4">
-                          {" "}
-                          {moderationLecture?.contentModeration.contentLength}
-                        </div>
-                      </div> */}
 
-                      <div className="grid grid-cols-12  border-b border-gray-300">
-                        <div className="col-span-4 font-bold border-r border-gray-300 p-4 break-all">
-                          Percent Explicit:
-                        </div>
-                        <div className="col-span-8 bg-white p-4">
-                          <ProgressBar
-                            completed={
-                              moderationLecture?.contentModeration
-                                .percentExplicit
-                            }
-                            bgColor="#309255"
-                            height="15px"
-                            width="60%"
-                            labelAlignment="outside"
-                            labelColor="black"
-                            labelSize="12px"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-12 border-b border-gray-300">
-                        <div className="col-span-4 font-bold border-r border-gray-300 p-4 break-all">
-                          Percent Unsafe:
-                        </div>
-                        <div className="col-span-8 bg-white p-4">
-                          <ProgressBar
-                            completed={
-                              moderationLecture?.contentModeration.percentUnsafe
-                            }
-                            bgColor="red"
-                            height="15px"
-                            width="60%"
-                            labelAlignment="outside"
-                            labelColor="black"
-                            labelSize="12px"
-                          />
-                        </div>
-                      </div>
-
-                      {/* <div className="grid grid-cols-12  border-b border-gray-300">
-                        <div className="col-span-4 font-bold border-r border-gray-300 p-4 break-all">
-                          Status:
-                        </div>
-                        <div className="col-span-8 bg-white p-4">
-                          {getStatusText2(
-                            moderationLecture?.contentModeration.status
+                        <div className="flex ml-auto">
+                          <button
+                            className=" my-auto bg-[#d6e9dd] ml-auto px-5 max-h-[40px] flex item-center rounded-lg border border-[#30925533] w-full py-1 hover:text-[#fff] hover:bg-[#309255]"
+                            onClick={() => {
+                              AnswerMode(item.comment.id);
+                            }}
+                          >
+                            <span className="my-auto pr-1">
+                              <IoChatboxSharp />
+                            </span>
+                            Answer
+                          </button>
+                          {item?.user.userId === userData?.id && (
+                            <button
+                              className="w-full flex my-auto ml-2 border border-[#30925533] p-2 rounded-lg hover:text-[#000] hover:bg-[#30925533]"
+                              onClick={() => {
+                                toggleDropdown(item?.comment.id);
+                              }}
+                            >
+                              <VscEllipsis />
+                              {isDropdownOpen &&
+                                item?.comment.id === idDropDown && (
+                                  <div
+                                    id="dropdown-menu"
+                                    className="modal-overlay absolute mt-[30px] z-50"
+                                  >
+                                    <div className="bg-white border border-gray-300 rounded shadow-lg">
+                                      <div className="p-2 text-black flex flex-col">
+                                        <button
+                                          className="px-3 py-2 mb-1 hover:bg-[#e7f8ee]"
+                                          onClick={EditCommentMode}
+                                        >
+                                          Edit Comment
+                                        </button>
+                                        <button
+                                          className="px-3 py-2 hover:bg-[#e7f8ee]"
+                                          onClick={() => {
+                                            // DeleteComment(
+                                            //   item?.comment.id
+                                            // );
+                                            setIdDelete(item?.comment.id);
+                                            setIsConfirmationModalOpen(true);
+                                          }}
+                                        >
+                                          Delete Comment
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                )}
+                            </button>
                           )}
                         </div>
-                      </div> */}
-                      <div className="grid grid-cols-12 border-gray-300">
-                        <div className="col-span-4 font-bold border-r border-gray-300 p-4 break-all">
-                          Details:
-                        </div>
-                        <div className="col-span-8 bg-white p-4 min-h-[200px]">
-                          {/* {moderationLecture?.contentModeration} */}
-                          <div className="flex flex-col gap-4">
-                            {flagContent.map((item, index) => (
-                              <div
-                                key={index}
-                                className="flex flex-row gap-4 items-center"
+                      </div>
+                      <div className="py-5">
+                        {isEditing && item?.comment.id === idDropDown ? (
+                          <div>
+                            <TextArea
+                              placeholder="Edit Comment"
+                              autoSize={{
+                                minRows: 7,
+                                maxRows: 15,
+                              }}
+                              className="w-full"
+                              defaultValue={item?.comment.comment1}
+                              onChange={(e) => setEditText(e.target.value)}
+                            />
+                            <div className="py-5 flex justify-end">
+                              <button
+                                className="border border-[#309255] px-[35px] mx-1 py-2 rounded-lg hover:border-red-500"
+                                onClick={() => {
+                                  setIsEditing(false);
+                                }}
                               >
-                                <div className="font-medium text-lg">
-                                  {item.title} :
-                                </div>
-                                <div
-                                  style={{
-                                    backgroundColor: getDangerColor(
-                                      item.description
-                                    ),
-                                  }}
-                                  className="flex-1 border-2 px-2 rounded-lg text-center text-black font-medium"
-                                >
-                                  {item.description}
-                                </div>
-                                at
-                                <button
-                                  className="flex-1 text-lg hover:underline"
-                                  onClick={() => handleTimeChange(item.atTime)}
-                                >
-                                  <ClockCircleOutlined />{" "}
-                                  {formatTime(item.atTime)}
-                                </button>
-                              </div>
-                            ))}
+                                Cancel
+                              </button>
+                              <button
+                                className="border border-[#309255] px-[35px] mx-1 py-2 rounded-lg text-[#309255] hover:bg-[#309255] hover:text-[#fff]"
+                                onClick={() => {
+                                  EditComment(item.comment);
+                                }}
+                              >
+                                Save
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          <p>{item?.comment.comment1}</p>
+                        )}
+                      </div>
+                      {isAnswer && item?.comment.id === idDropDown && (
+                        <div className="py-7 px-5 ml-[110px] border-t border-[#30925533]">
+                          <div className="flex">
+                            <img
+                              alt="CommentImg"
+                              src={userData?.profilePictureUrl}
+                              className="w-[70px] h-[70px] rounded-full"
+                            />
+                            <div className="my-auto pl-5">
+                              <p className="font-bold text-xl">
+                                {userData?.fullName}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="pt-5">
+                            <TextArea
+                              placeholder="Post Comment"
+                              autoSize={{
+                                minRows: 7,
+                                maxRows: 15,
+                              }}
+                              className="w-full"
+                              value={replyComment}
+                              // defaultValue={item?.comment.comment1}
+                              onChange={(e) => setReplyComment(e.target.value)}
+                            />
+                          </div>
+                          <div className="pt-5 flex justify-end">
+                            <button
+                              className="border border-[#309255] px-[35px] mx-1 py-2 rounded-lg hover:border-red-500"
+                              onClick={() => {
+                                setIsAnswer(false);
+                                setReplyComment("");
+                              }}
+                            >
+                              Cancel
+                            </button>
+                            <button
+                              className="border border-[#309255] px-[35px] mx-1 py-2 rounded-lg text-[#309255] hover:bg-[#309255] hover:text-[#fff]"
+                              onClick={() => {
+                                ReplyComment(item.comment.id);
+                              }}
+                            >
+                              Reply
+                            </button>
                           </div>
                         </div>
-                      </div>
+                      )}
+                      {item.reply.map((replyItem, replyIndex) => (
+                        <div
+                          className="py-7 px-5 ml-[110px] border-t border-[#30925533]"
+                          key={replyIndex}
+                        >
+                          <div className="flex">
+                            <img
+                              alt="CommentImg"
+                              src={replyItem.user.userImage}
+                              className="w-[70px] h-[70px] rounded-full"
+                            />
+
+                            <div className="my-auto pl-5">
+                              {replyItem.user && (
+                                <div>
+                                  <p className="font-bold text-xl">
+                                    {replyItem.user.userName}
+                                  </p>
+                                  <p className="font-light text-[#8e9298]">
+                                    {moment(
+                                      replyItem?.comment.commentTime
+                                    ).format("DD/MM/YYYY HH:mm:ss")}
+                                  </p>
+                                </div>
+                              )}
+                            </div>
+                            <div className="flex ml-auto">
+                              {replyItem?.user.userId === userData?.id && (
+                                <button
+                                  className="w-full flex my-auto ml-2 border border-[#30925533] p-2 rounded-lg hover:text-[#000] hover:bg-[#30925533]"
+                                  onClick={() => {
+                                    toggleDropdown(replyItem?.comment.id);
+                                  }}
+                                >
+                                  <VscEllipsis />
+                                  {isDropdownOpen &&
+                                    replyItem?.comment.id === idDropDown && (
+                                      <div
+                                        id="dropdown-menu"
+                                        className="modal-overlay absolute mt-[30px] z-50"
+                                      >
+                                        <div className="bg-white border border-gray-300 rounded shadow-lg">
+                                          <div className="p-2 text-black flex flex-col">
+                                            <button
+                                              className="px-3 py-2 mb-1 hover:bg-[#e7f8ee]"
+                                              onClick={EditCommentMode}
+                                            >
+                                              Edit Comment
+                                            </button>
+                                            <button
+                                              className="px-3 py-2 hover:bg-[#e7f8ee]"
+                                              onClick={() => {
+                                                // DeleteComment(
+                                                //   replyItem
+                                                //     ?.comment.id
+                                                // );
+                                                setIdDelete(
+                                                  replyItem?.comment.id
+                                                );
+                                                setIsConfirmationModalOpen(
+                                                  true
+                                                );
+                                              }}
+                                            >
+                                              Delete Comment
+                                            </button>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    )}
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                          <div className="py-5">
+                            {isEditing &&
+                            replyItem?.comment.id === idDropDown ? (
+                              <div>
+                                <TextArea
+                                  placeholder="Edit Comment"
+                                  autoSize={{
+                                    minRows: 7,
+                                    maxRows: 15,
+                                  }}
+                                  className="w-full"
+                                  defaultValue={replyItem?.comment.comment1}
+                                  onChange={(e) => setEditText(e.target.value)}
+                                />
+                                <div className="py-5 flex justify-end">
+                                  <button
+                                    className="border border-[#309255] px-[35px] mx-1 py-2 rounded-lg hover:border-red-500"
+                                    onClick={() => {
+                                      setIsEditing(false);
+                                    }}
+                                  >
+                                    Cancel
+                                  </button>
+                                  <button
+                                    className="border border-[#309255] px-[35px] mx-1 py-2 rounded-lg text-[#309255] hover:bg-[#309255] hover:text-[#fff]"
+                                    onClick={() => {
+                                      EditComment(replyItem.comment);
+                                    }}
+                                  >
+                                    Save
+                                  </button>
+                                </div>
+                              </div>
+                            ) : (
+                              <p> {replyItem.comment.comment1}</p>
+                            )}
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  </div>
-                )}
+                  ))}
               </div>
             </div>
           </div>
-
-          {/* <div>hehe</div> */}
         </div>
       )}
-      <Modal
-        destroyOnClose={true}
-        title={
-          <div className="text-lg">
-            Are you sure you want to Approve this Lecture?
-          </div>
-        }
-        open={acceptModal}
-        // onOk={handleOk}
-        width="35%"
-        onCancel={handleModalCancel}
-        footer={false}
-        style={{
-          top: "30%",
-        }}
-      >
-        <Form
-          autoComplete="off"
-          form={form}
-          labelCol={{ span: 4 }}
-          wrapperCol={{ span: 16 }}
-          layout="horizontal"
-          className="mt-5"
-          style={{ width: "100%" }}
-          onFinish={handleAcceptClick}
-        >
-          <Space className="justify-end w-full">
-            <Form.Item className="mb-0">
-              <Space>
-                <Button
-                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
-                  onClick={handleModalCancel}
-                  style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
-                    border: "2px solid #E0E0E0",
-                    color: "black",
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
-                  htmlType="submit"
-                  style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
-                    border: "2px solid #4caf50",
-                    color: "#fff",
-                  }}
-                >
-                  Confirm
-                </Button>
-              </Space>
-            </Form.Item>
-          </Space>
-        </Form>
-      </Modal>
-
-      <Modal
-        destroyOnClose={true}
-        title={
-          <div className="text-lg">
-            Are you sure you want to Reject this Lecture?
-          </div>
-        }
-        open={rejectModal}
-        // onOk={handleOk}
-        width="35%"
-        onCancel={handleModalCancel}
-        footer={false}
-        style={{
-          top: "30%",
-        }}
-      >
-        <Form
-          autoComplete="off"
-          form={form}
-          labelCol={{ span: 4 }}
-          wrapperCol={{ span: 20 }}
-          layout="horizontal"
-          className="mt-5"
-          style={{ width: "100%" }}
-          onFinish={handleRejectClick}
-        >
-          <Form.Item
-            rules={[{ required: true, message: "Please input Reason!" }]}
-            label="Reason"
-            name="reason"
-          >
-            <Input.TextArea rows={4} placeholder="Write your Reason" />
-          </Form.Item>
-
-          <Space className="justify-end w-full">
-            <Form.Item className="mb-0">
-              <Space>
-                <Button
-                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
-                  onClick={handleModalCancel}
-                  style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
-                    border: "2px solid #E0E0E0",
-                    color: "black",
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
-                  htmlType="submit"
-                  style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
-                    border: "2px solid #4caf50",
-                    color: "#fff",
-                  }}
-                >
-                  Confirm
-                </Button>
-              </Space>
-            </Form.Item>
-          </Space>
-        </Form>
-      </Modal>
     </>
   );
 };

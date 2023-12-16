@@ -347,11 +347,11 @@ const MentorRequest = () => {
         selectedType === "mentor" ? "mentor" : "specializationOfMentor",
       key: "description",
       width: 600,
-      sorter: (a, b) => {
-        const descriptionA = a.mentor.description.toUpperCase();
-        const descriptionB = b.mentor.description.toUpperCase();
-        return descriptionA.localeCompare(descriptionB);
-      },
+      // sorter: (a, b) => {
+      //   const descriptionA = a.mentor.description.toUpperCase();
+      //   const descriptionB = b.mentor.description.toUpperCase();
+      //   return descriptionA.localeCompare(descriptionB);
+      // },
       render: (mentor) => <p className="text-[16px]">{mentor.description}</p>,
     },
     {
@@ -387,11 +387,11 @@ const MentorRequest = () => {
       title: "Note",
       dataIndex: "specializationOfMentor",
       key: "note",
-      sorter: (a, b) => {
-        const noteA = (a.specializationOfMentor.note || "").toUpperCase();
-        const noteB = (b.specializationOfMentor.note || "").toUpperCase();
-        return noteA.localeCompare(noteB);
-      },
+      // sorter: (a, b) => {
+      //   const noteA = (a.specializationOfMentor.note || "").toUpperCase();
+      //   const noteB = (b.specializationOfMentor.note || "").toUpperCase();
+      //   return noteA.localeCompare(noteB);
+      // },
       render: (specializationOfMentor) => (
         <p className="text-[16px]">{specializationOfMentor.note}</p>
       ),

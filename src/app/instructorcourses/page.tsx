@@ -92,29 +92,26 @@ const InstructorCourse = () => {
       title: "Courses",
       href: "/instructorcourses",
     },
-    // {
-    //   image: "/menu-icon/icon-2.png",
-    //   href: "/dashboard",
-    // },
-    {
-      image: "/menu-icon/feedback-review.png",
-      title: "Reviews",
-      href: "/review-mentor",
-    },
-    {
-      image: "/menu-icon/money-check-edit.png",
-      title: "Statistic",
-      href: "/revenue",
-    },
     {
       image: "/menu-icon/file-edit.png",
       title: "Requests",
       href: "/request-history",
     },
     {
+      image: "/menu-icon/feedback-review.png",
+      title: "Reviews",
+      href: "/review-mentor",
+    },
+
+    {
       image: "/menu-icon/receipt.png",
       title: "Transaction History",
       href: "/order-history",
+    },
+    {
+      image: "/menu-icon/money-check-edit.png",
+      title: "Statistic",
+      href: "/revenue",
     },
   ];
 
@@ -132,7 +129,7 @@ const InstructorCourse = () => {
     } else if (status === 1) {
       return <p style={{ color: "grey" }}>Pending</p>;
     } else if (status === 2) {
-      return <p style={{ color: "#b8ba5a" }}>Reject</p>;
+      return <p style={{ color: "orange" }}>Reject</p>;
     } else if (status === 3) {
       return <p style={{ color: "red" }}>Banned</p>;
     }

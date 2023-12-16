@@ -83,6 +83,7 @@ const Dashboard = ({ params }: any) => {
   const [isModal, setIsModal] = useState(false);
   const [sortOrder, setSortOrder] = useState(null);
   const [sortColumn, setSortColumn] = useState(null);
+
   const [form] = Form.useForm();
 
   const showModal = () => {
@@ -117,6 +118,7 @@ const Dashboard = ({ params }: any) => {
   const [lectures, setLectures] = useState<Lecture[]>([]);
 
   const handleUpdateModal = (record: any) => {
+    console.log("...", record);
     setSelectedItem(record);
     setOneLecture(record);
     setUpdateVisible(true);
@@ -419,12 +421,12 @@ const Dashboard = ({ params }: any) => {
 
   //table lecture
   const columns = [
-    {
-      title: "No.",
-      dataIndex: "index",
-      key: "index",
-      render: (text, record, index) => index + 1,
-    },
+    // {
+    //   title: "No.",
+    //   dataIndex: "index",
+    //   key: "index",
+    //   render: (text, record, index) => index + 1,
+    // },
     {
       title: "Title",
       dataIndex: "title",
@@ -481,7 +483,22 @@ const Dashboard = ({ params }: any) => {
       key: "actions",
       render: (text, record) => (
         <Space className="flex justify-center">
-          <Button onClick={() => handleUpdateModal(record)}>Update</Button>
+          {record.status === 0 && (
+            <Button
+              onClick={() => {
+                routerLecture(record.id);
+              }}
+            >
+              Details
+            </Button>
+          )}
+          <Button
+            onClick={() => {
+              handleUpdateModal(record), console.log("...", record.status);
+            }}
+          >
+            Update
+          </Button>
           <Button danger onClick={() => handleDeleteModal(record)}>
             Delete
           </Button>
@@ -497,11 +514,16 @@ const Dashboard = ({ params }: any) => {
       title: "Status",
       dataIndex: "status",
       key: "status",
+      sorter: (a, b) => a.status - b.status,
       render: (status) => (
         <Tag color={getStatusColor(status)}>{getStatusText(status)}</Tag>
       ),
     },
   ];
+
+  const routerLecture = (data: any) => {
+    router.push(`/instructorcourses/${idCourse}/${data}`);
+  };
 
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedContent, setSelectedContent] = useState("");
@@ -614,29 +636,26 @@ const Dashboard = ({ params }: any) => {
       title: "Courses",
       href: "/instructorcourses",
     },
-    // {
-    //   image: "/menu-icon/icon-2.png",
-    //   href: "/dashboard",
-    // },
-    {
-      image: "/menu-icon/feedback-review.png",
-      title: "Reviews",
-      href: "/review-mentor",
-    },
-    {
-      image: "/menu-icon/money-check-edit.png",
-      title: "Statistic",
-      href: "/revenue",
-    },
     {
       image: "/menu-icon/file-edit.png",
       title: "Requests",
       href: "/request-history",
     },
     {
+      image: "/menu-icon/feedback-review.png",
+      title: "Reviews",
+      href: "/review-mentor",
+    },
+
+    {
       image: "/menu-icon/receipt.png",
       title: "Transaction History",
       href: "/order-history",
+    },
+    {
+      image: "/menu-icon/money-check-edit.png",
+      title: "Statistic",
+      href: "/revenue",
     },
   ];
 
@@ -1334,7 +1353,7 @@ const Dashboard = ({ params }: any) => {
                                 <div className=" flex flex-col items-center justify-center mb-2">
                                   <div className="flex justify-center items-center gap-2 ">
                                     <div className="text-3xl flex flex-col gap-2">
-                                      <div>Title: {item.test.title} </div>
+                                      <div>{item.test.title} </div>
                                       <div className="flex justify-center ">
                                         <Tag
                                           className="text-2xl"
@@ -1349,9 +1368,7 @@ const Dashboard = ({ params }: any) => {
                                   </div>
 
                                   <br />
-                                  <div>
-                                    Description: {item.test.description}
-                                  </div>
+                                  <div>{item.test.description}</div>
                                 </div>
                               </h3>
                             </div>
@@ -1628,9 +1645,6 @@ const Dashboard = ({ params }: any) => {
             )}
             {activeTab === "tab3" && (
               <div className={`${InstructorCourseStyle.lecture}`}>
-                <div className="flex justify-between mb-5">
-                  <span className="text-lg">Rating of Course</span>
-                </div>
                 {listRating.length === 0 ? (
                   <Empty />
                 ) : (

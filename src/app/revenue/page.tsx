@@ -137,24 +137,25 @@ const Revenue = () => {
       href: "/instructorcourses",
     },
     {
-      image: "/menu-icon/feedback-review.png",
-      title: "Reviews",
-      href: "/review-mentor",
-    },
-    {
-      image: "/menu-icon/money-check-edit.png",
-      title: "Statistic",
-      href: "/revenue",
-    },
-    {
       image: "/menu-icon/file-edit.png",
       title: "Requests",
       href: "/request-history",
     },
     {
+      image: "/menu-icon/feedback-review.png",
+      title: "Reviews",
+      href: "/review-mentor",
+    },
+
+    {
       image: "/menu-icon/receipt.png",
       title: "Transaction History",
       href: "/order-history",
+    },
+    {
+      image: "/menu-icon/money-check-edit.png",
+      title: "Statistic",
+      href: "/revenue",
     },
   ];
   const [selected1, setSelected1] = useState<string>("Last Week");

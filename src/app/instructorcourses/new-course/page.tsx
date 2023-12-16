@@ -156,29 +156,26 @@ export default function CreateCourse() {
       title: "Courses",
       href: "/instructorcourses",
     },
-    // {
-    //   image: "/menu-icon/icon-2.png",
-    //   href: "/dashboard",
-    // },
-    {
-      image: "/menu-icon/feedback-review.png",
-      title: "Reviews",
-      href: "/review-mentor",
-    },
-    {
-      image: "/menu-icon/money-check-edit.png",
-      title: "Statistic",
-      href: "/revenue",
-    },
     {
       image: "/menu-icon/file-edit.png",
       title: "Requests",
       href: "/request-history",
     },
     {
+      image: "/menu-icon/feedback-review.png",
+      title: "Reviews",
+      href: "/review-mentor",
+    },
+
+    {
       image: "/menu-icon/receipt.png",
       title: "Transaction History",
       href: "/order-history",
+    },
+    {
+      image: "/menu-icon/money-check-edit.png",
+      title: "Statistic",
+      href: "/revenue",
     },
   ];
 
@@ -272,14 +269,15 @@ export default function CreateCourse() {
   };
 
   const handleLecture = (data: any) => {
-    // console.log("hehe", data.type);
+    console.log("hehe", type.toString());
     if (!source) {
       toast.error("Please Input Your Video Content!");
     } else {
       const formData = new FormData();
       formData.append("title", data.title);
       formData.append("content", data.content);
-      formData.append("contentType", data.type);
+      // formData.append("contentType", data.type);
+      formData.append("contentType", type.toString());
       formData.append("contentUrl", source);
       // if (formDataSource !== undefined) {
       //   formData.append("contentUrl", formDataSource);
@@ -313,9 +311,13 @@ export default function CreateCourse() {
     { id: 0, title: "Document" },
   ];
 
-  const handleChangeType = (value: number) => {
+  const handleChangeType = (value: any) => {
     setType(value);
   };
+
+  useEffect(() => {
+    setSelectedType(1); // Đặt giá trị mặc định là id của "Video" (1)
+  }, []);
 
   const columns = [
     {
@@ -580,7 +582,8 @@ export default function CreateCourse() {
     router.push(`/instructorcourses/${courseId}`);
   };
 
-  const [selectedType, setSelectedType] = useState<number | null>(null);
+  const [selectedType, setSelectedType] = useState<number>(1);
+  const defaultTypeValue = 1;
 
   return (
     <>
@@ -1033,7 +1036,7 @@ export default function CreateCourse() {
                                     })}
                                   </Select>
                                 </Form.Item> */}
-                                <Form.Item
+                                {/* <Form.Item
                                   label={<div className="text-xl">Type</div>}
                                   name="type"
                                   rules={[
@@ -1044,8 +1047,31 @@ export default function CreateCourse() {
                                   ]}
                                 >
                                   <Select
-                                    onChange={(value) => setSelectedType(value)}
-                                    placeholder="Select Type"
+                                    onChange={(value) => {
+                                      setSelectedType(value);
+                                      handleChangeType(value);
+                                    }}
+                                    // placeholder="Select Type"
+                                    value={selectedType}
+                                  >
+                                    {Type.map((option) => {
+                                      return (
+                                        <Option
+                                          key={option.id}
+                                          value={option.id}
+                                        >
+                                          {option.title}
+                                        </Option>
+                                      );
+                                    })}
+                                  </Select>
+                                </Form.Item> */}
+                                <Form.Item
+                                  label={<div className="text-xl">Type</div>}
+                                >
+                                  <Select
+                                    onChange={handleChangeType}
+                                    defaultValue={type}
                                   >
                                     {Type.map((option) => {
                                       return (
@@ -1091,7 +1117,7 @@ export default function CreateCourse() {
                                   </div>
                                 ) : (
                                   // </Form.Item>
-                                  <Form.Item label="Document">
+                                  <Form.Item>
                                     <div
                                       className="flex justify-center pt-2 pb-2"
                                       style={{ display: "flex" }}
@@ -1283,17 +1309,12 @@ export default function CreateCourse() {
                                           <div className=" flex flex-col items-center justify-center mb-2">
                                             <div className="flex justify-center items-center gap-2 ">
                                               <div className="text-3xl flex flex-col gap-2">
-                                                <div>
-                                                  Title: {item.test.title}{" "}
-                                                </div>
+                                                <div>{item.test.title} </div>
                                               </div>
                                             </div>
 
                                             <br />
-                                            <div>
-                                              Description:{" "}
-                                              {item.test.description}
-                                            </div>
+                                            <div> {item.test.description}</div>
                                           </div>
                                         </h3>
                                       </div>
@@ -1562,9 +1583,9 @@ export default function CreateCourse() {
         footer={false}
       >
         <div className="flex flex-col gap-5">
-          <p className="text-2xl">Title: {lecture?.title}</p>
+          <p className="text-3xl"> {lecture?.title}</p>
           <video width="full" height={400} src={lecture?.contentUrl} controls />
-          <p className="text-xl">Description: {lecture?.content}</p>
+          <p className="text-xl"> {lecture?.content}</p>
         </div>
       </Modal>
     </>

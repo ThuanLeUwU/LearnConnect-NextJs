@@ -22,12 +22,26 @@ import { toast } from "sonner";
 import { useForm } from "antd/es/form/Form";
 import { useRouter } from "next/navigation";
 import { Test } from "@/components/test/test";
+import { Avatar } from "@mui/material";
+
+interface Report {
+  id: number;
+  reportType: string;
+  description: string;
+  timeStamp: string;
+  imageUrl: string;
+  reportByNavigation: {
+    fullName: string;
+    profilePictureUrl: string;
+  };
+}
 
 const DetailsContent = ({ params }: any) => {
   const idCourse = params.id;
   const [loading, setLoading] = useState(true);
 
   const [course, setCourse] = useState<Course>();
+  const [reportData, setReportData] = useState<Report[]>([]);
   // console.log("má", course);
 
   const { id, userData } = UserAuth();
@@ -59,6 +73,22 @@ const DetailsContent = ({ params }: any) => {
   };
 
   const [showApproved, setShowApproved] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await http.get(
+          `https://learnconnectserver.azurewebsites.net/api/report/get-reports?targetId=${idCourse}&reportType=course`
+        );
+        // console.log("API Response:", response.data);
+        setReportData(response.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, [idCourse]);
 
   useEffect(() => {
     const statusCount = getStatusCount();
@@ -275,12 +305,6 @@ const DetailsContent = ({ params }: any) => {
 
   const columns = [
     {
-      title: "No.",
-      dataIndex: "index",
-      key: "index",
-      render: (text, record, index) => index + 1,
-    },
-    {
       title: "Title",
       dataIndex: "title",
       key: "title",
@@ -356,7 +380,6 @@ const DetailsContent = ({ params }: any) => {
       title: "Note",
       dataIndex: "rejectReason",
       key: "rejectReason",
-      sorter: (a, b) => a.rejectReason.localeCompare(b.rejectReason),
     },
     {
       title: "Status",
@@ -714,6 +737,20 @@ const DetailsContent = ({ params }: any) => {
                     Test
                   </button>
                 </li>
+                {course?.status === 0 && (
+                  <li
+                    className={`cursor-pointer rounded-md ${
+                      activeTab === "tab3"
+                        ? "bg-[#309255] text-white"
+                        : "bg-white"
+                    }`}
+                    onClick={() => handleTabClick("tab3")}
+                  >
+                    <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#309255]">
+                      Reports
+                    </button>
+                  </li>
+                )}
               </ul>
             </div>
             {activeTab === "tab1" && (
@@ -828,6 +865,84 @@ const DetailsContent = ({ params }: any) => {
                           </div>
                         ))}
                       </>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
+            {activeTab === "tab3" && (
+              <div className={`${InstructorCourseStyle.lecture}`}>
+                {reportData.length === 0 ? (
+                  <Empty />
+                ) : (
+                  <>
+                    {loading ? (
+                      <Spin size="large" />
+                    ) : (
+                      // <Table dataSource={listRating} columns={rating} />
+                      <div className="reviews-wrapper reviews-active">
+                        <div className="swiper-container">
+                          <div className="swiper-wrapper">
+                            {reportData.map((report) => {
+                              return (
+                                <>
+                                  <div className="single-review mt-3.5 border border-opacity-20 border-[#30925533] p-7 rounded-md">
+                                    <div className="review-author flex justify-between">
+                                      <div className="flex flex-row">
+                                        <div className="author-thumb p-2">
+                                          <Avatar
+                                            sx={{
+                                              width: "100px",
+                                              height: "100px",
+                                              borderRadius: "100%",
+                                            }}
+                                            src={
+                                              report.reportByNavigation
+                                                .profilePictureUrl
+                                            }
+                                            alt="Author"
+                                            // className="w-24 h-24 rounded-full"
+                                          />
+                                          <i className="icofont-quote-left"></i>
+                                        </div>
+                                        <div className="author-content pl-4">
+                                          <h4 className="text-2xl font-medium">
+                                            {report.reportByNavigation.fullName}
+                                          </h4>
+                                          <span className="text-lg text-[#309255] mt-1.5 font-light">
+                                            {report.timeStamp
+                                              ? new Date(
+                                                  report.timeStamp
+                                                ).toLocaleTimeString("en-US")
+                                              : ""}{" "}
+                                            {report.timeStamp
+                                              ? new Date(
+                                                  report.timeStamp
+                                                ).toLocaleDateString("en-GB", {
+                                                  day: "numeric",
+                                                  month: "long",
+                                                  year: "numeric",
+                                                })
+                                              : ""}{" "}
+                                          </span>
+                                          {report.description === "null" ? (
+                                            <></>
+                                          ) : (
+                                            <p className="mt-3 font-medium text-[#52565b] text-lg">
+                                              {report.description}
+                                            </p>
+                                          )}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </>
+                              );
+                            })}
+                          </div>
+                          <div className="swiper-pagination"></div>
+                        </div>
+                      </div>
                     )}
                   </>
                 )}

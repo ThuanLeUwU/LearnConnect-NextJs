@@ -32,6 +32,7 @@ import { BsFillFlagFill } from "react-icons/bs";
 import Loading from "@/components/loading/loading";
 import Quiz from "@/components/test/test";
 import { type } from "os";
+import moment from "moment";
 
 export type Lecture = {
   id: string | number;
@@ -216,6 +217,7 @@ export default function AfterEnroll({ params }: any) {
     { id: "1", name: "Inappropriate content" },
     { id: "2", name: "Copyright violation" },
     { id: "3", name: "Community standards violation" },
+    { id: "4", name: "Others" },
   ];
 
   const handleChangeReason = (value: React.SetStateAction<null>) => {
@@ -994,7 +996,9 @@ export default function AfterEnroll({ params }: any) {
                                           {item?.user.userName}
                                         </p>
                                         <p className="font-light text-[#8e9298]">
-                                          {item?.comment.commentTime}
+                                          {moment(
+                                            item?.comment.commentTime
+                                          ).format("DD/MM/YYYY HH:mm:ss")}
                                         </p>
                                       </div>
 
@@ -1170,10 +1174,12 @@ export default function AfterEnroll({ params }: any) {
                                                   {replyItem.user.userName}
                                                 </p>
                                                 <p className="font-light text-[#8e9298]">
-                                                  {
+                                                  {moment(
                                                     replyItem?.comment
                                                       .commentTime
-                                                  }
+                                                  ).format(
+                                                    "DD/MM/YYYY HH:mm:ss"
+                                                  )}
                                                 </p>
                                               </div>
                                             )}
