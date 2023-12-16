@@ -136,9 +136,10 @@ const StaffReportID = ({ params }: any) => {
       setConfirmationModalOpen(false);
       handleBack();
       toast.success(`Successfully banned ${target}`);
+      router.push("/staff-page/staff-report");
     } catch (error) {
-      console.error("Error banning course:", error);
-      toast.error("Failed to ban course. Please try again.");
+      console.error(`Error banning ${target}:`, error);
+      toast.error(`Failed to ban ${target}. Please try again.`);
     }
   };
 

@@ -31,22 +31,28 @@ const Footer = () => {
         /> */}
 
         <div className="container">
-          <div className="flex flex-row justify-between">
-            <div className={`flex flex-col justify-center py-5`}>
+          <div className="flex flex-row justify-between py-5">
+            <div className={`flex flex-col justify-center gap-4`}>
               <div className={`${headerStyles.footer_widget_address}`}>
                 <h4 className={`${headerStyles.footer_widget_title} `}>
                   LearnConnect
                 </h4>
               </div>
               <div className="text-xl">
-                <p>
-                  <i className="flaticon-email"></i>{" "}
+                <p className="flex flex-row items-center gap-2">
+                  {/* <i className="flaticon-email"></i>{" "}
+                   */}
+                  <img src="/images/email.png" alt="logo" className="w-6 h-6" />
                   <a href="mailto:contact.learnconnect@gmail.com">
                     contact.learnconnect@gmail.com
                   </a>
                 </p>
-                <p>
-                  <i className="flaticon-phone-call"></i>{" "}
+                <p className="flex flex-row items-center gap-2">
+                  <img
+                    src="/images/phone-call.png"
+                    alt="logo"
+                    className="w-6 h-6"
+                  />
                   <a href="tel:0333892623">0333892623</a>{" "}
                 </p>
               </div>
