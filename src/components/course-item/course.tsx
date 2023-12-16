@@ -58,7 +58,8 @@ const CourseItem = ({
   };
 
   const handlePushMentor = () => {
-    router.push(`/profile-mentor/${mentorId}`);
+    // router.push(`/profile-mentor/${mentorId}`);
+    // router.push(`/profile-mentor/${mentorId}`);
   };
 
   return (
