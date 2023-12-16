@@ -404,16 +404,17 @@ const Dashboard = ({ params }: any) => {
     setActiveTab(tabName);
   };
 
+  const [videoModal, setVideoModal] = useState(false);
   const [videoUrl, setVideoUrl] = useState<string>("");
 
   const handleOpenModal = (url) => {
     setVideoUrl(url);
-    setModalVisible(true);
+    setVideoModal(true);
   };
 
   const handleCloseModal = () => {
     setVideoUrl("");
-    setModalVisible(false);
+    setVideoModal(false);
   };
 
   //table lecture
@@ -613,7 +614,7 @@ const Dashboard = ({ params }: any) => {
     },
     {
       image: "/menu-icon/money-check-edit.png",
-      title: "Revenues",
+      title: "Statistic",
       href: "/revenue",
     },
     {
@@ -2356,7 +2357,7 @@ const Dashboard = ({ params }: any) => {
 
           <Modal
             title="Video"
-            visible={modalVisible}
+            open={videoModal}
             onCancel={handleCloseModal}
             footer={null}
           >

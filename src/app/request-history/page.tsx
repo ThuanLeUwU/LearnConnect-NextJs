@@ -149,7 +149,7 @@ const Reviews = () => {
     },
     {
       image: "/menu-icon/money-check-edit.png",
-      title: "Revenues",
+      title: "Statistic",
       href: "/revenue",
     },
     {
