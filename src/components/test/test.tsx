@@ -48,7 +48,7 @@ export type Test = {
 };
 
 const Quiz = (props) => {
-  const { idCourse } = props;
+  const { idCourse, setScore } = props;
   //   console.log("idcourse1", idCourse);
   const router = useRouter();
   const [questionsTest, setQuestionsTest] = useState<Test[]>([]);
@@ -63,12 +63,12 @@ const Quiz = (props) => {
     const fetchQuestions = async () => {
       try {
         const response = await http.get(
-          `https://learnconnectapi.azurewebsites.net/api/test/get-tests-by-course?courseId=${idCourse}`
+          `https://learnconnectserver.azurewebsites.net/api/test/get-tests-by-course?courseId=${idCourse}`
         );
         setQuestionsTest(response.data);
 
         const userAnswersResponse = await http.get(
-          `https://learnconnectapi.azurewebsites.net/api/user-answer/get-list-answer-by-course?userId=${userData?.id}&courseId=${idCourse}`
+          `https://learnconnectserver.azurewebsites.net/api/user-answer/get-list-answer-by-course?userId=${userData?.id}&courseId=${idCourse}`
         );
         // console.log("userAnswersResponse", userAnswersResponse.data.length);
         if (userAnswersResponse.data.length !== 0) {
@@ -129,7 +129,7 @@ const Quiz = (props) => {
       });
     });
 
-    const urlAPI = `https://learnconnectapi.azurewebsites.net/api/user-answer?userId=${userData?.id}&courseId=${idCourse}`;
+    const urlAPI = `https://learnconnectserver.azurewebsites.net/api/user-answer?userId=${userData?.id}&courseId=${idCourse}`;
 
     try {
       const response = await axios.post(urlAPI, selectedAnswers);
@@ -150,8 +150,9 @@ const Quiz = (props) => {
     if (count > 0) {
       averageScore = (100 / totalQuestions) * count;
     }
+    setScore(averageScore);
     const userId = userData?.id;
-    const url = `https://learnconnectapi.azurewebsites.net/api/learning-performance/user/${userId}/course/${idCourse}`;
+    const url = `https://learnconnectserver.azurewebsites.net/api/learning-performance/user/${userId}/course/${idCourse}`;
     try {
       const response = await http.put(url, {
         score: averageScore,
@@ -217,7 +218,9 @@ const Quiz = (props) => {
   useEffect(() => {
     try {
       http
-        .get(`https://learnconnectapi.azurewebsites.net/api/course/${idCourse}`)
+        .get(
+          `https://learnconnectserver.azurewebsites.net/api/course/${idCourse}`
+        )
         .then((res) => {
           setOneCourse(res.data);
         });

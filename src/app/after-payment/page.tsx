@@ -47,7 +47,7 @@ const AfterPayment = () => {
       const fetchData = async () => {
         try {
           const responseData = await http.get(
-            `https://learnconnectapi.azurewebsites.net/api/payment-transaction/query-vnpay-transaction?vnp_TxnRef=${vnp_TxnRef}&vnp_PayDate=${vnp_PayDate}`
+            `https://learnconnectserver.azurewebsites.net/api/payment-transaction/query-vnpay-transaction?vnp_TxnRef=${vnp_TxnRef}&vnp_PayDate=${vnp_PayDate}`
           );
           setPayment(responseData?.data.paymentTransaction);
           setCourseId(responseData.data.courseId);

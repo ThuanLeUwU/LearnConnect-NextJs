@@ -117,7 +117,7 @@ export default function UserManagePage() {
     if (userData) {
       const fetchData = async () => {
         const response = await axios.get(
-          `https://learnconnectapi.azurewebsites.net/api/user/search?searchQuery=${searchTerm}&currentPage=1&pageSize=9999`
+          `https://learnconnectserver.azurewebsites.net/api/user/search?searchQuery=${searchTerm}&currentPage=1&pageSize=9999`
         );
         // const headers = {
         //   'Authorization': 'Bearer ' + getCookie('accessToken')

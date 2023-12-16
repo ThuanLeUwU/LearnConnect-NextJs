@@ -91,7 +91,7 @@ export default function EditProfile() {
     const fetchUserData = async () => {
       try {
         const response = await http.get(
-          `https://learnconnectapi.azurewebsites.net/api/mentor/get-info/${userData?.id}`
+          `https://learnconnectserver.azurewebsites.net/api/mentor/get-info/${userData?.id}`
         );
         setPaypalId1(response.data.mentor.paypalId);
         setPaypalAddress1(response.data.mentor.paypalAddress);
@@ -195,7 +195,7 @@ export default function EditProfile() {
   //   console.log("usder data:", updatedUserData);
   //   axios
   //     .put(
-  //       `https://learnconnectapi.azurewebsites.net/api/user/${id}`,
+  //       `https://learnconnectserver.azurewebsites.net/api/user/${id}`,
   //       updatedUserData
   //     )
   //     .then((response) => {
@@ -253,7 +253,7 @@ export default function EditProfile() {
 
     axios
       .put(
-        `https://learnconnectapi.azurewebsites.net/api/user/update-info-user?id=${id}`,
+        `https://learnconnectserver.azurewebsites.net/api/user/update-info-user?id=${id}`,
         formData,
         {
           headers: {

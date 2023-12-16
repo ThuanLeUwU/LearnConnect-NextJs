@@ -144,6 +144,7 @@ export default function AfterEnroll({ params }: any) {
   const [reply, setReply] = useState<Reply[]>([]);
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [idDelete, setIdDelete] = useState(0);
+  const [score, setScore] = useState(0);
   const handleOk = async (data: any) => {
     setIsModalOpen(false);
     const formdata = new FormData();
@@ -154,7 +155,7 @@ export default function AfterEnroll({ params }: any) {
     }
     try {
       await axios.post(
-        `https://learnconnectapi.azurewebsites.net/api/report/report-course?userId=${id}&courseId=${idCourse}`,
+        `https://learnconnectserver.azurewebsites.net/api/report/report-course?userId=${id}&courseId=${idCourse}`,
         formdata,
         {
           headers: {
@@ -169,7 +170,7 @@ export default function AfterEnroll({ params }: any) {
       });
     } catch (err) {
       setTimeout(() => {
-        toast.error("Report fail");
+        toast.error(err.response.data);
       });
     }
   };
@@ -232,7 +233,7 @@ export default function AfterEnroll({ params }: any) {
   useEffect(() => {
     const fetchData = async () => {
       const responseData = await axios.get(
-        `https://learnconnectapi.azurewebsites.net/api/lecture/by-course/${idCourse}`
+        `https://learnconnectserver.azurewebsites.net/api/lecture/by-course/${idCourse}`
       );
       setTestVideo(responseData?.data);
     };
@@ -275,7 +276,7 @@ export default function AfterEnroll({ params }: any) {
       const getProcess = async () => {
         await http
           .get(
-            `https://learnconnectapi.azurewebsites.net/api/learning-process/get_lecture_process?lectureId=${lecture.id}&courseId=${idCourse}&userId=${userData?.id}`
+            `https://learnconnectserver.azurewebsites.net/api/learning-process/get_lecture_process?lectureId=${lecture.id}&courseId=${idCourse}&userId=${userData?.id}`
           )
           .then((res) => {
             const learningProcess = res?.data.status;
@@ -300,7 +301,7 @@ export default function AfterEnroll({ params }: any) {
   useEffect(() => {
     const fetchData = async () => {
       const responseData = await http.get(
-        `https://learnconnectapi.azurewebsites.net/api/course/${idCourse}`
+        `https://learnconnectserver.azurewebsites.net/api/course/${idCourse}`
       );
       setCourses(responseData?.data);
     };
@@ -359,7 +360,7 @@ export default function AfterEnroll({ params }: any) {
       });
     } catch (err) {
       setTimeout(() => {
-        toast.error("Rating fail");
+        toast.error(err.response.data);
       });
     }
     // console.log("value", parseInt(value.toString()));
@@ -376,13 +377,14 @@ export default function AfterEnroll({ params }: any) {
           `/learning-performance/user/${id}/course/${idCourse}`
         );
         setPerformance(responseData?.data);
+        setScore(responseData?.data.score);
         // console.log("performance", performance);
       };
       fetchData();
     } catch (err) {
       console.error(err);
     }
-  }, [id]);
+  }, [score]);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const [maxTime, setMaxTime] = useState<number>(0); //truyen maxTime tu API response
@@ -405,7 +407,7 @@ export default function AfterEnroll({ params }: any) {
     ) {
       // setMaxTime(totalTime);
       http.post(
-        `https://learnconnectapi.azurewebsites.net/api/learning-process/save_process?userId=${id}&lectureId=${
+        `https://learnconnectserver.azurewebsites.net/api/learning-process/save_process?userId=${id}&lectureId=${
           testVideo[activeVideoIndex].id
         }&courseId=${idCourse}&currentTime=${Math.floor(
           currentTime
@@ -445,7 +447,7 @@ export default function AfterEnroll({ params }: any) {
   useEffect(() => {
     const fetchData = async () => {
       const responseData = await axios.get(
-        `https://learnconnectapi.azurewebsites.net/api/learning-performance/get-by/${userData?.id}/${idCourse}`
+        `https://learnconnectserver.azurewebsites.net/api/learning-performance/get-by/${userData?.id}/${idCourse}`
       );
       setTimeSpent(responseData?.data);
     };
@@ -491,7 +493,7 @@ export default function AfterEnroll({ params }: any) {
     const fetchData = async () => {
       await http
         .get(
-          `https://learnconnectapi.azurewebsites.net/api/learning-process/get_user_current_lecture?courseId=${idCourse}&userId=${userData?.id}`
+          `https://learnconnectserver.azurewebsites.net/api/learning-process/get_user_current_lecture?courseId=${idCourse}&userId=${userData?.id}`
         )
         .then((response) => {
           setPercentage(response?.data?.progress);
@@ -522,7 +524,7 @@ export default function AfterEnroll({ params }: any) {
   const consoleLogLectureId = async (lectureId) => {
     await http
       .get(
-        `https://learnconnectapi.azurewebsites.net/api/Comment/get-comments-by-lectureId/${lectureId}`
+        `https://learnconnectserver.azurewebsites.net/api/Comment/get-comments-by-lectureId/${lectureId}`
       )
       .then((res) => {
         setComment(res?.data.reverse());
@@ -540,13 +542,13 @@ export default function AfterEnroll({ params }: any) {
       formData.append("comment", commentText);
       await http
         .post(
-          `https://learnconnectapi.azurewebsites.net/api/Comment?userId=${userData?.id}&lectureId=${IdLecture}`,
+          `https://learnconnectserver.azurewebsites.net/api/Comment?userId=${userData?.id}&lectureId=${IdLecture}`,
           formData
         )
         .then(() => {
           http
             .get(
-              `https://learnconnectapi.azurewebsites.net/api/Comment/get-comments-by-lectureId/${IdLecture}`
+              `https://learnconnectserver.azurewebsites.net/api/Comment/get-comments-by-lectureId/${IdLecture}`
             )
             .then((res) => {
               setComment(res?.data.reverse());
@@ -583,7 +585,7 @@ export default function AfterEnroll({ params }: any) {
     formData.append("comment", replyComment);
     await http
       .post(
-        `https://learnconnectapi.azurewebsites.net/api/comment?userId=${userData?.id}&lectureId=${IdLecture}&parentCommentId=${comment}`,
+        `https://learnconnectserver.azurewebsites.net/api/comment?userId=${userData?.id}&lectureId=${IdLecture}&parentCommentId=${comment}`,
         formData
       )
       .then(() => {
@@ -592,7 +594,7 @@ export default function AfterEnroll({ params }: any) {
         setReplyComment("");
         http
           .get(
-            `https://learnconnectapi.azurewebsites.net/api/Comment/get-comments-by-lectureId/${IdLecture}`
+            `https://learnconnectserver.azurewebsites.net/api/Comment/get-comments-by-lectureId/${IdLecture}`
           )
           .then((res) => {
             setComment(res?.data.reverse());
@@ -608,7 +610,7 @@ export default function AfterEnroll({ params }: any) {
     comment.comment1 = editText;
     await http
       .put(
-        `https://learnconnectapi.azurewebsites.net/api/comment/${comment.id}`,
+        `https://learnconnectserver.azurewebsites.net/api/comment/${comment.id}`,
         comment
       )
       .then(() => {
@@ -616,7 +618,7 @@ export default function AfterEnroll({ params }: any) {
         setIsEditing(false);
         http
           .get(
-            `https://learnconnectapi.azurewebsites.net/api/Comment/get-comments-by-lectureId/${IdLecture}`
+            `https://learnconnectserver.azurewebsites.net/api/Comment/get-comments-by-lectureId/${IdLecture}`
           )
           .then((res) => {
             setComment(res?.data.reverse());
@@ -628,13 +630,13 @@ export default function AfterEnroll({ params }: any) {
   const DeleteComment = async (promotionId) => {
     await http
       .delete(
-        `https://learnconnectapi.azurewebsites.net/api/comment/${promotionId}`
+        `https://learnconnectserver.azurewebsites.net/api/comment/${promotionId}`
       )
       .then(() => {
         toast.success("Delete Comment Success");
         http
           .get(
-            `https://learnconnectapi.azurewebsites.net/api/Comment/get-comments-by-lectureId/${IdLecture}`
+            `https://learnconnectserver.azurewebsites.net/api/Comment/get-comments-by-lectureId/${IdLecture}`
           )
           .then((res) => {
             setComment(res?.data.reverse());
@@ -686,7 +688,7 @@ export default function AfterEnroll({ params }: any) {
         <div className="grid cols-2 lg:grid-cols-12 mt-[40px] gap-5">
           <div className="lg:col-span-8">
             {isTestOpen ? (
-              <Quiz idCourse={idCourse} />
+              <Quiz idCourse={idCourse} setScore={setScore} />
             ) : (
               <>
                 {!videoSrc && (
@@ -847,7 +849,7 @@ export default function AfterEnroll({ params }: any) {
                               onChange={handleChange}
                               beforeUpload={beforeUpload}
                               // headers={{ Authorization: authorization }}
-                              action="https://learnconnectapi.azurewebsites.net/api/Upload/image"
+                              action="https://learnconnectserver.azurewebsites.net/api/Upload/image"
                               listType="picture-card"
                             >
                               Upload
@@ -1564,9 +1566,7 @@ export default function AfterEnroll({ params }: any) {
                       <span>Practice Test</span>
                     </button>
 
-                    <p className="ml-auto my-auto">
-                      Score: {performance?.score}
-                    </p>
+                    <p className="ml-auto my-auto">Score: {score}</p>
                   </div>
                 </nav>
               </div>

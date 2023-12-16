@@ -140,7 +140,7 @@ const Dashboard = ({ params }: any) => {
   useEffect(() => {
     http
       .get(
-        `https://learnconnectapi.azurewebsites.net/api/course/get-course-by-mentor/mentorUserId/${id}/course/${idCourse}`
+        `https://learnconnectserver.azurewebsites.net/api/course/get-course-by-mentor/mentorUserId/${id}/course/${idCourse}`
       )
       .then((response) => {
         setCourse(response.data);
@@ -217,7 +217,7 @@ const Dashboard = ({ params }: any) => {
       // toast.info("Video is Moderating By")
       http
         .get(
-          `https://learnconnectapi.azurewebsites.net/api/lecture/by-course/${idCourse}`
+          `https://learnconnectserver.azurewebsites.net/api/lecture/by-course/${idCourse}`
         )
         .then((response) => {
           setLectures(response.data);
@@ -254,7 +254,7 @@ const Dashboard = ({ params }: any) => {
       try {
         await http
           .post(
-            `https://learnconnectapi.azurewebsites.net/api/lecture/create-new-lecture?userId=${id}&courseId=${idCourse}`,
+            `https://learnconnectserver.azurewebsites.net/api/lecture/create-new-lecture?userId=${id}&courseId=${idCourse}`,
             formData,
             {
               headers: {
@@ -268,7 +268,7 @@ const Dashboard = ({ params }: any) => {
             // toast.success("Create Lecture Successfully");
             // http
             //   .get(
-            //     `https://learnconnectapi.azurewebsites.net/api/lecture/by-course/${idCourse}`
+            //     `https://learnconnectserver.azurewebsites.net/api/lecture/by-course/${idCourse}`
             //   )
             //   .then((response) => {
             //     setLectures(response.data);
@@ -290,7 +290,7 @@ const Dashboard = ({ params }: any) => {
   useEffect(() => {
     http
       .get(
-        `https://learnconnectapi.azurewebsites.net/api/lecture/by-course/${idCourse}`
+        `https://learnconnectserver.azurewebsites.net/api/lecture/by-course/${idCourse}`
       )
       .then((response) => {
         setLectures(response.data);
@@ -573,7 +573,7 @@ const Dashboard = ({ params }: any) => {
     try {
       http
         .post(
-          `https://learnconnectapi.azurewebsites.net/api/test/create-test?courseId=${idCourse}`,
+          `https://learnconnectserver.azurewebsites.net/api/test/create-test?courseId=${idCourse}`,
           formData,
           {
             headers: {
@@ -669,7 +669,7 @@ const Dashboard = ({ params }: any) => {
     try {
       http
         .post(
-          `https://learnconnectapi.azurewebsites.net/api/question/create-question?testId=${idTest}`,
+          `https://learnconnectserver.azurewebsites.net/api/question/create-question?testId=${idTest}`,
           formDataQ,
           {
             headers: {
@@ -707,7 +707,7 @@ const Dashboard = ({ params }: any) => {
     try {
       http
         .post(
-          `https://learnconnectapi.azurewebsites.net/api/answer/create-answer?questionId=${mano}`,
+          `https://learnconnectserver.azurewebsites.net/api/answer/create-answer?questionId=${mano}`,
           formData,
           {
             headers: {
@@ -761,7 +761,7 @@ const Dashboard = ({ params }: any) => {
     try {
       http
         .put(
-          `https://learnconnectapi.azurewebsites.net/api/question/${data}`,
+          `https://learnconnectserver.azurewebsites.net/api/question/${data}`,
           formData,
           {
             headers: {
@@ -794,7 +794,7 @@ const Dashboard = ({ params }: any) => {
     try {
       http
         .put(
-          `https://learnconnectapi.azurewebsites.net/api/answer/${data}`,
+          `https://learnconnectserver.azurewebsites.net/api/answer/${data}`,
           formData,
           {
             headers: {
@@ -900,7 +900,9 @@ const Dashboard = ({ params }: any) => {
   const handleDeleteAnswer = (data: any) => {
     try {
       http
-        .delete(`https://learnconnectapi.azurewebsites.net/api/answer/${aId}`)
+        .delete(
+          `https://learnconnectserver.azurewebsites.net/api/answer/${aId}`
+        )
         .then(() => {
           toast.success("Delete Successfully!!");
           setDeleteAnswerModal(false);
@@ -930,7 +932,9 @@ const Dashboard = ({ params }: any) => {
   const handleDeleteQuestion = (data: any) => {
     try {
       http
-        .delete(`https://learnconnectapi.azurewebsites.net/api/question/${qId}`)
+        .delete(
+          `https://learnconnectserver.azurewebsites.net/api/question/${qId}`
+        )
         .then(() => {
           toast.success("Delete Successfully!!");
           setDeleteQuestionModal(false);
@@ -960,7 +964,9 @@ const Dashboard = ({ params }: any) => {
   const handleDeleteTest = (data: any) => {
     try {
       http
-        .delete(`https://learnconnectapi.azurewebsites.net/api/test/${testId}`)
+        .delete(
+          `https://learnconnectserver.azurewebsites.net/api/test/${testId}`
+        )
         .then(() => {
           toast.success("Delete Successfully !");
           setDeleteTestModal(false);
@@ -988,14 +994,14 @@ const Dashboard = ({ params }: any) => {
     try {
       http
         .delete(
-          `https://learnconnectapi.azurewebsites.net/api/lecture/${data.id}`
+          `https://learnconnectserver.azurewebsites.net/api/lecture/${data.id}`
         )
         .then(() => {
           handleDeleteCancel();
           toast.success("Delete Lecture Successfully !");
           http
             .get(
-              `https://learnconnectapi.azurewebsites.net/api/lecture/by-course/${idCourse}`
+              `https://learnconnectserver.azurewebsites.net/api/lecture/by-course/${idCourse}`
             )
             .then((response) => {
               setLectures(response.data);
@@ -1022,7 +1028,7 @@ const Dashboard = ({ params }: any) => {
     try {
       http
         .put(
-          `https://learnconnectapi.azurewebsites.net/api/test/${testId}`,
+          `https://learnconnectserver.azurewebsites.net/api/test/${testId}`,
           formData,
           {
             headers: {
@@ -1792,7 +1798,7 @@ const Dashboard = ({ params }: any) => {
                       onChange={handleFileChange}
                       // beforeUpload={beforeUpload}
                       // headers={{ Authorization: authorization }}
-                      action="https://learnconnectapi.azurewebsites.net/api/Upload/video"
+                      action="https://learnconnectserver.azurewebsites.net/api/Upload/video"
                     >
                       <Button>Upload</Button>
                     </Upload>
@@ -1925,7 +1931,7 @@ const Dashboard = ({ params }: any) => {
                       onChange={handleFileChange}
                       // beforeUpload={beforeUpload}
                       // headers={{ Authorization: authorization }}
-                      action="https://learnconnectapi.azurewebsites.net/api/Upload/video"
+                      action="https://learnconnectserver.azurewebsites.net/api/Upload/video"
                     >
                       <Button>Upload</Button>
                     </Upload>

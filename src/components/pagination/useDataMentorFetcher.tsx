@@ -26,7 +26,7 @@ const useDataMentorFetcher = () => {
   const [mentor, setMentor] = useState<Mentor[]>([]);
   const [mentorID, setMentorId] = useState<Mentor[]>([]);
   const API_URL =
-    "https://learnconnectapi.azurewebsites.net/api/mentor/get-mentors";
+    "https://learnconnectserver.azurewebsites.net/api/mentor/get-mentors";
   const pagesize = 6;
   const [totalPages, setTotalPages] = useState(10);
   const [loading, setLoading] = useState(true);

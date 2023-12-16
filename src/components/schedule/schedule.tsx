@@ -45,7 +45,7 @@ const Schedule: React.FC<ScheduleData> = ({ scheduleData, fetchSchedule }) => {
 
   const DeleteEvent = async (id: any) => {
     await http
-      .delete(`https://learnconnectapi.azurewebsites.net/api/schedule/${id}`)
+      .delete(`https://learnconnectserver.azurewebsites.net/api/schedule/${id}`)
       .then(() => {
         setOpen(true);
         toast.success("Delete Event Success");
@@ -58,7 +58,7 @@ const Schedule: React.FC<ScheduleData> = ({ scheduleData, fetchSchedule }) => {
     schedule.note = editedNote;
     await http
       .put(
-        `https://learnconnectapi.azurewebsites.net/api/schedule/${schedule.id}`,
+        `https://learnconnectserver.azurewebsites.net/api/schedule/${schedule.id}`,
         schedule
       )
       .then(() => {

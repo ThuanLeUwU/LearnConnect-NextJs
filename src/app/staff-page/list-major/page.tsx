@@ -61,7 +61,7 @@ const MajorSepcialize = () => {
     // Gọi API để lấy danh sách người dùng
     http
       .get(
-        `https://learnconnectapi.azurewebsites.net/api/specialization/by-major/${majorId}`
+        `https://learnconnectserver.azurewebsites.net/api/specialization/by-major/${majorId}`
       )
       .then((response) => {
         setSpecializations(response.data);
@@ -76,7 +76,7 @@ const MajorSepcialize = () => {
   useEffect(() => {
     // Gọi API để lấy danh sách người dùng
     http
-      .get(`https://learnconnectapi.azurewebsites.net/api/major`)
+      .get(`https://learnconnectserver.azurewebsites.net/api/major`)
       .then((response) => {
         setMajors(response.data);
         setLoading(false);
@@ -260,7 +260,7 @@ const MajorSepcialize = () => {
     try {
       http
         .post(
-          "https://learnconnectapi.azurewebsites.net/api/major",
+          "https://learnconnectserver.azurewebsites.net/api/major",
           {
             name: data.name,
             description: data.description,
@@ -276,7 +276,7 @@ const MajorSepcialize = () => {
           setFormCreateMajor(false);
           form.resetFields();
           http
-            .get(`https://learnconnectapi.azurewebsites.net/api/major`)
+            .get(`https://learnconnectserver.azurewebsites.net/api/major`)
             .then((response) => {
               setMajors(response.data);
               setLoading(false);
@@ -301,7 +301,7 @@ const MajorSepcialize = () => {
     try {
       http
         .put(
-          `https://learnconnectapi.azurewebsites.net/api/major/${majorId}`,
+          `https://learnconnectserver.azurewebsites.net/api/major/${majorId}`,
           {
             name: data.name || major?.name,
             description: data.description || major?.description,
@@ -317,7 +317,7 @@ const MajorSepcialize = () => {
           setFormUpdateMajor(false);
           form.resetFields();
           http
-            .get(`https://learnconnectapi.azurewebsites.net/api/major`)
+            .get(`https://learnconnectserver.azurewebsites.net/api/major`)
             .then((response) => {
               setMajors(response.data);
               setLoading(false);
@@ -343,13 +343,13 @@ const MajorSepcialize = () => {
     try {
       http
         .put(
-          `https://learnconnectapi.azurewebsites.net/api/major/update-major-status?MajorId=${majorId}&status=0`
+          `https://learnconnectserver.azurewebsites.net/api/major/update-major-status?MajorId=${majorId}&status=0`
         )
         .then(() => {
           toast.success("Disable Major Successfully!!!");
           setDisableMajorModal(false);
           http
-            .get(`https://learnconnectapi.azurewebsites.net/api/major`)
+            .get(`https://learnconnectserver.azurewebsites.net/api/major`)
             .then((response) => {
               setMajors(response.data);
               setLoading(false);
@@ -375,13 +375,13 @@ const MajorSepcialize = () => {
     try {
       http
         .put(
-          `https://learnconnectapi.azurewebsites.net/api/major/update-major-status?MajorId=${majorId}&status=1`
+          `https://learnconnectserver.azurewebsites.net/api/major/update-major-status?MajorId=${majorId}&status=1`
         )
         .then(() => {
           toast.success("Enable Major Successfully!!!");
           setEnableMajorModal(false);
           http
-            .get(`https://learnconnectapi.azurewebsites.net/api/major`)
+            .get(`https://learnconnectserver.azurewebsites.net/api/major`)
             .then((response) => {
               setMajors(response.data);
               setLoading(false);
@@ -407,14 +407,14 @@ const MajorSepcialize = () => {
     try {
       http
         .delete(
-          `https://learnconnectapi.azurewebsites.net/api/major/${data.id}`
+          `https://learnconnectserver.azurewebsites.net/api/major/${data.id}`
         )
         .then(() => {
           toast.success("Delete Major Successfully!!!");
           setDeleteMajorModal(false);
           setTableSpecialize(false);
           http
-            .get(`https://learnconnectapi.azurewebsites.net/api/major`)
+            .get(`https://learnconnectserver.azurewebsites.net/api/major`)
             .then((response) => {
               setMajors(response.data);
               setLoading(false);
@@ -437,7 +437,7 @@ const MajorSepcialize = () => {
     try {
       http
         .post(
-          "https://learnconnectapi.azurewebsites.net/api/specialization",
+          "https://learnconnectserver.azurewebsites.net/api/specialization",
           {
             majorId: majorId,
             name: data.name,
@@ -455,7 +455,7 @@ const MajorSepcialize = () => {
           form.resetFields();
           http
             .get(
-              `https://learnconnectapi.azurewebsites.net/api/specialization/by-major/${majorId}`
+              `https://learnconnectserver.azurewebsites.net/api/specialization/by-major/${majorId}`
             )
             .then((response) => {
               setSpecializations(response.data);
@@ -484,7 +484,7 @@ const MajorSepcialize = () => {
     try {
       http
         .put(
-          `https://learnconnectapi.azurewebsites.net/api/specialization/${specializeId}`,
+          `https://learnconnectserver.azurewebsites.net/api/specialization/${specializeId}`,
           {
             majordId: majorId,
             name: data.name || specialization?.name,
@@ -502,7 +502,7 @@ const MajorSepcialize = () => {
           form.resetFields();
           http
             .get(
-              `https://learnconnectapi.azurewebsites.net/api/specialization/by-major/${majorId}`
+              `https://learnconnectserver.azurewebsites.net/api/specialization/by-major/${majorId}`
             )
             .then((response) => {
               setSpecializations(response.data);
@@ -531,14 +531,14 @@ const MajorSepcialize = () => {
     try {
       http
         .put(
-          `https://learnconnectapi.azurewebsites.net/api/specialization/update-specialization-status?specializationId=${specializeId}&status=0`
+          `https://learnconnectserver.azurewebsites.net/api/specialization/update-specialization-status?specializationId=${specializeId}&status=0`
         )
         .then(() => {
           toast.success("Disable Specialization Successfully!!!");
           setDisableSpecializeModal(false);
           http
             .get(
-              `https://learnconnectapi.azurewebsites.net/api/specialization/by-major/${majorId}`
+              `https://learnconnectserver.azurewebsites.net/api/specialization/by-major/${majorId}`
             )
             .then((response) => {
               setSpecializations(response.data);
@@ -565,14 +565,14 @@ const MajorSepcialize = () => {
     try {
       http
         .put(
-          `https://learnconnectapi.azurewebsites.net/api/specialization/update-specialization-status?specializationId=${specializeId}&status=1`
+          `https://learnconnectserver.azurewebsites.net/api/specialization/update-specialization-status?specializationId=${specializeId}&status=1`
         )
         .then(() => {
           toast.success("Enable Specialization Successfully!!!");
           setEnableSpecializeModal(false);
           http
             .get(
-              `https://learnconnectapi.azurewebsites.net/api/specialization/by-major/${majorId}`
+              `https://learnconnectserver.azurewebsites.net/api/specialization/by-major/${majorId}`
             )
             .then((response) => {
               setSpecializations(response.data);
@@ -599,7 +599,7 @@ const MajorSepcialize = () => {
     try {
       http
         .delete(
-          `https://learnconnectapi.azurewebsites.net/api/specialization/${data.id}`
+          `https://learnconnectserver.azurewebsites.net/api/specialization/${data.id}`
         )
         .then(() => {
           toast.success("Delete Specialization Successfully!!!");
@@ -607,7 +607,7 @@ const MajorSepcialize = () => {
           setDeleteSpecializeModal(false);
           http
             .get(
-              `https://learnconnectapi.azurewebsites.net/api/specialization/by-major/${majorId}`
+              `https://learnconnectserver.azurewebsites.net/api/specialization/by-major/${majorId}`
             )
             .then((response) => {
               setSpecializations(response.data);

@@ -35,7 +35,7 @@ const DetailsContent = ({ params }: any) => {
   useEffect(() => {
     http
       .get(
-        `https://learnconnectapi.azurewebsites.net/api/course/get-course-pending/${idCourse}`
+        `https://learnconnectserver.azurewebsites.net/api/course/get-course-pending/${idCourse}`
       )
       .then((response) => {
         setCourse(response.data);
@@ -69,7 +69,7 @@ const DetailsContent = ({ params }: any) => {
     // Gọi API để lấy danh sách người dùng
     http
       .get(
-        `https://learnconnectapi.azurewebsites.net/api/lecture/by-course/${idCourse}`
+        `https://learnconnectserver.azurewebsites.net/api/lecture/by-course/${idCourse}`
       )
       .then((response) => {
         setLectures(response.data);
@@ -95,7 +95,7 @@ const DetailsContent = ({ params }: any) => {
     try {
       http
         .post(
-          `https://learnconnectapi.azurewebsites.net/api/lecture/process-lecture-request?lectureId=${lectureId}&acceptRequest=true`
+          `https://learnconnectserver.azurewebsites.net/api/lecture/process-lecture-request?lectureId=${lectureId}&acceptRequest=true`
         )
         .then(() => {
           {
@@ -128,7 +128,7 @@ const DetailsContent = ({ params }: any) => {
     try {
       http
         .post(
-          `https://learnconnectapi.azurewebsites.net/api/lecture/process-lecture-request?lectureId=${oneLecture?.id}&acceptRequest=false&note=${data.reason}`,
+          `https://learnconnectserver.azurewebsites.net/api/lecture/process-lecture-request?lectureId=${oneLecture?.id}&acceptRequest=false&note=${data.reason}`,
           {
             headers: {
               "Content-Type": "multipart/form-data",
@@ -173,7 +173,7 @@ const DetailsContent = ({ params }: any) => {
     try {
       http
         .post(
-          `https://learnconnectapi.azurewebsites.net/api/course/ban-course?courseId=${idCourse}&status=true`
+          `https://learnconnectserver.azurewebsites.net/api/course/ban-course?courseId=${idCourse}&status=true`
         )
         .then(() => {
           handleModalCancel();
@@ -193,7 +193,7 @@ const DetailsContent = ({ params }: any) => {
     try {
       http
         .post(
-          `https://learnconnectapi.azurewebsites.net/api/course/ban-course?courseId=${idCourse}&status=false`
+          `https://learnconnectserver.azurewebsites.net/api/course/ban-course?courseId=${idCourse}&status=false`
         )
         .then(() => {
           handleModalCancel();
@@ -209,7 +209,7 @@ const DetailsContent = ({ params }: any) => {
     try {
       http
         .post(
-          `https://learnconnectapi.azurewebsites.net/api/course/process-course-request?courseId=${idCourse}&acceptRequest=true`
+          `https://learnconnectserver.azurewebsites.net/api/course/process-course-request?courseId=${idCourse}&acceptRequest=true`
         )
         .then(() => {
           {
@@ -234,7 +234,7 @@ const DetailsContent = ({ params }: any) => {
     try {
       http
         .post(
-          `https://learnconnectapi.azurewebsites.net/api/course/process-course-request?courseId=${idCourse}&acceptRequest=false&note=${data.reason}`
+          `https://learnconnectserver.azurewebsites.net/api/course/process-course-request?courseId=${idCourse}&acceptRequest=false&note=${data.reason}`
         )
         .then(() => {
           {
@@ -463,7 +463,7 @@ const DetailsContent = ({ params }: any) => {
     try {
       http
         .post(
-          `https://learnconnectapi.azurewebsites.net/api/test/process-test-request?testId=${testId}&acceptRequest=true`
+          `https://learnconnectserver.azurewebsites.net/api/test/process-test-request?testId=${testId}&acceptRequest=true`
         )
         .then(() => {
           http
@@ -497,7 +497,7 @@ const DetailsContent = ({ params }: any) => {
     try {
       http
         .post(
-          `https://learnconnectapi.azurewebsites.net/api/test/process-test-request?testId=${testId}&acceptRequest=false&note=${data.reason}`
+          `https://learnconnectserver.azurewebsites.net/api/test/process-test-request?testId=${testId}&acceptRequest=false&note=${data.reason}`
         )
         .then(() => {
           http

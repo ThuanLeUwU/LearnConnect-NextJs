@@ -62,7 +62,7 @@ const LectureModeration = ({ params }: any) => {
       try {
         http
           .get(
-            `https://learnconnectapi.azurewebsites.net/api/lecture/by-course/${idCourse}/lecture/${LectureId}`
+            `https://learnconnectserver.azurewebsites.net/api/lecture/by-course/${idCourse}/lecture/${LectureId}`
           )
           .then((res) => {
             setLecture(res.data);
@@ -83,7 +83,7 @@ const LectureModeration = ({ params }: any) => {
       try {
         http
           .get(
-            `https://learnconnectapi.azurewebsites.net/api/content-moderation/get-moderation?lectureId=${LectureId}`
+            `https://learnconnectserver.azurewebsites.net/api/content-moderation/get-moderation?lectureId=${LectureId}`
           )
           .then((res) => {
             setModerationLecture(res.data);
@@ -106,7 +106,7 @@ const LectureModeration = ({ params }: any) => {
       console.log(value);
       http
         .get(
-          `https://learnconnectapi.azurewebsites.net/api/course/get-course-pending/${value}`
+          `https://learnconnectserver.azurewebsites.net/api/course/get-course-pending/${value}`
         )
         .then((response) => {
           setCourse(response.data);
@@ -193,7 +193,7 @@ const LectureModeration = ({ params }: any) => {
     try {
       http
         .post(
-          `https://learnconnectapi.azurewebsites.net/api/lecture/process-lecture-request?lectureId=${LectureId}&acceptRequest=true`
+          `https://learnconnectserver.azurewebsites.net/api/lecture/process-lecture-request?lectureId=${LectureId}&acceptRequest=true`
         )
         .then(() => {
           {
@@ -219,7 +219,7 @@ const LectureModeration = ({ params }: any) => {
     try {
       http
         .post(
-          `https://learnconnectapi.azurewebsites.net/api/lecture/process-lecture-request?lectureId=${LectureId}&acceptRequest=false&note=${data.reason}`,
+          `https://learnconnectserver.azurewebsites.net/api/lecture/process-lecture-request?lectureId=${LectureId}&acceptRequest=false&note=${data.reason}`,
           {
             headers: {
               "Content-Type": "multipart/form-data",

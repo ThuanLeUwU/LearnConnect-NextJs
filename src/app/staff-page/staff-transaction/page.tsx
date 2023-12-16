@@ -60,7 +60,7 @@ const StaffTransaction = () => {
       try {
         http
           .get(
-            `https://learnconnectapi.azurewebsites.net/api/payment-transaction/transaction-history-staff?filterDate=${date}&filterType=${activeTab}`
+            `https://learnconnectserver.azurewebsites.net/api/payment-transaction/transaction-history-staff?filterDate=${date}&filterType=${activeTab}`
           )
           .then((res) => {
             setTransaction(res.data);

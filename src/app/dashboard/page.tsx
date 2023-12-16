@@ -81,7 +81,7 @@ const Dashboard = () => {
     const fetchData = async () => {
       try {
         const response = await http.get(
-          "https://learnconnectapi.azurewebsites.net/api/course"
+          "https://learnconnectserver.azurewebsites.net/api/course"
         );
         const data: CourseData[] = response.data;
         setCourseData(data);
@@ -240,7 +240,7 @@ const Dashboard = () => {
     try {
       http
         .get(
-          `https://learnconnectapi.azurewebsites.net/api/payment-transaction/statistic-staff?filterType=${
+          `https://learnconnectserver.azurewebsites.net/api/payment-transaction/statistic-staff?filterType=${
             selected2 === "Last Day" ? "day" : selected2
           }`
         )
@@ -256,7 +256,7 @@ const Dashboard = () => {
     try {
       http
         .get(
-          `https://learnconnectapi.azurewebsites.net/api/payment-transaction/statistic-admin?filterType=${
+          `https://learnconnectserver.azurewebsites.net/api/payment-transaction/statistic-admin?filterType=${
             selected2 === "Last Day" ? "day" : selected2
           }`
         )

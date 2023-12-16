@@ -81,7 +81,7 @@ const OrderHistory = () => {
     try {
       http
         .get(
-          `https://learnconnectapi.azurewebsites.net/api/payment-transaction/revenue-mentor?mentorUserId=${id}&filterDate=${date}`
+          `https://learnconnectserver.azurewebsites.net/api/payment-transaction/revenue-mentor?mentorUserId=${id}&filterDate=${date}`
         )
         .then((res) => {
           setEachCourse(res.data[0].revenueCourse);
