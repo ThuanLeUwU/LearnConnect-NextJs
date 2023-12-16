@@ -965,8 +965,7 @@ export default function CreateCourse() {
                             </div>
                             <div className="flex flex-col text-lg">
                               <div>
-                                - The course must have at least 3 lectures, each
-                                lecture must contain video.
+                                - The course must have at least 3 lectures.
                               </div>
                               <div>- Maximum size for each video is 200MB.</div>
                             </div>

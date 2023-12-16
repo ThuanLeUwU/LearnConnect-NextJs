@@ -223,7 +223,7 @@ const Dashboard = () => {
 
   const [totalStatistic, setTotalStatistic] = useState<TotalStatistic>();
 
-  const [selected2, setSelected2] = useState<string>("Last Day");
+  const [selected2, setSelected2] = useState<string>("Last Week");
 
   const handleChangeSelected2 = (e: any) => {
     setSelected2(e);
@@ -241,7 +241,7 @@ const Dashboard = () => {
       http
         .get(
           `https://learnconnectserver.azurewebsites.net/api/payment-transaction/statistic-staff?filterType=${
-            selected2 === "Last Day" ? "day" : selected2
+            selected2 === "Last Week" ? "week" : selected2
           }`
         )
         .then((res) => {
@@ -257,7 +257,7 @@ const Dashboard = () => {
       http
         .get(
           `https://learnconnectserver.azurewebsites.net/api/payment-transaction/statistic-admin?filterType=${
-            selected2 === "Last Day" ? "day" : selected2
+            selected2 === "Last Week" ? "week" : selected2
           }`
         )
         .then((res) => {
