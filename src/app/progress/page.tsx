@@ -60,7 +60,7 @@ const StudyProgress = () => {
     const fetchData = async () => {
       try {
         const responseData = await http.get(
-          `https://learnconnectapi.azurewebsites.net/api/learning-process/statistics-learning-process?userId=${id}`
+          `https://learnconnectserver.azurewebsites.net/api/learning-process/statistics-learning-process?userId=${id}`
         );
         setProgress(responseData.data);
         setDetailProgress(responseData.data.courseInfo);

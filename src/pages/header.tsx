@@ -127,12 +127,12 @@ const Header = () => {
   useEffect(() => {
     if (id) {
       fetchNotificationData(); // Gọi lần đầu tiên khi id thay đổi
-      // const intervalId = setInterval(() => {
-      //   fetchNotificationData(); // Gọi mỗi 3 giây
-      // }, 3000);
+      const intervalId = setInterval(() => {
+        fetchNotificationData(); // Gọi mỗi 3 giây
+      }, 3000);
 
-      // // Clear interval khi component unmount
-      // return () => clearInterval(intervalId);
+      // Clear interval khi component unmount
+      return () => clearInterval(intervalId);
     }
   }, [id, userData]);
 
@@ -198,7 +198,7 @@ const Header = () => {
     formData.append("password", data.password);
     try {
       await http.post(
-        `https://learnconnectapi.azurewebsites.net/api/user/create-account-staff`,
+        `https://learnconnectserver.azurewebsites.net/api/user/create-account-staff`,
         formData,
         {
           headers: {

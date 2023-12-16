@@ -176,7 +176,7 @@ export const RegisterForm = () => {
     const fetchData = async () => {
       try {
         const response = await axios.post(
-          `https://learnconnectapi.azurewebsites.net/api/verification-document/scan-image`,
+          `https://learnconnectserver.azurewebsites.net/api/verification-document/scan-image`,
           scanImage,
           {
             headers: {
@@ -275,7 +275,7 @@ export const RegisterForm = () => {
       formData.append("verificationDocument", DocumentData);
     }
     try {
-      const url = `https://learnconnectapi.azurewebsites.net/api/mentor/become-a-mentor?userId=${id}&specializationId=${specialization}&description=${description}&reason=${reason}&accountNumber=${BankNumber}&bankName=${BankName}`;
+      const url = `https://learnconnectserver.azurewebsites.net/api/mentor/become-a-mentor?userId=${id}&specializationId=${specialization}&description=${description}&reason=${reason}&accountNumber=${BankNumber}&bankName=${BankName}`;
       await axios
         .post(url, formData, {
           headers: {
@@ -298,7 +298,7 @@ export const RegisterForm = () => {
     const fetchMajor = async () => {
       try {
         const response = await axios.get(
-          "https://learnconnectapi.azurewebsites.net/api/major"
+          "https://learnconnectserver.azurewebsites.net/api/major"
         );
         setMajor(response.data);
       } catch (error) {
@@ -318,7 +318,7 @@ export const RegisterForm = () => {
       const fetchSpecializations = async () => {
         try {
           const response = await axios.get(
-            `https://learnconnectapi.azurewebsites.net/api/specialization/by-major/${selectedMajor}`
+            `https://learnconnectserver.azurewebsites.net/api/specialization/by-major/${selectedMajor}`
           );
           setSpecialization(response.data);
         } catch (error) {
@@ -428,7 +428,7 @@ export const RegisterForm = () => {
                       accept="image/png, image/jpeg"
                       onChange={handleChange}
                       beforeUpload={beforeUpload}
-                      action="https://learnconnectapi.azurewebsites.net/api/Upload/image"
+                      action="https://learnconnectserver.azurewebsites.net/api/Upload/image"
                       listType="picture-card"
                       maxCount={1}
                     >
@@ -451,7 +451,7 @@ export const RegisterForm = () => {
                       accept="image/png, image/jpeg"
                       onChange={handleChangeBackImg}
                       beforeUpload={beforeUpload}
-                      action="https://learnconnectapi.azurewebsites.net/api/Upload/image"
+                      action="https://learnconnectserver.azurewebsites.net/api/Upload/image"
                       listType="picture-card"
                       maxCount={1}
                     >
@@ -629,7 +629,7 @@ export const RegisterForm = () => {
                       accept="image/png, image/jpeg"
                       onChange={handleChangeDocumentData}
                       beforeUpload={beforeUpload}
-                      action="https://learnconnectapi.azurewebsites.net/api/Upload/image"
+                      action="https://learnconnectserver.azurewebsites.net/api/Upload/image"
                       listType="picture-card"
                       maxCount={1}
                     >

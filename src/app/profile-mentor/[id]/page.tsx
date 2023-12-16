@@ -161,10 +161,10 @@ export default function ProfileUser({ params }: any) {
   }, [userData]);
 
   let API_URL =
-    "https://learnconnectapi.azurewebsites.net/api/course/get-courses-by-mentor?userId=";
+    "https://learnconnectserver.azurewebsites.net/api/course/get-courses-by-mentor?userId=";
   // if (isOwner) {
   //   API_URL =
-  //     "https://learnconnectapi.azurewebsites.net/api/course/get-courses-by-mentorUserId?userId=";
+  //     "https://learnconnectserver.azurewebsites.net/api/course/get-courses-by-mentorUserId?userId=";
   // }
 
   const pagesize = 4;
@@ -179,7 +179,7 @@ export default function ProfileUser({ params }: any) {
     const fetchUserData = async () => {
       try {
         const response = await http.get(
-          `https://learnconnectapi.azurewebsites.net/api/mentor/get-info/${idMentor}`
+          `https://learnconnectserver.azurewebsites.net/api/mentor/get-info/${idMentor}`
         );
         SetDataUser(response.data);
         console.log("Datauser", response.data);
@@ -198,7 +198,7 @@ export default function ProfileUser({ params }: any) {
   useEffect(() => {
     const fetchData = async () => {
       const responseData = await http.get(
-        `https://learnconnectapi.azurewebsites.net/api/rating/listRatingOfMentor/${idMentor}`
+        `https://learnconnectserver.azurewebsites.net/api/rating/listRatingOfMentor/${idMentor}`
       );
       setRating(responseData?.data);
       console.log("rating", responseData?.data);
@@ -238,7 +238,7 @@ export default function ProfileUser({ params }: any) {
     }
     try {
       await axios.post(
-        `https://learnconnectapi.azurewebsites.net/api/report/report-mentor?userId=${id}&mentorId=${idMentor}`,
+        `https://learnconnectserver.azurewebsites.net/api/report/report-mentor?userId=${id}&mentorId=${idMentor}`,
         formdata,
         {
           headers: {
@@ -272,7 +272,7 @@ export default function ProfileUser({ params }: any) {
       // console.log("formDataImage1", formDataImage);
       // console.log("image1", image);
       await http.post(
-        `https://learnconnectapi.azurewebsites.net/api/rating/rating-mentor?userId=${id}&mentorId=${idMentor}`,
+        `https://learnconnectserver.azurewebsites.net/api/rating/rating-mentor?userId=${id}&mentorId=${idMentor}`,
         // `/rating/rating-course?userId=${id}&courseId=${idCourse}`,
         formdata,
         {
@@ -767,7 +767,7 @@ export default function ProfileUser({ params }: any) {
                 accept="image/png, image/jpeg"
                 onChange={handleChange}
                 beforeUpload={beforeUpload}
-                action="https://learnconnectapi.azurewebsites.net/api/Upload/image"
+                action="https://learnconnectserver.azurewebsites.net/api/Upload/image"
                 listType="picture-card"
               >
                 Upload

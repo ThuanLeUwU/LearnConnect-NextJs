@@ -71,7 +71,7 @@ export default function ListCourse() {
   useEffect(() => {
     try {
       http
-        .get("https://learnconnectapi.azurewebsites.net/api/specialization")
+        .get("https://learnconnectserver.azurewebsites.net/api/specialization")
         .then((response) => {
           setSpecialized(response.data);
         });

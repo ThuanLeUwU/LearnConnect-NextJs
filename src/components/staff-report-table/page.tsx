@@ -127,7 +127,7 @@ const StaffReportTable = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get<ApiResponse[]>(
-          `https://learnconnectapi.azurewebsites.net/api/report/all-list-reports?reportType=${selectedType}`
+          `https://learnconnectserver.azurewebsites.net/api/report/all-list-reports?reportType=${selectedType}`
         );
         setData(response.data);
       } catch (error) {

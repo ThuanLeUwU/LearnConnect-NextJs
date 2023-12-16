@@ -36,7 +36,7 @@ export type User = {
 const useDataUserFetcher = () => {
   const { id } = UserAuth();
   const [courses, setCourses] = useState<CourseItem[]>([]);
-  const API_URL = `https://learnconnectapi.azurewebsites.net/api/course/get-courses-by-userid?userId=`;
+  const API_URL = `https://learnconnectserver.azurewebsites.net/api/course/get-courses-by-userid?userId=`;
   const pagesize = 6;
   const [totalPages, setTotalPages] = useState(10);
   const [loading, setLoading] = useState(true);
