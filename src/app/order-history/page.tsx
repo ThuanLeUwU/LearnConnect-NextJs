@@ -70,6 +70,22 @@ const OrderHistory = () => {
     });
   };
 
+  const [pagination2, setPagination2] = useState({
+    showSizeChanger: false, // Ẩn tuỳ chọn chọn số lượng bản ghi trên mỗi trang
+    showQuickJumper: false,
+    current: 1,
+    pageSize: 5, // Số dòng mỗi trang
+  });
+
+  const handlePageChange2 = (current, pageSize) => {
+    setPagination2({
+      showSizeChanger: false, // Ẩn tuỳ chọn chọn số lượng bản ghi trên mỗi trang
+      showQuickJumper: false,
+      current,
+      pageSize,
+    });
+  };
+
   const today = dayjs();
 
   const [transaction, setTransaction] = useState<Transaction[]>([]);
@@ -218,7 +234,9 @@ const OrderHistory = () => {
       title: "Time",
       dataIndex: "enrollmentDate",
       key: "enrollmentDate",
-      render: (enrollmentDate) => moment(enrollmentDate).format("HH:mm:ss"),
+      render: (enrollmentDate) =>
+        // moment(enrollmentDate).format("DD/MM/YYYY HH:mm:ss"),
+        moment(enrollmentDate).format("DD/MM/YYYY"),
     },
   ];
 
@@ -292,7 +310,7 @@ const OrderHistory = () => {
           <Table
             columns={columns2}
             dataSource={enrollList}
-            pagination={{ ...pagination, onChange: handlePageChange }}
+            pagination={{ ...pagination2, onChange: handlePageChange2 }}
           />
         </Modal>
       </>
