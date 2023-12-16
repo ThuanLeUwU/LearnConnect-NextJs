@@ -646,6 +646,10 @@ export default function AfterEnroll({ params }: any) {
     DeleteComment;
   };
 
+  const handlePushMentor = () => {
+    router.push(`/profile-mentor/${courses?.mentorId}`);
+  };
+
   return !role ? (
     <Loading />
   ) : (
@@ -759,6 +763,7 @@ export default function AfterEnroll({ params }: any) {
                           <BsFillFlagFill />
                         </Button>
                       </div>
+
                       <Modal
                         destroyOnClose={true}
                         title={`Rating ${courses?.name} by ${user?.displayName}`}
@@ -864,6 +869,27 @@ export default function AfterEnroll({ params }: any) {
                           </Space>
                         </Form>
                       </Modal>
+                    </div>
+                    <div className="flex text-center items-center pt-[10px]">
+                      <div className="author-thumb">
+                        <a href="#">
+                          <img
+                            className="rounded-full w-[50px] h-[50px]"
+                            src={courses?.mentorProfilePictureUrl}
+                            alt="Author"
+                            onClick={handlePushMentor}
+                          />
+                        </a>
+                      </div>
+                      <div className="pl-3">
+                        <button
+                          className="text-[#52565b] hover:text-[#309255] font-medium z-10"
+                          onClick={handlePushMentor}
+                        >
+                          {/* {mentorName} */}
+                          {courses?.mentorName}
+                        </button>
+                      </div>
                     </div>
                     {activeVideoIndex + 1 !== 0 ? (
                       <div className="w-full mx-auto mb-3 shadow-lg rounded-lg">
