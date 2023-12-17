@@ -137,7 +137,7 @@ const StaffTransaction = () => {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      sorter: (a, b) => (a.status ? 1 : -1) - (b.status ? 1 : -1),
+      sorter: (a, b) => a.status - b.status,
       sortDirections: ["ascend", "descend"] as SortOrder[],
       render: (status) => (
         <Tag color={getStatusColor(status)}>{getStatusText(status)}</Tag>

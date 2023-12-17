@@ -352,7 +352,20 @@ const MentorRequest = () => {
       //   const descriptionB = b.mentor.description.toUpperCase();
       //   return descriptionA.localeCompare(descriptionB);
       // },
-      render: (mentor) => <p className="text-[16px]">{mentor.description}</p>,
+      render: (text, record) => (
+        <>
+          {text.description.length > 50 ? (
+            <>
+              <a type="link" onClick={() => showContentModal(text.description)}>
+                {`${text.description.slice(0, 50)}...`}
+              </a>
+            </>
+          ) : (
+            text.description
+          )}
+        </>
+      ),
+      // render: (mentor) => <p className="text-[16px]">{mentor.description}</p>,
     },
     {
       title: "Specialization",
@@ -446,6 +459,18 @@ const MentorRequest = () => {
       ),
     },
   ];
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedContent, setSelectedContent] = useState("");
+
+  const showContentModal = (content: any) => {
+    setSelectedContent(content);
+    setModalVisible(true);
+  };
+
+  const handleCancel = () => {
+    setModalVisible(false);
+  };
 
   return (
     <>
@@ -784,6 +809,14 @@ const MentorRequest = () => {
             </div>
           )}
         </div>
+        <ModalAntd
+          title="Details"
+          open={modalVisible}
+          onCancel={handleCancel}
+          footer={null}
+        >
+          <p>{selectedContent}</p>
+        </ModalAntd>
       </div>
     </>
   );

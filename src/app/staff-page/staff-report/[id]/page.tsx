@@ -223,7 +223,7 @@ const StaffReportID = ({ params }: any) => {
                 onFinish={handleConfirmBan}
               >
                 <Form.Item
-                  label="reason"
+                  label="Reason"
                   name="reason"
                   rules={[
                     { required: true, message: "Please provide a reason" },

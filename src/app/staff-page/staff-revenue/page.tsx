@@ -307,16 +307,16 @@ const StaffRevenue = () => {
           },
           export: {
             csv: {
-              filename: "Revenue Statistic",
+              filename: "Revenue Statistics",
               columnDelimiter: ",",
               headerCategory: "Date",
               headerValue: "value",
             },
             svg: {
-              filename: "Statistic",
+              filename: "Statistics",
             },
             png: {
-              filename: "Statistic",
+              filename: "Statistics",
             },
           },
           autoSelected: "zoom" as "zoom",

@@ -131,7 +131,7 @@ const OrderHistory = () => {
     },
     {
       image: "/menu-icon/money-check-edit.png",
-      title: "Statistic",
+      title: "Statistics",
       href: "/revenue",
     },
   ];
