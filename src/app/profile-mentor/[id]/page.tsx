@@ -372,7 +372,7 @@ export default function ProfileUser({ params }: any) {
   };
 
   const breadcrumbsMentor = () => {
-    router.push("/profile-mentor");
+    router.push("/list-mentor");
   };
 
   const breadcrumbsHomeMentor = () => {
@@ -468,101 +468,96 @@ export default function ProfileUser({ params }: any) {
           )}
         </div>
         <div className="col-span-9 border rounded-lg my-5 shadow-lg">
-          {userData && (
-            <div className="bg-[#fff] rounded-lg shadow-lg h-full">
-              <div className="text-white flex flex-col lg:flex-row rounded-t px-4 lg:p-8">
-                <Tabs
-                  activeKey={currentTab}
-                  onChange={handleTabChange}
-                  className="h-auto"
-                >
-                  <TabPane tab="Biography" key="1">
-                    <div className="author-content pl-4 my-auto text-black">
-                      <p className="font-semibold text-lg mb-2">Biography</p>
-                      <h5 className="text-lg my-1">
-                        {DataUser?.user.bioDescription}
-                      </h5>
-                    </div>
-                  </TabPane>
-                  <TabPane tab="Specialization" key="2">
-                    <div className="author-content pl-4 my-auto ">
-                      <p className="font-semibold text-lg mb-2">
-                        Specialization
-                      </p>
-                      {DataUser?.specialization &&
-                        DataUser.specialization.map((spec, index) => (
-                          <p key={index} className="text-lg my-1 text-black">
-                            <div className="flex">
-                              <GoDotFill className="flex my-auto mr-2" />
-                              {spec.specName}
-                            </div>
-                          </p>
-                        ))}
-                    </div>
-                  </TabPane>
-                  <TabPane tab="Contact" key="3">
-                    <div className="author-content pl-4 my-auto">
-                      <p className="font-semibold text-lg mb-2">Contact</p>
-                      <h5 className="text-lg my-1">
-                        <span className="font-bold">Email:</span>{" "}
-                        {DataUser?.user.email}
-                      </h5>
-                      {DataUser?.phoneNumber !== null && (
-                        <p className="text-lg my-1">
-                          <span className="font-bold">Phone: </span>
-                          {DataUser?.user.phoneNumber}
-                        </p>
-                      )}
-                    </div>
-                  </TabPane>
-                  {isOwner && (
-                    <TabPane tab="Payment Information" key="4">
-                      <div className="author-content pl-4 my-auto ">
-                        <p className="text-lg my-1">
-                          <span className="font-bold">PayPal ID: </span>
-                          {paypalId}
-                        </p>
-                        <p className="text-lg my-1">
-                          <span className="font-bold">PayPal Address: </span>
-                          {paypalAddress}
-                        </p>
-                      </div>
-                    </TabPane>
-                  )}
-                </Tabs>
-                {!isOwner && (
-                  <div className="ml-auto text-black">
-                    <button onClick={toggleDropdown}>
-                      <AiOutlineBars className="border border-opacity-20 border-[#fff] rounded-lg text-4xl text-black" />
-                    </button>
-                    {isDropdownOpen && (
-                      <div
-                        id="dropdown-menu"
-                        className="modal-overlay absolute"
-                      >
-                        <div className="bg-white border border-gray-300 rounded shadow-lg">
-                          <div className="p-2 text-black flex flex-col">
-                            <button
-                              className="px-3 py-2 mb-1 hover:bg-[#e7f8ee]"
-                              onClick={showModal}
-                            >
-                              Report
-                            </button>
-                            <button
-                              className="px-3 py-2 hover:bg-[#e7f8ee]"
-                              onClick={showModalRating}
-                            >
-                              Rating
-                            </button>
+          {/* {userData && ( */}
+          <div className="bg-[#fff] rounded-lg shadow-lg h-full">
+            <div className="text-white flex flex-col lg:flex-row rounded-t px-4 lg:p-8">
+              <Tabs
+                activeKey={currentTab}
+                onChange={handleTabChange}
+                className="h-auto"
+              >
+                <TabPane tab="Biography" key="1">
+                  <div className="author-content pl-4 my-auto text-black">
+                    <p className="font-semibold text-lg mb-2">Biography</p>
+                    <h5 className="text-lg my-1">
+                      {DataUser?.user.bioDescription}
+                    </h5>
+                  </div>
+                </TabPane>
+                <TabPane tab="Specialization" key="2">
+                  <div className="author-content pl-4 my-auto ">
+                    <p className="font-semibold text-lg mb-2">Specialization</p>
+                    {DataUser?.specialization &&
+                      DataUser.specialization.map((spec, index) => (
+                        <p key={index} className="text-lg my-1 text-black">
+                          <div className="flex">
+                            <GoDotFill className="flex my-auto mr-2" />
+                            {spec.specName}
                           </div>
-                        </div>
-                      </div>
+                        </p>
+                      ))}
+                  </div>
+                </TabPane>
+                <TabPane tab="Contact" key="3">
+                  <div className="author-content pl-4 my-auto">
+                    <p className="font-semibold text-lg mb-2">Contact</p>
+                    <h5 className="text-lg my-1">
+                      <span className="font-bold">Email:</span>{" "}
+                      {DataUser?.user.email}
+                    </h5>
+                    {DataUser?.phoneNumber !== null && (
+                      <p className="text-lg my-1">
+                        <span className="font-bold">Phone: </span>
+                        {DataUser?.user.phoneNumber}
+                      </p>
                     )}
                   </div>
+                </TabPane>
+                {isOwner && (
+                  <TabPane tab="Payment Information" key="4">
+                    <div className="author-content pl-4 my-auto ">
+                      <p className="text-lg my-1">
+                        <span className="font-bold">PayPal ID: </span>
+                        {paypalId}
+                      </p>
+                      <p className="text-lg my-1">
+                        <span className="font-bold">PayPal Address: </span>
+                        {paypalAddress}
+                      </p>
+                    </div>
+                  </TabPane>
                 )}
-              </div>
+              </Tabs>
+              {!isOwner && userData && (
+                <div className="ml-auto text-black">
+                  <button onClick={toggleDropdown}>
+                    <AiOutlineBars className="border border-opacity-20 border-[#fff] rounded-lg text-4xl text-black" />
+                  </button>
+                  {isDropdownOpen && (
+                    <div id="dropdown-menu" className="modal-overlay absolute">
+                      <div className="bg-white border border-gray-300 rounded shadow-lg">
+                        <div className="p-2 text-black flex flex-col">
+                          <button
+                            className="px-3 py-2 mb-1 hover:bg-[#e7f8ee]"
+                            onClick={showModal}
+                          >
+                            Report
+                          </button>
+                          <button
+                            className="px-3 py-2 hover:bg-[#e7f8ee]"
+                            onClick={showModalRating}
+                          >
+                            Rating
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
-          )}
+          </div>
+          {/* )} */}
         </div>
       </div>
       <div className="container">

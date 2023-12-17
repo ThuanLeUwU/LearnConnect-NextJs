@@ -598,6 +598,7 @@ const DetailsContent = ({ params }: any) => {
                       {" "}
                       {showApproved &&
                         listQuestion.length !== 0 &&
+                        allQuestions.length !== 0 &&
                         testStatus !== 2 && (
                           <button
                             className="bg-white text-black border rounded-lg border-[#4caf50] hover:bg-[#4caf50] hover:text-white transition duration-300 px-4 py-2"
@@ -786,27 +787,30 @@ const DetailsContent = ({ params }: any) => {
                             <div className="flex flex-col">
                               <div className="flex flex-row justify-end">
                                 <Space>
-                                  {item.test.status === 1 && (
-                                    <>
-                                      {" "}
-                                      <button
-                                        onClick={() => {
-                                          handleApproveTestModal(item.test.id);
-                                        }}
-                                        className="bg-white text-black border rounded-lg border-[#4caf50] hover:bg-[#4caf50] hover:text-white transition duration-300 px-3 py-1"
-                                      >
-                                        Approve
-                                      </button>
-                                      <button
-                                        onClick={() => {
-                                          handleRejectTestModal(item.test.id);
-                                        }}
-                                        className="bg-white text-black border rounded-lg border-[#ffa04e] hover:bg-[#ffa04e] hover:text-white transition duration-300 px-3 py-1"
-                                      >
-                                        Reject
-                                      </button>
-                                    </>
-                                  )}
+                                  {item.test.status === 1 &&
+                                    allQuestions.length !== 0 && (
+                                      <>
+                                        {" "}
+                                        <button
+                                          onClick={() => {
+                                            handleApproveTestModal(
+                                              item.test.id
+                                            );
+                                          }}
+                                          className="bg-white text-black border rounded-lg border-[#4caf50] hover:bg-[#4caf50] hover:text-white transition duration-300 px-3 py-1"
+                                        >
+                                          Approve
+                                        </button>
+                                      </>
+                                    )}
+                                  <button
+                                    onClick={() => {
+                                      handleRejectTestModal(item.test.id);
+                                    }}
+                                    className="bg-white text-black border rounded-lg border-[#ffa04e] hover:bg-[#ffa04e] hover:text-white transition duration-300 px-3 py-1"
+                                  >
+                                    Reject
+                                  </button>
                                 </Space>{" "}
                               </div>
                               <h3 className="text-xl font-semibold mt-2 text-center ">

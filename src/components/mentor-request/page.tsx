@@ -106,7 +106,7 @@ const MentorRequest = () => {
   const [noteInput, setNoteInput] = useState("");
   const [pagination, setPagination] = useState({
     current: 1,
-    pageSize: 5, // Số dòng mỗi trang
+    pageSize: 10, // Số dòng mỗi trang
   });
   const [rejectReason, setRejectReason] = useState("");
 
@@ -354,10 +354,10 @@ const MentorRequest = () => {
       // },
       render: (text, record) => (
         <>
-          {text.description.length > 50 ? (
+          {text.description.length > 100 ? (
             <>
               <a type="link" onClick={() => showContentModal(text.description)}>
-                {`${text.description.slice(0, 50)}...`}
+                {`${text.description.slice(0, 100)}...`}
               </a>
             </>
           ) : (
@@ -814,6 +814,9 @@ const MentorRequest = () => {
           open={modalVisible}
           onCancel={handleCancel}
           footer={null}
+          style={{
+            top: "30%",
+          }}
         >
           <p>{selectedContent}</p>
         </ModalAntd>

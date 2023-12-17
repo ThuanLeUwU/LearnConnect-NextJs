@@ -109,7 +109,7 @@ const StudyProgress = () => {
       sortDirections: ["ascend", "descend"] as SortOrder[],
     },
     {
-      title: "Progress",
+      title: "Process",
       dataIndex: "completion",
       key: "completion",
       sorter: (a, b) => a.completion - b.completion,
@@ -140,7 +140,7 @@ const StudyProgress = () => {
       sortDirections: ["ascend", "descend"] as SortOrder[],
     },
     {
-      title: "Purchase Date",
+      title: "Enroll Date",
       dataIndex: "startDate",
       key: "startDate",
       sorter: (a, b) =>
@@ -215,7 +215,7 @@ const StudyProgress = () => {
           <div className="flex flex-row justify-between p-5 items-center rounded-lg border-solid border-2 shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)]">
             <div className="flex flex-col ">
               <div className="p-4 text-4xl text-orange-400 font-semibold">
-                Purchased
+                Enrolled
               </div>
               <div className="bg-white p-4 text-3xl">
                 {progress?.purchased} Courses

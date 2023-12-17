@@ -65,7 +65,7 @@ const Dashboard = () => {
     },
     {
       image: "/images/chart-user.png",
-      title: "Dashboard",
+      title: "Statistics",
       href: "/dashboard",
     },
     // {

@@ -599,7 +599,7 @@ const StaffRevenue = () => {
             page3={"/staff-page/staff-report"}
             page4={"/staff-page/moderation"}
             page5={"/staff-page/list-major"}
-            page6={"#"}
+            page6={"/staff-page/staff-revenue"}
             page7={"/staff-page/staff-transaction"}
             // page6={"/staff-page/list-major"}
           />

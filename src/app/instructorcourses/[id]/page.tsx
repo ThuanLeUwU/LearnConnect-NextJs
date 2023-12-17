@@ -654,7 +654,7 @@ const Dashboard = ({ params }: any) => {
     },
     {
       image: "/menu-icon/money-check-edit.png",
-      title: "Statistic",
+      title: "Statistics",
       href: "/revenue",
     },
   ];

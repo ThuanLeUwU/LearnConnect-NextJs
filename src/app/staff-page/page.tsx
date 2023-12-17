@@ -23,7 +23,7 @@ const StaffPage = () => {
       ) : (
         <div className="flex w-full">
           <LeftNavbar
-            page1={"#"}
+            page1={"/staff-page"}
             page2={"/staff-page/staff-rating"}
             page3={"/staff-page/staff-report"}
             page4={"/staff-page/moderation"}

@@ -455,7 +455,7 @@ export default function CreateCourse() {
             .get(`/test/get-tests-by-course?courseId=${courseId}`)
             .then((response) => {
               setAllOffTest(response.data);
-              // setAllQuestions(response.data[0].questions);
+              setAllQuestions(response.data[0].questions);
             });
         });
     } catch (err) {
@@ -1509,15 +1509,11 @@ export default function CreateCourse() {
                                 className="border-2 flex rounded-lg justify-center p-2 w-20 hover:bg-gray-200"
                                 onClick={() => {
                                   {
-                                    console.log(
-                                      "huh",
-                                      lectures.length,
-                                      allOfTest.length
-                                    );
                                     lectures.length < 3 ||
-                                    allOfTest.length === 0
+                                    allOfTest.length === 0 ||
+                                    allQuestions.length === 0
                                       ? toast.warning(
-                                          "Questions or lectures does not enough"
+                                          "Questions does not enough"
                                         )
                                       : FinishForm();
                                   }
