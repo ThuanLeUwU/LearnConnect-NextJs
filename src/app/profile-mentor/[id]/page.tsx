@@ -142,9 +142,12 @@ export default function ProfileUser({ params }: any) {
   const { Option } = Select;
 
   const Reasons = [
-    { id: "1", name: "Inappropriate content" },
-    { id: "2", name: "Copyright violation" },
-    { id: "3", name: "Community standards violation" },
+    { id: "1", name: "Unacceptable Behavior" },
+    { id: "2", name: "Lack of Support" },
+    { id: "3", name: "Lack of Professionalism or Knowledge" },
+    { id: "4", name: "Ineffective Communication" },
+    { id: "5", name: "Unprofessional Attitude" },
+    { id: "6", name: "Other" },
   ];
   const handleChangeReason = (value: React.SetStateAction<null>) => {
     setSelected(value);

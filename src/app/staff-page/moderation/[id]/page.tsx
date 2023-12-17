@@ -356,7 +356,12 @@ const DetailsContent = ({ params }: any) => {
       title: "Note",
       dataIndex: "rejectReason",
       key: "rejectReason",
-      sorter: (a, b) => a.rejectReason.localeCompare(b.rejectReason),
+      // sorter: (a, b) => {
+      //   if (a.rejectReason && b.rejectReason) {
+      //     return a.rejectReason.localeCompare(b.rejectReason);
+      //   }
+      //   return 0;
+      // },
     },
     {
       title: "Status",
