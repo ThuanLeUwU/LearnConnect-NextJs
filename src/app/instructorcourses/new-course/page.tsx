@@ -491,7 +491,7 @@ export default function CreateCourse() {
             .get(`/test/get-tests-by-course?courseId=${courseId}`)
             .then((response) => {
               setAllOffTest(response.data);
-              // setAllQuestions(response.data[0].questions)
+              setAllQuestions(response.data[0].questions);
             });
 
           setShowQuestionForm(false);
@@ -534,7 +534,7 @@ export default function CreateCourse() {
             .get(`/test/get-tests-by-course?courseId=${courseId}`)
             .then((response) => {
               setAllOffTest(response.data);
-              //   setAllQuestions(response.data[0].questions);
+              setAllQuestions(response.data[0].questions);
               setStep3Completed(true);
               setShowAnswerForm(false);
             });
