@@ -145,6 +145,7 @@ export default function AfterEnroll({ params }: any) {
   const [reply, setReply] = useState<Reply[]>([]);
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [idDelete, setIdDelete] = useState(0);
+  const [score, setScore] = useState(0);
   const handleOk = async (data: any) => {
     setIsModalOpen(false);
     const formdata = new FormData();
@@ -170,7 +171,7 @@ export default function AfterEnroll({ params }: any) {
       });
     } catch (err) {
       setTimeout(() => {
-        toast.error("Report fail");
+        toast.error(err.response.data);
       });
     }
   };
@@ -361,7 +362,7 @@ export default function AfterEnroll({ params }: any) {
       });
     } catch (err) {
       setTimeout(() => {
-        toast.error("Rating fail");
+        toast.error(err.response.data);
       });
     }
     // console.log("value", parseInt(value.toString()));
@@ -378,13 +379,14 @@ export default function AfterEnroll({ params }: any) {
           `/learning-performance/user/${id}/course/${idCourse}`
         );
         setPerformance(responseData?.data);
+        setScore(responseData?.data.score);
         // console.log("performance", performance);
       };
       fetchData();
     } catch (err) {
       console.error(err);
     }
-  }, [id]);
+  }, [score]);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const [maxTime, setMaxTime] = useState<number>(0); //truyen maxTime tu API response
@@ -688,7 +690,7 @@ export default function AfterEnroll({ params }: any) {
         <div className="grid cols-2 lg:grid-cols-12 mt-[40px] gap-5">
           <div className="lg:col-span-8">
             {isTestOpen ? (
-              <Quiz idCourse={idCourse} />
+              <Quiz idCourse={idCourse} setScore={setScore} />
             ) : (
               <>
                 {!videoSrc && (
@@ -1570,9 +1572,7 @@ export default function AfterEnroll({ params }: any) {
                       <span>Practice Test</span>
                     </button>
 
-                    <p className="ml-auto my-auto">
-                      Score: {performance?.score}
-                    </p>
+                    <p className="ml-auto my-auto">Score: {score}</p>
                   </div>
                 </nav>
               </div>

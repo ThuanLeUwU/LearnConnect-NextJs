@@ -48,7 +48,7 @@ export type Test = {
 };
 
 const Quiz = (props) => {
-  const { idCourse } = props;
+  const { idCourse, setScore } = props;
   //   console.log("idcourse1", idCourse);
   const router = useRouter();
   const [questionsTest, setQuestionsTest] = useState<Test[]>([]);
@@ -150,6 +150,7 @@ const Quiz = (props) => {
     if (count > 0) {
       averageScore = (100 / totalQuestions) * count;
     }
+    setScore(averageScore);
     const userId = userData?.id;
     const url = `https://learnconnectserver.azurewebsites.net/api/learning-performance/user/${userId}/course/${idCourse}`;
     try {
