@@ -355,6 +355,18 @@ const Reviews = () => {
     setIsImageModalOpen(false);
   };
 
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedContent, setSelectedContent] = useState("");
+
+  const showContentModal = (content: any) => {
+    setSelectedContent(content);
+    setModalVisible(true);
+  };
+
+  const handleContentCancel = () => {
+    setModalVisible(false);
+  };
+
   // if (!userData) return <Spin size="large" className="flex justify-center" />;
 
   return (
@@ -668,11 +680,32 @@ const Reviews = () => {
                                                 </TableCell>
                                                 <TableCell>
                                                   <p className="ml-2 text-[20px]">
-                                                    {
+                                                    {mentorData
+                                                      .specializationOfMentor
+                                                      .description.length >
+                                                    200 ? (
+                                                      <>
+                                                        <a
+                                                          type="link"
+                                                          onClick={() =>
+                                                            showContentModal(
+                                                              mentorData
+                                                                .specializationOfMentor
+                                                                .description
+                                                            )
+                                                          }
+                                                        >
+                                                          {`${mentorData.specializationOfMentor.description.slice(
+                                                            0,
+                                                            200
+                                                          )}...`}
+                                                        </a>
+                                                      </>
+                                                    ) : (
                                                       mentorData
                                                         .specializationOfMentor
                                                         .description
-                                                    }
+                                                    )}
                                                   </p>
                                                 </TableCell>
                                                 <TableCell>
@@ -852,11 +885,32 @@ const Reviews = () => {
                                                 </TableCell>
                                                 <TableCell>
                                                   <p className="ml-2 text-[20px]">
-                                                    {
+                                                    {mentorData
+                                                      .specializationOfMentor
+                                                      .description.length >
+                                                    200 ? (
+                                                      <>
+                                                        <a
+                                                          type="link"
+                                                          onClick={() =>
+                                                            showContentModal(
+                                                              mentorData
+                                                                .specializationOfMentor
+                                                                .description
+                                                            )
+                                                          }
+                                                        >
+                                                          {`${mentorData.specializationOfMentor.description.slice(
+                                                            0,
+                                                            200
+                                                          )}...`}
+                                                        </a>
+                                                      </>
+                                                    ) : (
                                                       mentorData
                                                         .specializationOfMentor
                                                         .description
-                                                    }
+                                                    )}
                                                   </p>
                                                 </TableCell>
                                                 <TableCell>
@@ -990,7 +1044,7 @@ const Reviews = () => {
                                             Specialization
                                           </TableCell>
                                           <TableCell className="w-[600px] text-[14px]">
-                                            Description
+                                            Experience
                                           </TableCell>
                                           <TableCell className="text-[14px] w-[200px]">
                                             Image of Document
@@ -1059,11 +1113,32 @@ const Reviews = () => {
                                                 </TableCell>
                                                 <TableCell>
                                                   <p className="ml-2 text-[20px]">
-                                                    {
+                                                    {mentorData
+                                                      .specializationOfMentor
+                                                      .description.length >
+                                                    200 ? (
+                                                      <>
+                                                        <a
+                                                          type="link"
+                                                          onClick={() =>
+                                                            showContentModal(
+                                                              mentorData
+                                                                .specializationOfMentor
+                                                                .description
+                                                            )
+                                                          }
+                                                        >
+                                                          {`${mentorData.specializationOfMentor.description.slice(
+                                                            0,
+                                                            200
+                                                          )}...`}
+                                                        </a>
+                                                      </>
+                                                    ) : (
                                                       mentorData
                                                         .specializationOfMentor
                                                         .description
-                                                    }
+                                                    )}
                                                   </p>
                                                 </TableCell>
                                                 <TableCell>
@@ -1138,6 +1213,17 @@ const Reviews = () => {
                 </div>
               )}
             </div>
+            <Modal
+              title="Details"
+              open={modalVisible}
+              onCancel={handleContentCancel}
+              footer={null}
+              style={{
+                top: "30%",
+              }}
+            >
+              <p>{selectedContent}</p>
+            </Modal>
           </div>
         </div>
       )}

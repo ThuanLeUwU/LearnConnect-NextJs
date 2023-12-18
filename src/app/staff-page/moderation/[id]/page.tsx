@@ -199,11 +199,20 @@ const DetailsContent = ({ params }: any) => {
     setBanCourse(true);
   };
 
-  const handleBanCourseClick = () => {
+  const handleBanCourseClick = (data: any) => {
+    const formData = new FormData();
+    formData.append("reason", data.reason);
+    formData.append("status", "true");
     try {
       http
         .post(
-          `https://learnconnectserver.azurewebsites.net/api/course/ban-course?courseId=${idCourse}&status=true`
+          `https://learnconnectserver.azurewebsites.net/api/course/ban-course?courseId=${idCourse}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
         )
         .then(() => {
           handleModalCancel();
@@ -586,14 +595,13 @@ const DetailsContent = ({ params }: any) => {
 
                 <div className="flex justify-end gap-2  items-center">
                   {course?.status === 0 ? (
-                    <></>
-                  ) : // <button
-                  //   className="bg-white text-black border rounded-lg border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-6 py-2"
-                  //   onClick={handleBan}
-                  // >
-                  //   Ban
-                  // </button>
-                  course?.status === 1 ? (
+                    <button
+                      className="bg-white text-black border rounded-lg border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-6 py-2"
+                      onClick={handleBan}
+                    >
+                      Ban
+                    </button>
+                  ) : course?.status === 1 ? (
                     <>
                       {" "}
                       {showApproved &&
@@ -959,6 +967,9 @@ const DetailsContent = ({ params }: any) => {
             open={modalVisible}
             onCancel={handleModalCancel}
             footer={null}
+            style={{
+              top: "30%",
+            }}
           >
             <p>{selectedContent}</p>
           </Modal>
@@ -1107,6 +1118,13 @@ const DetailsContent = ({ params }: any) => {
               style={{ width: "100%" }}
               onFinish={handleBanCourseClick}
             >
+              <Form.Item
+                label="Reason"
+                name="reason"
+                rules={[{ required: true, message: "Please provide a reason" }]}
+              >
+                <Input.TextArea autoSize={{ minRows: 2 }} />
+              </Form.Item>
               <Space className="justify-end w-full">
                 <Form.Item className="mb-0">
                   <Space>

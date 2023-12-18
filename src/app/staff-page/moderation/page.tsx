@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 
 const ModerationContent = () => {
   const [courses, setCourses] = useState<Course[]>([]);
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(1);
   // console.log("hhhhha", activeTab);
   const handleTabClick = (tabName: number) => {
     setActiveTab(tabName);
