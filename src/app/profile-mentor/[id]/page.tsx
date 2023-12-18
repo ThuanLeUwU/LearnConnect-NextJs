@@ -415,7 +415,7 @@ export default function ProfileUser({ params }: any) {
                     <button onClick={breadcrumbsHome}>Home</button>
                   </Breadcrumb.Item>
                   <Breadcrumb.Item>
-                    <button onClick={breadcrumbsMentor}>Mentor</button>
+                    <button onClick={breadcrumbsMentor}>Mentors</button>
                   </Breadcrumb.Item>
                   <Breadcrumb.Item>
                     <span>{DataUser?.user.fullName}</span>

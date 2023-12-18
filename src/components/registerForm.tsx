@@ -367,7 +367,6 @@ export const RegisterForm = () => {
             labelCol={{ span: 4, offset: 3 }}
             wrapperCol={{ span: 14 }}
             layout="horizontal"
-            // onFinish={handleSubmit}
             className="mx-[30px] pt-3"
           >
             <Tabs
@@ -382,7 +381,6 @@ export const RegisterForm = () => {
                   labelCol={{ span: 4, offset: 3 }}
                   wrapperCol={{ span: 14 }}
                   layout="horizontal"
-                  // onFinish={handleSubmit}
                   className="mx-[30px] pt-3"
                 >
                   <Form.Item
@@ -553,7 +551,6 @@ export const RegisterForm = () => {
                   labelCol={{ span: 4, offset: 3 }}
                   wrapperCol={{ span: 14 }}
                   layout="horizontal"
-                  // onFinish={handleSubmit}
                   className="mx-[30px] pt-3"
                 >
                   <Form.Item

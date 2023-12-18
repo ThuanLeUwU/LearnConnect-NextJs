@@ -132,7 +132,7 @@ export default function CourseDetailPage({ params }: any) {
         router.push(`/my-course/${courseId}`);
       }
     } catch (error) {
-      console.error("Error occurred:", error);
+      toast.error(error.response.data);
     }
   };
 
@@ -557,14 +557,12 @@ export default function CourseDetailPage({ params }: any) {
                     <Modal
                       title="Your Order Preview"
                       visible={isModalVisible}
-                      onOk={() => {
-                        payment(
+                      onOk={async () => {
+                        await payment(
                           idUser,
                           idCourse,
                           "https://learnconnect.vercel.app/after-payment"
-                          // "http://localhost:3000/after-payment"
                         );
-
                         setIsModalVisible(false);
                       }}
                       onCancel={() => {
