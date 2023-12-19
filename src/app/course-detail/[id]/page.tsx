@@ -1,6 +1,6 @@
 "use client";
 import { Payment } from "@/components/payment";
-import { Breadcrumb, Menu, Modal } from "antd";
+import { Breadcrumb, Checkbox, Menu, Modal, message } from "antd";
 import Link from "next/link";
 import React, { useState, useEffect, ReactNode } from "react";
 import axios from "axios";
@@ -59,6 +59,7 @@ export default function CourseDetailPage({ params }: any) {
   const [averageRating, setAverageRating] = useState(0);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const idUser = id;
+  const [isRefundPolicyChecked, setIsRefundPolicyChecked] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -558,6 +559,16 @@ export default function CourseDetailPage({ params }: any) {
                       title="Your Order Preview"
                       visible={isModalVisible}
                       onOk={async () => {
+                        // Check if the user has checked the checkbox
+                        if (!isRefundPolicyChecked) {
+                          // Show an error message or handle it appropriately
+                          message.error(
+                            "Please acknowledge the refund policy."
+                          );
+                          return;
+                        }
+
+                        // Proceed with payment and close the modal
                         await payment(
                           idUser,
                           idCourse,
@@ -570,9 +581,10 @@ export default function CourseDetailPage({ params }: any) {
                       }}
                       okButtonProps={{
                         style: { backgroundColor: "#309255" },
+                        disabled: !isRefundPolicyChecked, // Disable the button if the checkbox is not checked
                       }}
                     >
-                      <div className="pr-[34px]">
+                      <div className="pr-[0px]">
                         <img
                           src={courses?.imageUrl}
                           alt="course-detail"
@@ -595,6 +607,15 @@ export default function CourseDetailPage({ params }: any) {
                           </span>{" "}
                           VND
                         </h3>
+                        <Checkbox
+                          className="mt-3"
+                          onChange={(e) =>
+                            setIsRefundPolicyChecked(e.target.checked)
+                          }
+                        >
+                          I acknowledge that the platform will not issue refunds
+                          of any kind.
+                        </Checkbox>
                       </div>
                     </Modal>
                   </div>

@@ -253,11 +253,17 @@ export const RegisterForm = () => {
 
     if (scanId?.cardId !== undefined) {
       formData.append("identityCardFrontDescription", scanId?.cardId);
+    } else {
+      toast.error("Please check Image front of ID Card.");
+      return;
     }
     // formData.append("identityCardFrontDescription", CardFront);
 
     if (scanId?.createDate !== undefined) {
       formData.append("identityCardBackDescription", scanId?.createDate);
+    } else {
+      toast.error("Please check Image Back of ID Card");
+      return;
     }
     // formData.append("identityCardBackDescription", IssueDate);
     if (identifyData !== undefined) {
@@ -275,6 +281,10 @@ export const RegisterForm = () => {
       formData.append("verificationDocument", DocumentData);
     }
     try {
+      if (!values.description || !values.BankName || !values.BankNumber) {
+        toast.error("Please fill in all required fields.");
+        return;
+      }
       const url = `https://learnconnectserver.azurewebsites.net/api/mentor/become-a-mentor?userId=${id}&specializationId=${specialization}&description=${description}&reason=${reason}&accountNumber=${BankNumber}&bankName=${BankName}`;
       await axios
         .post(url, formData, {
