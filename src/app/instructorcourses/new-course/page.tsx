@@ -1212,8 +1212,8 @@ export default function CreateCourse() {
                             </div>
                             <div className="flex flex-col text-lg">
                               <div>
-                                - Test must have at least 1 question, and a
-                                question must have more than 1 answer.
+                                - Test must have 2 question, and a question must
+                                have more than 1 answer.
                               </div>
                             </div>
                           </div>

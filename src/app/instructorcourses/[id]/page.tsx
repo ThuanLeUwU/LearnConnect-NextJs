@@ -484,25 +484,29 @@ const Dashboard = ({ params }: any) => {
       key: "actions",
       render: (text, record) => (
         <Space className="flex justify-center">
-          {record.status === 0 && (
-            <Button
-              onClick={() => {
-                routerLecture(record.id);
-              }}
-            >
-              Details
-            </Button>
-          )}
+          {/* {record.status === 0 && ( */}
           <Button
             onClick={() => {
-              handleUpdateModal(record), console.log("...", record.status);
+              routerLecture(record.id);
             }}
           >
-            Update
+            Details
           </Button>
-          <Button danger onClick={() => handleDeleteModal(record)}>
-            Delete
-          </Button>
+          {/* )} */}
+          {course?.status !== 3 && (
+            <>
+              <Button
+                onClick={() => {
+                  handleUpdateModal(record), console.log("...", record.status);
+                }}
+              >
+                Update
+              </Button>
+              <Button danger onClick={() => handleDeleteModal(record)}>
+                Delete
+              </Button>
+            </>
+          )}
         </Space>
       ),
     },
@@ -1334,7 +1338,7 @@ const Dashboard = ({ params }: any) => {
                                 >
                                   Update
                                 </Button>
-                                <button
+                                {/* <button
                                   // className="flex items-end"
                                   style={{
                                     backgroundColor: "#fdc6c6",
@@ -1348,7 +1352,7 @@ const Dashboard = ({ params }: any) => {
                                   }}
                                 >
                                   <DeleteOutlined />
-                                </button>
+                                </button> */}
                               </div>
                               <h3 className="text-xl font-semibold mt-2 text-center ">
                                 <div className=" flex flex-col items-center justify-center mb-2">
@@ -1424,7 +1428,7 @@ const Dashboard = ({ params }: any) => {
                                       <PlusOutlined /> Add Answer
                                     </Button>
 
-                                    <button
+                                    {/* <button
                                       style={{
                                         backgroundColor: "#fdc6c6",
                                         color: "black",
@@ -1438,7 +1442,7 @@ const Dashboard = ({ params }: any) => {
                                       }
                                     >
                                       <DeleteOutlined />
-                                    </button>
+                                    </button> */}
                                   </div>
                                 </div>
                                 {showAnswerForm &&
@@ -1539,7 +1543,7 @@ const Dashboard = ({ params }: any) => {
                                             {answer.answerText}
                                           </div>
 
-                                          <button
+                                          {/* <button
                                             style={{
                                               backgroundColor: "#fdc6c6",
                                               color: "black",
@@ -1552,7 +1556,7 @@ const Dashboard = ({ params }: any) => {
                                             }
                                           >
                                             <DeleteOutlined size={16} />
-                                          </button>
+                                          </button> */}
                                         </div>
                                       )}
                                     </>
