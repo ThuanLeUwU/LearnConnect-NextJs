@@ -6,7 +6,16 @@ import axios from "axios";
 import { useRouter, useSearchParams } from "next/navigation";
 import { GrFormPrevious } from "react-icons/gr";
 import { toast } from "sonner";
-import { Breadcrumb, Button, Form, Input, Modal, Space, Spin } from "antd";
+import {
+  Breadcrumb,
+  Button,
+  Empty,
+  Form,
+  Input,
+  Modal,
+  Space,
+  Spin,
+} from "antd";
 import { UserAuth } from "@/app/context/AuthContext";
 import { Course } from "@/components/courses/courses";
 import { Mentor } from "@/components/pagination/useDataMentorFetcher";
@@ -342,7 +351,9 @@ const StaffReportID = ({ params }: any) => {
                 </div>
               ))
             ) : (
-              <p>No reports available.</p>
+              <div className="text-center text-5xl mt-5">
+                <Empty />
+              </div>
             )}
           </div>
         </div>

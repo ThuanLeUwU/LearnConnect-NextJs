@@ -295,7 +295,7 @@ const LectureModeration = ({ params }: any) => {
           {/* <MentorRequest /> */}
           <div className="w-full mt-4">
             <div className="flex justify-between items-center px-5 bg-[#e7f8ee] mb-5">
-              <Breadcrumb className="text-start font-semibold text-3xl my-5 px-4">
+              <Breadcrumb className="text-start font-semibold text-2xl my-5 px-4">
                 <Breadcrumb.Item>
                   <button onClick={breadcrumbNavigation}>Course</button>
                 </Breadcrumb.Item>
@@ -309,7 +309,7 @@ const LectureModeration = ({ params }: any) => {
             <div className="mx-5 flex flex-row gap-10">
               <div className="flex-1 border-2 p-5 shadow-[5px_15px_25px_10px_rgba(0,0,0,0.15)] mt-2 rounded-lg">
                 <div className="text-2xl flex flex-row justify-between">
-                  <div>Lecture: {lecture?.title}</div>{" "}
+                  <div className="text-3xl">{lecture?.title}</div>{" "}
                   <div> {getStatusText(lecture?.status)}</div>
                 </div>
                 {lecture?.contentUrl && (
@@ -328,7 +328,6 @@ const LectureModeration = ({ params }: any) => {
                   </div>
                 )}
                 <div className="text-xl">
-                  <span>Description:</span>
                   <div>{lecture?.content}</div>
                 </div>
               </div>

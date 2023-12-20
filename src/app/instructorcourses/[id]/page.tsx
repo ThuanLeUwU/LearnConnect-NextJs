@@ -42,6 +42,7 @@ import { Course } from "@/components/courses/courses";
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 import { Test } from "@/components/test/test";
+import UpdateFirebase from "@/components/uploadfirebase/updatefirbase";
 // import { Rating } from "@/app/course-detail/[id]/page";
 
 export type TestTitle = {
@@ -1931,7 +1932,7 @@ const Dashboard = ({ params }: any) => {
                     className="flex justify-center pt-2 pb-2"
                     style={{ display: "flex" }}
                   >
-                    <UploadFirebase
+                    <UpdateFirebase
                       fileName={`Course${idCourse}_Lecture${
                         lectures.length + 1
                       }_${Math.floor(

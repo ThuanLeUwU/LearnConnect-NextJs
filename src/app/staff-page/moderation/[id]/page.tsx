@@ -825,7 +825,7 @@ const DetailsContent = ({ params }: any) => {
                                 <div className=" flex flex-col items-center justify-center mb-2">
                                   <div className="flex flex-row justify-center items-center gap-2 ">
                                     <div className="text-3xl flex flex-col gap-2">
-                                      <div>Title: {item.test.title} </div>
+                                      <div>{item.test.title} </div>
                                       <div className="flex justify-center items-center text-2xl">
                                         {getStatusText(item.test.status)}
                                       </div>
@@ -833,9 +833,7 @@ const DetailsContent = ({ params }: any) => {
                                   </div>
 
                                   <br />
-                                  <div>
-                                    Description: {item.test.description}
-                                  </div>
+                                  <div> {item.test.description}</div>
                                 </div>
                               </h3>
                             </div>
