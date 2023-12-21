@@ -1427,22 +1427,23 @@ const Dashboard = ({ params }: any) => {
                                       {/* <div></div> */}
                                       <PlusOutlined /> Add Answer
                                     </Button>
-
-                                    {/* <button
-                                      style={{
-                                        backgroundColor: "#fdc6c6",
-                                        color: "black",
-                                        width: "40px", // Thiết lập chiều rộng mong muốn
-                                        height: "24px",
-                                        borderRadius: "5px",
-                                        // Thiết lập chiều cao mong muốn
-                                      }}
-                                      onClick={() =>
-                                        showDeleteQuestionModal(q.question.id)
-                                      }
-                                    >
-                                      <DeleteOutlined />
-                                    </button> */}
+                                    {item.questions.length > 2 && (
+                                      <button
+                                        style={{
+                                          backgroundColor: "#fdc6c6",
+                                          color: "black",
+                                          width: "40px", // Thiết lập chiều rộng mong muốn
+                                          height: "24px",
+                                          borderRadius: "5px",
+                                          // Thiết lập chiều cao mong muốn
+                                        }}
+                                        onClick={() =>
+                                          showDeleteQuestionModal(q.question.id)
+                                        }
+                                      >
+                                        <DeleteOutlined />
+                                      </button>
+                                    )}
                                   </div>
                                 </div>
                                 {showAnswerForm &&
@@ -1542,21 +1543,22 @@ const Dashboard = ({ params }: any) => {
                                           >
                                             {answer.answerText}
                                           </div>
-
-                                          {/* <button
-                                            style={{
-                                              backgroundColor: "#fdc6c6",
-                                              color: "black",
-                                              width: "24px", // Thiết lập chiều rộng mong muốn
-                                              height: "24px",
-                                              borderRadius: "5px", // Thiết lập chiều cao mong muốn
-                                            }}
-                                            onClick={() =>
-                                              showDeleteAnswerModal(answer.id)
-                                            }
-                                          >
-                                            <DeleteOutlined size={16} />
-                                          </button> */}
+                                          {q.answers.length > 2 && (
+                                            <button
+                                              style={{
+                                                backgroundColor: "#fdc6c6",
+                                                color: "black",
+                                                width: "24px", // Thiết lập chiều rộng mong muốn
+                                                height: "24px",
+                                                borderRadius: "5px", // Thiết lập chiều cao mong muốn
+                                              }}
+                                              onClick={() =>
+                                                showDeleteAnswerModal(answer.id)
+                                              }
+                                            >
+                                              <DeleteOutlined size={16} />
+                                            </button>
+                                          )}
                                         </div>
                                       )}
                                     </>
