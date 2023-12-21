@@ -100,10 +100,9 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
   const googleSignIn = async () => {
     const provider = new GoogleAuthProvider();
     await signInWithPopup(auth, provider);
-
-    setTimeout(() => {
-      toast.success("Login Successful");
-    });
+    // setTimeout(() => {
+    //   toast.success("Login Successful");
+    // });
   };
 
   const logOut = () => {
@@ -185,36 +184,42 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
       if (currentUser) {
         currentUser.getIdToken().then((token) => {
           const fetchData = async () => {
-            const responseData = await axios.post(
-              `https://learnconnectserver.azurewebsites.net/api/user/login`,
-              token,
-              {
-                headers: {
-                  "Content-Type": "application/json",
-                },
-              }
-            );
-            localStorage.setItem("token", responseData?.data.data);
-            const api_token = responseData?.data.data;
-            setRequestBecomeMentor(responseData?.data.isRequestBecomeMentor);
-            console.log(
-              "requestBecomeMentor",
-              responseData?.data.isRequestBecomeMentor
-            );
-            var jwt = require("jsonwebtoken");
-            var decoded = jwt.decode(api_token);
-            setJwtToken(api_token);
-            const userId = decoded.Id;
-            const userRole = decoded.role;
-            setId(userId);
-            setRole(parseInt(userRole));
+            try {
+              const responseData = await axios.post(
+                `https://learnconnectserver.azurewebsites.net/api/user/login`,
+                token,
+                {
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                }
+              );
 
-            const fetchUser = async (userId: string) => {
-              const responseUser = await http.get(`/user/${userId}`);
-              setUserData(responseUser?.data);
-            };
-            fetchUser(userId);
+              localStorage.setItem("token", responseData?.data.data);
+              const apiToken = responseData?.data.data;
+              setRequestBecomeMentor(responseData?.data.isRequestBecomeMentor);
+
+              toast.success("Login Successful");
+
+              var jwt = require("jsonwebtoken");
+              var decoded = jwt.decode(apiToken);
+              setJwtToken(apiToken);
+              const userId = decoded.Id;
+              const userRole = decoded.role;
+              setId(userId);
+              setRole(parseInt(userRole));
+
+              const fetchUser = async (userId: string) => {
+                const responseUser = await http.get(`/user/${userId}`);
+                setUserData(responseUser?.data);
+              };
+              fetchUser(userId);
+            } catch (error) {
+              console.error("Login Error:", error);
+              toast.error(error.response.data);
+            }
           };
+
           fetchData();
         });
       }

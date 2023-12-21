@@ -265,10 +265,11 @@ const MentorRequest = () => {
     } else {
       handleRejectConfirmation(
         confirmationData.mentorUserId,
-        rejectReason, // Pass reject reason to the function
+        rejectReason,
         confirmationData.specializationId
       );
     }
+    form.resetFields();
     setConfirmationData({
       isOpen: false,
       actionType: "",
@@ -347,11 +348,6 @@ const MentorRequest = () => {
         selectedType === "mentor" ? "mentor" : "specializationOfMentor",
       key: "description",
       width: 600,
-      // sorter: (a, b) => {
-      //   const descriptionA = a.mentor.description.toUpperCase();
-      //   const descriptionB = b.mentor.description.toUpperCase();
-      //   return descriptionA.localeCompare(descriptionB);
-      // },
       render: (text, record) => (
         <>
           {text.description.length > 100 ? (
@@ -365,7 +361,6 @@ const MentorRequest = () => {
           )}
         </>
       ),
-      // render: (mentor) => <p className="text-[16px]">{mentor.description}</p>,
     },
     {
       title: "Specialization",
@@ -400,11 +395,6 @@ const MentorRequest = () => {
       title: "Note",
       dataIndex: "specializationOfMentor",
       key: "note",
-      // sorter: (a, b) => {
-      //   const noteA = (a.specializationOfMentor.note || "").toUpperCase();
-      //   const noteB = (b.specializationOfMentor.note || "").toUpperCase();
-      //   return noteA.localeCompare(noteB);
-      // },
       render: (specializationOfMentor) => (
         <p className="text-[16px]">{specializationOfMentor.note}</p>
       ),
@@ -615,7 +605,10 @@ const MentorRequest = () => {
                 }
                 open={isConfirmationModalOpen}
                 width="35%"
-                onCancel={handleCancelBan}
+                onCancel={() => {
+                  handleCancelBan();
+                  form.resetFields();
+                }}
                 footer={false}
                 style={{
                   top: "30%",
