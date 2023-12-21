@@ -585,14 +585,14 @@ const Dashboard = ({ params }: any) => {
   }, [idCourse]);
 
   const [test, setTest] = useState<TestTitle>();
-  console.log("ffff", test);
+  // console.log("ffff", test);
 
   useEffect(() => {
     // Gọi API để lấy danh sách người dùng
     http
       .get(`/test/get-tests-by-course?courseId=${idCourse}`)
       .then((response) => {
-        setTest(response.data[0].test);
+        setListQuestion(response.data);
         // setAllQuestions(response.data[0].questions);
       });
   }, [idCourse]);

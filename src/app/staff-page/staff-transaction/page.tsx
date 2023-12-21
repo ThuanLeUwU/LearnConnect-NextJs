@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { Breadcrumb, DatePicker, Spin, Table, Tag } from "antd";
+import { Breadcrumb, Button, DatePicker, Spin, Table, Tag } from "antd";
 import LeftNavbar from "@/components/left-navbar/page";
 import MentorRequest from "@/components/mentor-request/page";
 import { UserAuth } from "@/app/context/AuthContext";
@@ -212,13 +212,31 @@ const StaffTransaction = () => {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      sorter: (a, b) => (a.status ? 1 : -1) - (b.status ? 1 : -1),
+      sorter: (a, b) => a.status - b.status,
       sortDirections: ["ascend", "descend"] as SortOrder[],
       render: (status) => (
         <Tag color={getStatusColor(status)}>{getStatusText(status)}</Tag>
       ),
     },
+    {
+      title: "Action Repay",
+      key: "actionRepay",
+      render: (text, record) => {
+        // Kiểm tra nếu trạng thái là 1, hiển thị nút hoặc phần giao diện bạn muốn
+        if (record.status === 1) {
+          return <Button onClick={() => handleRepay(record)}>Repay</Button>;
+        } else {
+          return <>-</>;
+        }
+      },
+    },
   ];
+
+  const handleRepay = (record) => {
+    // Thực hiện các hành động cần thiết khi người dùng nhấn nút Repay
+    console.log("Repay action for record:", record);
+    // ... (thêm logic xử lý ở đây)
+  };
 
   const handleDateChange = (date: any, dateString: string) => {
     // console.log("Selected Dates:", date.format("YYYY-MM-DD"));

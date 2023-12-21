@@ -100,6 +100,7 @@ const DetailsContent = ({ params }: any) => {
     http
       .get(
         `https://learnconnectserver.azurewebsites.net/api/lecture/by-course/${idCourse}`
+        // `https://learnconnectapi.azurewebsites.net/api/lecture/by-user-course?userId=8&courseId=${idCourse}`
       )
       .then((response) => {
         setLectures(response.data);

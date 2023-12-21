@@ -114,11 +114,17 @@ const Header = () => {
     }
   };
 
+  // const [previousNotificationLength, setPreviousNotificationLength] =
+  //   useState<number>(0);
+  // console.log("hmmssmss", previousNotificationLength);
+  // const [NotificationLength, setNotificationLength] = useState<number>(0);
+
   const fetchNotificationData = async () => {
     try {
       const response = await http.get(`/notification/byUserId/${id}`);
       setNotificationContent(response.data[0].notification);
       setNotiUnread(response.data[0].countUnRead);
+      // setNotificationLength(response.data[0].notification.length);
     } catch (error) {
       console.error("Error fetching Notification Data:", error);
     }
@@ -127,14 +133,28 @@ const Header = () => {
   useEffect(() => {
     if (id) {
       fetchNotificationData(); // Gọi lần đầu tiên khi id thay đổi
-      const intervalId = setInterval(() => {
-        fetchNotificationData(); // Gọi mỗi 3 giây
-      }, 3000);
+      // const intervalId = setInterval(() => {
+      //   fetchNotificationData(); // Gọi mỗi 3 giây
+      //   // checkNotificationLengthChange();
+      // }, 3000);
 
-      // Clear interval khi component unmount
-      return () => clearInterval(intervalId);
+      // // Clear interval khi component unmount
+      // return () => clearInterval(intervalId);
     }
   }, [id, userData]);
+
+  // const checkNotificationLengthChange = () => {
+  //   console.log("hmmm", notificationContent.length);
+
+  //   // Kiểm tra xem độ dài thông báo đã thay đổi hay không
+  //   if (notificationContent.length !== previousNotificationLength) {
+  //     // console.log("hmmmssss", previousNotificationLength);
+  //     // Thông báo sự thay đổi bằng toast
+  //     toast.success("Có thông báo mới!");
+  //     // Cập nhật giá trị độ dài thông báo
+  //     setPreviousNotificationLength(notificationContent.length);
+  //   }
+  // };
 
   const handleClickOutside = (event: MouseEvent) => {
     const dropdown = document.getElementById("dropdown-menu");

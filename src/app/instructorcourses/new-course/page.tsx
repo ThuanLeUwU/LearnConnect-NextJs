@@ -411,7 +411,7 @@ export default function CreateCourse() {
   const [listQuestion, setListQuestion] = useState<oneTest>();
   const [allOfTest, setAllOffTest] = useState<Test[]>([]);
   const [allQuestions, setAllQuestions] = useState<Test[]>([]);
-  console.log("hasdhajskdh", allQuestions);
+  // console.log("hasdhajskdh", allQuestions);
 
   useEffect(() => {
     http

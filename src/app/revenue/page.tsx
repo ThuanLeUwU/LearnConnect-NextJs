@@ -333,6 +333,11 @@ const Revenue = () => {
     let localMaxRevenue = 0;
 
     courseStatistic1.forEach((course) => {
+      // const truncatedCourseName =
+      //   course.courseName.length > 20
+      //     ? course.courseName.slice(0, 20) + "..."
+      //     : course.courseName;
+      // processedData1.push([truncatedCourseName, course.revenue]);
       processedData1.push([course.courseName, course.revenue]);
       localMaxRevenue = Math.max(localMaxRevenue, course.revenue);
     });
