@@ -11,6 +11,7 @@ import {
   Button as ButtonAntd,
   Breadcrumb,
   Input,
+  Tag,
 } from "antd";
 
 import Button from "@mui/material/Button";
@@ -383,12 +384,18 @@ const MentorRequest = () => {
         a.specializationOfMentor.status - b.specializationOfMentor.status,
 
       render: (specializationOfMentor) => (
-        <span
-          className="text-[16px]"
-          style={{ color: getStatusColor(specializationOfMentor.status) }}
+        // <span
+        //   className="text-[16px]"
+        //   style={{ color: getStatusColor(specializationOfMentor.status) }}
+        // >
+        //   {getStatusText(specializationOfMentor.status)}
+        // </span>
+        <Tag
+          color={getStatusColor(specializationOfMentor.status)}
+          style={{ fontSize: "16px", width: "80px", textAlign: "center" }}
         >
           {getStatusText(specializationOfMentor.status)}
-        </span>
+        </Tag>
       ),
     },
     {

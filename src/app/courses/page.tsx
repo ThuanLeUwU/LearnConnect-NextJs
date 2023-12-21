@@ -207,7 +207,7 @@ export default function ListCourse() {
                   </Option>
                 ))}
               </Select>
-              <span>Specialize: </span>
+              <span>Specialization: </span>
               <Select
                 defaultValue=""
                 onChange={handleFilterSpecialized}

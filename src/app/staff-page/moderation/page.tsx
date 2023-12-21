@@ -72,22 +72,22 @@ const ModerationContent = () => {
               <ul className="tabs flex space-x-24">
                 <li
                   className={`cursor-pointer rounded-md shadow-[5px_5px_20px_10px_rgba(0,0,0,0.15)] ${
-                    activeTab === 0 ? "bg-[#309255] text-white" : "bg-white"
-                  }`}
-                  onClick={() => handleTabClick(0)}
-                >
-                  <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#309255]">
-                    Active
-                  </button>
-                </li>
-                <li
-                  className={`cursor-pointer rounded-md shadow-[5px_5px_20px_10px_rgba(0,0,0,0.15)] ${
                     activeTab === 1 ? "bg-gray-500 text-white" : "bg-white"
                   }`}
                   onClick={() => handleTabClick(1)}
                 >
                   <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-gray-500">
                     Pending
+                  </button>
+                </li>
+                <li
+                  className={`cursor-pointer rounded-md shadow-[5px_5px_20px_10px_rgba(0,0,0,0.15)] ${
+                    activeTab === 0 ? "bg-[#309255] text-white" : "bg-white"
+                  }`}
+                  onClick={() => handleTabClick(0)}
+                >
+                  <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#309255]">
+                    Active
                   </button>
                 </li>
                 <li

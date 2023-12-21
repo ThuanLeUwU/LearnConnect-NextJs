@@ -5,7 +5,12 @@ import { Tooltip } from "antd";
 import { useState } from "react";
 
 const LeftNavbar = ({ page1, page2, page3, page4, page5, page6, page7 }) => {
-  const [activeMenu, setActiveMenu] = useState<number>();
+  const [activeMenuItem, setActiveMenuItem] = useState<number>(0);
+  const handleMenuItemClick = (index) => {
+    // Cập nhật trạng thái khi một menu item được chọn
+    console.log("v", index);
+    setActiveMenuItem(index);
+  };
   const menuItem = [
     {
       image: "/menu-icon/form.png",
@@ -52,7 +57,10 @@ const LeftNavbar = ({ page1, page2, page3, page4, page5, page6, page7 }) => {
             <Tooltip key={index} title={item.title}>
               <Link
                 href={item.href}
-                className={`${InstructorCourseStyle.sidebar_active} mt-5`}
+                className={`${InstructorCourseStyle.sidebar_active} ${
+                  activeMenuItem === index ? "bg-[#3c9d60]" : ""
+                } mt-5`}
+                onClick={() => handleMenuItemClick(index)}
               >
                 <img src={item.image} alt={`icon-${index + 1}`} />
 

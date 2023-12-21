@@ -1,7 +1,18 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { Breadcrumb, Button, DatePicker, Spin, Table, Tag } from "antd";
+import {
+  Breadcrumb,
+  Button,
+  DatePicker,
+  Form,
+  Modal,
+  Space,
+  Spin,
+  Table,
+  Tag,
+  Tooltip,
+} from "antd";
 import LeftNavbar from "@/components/left-navbar/page";
 import MentorRequest from "@/components/mentor-request/page";
 import { UserAuth } from "@/app/context/AuthContext";
@@ -28,6 +39,8 @@ const StaffTransaction = () => {
   const [selectedComponent, setSelectedComponent] = useState("MentorRequest");
   const { id, userData } = UserAuth();
 
+  const [form] = Form.useForm();
+
   const [activeTab, setActiveTab] = useState("revenue");
   const handleTabClick = (tabName: string) => {
     setActiveTab(tabName);
@@ -53,7 +66,6 @@ const StaffTransaction = () => {
 
   const [transaction, setTransaction] = useState<Transaction[]>([]);
   const [date, setDate] = useState<any>("");
-  console.log("hmmm", date);
 
   useEffect(() => {
     if (userData) {
@@ -117,7 +129,7 @@ const StaffTransaction = () => {
       render: (price) => (price === 0 ? <>Free</> : price),
     },
     {
-      title: "Transaction Id",
+      title: "Transaction Code",
       dataIndex: "transactionId",
       key: "transactionId",
       sorter: (a, b) => a.transactionId - b.transactionId,
@@ -132,6 +144,20 @@ const StaffTransaction = () => {
         new Date(a.createDate).getTime() - new Date(b.createDate).getTime(),
       sortDirections: ["ascend", "descend"] as SortOrder[],
       render: (text) => moment(text).locale("en").format("LLL"),
+    },
+    {
+      title: "Success Date",
+      dataIndex: "successDate",
+      key: "successDate",
+      sorter: (a, b) =>
+        new Date(a.successDate).getTime() - new Date(b.successDate).getTime(),
+      sortDirections: ["ascend", "descend"] as SortOrder[],
+      render: (text) => {
+        const successDate = moment(text);
+        return successDate.isValid()
+          ? successDate.locale("en").format("LLL")
+          : "-"; // Hoặc bạn có thể sử dụng một giá trị khác thay vì "N/A"
+      },
     },
     {
       title: "Status",
@@ -155,9 +181,8 @@ const StaffTransaction = () => {
         return "green"; // Màu xanh cho trạng thái Active
       case 1:
         return "red"; // Màu đỏ hồng cho trạng thái Banned
-
       case 2:
-        return "gray";
+        return "red";
       default:
         return "defaultColor"; // Màu mặc định nếu status không phù hợp với bất kỳ trạng thái nào
     }
@@ -170,7 +195,7 @@ const StaffTransaction = () => {
       case 1:
         return "Error";
       case 2:
-        return "Pending";
+        return "Error";
       default:
         return "Unknown Status";
     }
@@ -192,7 +217,7 @@ const StaffTransaction = () => {
       sortDirections: ["ascend", "descend"] as SortOrder[],
     },
     {
-      title: "Transaction Id",
+      title: "Transaction Code",
       dataIndex: "transactionId",
       key: "transactionId",
       sorter: (a, b) => a.transactionId - b.transactionId,
@@ -209,13 +234,31 @@ const StaffTransaction = () => {
       render: (text) => moment(text).locale("en").format("LLL"),
     },
     {
+      title: "Success Date",
+      dataIndex: "successDate",
+      key: "successDate",
+      sorter: (a, b) =>
+        new Date(a.successDate).getTime() - new Date(b.successDate).getTime(),
+      sortDirections: ["ascend", "descend"] as SortOrder[],
+      render: (text) => {
+        const successDate = moment(text);
+        return successDate.isValid()
+          ? successDate.locale("en").format("LLL")
+          : "-"; // Hoặc bạn có thể sử dụng một giá trị khác thay vì "N/A"
+      },
+    },
+    {
       title: "Status",
       dataIndex: "status",
       key: "status",
       sorter: (a, b) => a.status - b.status,
       sortDirections: ["ascend", "descend"] as SortOrder[],
-      render: (status) => (
-        <Tag color={getStatusColor(status)}>{getStatusText(status)}</Tag>
+      render: (status, record) => (
+        <Tooltip
+          title={record.transactionError ? record.transactionError : null}
+        >
+          <Tag color={getStatusColor(status)}>{getStatusText(status)}</Tag>
+        </Tooltip>
       ),
     },
     {
@@ -224,7 +267,15 @@ const StaffTransaction = () => {
       render: (text, record) => {
         // Kiểm tra nếu trạng thái là 1, hiển thị nút hoặc phần giao diện bạn muốn
         if (record.status === 1) {
-          return <Button onClick={() => handleRepay(record)}>Repay</Button>;
+          return (
+            <Button
+              onClick={() => {
+                handleRepay(record);
+              }}
+            >
+              Repay
+            </Button>
+          );
         } else {
           return <>-</>;
         }
@@ -232,10 +283,45 @@ const StaffTransaction = () => {
     },
   ];
 
+  const [modalRepay, setModalRepay] = useState(false);
+  const [repayId, setRepayId] = useState<number>(0);
+
   const handleRepay = (record) => {
     // Thực hiện các hành động cần thiết khi người dùng nhấn nút Repay
-    console.log("Repay action for record:", record);
+    setRepayId(record.paymentTransactionId);
+    setModalRepay(true);
+    console.log("Repay action for record:", record.paymentTransactionId);
     // ... (thêm logic xử lý ở đây)
+  };
+
+  const handleRepayClick = () => {
+    try {
+      http
+        .post(
+          `https://learnconnectserver.azurewebsites.net/api/payment-transaction/re-pay?transactionId=${repayId}`,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        )
+        .then(() => {
+          setModalRepay(false);
+          http
+            .get(
+              `https://learnconnectserver.azurewebsites.net/api/payment-transaction/transaction-history-staff?filterDate=${date}&filterType=${activeTab}`
+            )
+            .then((res) => {
+              setTransaction(res.data);
+            });
+        });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleCancel = () => {
+    setModalRepay(false);
   };
 
   const handleDateChange = (date: any, dateString: string) => {
@@ -338,6 +424,65 @@ const StaffTransaction = () => {
           </div>
         </div>
       )}
+
+      <Modal
+        destroyOnClose={true}
+        title={
+          <div className="text-lg">
+            Are you sure you want to Repay for this Mentor?
+          </div>
+        }
+        open={modalRepay}
+        // onOk={handleOk}
+        width="35%"
+        onCancel={handleCancel}
+        footer={false}
+        style={{
+          top: "30%",
+        }}
+      >
+        <Form
+          autoComplete="off"
+          form={form}
+          labelCol={{ span: 4 }}
+          wrapperCol={{ span: 20 }}
+          layout="horizontal"
+          className="mt-5"
+          style={{ width: "100%" }}
+          onFinish={handleRepayClick}
+        >
+          <Space className="justify-end w-full">
+            <Form.Item className="mb-0">
+              <Space>
+                <Button
+                  className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                  onClick={handleCancel}
+                  style={{
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #E0E0E0",
+                    color: "black",
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                  htmlType="submit"
+                  style={{
+                    // backgroundColor: "#4caf50",
+                    // borderColor: "#4caf50",
+                    border: "2px solid #4caf50",
+                    color: "#fff",
+                  }}
+                >
+                  Confirm
+                </Button>
+              </Space>
+            </Form.Item>
+          </Space>
+        </Form>
+      </Modal>
     </>
   );
 };
