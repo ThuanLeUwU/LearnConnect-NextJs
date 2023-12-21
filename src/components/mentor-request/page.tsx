@@ -18,6 +18,7 @@ import Button from "@mui/material/Button";
 import { toast } from "sonner";
 import { Spin } from "antd";
 import { UserAuth } from "@/app/context/AuthContext";
+import moment from "moment";
 
 export type specializationOfMentor = {
   name: string;
@@ -218,7 +219,7 @@ const MentorRequest = () => {
       case 0:
         return "green";
       case 1:
-        return "black";
+        return "gray";
       case 2:
         return "red";
       default:
@@ -298,7 +299,7 @@ const MentorRequest = () => {
       title: "Create Date",
       dataIndex: "specializationOfMentor",
       key: "verificationDate",
-      width: 150,
+      width: 200,
       sorter: (a, b) => {
         const dateA = new Date(
           a.specializationOfMentor.verificationDate
@@ -310,13 +311,9 @@ const MentorRequest = () => {
       },
       render: (specializationOfMentor, record) => (
         <div className="text-[16px]">
-          {new Date(
-            specializationOfMentor.verificationDate
-          ).toLocaleDateString()}{" "}
-          <br />
-          {new Date(
-            specializationOfMentor.verificationDate
-          ).toLocaleTimeString()}
+          {moment(specializationOfMentor.verificationDate)
+            .locale("en")
+            .format("LLL")}{" "}
         </div>
       ),
     },

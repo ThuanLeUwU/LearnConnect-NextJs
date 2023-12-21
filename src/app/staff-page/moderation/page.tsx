@@ -161,13 +161,6 @@ const ModerationContent = () => {
                         <div className="w-2/12 bg-white p-4 flex flex-col justify-center items-center">
                           <div>
                             {item.createDate
-                              ? new Date(item.createDate).toLocaleTimeString(
-                                  "en-US"
-                                )
-                              : ""}{" "}
-                          </div>
-                          <div>
-                            {item.createDate
                               ? new Date(item.createDate).toLocaleDateString(
                                   "en-GB",
                                   {
@@ -175,6 +168,13 @@ const ModerationContent = () => {
                                     month: "long",
                                     year: "numeric",
                                   }
+                                )
+                              : ""}{" "}
+                          </div>
+                          <div>
+                            {item.createDate
+                              ? new Date(item.createDate).toLocaleTimeString(
+                                  "en-US"
                                 )
                               : ""}{" "}
                           </div>

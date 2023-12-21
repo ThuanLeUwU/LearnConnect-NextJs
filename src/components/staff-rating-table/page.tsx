@@ -7,6 +7,7 @@ import { Breadcrumb, Spin, Table, Space, Form, Modal, Button } from "antd";
 import { Rating } from "@mui/material";
 import { toast } from "sonner";
 import { AlignType } from "react-bootstrap/esm/types";
+import moment from "moment";
 
 export type Rating = {
   ratingInfo: any;
@@ -136,9 +137,7 @@ const StaffRatingTable = () => {
 
       render: (ratingInfo) => (
         <div className="text-[16px]">
-          {new Date(ratingInfo.timeStamp).toLocaleDateString()}
-          <br />
-          {new Date(ratingInfo.timeStamp).toLocaleTimeString()}
+          {moment(ratingInfo.timeStamp).locale("en").format("LLL")}{" "}
         </div>
       ),
       sorter: (a, b) => {
@@ -229,11 +228,6 @@ const StaffRatingTable = () => {
       render: (ratingInfo) => (
         <p className="text-[16px]">{ratingInfo.comment}</p>
       ),
-      sorter: (a, b) => {
-        const descriptionA = a.ratingInfo.comment || ""; // Handle null or undefined values
-        const descriptionB = b.ratingInfo.comment || "";
-        return descriptionA.localeCompare(descriptionB);
-      },
     },
     {
       title: "Action",

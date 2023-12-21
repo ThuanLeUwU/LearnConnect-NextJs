@@ -23,6 +23,7 @@ import { useForm } from "antd/es/form/Form";
 import { useRouter } from "next/navigation";
 import { Test } from "@/components/test/test";
 import { Avatar } from "@mui/material";
+import moment from "moment";
 
 interface Report {
   id: number;
@@ -695,21 +696,9 @@ const DetailsContent = ({ params }: any) => {
                   >
                     <p>
                       <span className="">Create Date: </span>
-                      {course?.createDate
-                        ? new Date(course?.createDate).toLocaleTimeString(
-                            "en-US"
-                          )
-                        : ""}{" "}
-                      {course?.createDate
-                        ? new Date(course?.createDate).toLocaleDateString(
-                            "en-GB",
-                            {
-                              day: "numeric",
-                              month: "long",
-                              year: "numeric",
-                            }
-                          )
-                        : ""}{" "}
+                      {moment(course?.createDate)
+                        .locale("en")
+                        .format("LLL")}{" "}
                     </p>
                     <div className="bg-[#e5f4eb] rounded-[10px] px-10 h-[5px]"></div>
                     <div>

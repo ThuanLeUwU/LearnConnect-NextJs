@@ -344,7 +344,7 @@ const LectureModeration = ({ params }: any) => {
                   {lecture?.status === 1 && (
                     <>
                       <Button onClick={() => handleAcceptLecture()}>
-                        Accept
+                        Approve
                       </Button>
                       <Button
                         style={{

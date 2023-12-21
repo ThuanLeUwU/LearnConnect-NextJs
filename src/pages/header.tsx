@@ -133,13 +133,13 @@ const Header = () => {
   useEffect(() => {
     if (id) {
       fetchNotificationData(); // Gọi lần đầu tiên khi id thay đổi
-      // const intervalId = setInterval(() => {
-      //   fetchNotificationData(); // Gọi mỗi 3 giây
-      //   // checkNotificationLengthChange();
-      // }, 3000);
+      const intervalId = setInterval(() => {
+        fetchNotificationData(); // Gọi mỗi 3 giây
+        // checkNotificationLengthChange();
+      }, 3000);
 
-      // // Clear interval khi component unmount
-      // return () => clearInterval(intervalId);
+      // Clear interval khi component unmount
+      return () => clearInterval(intervalId);
     }
   }, [id, userData]);
 
