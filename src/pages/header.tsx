@@ -3,7 +3,7 @@ import Image from "next/image";
 import headerStyles from "./styles/styles.module.scss";
 import "../app/./globals.css";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { UserAuth, UserRole } from "@/app/context/AuthContext";
 import { RegisterForm } from "@/components/registerForm";
 import { Empty, Modal, Space, Button as ButtonAntd } from "antd";
@@ -36,8 +36,8 @@ const Header = () => {
     Notification[]
   >([]);
   const [notiUnread, setNotiUnread] = useState<number>(0);
+  const refNoti = useRef(notiUnread);
 
-  // console.log("v", notiUnread?.countUnRead);
   const [form] = Form.useForm();
 
   const [isLogin, setIsLogin] = useState(false);
@@ -119,22 +119,30 @@ const Header = () => {
   // console.log("hmmssmss", previousNotificationLength);
   // const [NotificationLength, setNotificationLength] = useState<number>(0);
 
-  const fetchNotificationData = async () => {
-    try {
-      const response = await http.get(`/notification/byUserId/${id}`);
-      setNotificationContent(response.data[0].notification);
-      setNotiUnread(response.data[0].countUnRead);
-      // setNotificationLength(response.data[0].notification.length);
-    } catch (error) {
-      console.error("Error fetching Notification Data:", error);
-    }
+  const fetchNotificationData = () => {
+    http
+      .get(`/notification/byUserId/${id}`)
+      .then((response) => {
+        setNotificationContent(response.data[0].notification);
+        if (response.data[0].countUnRead > refNoti.current) {
+          toast.info("You have new notification!");
+          setNotiUnread(response.data[0].countUnRead);
+          refNoti.current = response.data[0].countUnRead;
+        }
+        setNotiUnread(response.data[0].countUnRead);
+      })
+      .catch((err) => console.error(err));
+
+    // setNotiUnread(response.data[0].countUnRead);
+
+    // setNotificationLength(response.data[0].notification.length);
   };
 
   useEffect(() => {
     if (id) {
-      fetchNotificationData(); // Gọi lần đầu tiên khi id thay đổi
+      fetchNotificationData();
       const intervalId = setInterval(() => {
-        fetchNotificationData(); // Gọi mỗi 3 giây
+        fetchNotificationData();
         // checkNotificationLengthChange();
       }, 3000);
 

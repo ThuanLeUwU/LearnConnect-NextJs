@@ -9,6 +9,7 @@ import { http } from "@/api/http";
 import { Breadcrumb, Spin } from "antd";
 import { Empty } from "antd";
 import { useRouter } from "next/navigation";
+import moment from "moment";
 // import { User } from "firebase/auth";
 
 export default function ProfileUser() {
@@ -20,6 +21,17 @@ export default function ProfileUser() {
     setCurrentPage,
   } = useDataNotificationsFetcher();
   const { id, jwtToken, role } = UserAuth();
+  // const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
+
+  // const startIndex = (currentPage - 1) * pageSize;
+  // const endIndex = currentPage * pageSize;
+  // const currentNotifications = notificationContent.slice(startIndex, endIndex);
+
+  const handlePageChange = (page, pageSize) => {
+    setCurrentPage(page);
+  };
+
   axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
   const router = useRouter();
   // console.log("notificationContent", notificationContent);
@@ -101,17 +113,9 @@ export default function ProfileUser() {
                           {notification.description}
                         </p>
                         <p className="text-gray-500 text-sm">
-                          {new Date(notification.timeStamp).toLocaleString(
-                            "en-GB",
-                            {
-                              day: "2-digit",
-                              month: "2-digit",
-                              year: "numeric",
-                              hour: "2-digit",
-                              minute: "2-digit",
-                              second: "2-digit",
-                            }
-                          )}
+                          {moment(notification.timeStamp)
+                            .locale("en")
+                            .format("LLL")}{" "}
                         </p>
                         <p
                           className={`text-sm ${

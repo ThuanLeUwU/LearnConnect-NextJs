@@ -299,7 +299,7 @@ const MentorRequest = () => {
       title: "Create Date",
       dataIndex: "specializationOfMentor",
       key: "verificationDate",
-      width: 200,
+      width: 180,
       sorter: (a, b) => {
         const dateA = new Date(
           a.specializationOfMentor.verificationDate

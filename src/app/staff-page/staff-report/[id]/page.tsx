@@ -19,6 +19,7 @@ import {
 import { UserAuth } from "@/app/context/AuthContext";
 import { Course } from "@/components/courses/courses";
 import { Mentor } from "@/components/pagination/useDataMentorFetcher";
+import moment from "moment";
 
 interface Report {
   id: number;
@@ -293,21 +294,7 @@ const StaffReportID = ({ params }: any) => {
                           {report.reportByNavigation.fullName}
                         </div>
                         <span className=" text-[#309255] font-light">
-                          {report.timeStamp
-                            ? new Date(report.timeStamp).toLocaleTimeString(
-                                "en-US"
-                              )
-                            : ""}{" "}
-                          {report.timeStamp
-                            ? new Date(report.timeStamp).toLocaleDateString(
-                                "en-GB",
-                                {
-                                  day: "numeric",
-                                  month: "long",
-                                  year: "numeric",
-                                }
-                              )
-                            : ""}{" "}
+                          {moment(report.timeStamp).locale("en").format("LLL")}
                         </span>
                         <div className="mt-5">
                           <p>Reason: {report.reportType}</p>
