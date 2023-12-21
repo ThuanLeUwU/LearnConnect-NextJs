@@ -96,7 +96,7 @@ const ModerationContent = () => {
                   }`}
                   onClick={() => handleTabClick(2)}
                 >
-                  <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#ffa04e]">
+                  <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-orange-400">
                     Reject
                   </button>
                 </li>
@@ -151,38 +151,12 @@ const ModerationContent = () => {
                           {item.specializationName}
                         </div>
                         <div className="w-1/12 bg-white p-4">
-                          {item.status === 0 && (
-                            <Tag
-                              color="#389E0D"
-                              style={{ border: "2px solid #389E0D" }}
-                            >
-                              Active
-                            </Tag>
-                          )}
-                          {item.status === 1 && (
-                            <Tag
-                              color="grey"
-                              style={{ border: "2px solid grey" }}
-                            >
-                              Pending
-                            </Tag>
-                          )}
+                          {item.status === 0 && <Tag color="green">Active</Tag>}
+                          {item.status === 1 && <Tag color="gray">Pending</Tag>}
                           {item.status === 2 && (
-                            <Tag
-                              color="#FFA04E"
-                              style={{ border: "2px solid rbg(255,160,78)" }}
-                            >
-                              Reject
-                            </Tag>
+                            <Tag color="orange">Reject</Tag>
                           )}
-                          {item.status === 3 && (
-                            <Tag
-                              color="#cf1322"
-                              style={{ border: "2px solid #cf1322" }}
-                            >
-                              Banned
-                            </Tag>
-                          )}
+                          {item.status === 3 && <Tag color="red">Banned</Tag>}
                         </div>
                         <div className="w-2/12 bg-white p-4 flex flex-col justify-center items-center">
                           <div>
