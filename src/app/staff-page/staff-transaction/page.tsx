@@ -219,7 +219,7 @@ const StaffTransaction = () => {
       ),
     },
     {
-      title: "Action Repay",
+      title: "Action",
       key: "actionRepay",
       render: (text, record) => {
         // Kiểm tra nếu trạng thái là 1, hiển thị nút hoặc phần giao diện bạn muốn
