@@ -124,11 +124,11 @@ const Header = () => {
       .get(`/notification/byUserId/${id}`)
       .then((response) => {
         setNotificationContent(response.data[0].notification);
-        // if (response.data[0].countUnRead > refNoti.current) {
-        //   toast.info("You have new notification!");
-        //   setNotiUnread(response.data[0].countUnRead);
-        //   refNoti.current = response.data[0].countUnRead;
-        // }
+        if (response.data[0].countUnRead > refNoti.current) {
+          toast.info("You have new notification!");
+          setNotiUnread(response.data[0].countUnRead);
+          refNoti.current = response.data[0].countUnRead;
+        }
         setNotiUnread(response.data[0].countUnRead);
       })
       .catch((err) => console.error(err));
@@ -141,13 +141,13 @@ const Header = () => {
   useEffect(() => {
     if (id) {
       fetchNotificationData();
-      // const intervalId = setInterval(() => {
-      //   fetchNotificationData();
-      //   // checkNotificationLengthChange();
-      // }, 3000);
+      const intervalId = setInterval(() => {
+        fetchNotificationData();
+        // checkNotificationLengthChange();
+      }, 3000);
 
-      // // Clear interval khi component unmount
-      // return () => clearInterval(intervalId);
+      // Clear interval khi component unmount
+      return () => clearInterval(intervalId);
     }
   }, [id, userData]);
 
