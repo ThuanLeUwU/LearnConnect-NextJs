@@ -194,13 +194,10 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
                   },
                 }
               );
-
               localStorage.setItem("token", responseData?.data.data);
               const apiToken = responseData?.data.data;
               setRequestBecomeMentor(responseData?.data.isRequestBecomeMentor);
-
               toast.success("Login Successful");
-
               var jwt = require("jsonwebtoken");
               var decoded = jwt.decode(apiToken);
               setJwtToken(apiToken);
@@ -208,7 +205,6 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
               const userRole = decoded.role;
               setId(userId);
               setRole(parseInt(userRole));
-
               const fetchUser = async (userId: string) => {
                 const responseUser = await http.get(`/user/${userId}`);
                 setUserData(responseUser?.data);
