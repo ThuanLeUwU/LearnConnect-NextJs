@@ -48,7 +48,7 @@ const OrderHistory = () => {
     showSizeChanger: false, // Ẩn tuỳ chọn chọn số lượng bản ghi trên mỗi trang
     showQuickJumper: false,
     current: 1,
-    pageSize: 5, // Số dòng mỗi trang
+    pageSize: 10, // Số dòng mỗi trang
   });
 
   const [isModal, setIsModal] = useState(false);
@@ -92,18 +92,18 @@ const OrderHistory = () => {
 
   const [eachCourse, setEachCourse] = useState<Revenue[]>([]);
   const [date, setDate] = useState<any>("");
-
+  console.log("date is:", date);
   useEffect(() => {
     try {
       http
         .get(
-          `https://learnconnectserver.azurewebsites.net/api/payment-transaction/revenue-mentor?mentorUserId=${id}&filterDate=${date}`
+          `https://learnconnectserver.azurewebsites.net/api/payment-transaction/transaction-history-mentor?mentorUserId=${id}&filterDate=${date}`
         )
         .then((res) => {
-          setEachCourse(res.data[0].revenueCourse);
+          setEachCourse(res.data); // Update to use the provided data directly
         });
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   }, [activeTab, userData, date]);
 
@@ -138,17 +138,15 @@ const OrderHistory = () => {
 
   const columns = [
     {
-      title: "Course Image",
-      dataIndex: "courseImage",
-      key: "courseImage",
-      render: (text, record) => (
-        <img
-          src={record.courseImage}
-          alt={`Course Image`}
-          style={{ width: "100px", height: "100px" }} // Set the desired width and height
-        />
-      ),
+      title: "Date",
+      dataIndex: "successDate",
+      key: "successDate",
+      width: 200,
+      sorter: (a, b) => a.successDate.localeCompare(b.successDate),
+      sortDirections: ["ascend", "descend"] as SortOrder[],
+      render: (date) => moment(date).format("YYYY-MM-DD HH:mm:ss"),
     },
+
     {
       title: "Course Name",
       dataIndex: "courseName",
@@ -157,41 +155,58 @@ const OrderHistory = () => {
       sortDirections: ["ascend", "descend"] as SortOrder[],
     },
     {
-      title: "Revenue Course",
-      dataIndex: "totalRevenueCourse",
-      key: "totalRevenueCourse",
-      sorter: (a, b) => a.totalRevenueCourse - b.totalRevenueCourse,
+      title: "User Enroll",
+      dataIndex: "userEnrroll",
+      key: "userEnrroll",
+      width: 200,
+      sorter: (a, b) => a.userEnrroll.localeCompare(b.userEnrroll),
       sortDirections: ["ascend", "descend"] as SortOrder[],
-      render: (price) => (price === 0 ? <>Free</> : price),
     },
     {
-      title: "Enrollment",
-      dataIndex: "totalEnroll",
-      key: "totalEnroll",
-      sorter: (a, b) => a.totalEnroll - b.totalEnroll,
+      title: "Revenue (VND)",
+      dataIndex: "amount",
+      key: "amount",
+      width: 160,
+      sorter: (a, b) => a.amount - b.amount,
+      sortDirections: ["ascend", "descend"] as SortOrder[],
+      render: (price) => (price === 0 ? <>Free</> : numberWithCommas(price)),
+    },
+    {
+      title: "Transaction Code",
+      dataIndex: "transactionId",
+      key: "transactionId",
+      sorter: (a, b) => a.transactionId - b.transactionId,
       sortDirections: ["ascend", "descend"] as SortOrder[],
       render: (text) => (text === null ? <>-</> : text),
     },
+
     {
-      title: "Action",
-      dataIndex: "action",
-      key: "action",
-      render: (text, record) => (
-        <Button
-          type="primary"
-          style={{
-            // backgroundColor: "#4caf50",
-            // borderColor: "#4caf50",
-            border: "1px solid #E0E0E0",
-            color: "black",
-          }}
-          onClick={() => detailsEnroll(record)}
-        >
-          View Details
-        </Button>
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      width: 100,
+      sorter: (a, b) => a.status - b.status,
+      sortDirections: ["ascend", "descend"] as SortOrder[],
+      render: (status) => (
+        <Tag color={getStatusColor(status)}>{getStatusText(status)}</Tag>
       ),
     },
+    {
+      title: "Note",
+      dataIndex: "transactionError",
+      key: "transactionError",
+      sorter: (a, b) => {
+        const errorA = a.transactionError || "";
+        const errorB = b.transactionError || "";
+        return errorA.localeCompare(errorB);
+      },
+      sortDirections: ["ascend", "descend"] as SortOrder[],
+      render: (text) => (text === null ? <>-</> : text),
+    },
   ];
+  function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
 
   const disabledDate = (current: dayjs.Dayjs | null) => {
     return current ? current.isAfter(today) : false;
@@ -203,6 +218,8 @@ const OrderHistory = () => {
         return "green"; // Màu xanh cho trạng thái Active
       case 1:
         return "red"; // Màu đỏ hồng cho trạng thái Banned
+      case 2:
+        return "yellow"; // Màu yellow cho trạng thái Pending
       default:
         return "defaultColor"; // Màu mặc định nếu status không phù hợp với bất kỳ trạng thái nào
     }
@@ -214,32 +231,12 @@ const OrderHistory = () => {
         return "Success";
       case 1:
         return "Error";
+      case 2:
+        return "Pending";
       default:
-        return "Unknown Status";
+        return "gray";
     }
   };
-
-  const columns2 = [
-    {
-      title: "Avatar",
-      dataIndex: "userImage",
-      key: "userImage",
-      render: (userImage) => <Avatar src={userImage} />,
-    },
-    {
-      title: "Name",
-      dataIndex: "userName",
-      key: "userName",
-    },
-    {
-      title: "Time",
-      dataIndex: "enrollmentDate",
-      key: "enrollmentDate",
-      render: (enrollmentDate) =>
-        // moment(enrollmentDate).format("DD/MM/YYYY HH:mm:ss"),
-        moment(enrollmentDate).format("DD/MM/YYYY"),
-    },
-  ];
 
   const handleDateChange = (date: any, dateString: string) => {
     // console.log("Selected Dates:", date.format("YYYY-MM-DD"));
@@ -302,18 +299,6 @@ const OrderHistory = () => {
             </div>
           </div>
         )}
-        <Modal
-          title="List Enrollment"
-          open={isModal}
-          onCancel={() => setIsModal(false)}
-          footer={false}
-        >
-          <Table
-            columns={columns2}
-            dataSource={enrollList}
-            pagination={{ ...pagination2, onChange: handlePageChange2 }}
-          />
-        </Modal>
       </>
     </>
   );
