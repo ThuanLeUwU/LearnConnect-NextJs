@@ -22,9 +22,14 @@ import "moment/locale/vi";
 import dayjs from "dayjs";
 import Link from "next/link";
 import { Revenue } from "../revenue/page";
-import ReactApexChart from "react-apexcharts";
+// import ReactApexChart from "react-apexcharts";
 import { TotalStatistic } from "@/app/revenue/page";
 import { format } from "date-fns";
+import dynamic from "next/dynamic";
+
+const ReactApexChart = dynamic(() => import("react-apexcharts"), {
+  ssr: false,
+});
 
 interface StatisticData {
   statisticsByDate: any;
@@ -359,6 +364,7 @@ const OrderHistory = () => {
       title: "Transaction Code",
       dataIndex: "transactionId",
       key: "transactionId",
+      width: 250,
       sorter: (a, b) => a.transactionId - b.transactionId,
       sortDirections: ["ascend", "descend"] as SortOrder[],
       render: (text) => (text === null ? <>-</> : text),
@@ -480,7 +486,7 @@ const OrderHistory = () => {
                   pagination={{ ...pagination, onChange: handlePageChange }}
                 />
               </div>
-              <div className="mt-5 rounded-lg border-solid border-2 mx-10 p-10 shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)] flex flex-col gap-4">
+              <div className="mt-10 rounded-lg border-solid border-2 mx-5 p-10 shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)] flex flex-col gap-4">
                 <div className="flex justify-between items-center">
                   <div className="text-2xl font-semibold mb-0 leading-5 flex items-center">
                     Revenue
