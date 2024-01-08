@@ -2,19 +2,18 @@ import { UserAuth } from "@/app/context/AuthContext";
 import axios from "axios";
 import { useState, useEffect } from "react";
 export type Transaction = {
-  paymentTransaction: {
-    id: string | number;
-    total: number;
-    transactionId: number;
-    transactionError: string;
-    createDate: string;
-    successDate: string;
-    paymentUrl: string;
-    status: number;
-    userId: number;
-    courseName: string;
-    courseId: number;
-  };
+  paymentTransactions: any;
+  id: string | number;
+  total: number;
+  transactionId: number;
+  transactionError: string;
+  createDate: string;
+  successDate: string;
+  paymentUrl: string;
+  status: number;
+  userId: number;
+  courseName: string;
+  courseId: number;
 };
 const useDataPaymentFetcher = () => {
   const { id } = UserAuth();

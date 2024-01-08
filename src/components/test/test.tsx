@@ -3,7 +3,7 @@ import { ReactNode, useEffect, useState } from "react";
 import "../../app/./globals.css";
 import axios from "axios";
 import { UserAuth } from "@/app/context/AuthContext";
-import { Empty, Modal } from "antd";
+import { Empty, Modal, Tabs } from "antd";
 import { useRouter } from "next/navigation";
 import { http } from "@/api/http";
 import { toast } from "sonner";
@@ -48,8 +48,9 @@ export type Test = {
 };
 
 const Quiz = (props) => {
-  const { idCourse, setScore } = props;
+  const { idCourse, setScore, IdTest } = props;
   //   console.log("idcourse1", idCourse);
+  const [idTest, setIdTest] = useState<number>();
   const router = useRouter();
   const [questionsTest, setQuestionsTest] = useState<Test[]>([]);
   const [selectedAnswers, setSelectedAnswers] = useState<number[]>([]);
@@ -105,8 +106,10 @@ const Quiz = (props) => {
     }
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (data) => {
+    console.log("dapan", data);
     setSubmitted(true);
+    setQuizStarted(false);
     let count = 0;
     let totalQuestions = 0;
 
@@ -129,7 +132,7 @@ const Quiz = (props) => {
       });
     });
 
-    const urlAPI = `https://learnconnectserver.azurewebsites.net/api/user-answer?userId=${userData?.id}&courseId=${idCourse}`;
+    const urlAPI = `https://learnconnectserver.azurewebsites.net/api/user-answer?userId=${userData?.id}&testId=${data}`;
 
     try {
       const response = await axios.post(urlAPI, selectedAnswers);
@@ -228,6 +231,25 @@ const Quiz = (props) => {
       console.error(err);
     }
   }, []);
+
+  const { TabPane } = Tabs;
+
+  const [selectedTab, setSelectedTab] = useState("1");
+
+  const handleTabChange = (key) => {
+    if (!quizStarted && !submitted) {
+      // Allow switching tabs only if the quiz is started and not submitted
+      setSelectedTab(key);
+    }
+  };
+
+  const handleStartQuiz = () => {
+    setQuizStarted(true);
+    // setSelectedTab(); // Start with the first test
+  };
+
+  const [quizStarted, setQuizStarted] = useState(false);
+
   return (
     <>
       <div className="bg-[#e7f8ee]">
@@ -261,78 +283,109 @@ const Quiz = (props) => {
               </div>
             </div>
           ) : (
-            questionsTest.map((item) => (
-              <div key={item.test.id} className="mb-4">
-                <p className="text-3xl font-semibold mb-2 text-center">
-                  {item.test.title}
-                </p>
-                <p className="text-start my-5">{item.test.description}</p>
-
-                {item.questions.map((q, index) => (
-                  <div
-                    key={q.question.id}
-                    className="mb-2 mt-6 p-6 border-2 rounded-lg border-gray-200 shadow-lg"
-                  >
-                    <p className="mb-1 font-medium text-[18px]">
-                      {index + 1}.{" "}
-                      <span className="text-gray-500 text-[18px] text font-light">
-                        (Choose {q.answers.filter((a) => a.isCorrect).length}{" "}
-                        answer
-                        {q.answers.filter((a) => a.isCorrect).length <= 1
-                          ? ""
-                          : "s"}
-                        ){" "}
-                      </span>
-                      {q.question.questionText}
-                    </p>
-                    <div className="px-4 grid grid-cols-2 gap-4 mt-10">
-                      {q.answers.map((answer, ansIndex) => (
-                        <button
-                          key={answer.id}
-                          className={` border-2 p-2 text-left rounded-lg ${
-                            submitted
-                              ? selectedAnswers?.includes(answer.id)
-                                ? answer.isCorrect
-                                  ? "border-green-500 bg-green-100"
-                                  : "border-red-500 bg-red-100"
-                                : "border-gray-300"
-                              : selectedAnswers?.includes(answer.id)
-                              ? "border-blue-500 bg-blue-100 hover:border-blue-700"
-                              : "border-gray-300 hover:border-blue-500"
-                          }`}
-                          onClick={() => handleAnswerSelect(answer.id)}
-                        >
-                          <span className="mr-2">
-                            {answerOptions[ansIndex]}
-                          </span>
-                          {answer.answerText}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ))
-          )}
-          {questionsTest.length > 0 && ( // Conditionally render submit button
-            <div className="flex justify-end">
-              {submitted ? (
-                <>
-                  <button
-                    className="bg-[#309255] text-white font-bold py-2 px-4 my-4 rounded mx-2 hover:bg-[#309256da] shadow-lg w-full"
-                    onClick={handleDoAgain}
-                  >
-                    Try it again
-                  </button>
-                </>
-              ) : (
+            <div>
+              {/* {!quizStarted && (
                 <button
                   className="bg-[#309255] text-white font-bold py-2 px-4 my-4 rounded mx-2 hover:bg-[#309256da] shadow-lg w-full"
-                  onClick={handleSubmit}
+                  onClick={handleStartQuiz}
                 >
-                  Submit
+                  Start Quiz
                 </button>
-              )}
+              )} */}
+              {/* {quizStarted && ( */}
+              <Tabs activeKey={selectedTab} onChange={handleTabChange}>
+                {questionsTest.map((item, index) => (
+                  <TabPane tab={`Test ${index + 1}`} key={item.test.id}>
+                    <div key={item.test.id} className="mb-4">
+                      <p className="text-3xl font-semibold mb-2 text-center">
+                        {item.test.title}
+                      </p>
+                      <p className="text-start my-5">{item.test.description}</p>
+                      {!quizStarted && (
+                        <button
+                          className="bg-[#309255] text-white font-bold py-2 px-4 my-4 rounded mx-2 hover:bg-[#309256da] shadow-lg w-full"
+                          onClick={handleStartQuiz}
+                        >
+                          Start Quiz
+                        </button>
+                      )}
+                      {quizStarted && (
+                        <>
+                          {item.questions.map((q, index) => (
+                            <div
+                              key={q.question.id}
+                              className="mb-2 mt-6 p-6 border-2 rounded-lg border-gray-200 shadow-lg"
+                            >
+                              <p className="mb-1 font-medium text-[18px]">
+                                {index + 1}.{" "}
+                                <span className="text-gray-500 text-[18px] text font-light">
+                                  (Choose{" "}
+                                  {q.answers.filter((a) => a.isCorrect).length}{" "}
+                                  answer
+                                  {q.answers.filter((a) => a.isCorrect)
+                                    .length <= 1
+                                    ? ""
+                                    : "s"}
+                                  ){" "}
+                                </span>
+                                {q.question.questionText}
+                              </p>
+                              <div className="px-4 grid grid-cols-2 gap-4 mt-10">
+                                {q.answers.map((answer, ansIndex) => (
+                                  <button
+                                    key={answer.id}
+                                    className={` border-2 p-2 text-left rounded-lg ${
+                                      submitted
+                                        ? selectedAnswers?.includes(answer.id)
+                                          ? answer.isCorrect
+                                            ? "border-green-500 bg-green-100"
+                                            : "border-red-500 bg-red-100"
+                                          : "border-gray-300"
+                                        : selectedAnswers?.includes(answer.id)
+                                        ? "border-blue-500 bg-blue-100 hover:border-blue-700"
+                                        : "border-gray-300 hover:border-blue-500"
+                                    }`}
+                                    onClick={() =>
+                                      handleAnswerSelect(answer.id)
+                                    }
+                                  >
+                                    <span className="mr-2">
+                                      {answerOptions[ansIndex]}
+                                    </span>
+                                    {answer.answerText}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                          ))}
+                        </>
+                      )}
+                    </div>
+                    {questionsTest.length > 0 && ( // Conditionally render submit button
+                      <div className="flex justify-end">
+                        {submitted ? (
+                          <>
+                            <button
+                              className="bg-[#309255] text-white font-bold py-2 px-4 my-4 rounded mx-2 hover:bg-[#309256da] shadow-lg w-full"
+                              onClick={handleDoAgain}
+                            >
+                              Try it again
+                            </button>
+                          </>
+                        ) : (
+                          <button
+                            className="bg-[#309255] text-white font-bold py-2 px-4 my-4 rounded mx-2 hover:bg-[#309256da] shadow-lg w-full"
+                            onClick={() => handleSubmit(item.test.id)}
+                          >
+                            Submit
+                          </button>
+                        )}
+                      </div>
+                    )}
+                  </TabPane>
+                ))}
+              </Tabs>
+              {/* )} */}
             </div>
           )}
         </div>
