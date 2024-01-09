@@ -2,11 +2,8 @@
 import React, { useState, useEffect } from "react";
 import { toast } from "sonner";
 import {
-  Avatar,
   Breadcrumb,
-  Button,
   DatePicker,
-  Modal,
   Select,
   Spin,
   Table,
@@ -22,32 +19,6 @@ import "moment/locale/vi";
 import dayjs from "dayjs";
 import Link from "next/link";
 import { Revenue } from "../revenue/page";
-// import ReactApexChart from "react-apexcharts";
-import { TotalStatistic } from "@/app/revenue/page";
-import { format } from "date-fns";
-import dynamic from "next/dynamic";
-
-const ReactApexChart = dynamic(() => import("react-apexcharts"), {
-  ssr: false,
-});
-
-interface StatisticData {
-  statisticsByDate: any;
-  date: string;
-  newCoursesFee: number;
-  newCoursesFree: number;
-  newMentors: number;
-  newEnrollments: number;
-  newRevenue: number;
-}
-
-interface StatisticStatusData {
-  totalCourseStatusStatistic: any;
-  coursesActive: number;
-  coursesPending: number;
-  coursesReject: number;
-  coursesBan: number;
-}
 
 export type Transaction = {
   userBuy: string;
@@ -107,34 +78,11 @@ const OrderHistory = () => {
     });
   };
 
-  const [pagination2, setPagination2] = useState({
-    showSizeChanger: false, // Ẩn tuỳ chọn chọn số lượng bản ghi trên mỗi trang
-    showQuickJumper: false,
-    current: 1,
-    pageSize: 5, // Số dòng mỗi trang
-  });
-
-  const handlePageChange2 = (current, pageSize) => {
-    setPagination2({
-      showSizeChanger: false, // Ẩn tuỳ chọn chọn số lượng bản ghi trên mỗi trang
-      showQuickJumper: false,
-      current,
-      pageSize,
-    });
-  };
-
   const today = dayjs();
-
-  const [transaction, setTransaction] = useState<Transaction[]>([]);
 
   const [eachCourse, setEachCourse] = useState<Revenue[]>([]);
   const [date, setDate] = useState<any>("");
-  console.log("date is:", date);
 
-  const [totalStatistic, setTotalStatistic] = useState<TotalStatistic>();
-  const [courseStatistic2, setCourseStatistic2] = useState<StatisticData[]>([]);
-  const [totalStatusCourses, setTotalStatusCourse] =
-    useState<StatisticStatusData>();
   useEffect(() => {
     try {
       http
@@ -148,153 +96,6 @@ const OrderHistory = () => {
       console.error(e);
     }
   }, [activeTab, userData, date]);
-
-  useEffect(() => {
-    try {
-      http
-        .get(
-          `https://learnconnectserver.azurewebsites.net/api/payment-transaction/statistic-revenue-mentor?mentorUserId=${id}&filterType=${
-            selected2 === "Last Week" ? "week" : selected2
-          }`
-        )
-        .then((res) => {
-          setTotalStatistic(res.data.totalStatisticInfo);
-          setCourseStatistic2(res.data.statisticsByDate);
-          setTotalStatusCourse(res.data.totalCourseStatusStatistic);
-        });
-    } catch (e) {
-      console.error(e);
-    }
-  }, [selected2, id]);
-
-  useEffect(() => {
-    const categories = courseStatistic2.map((entry) =>
-      format(new Date(entry.date), "MMM dd")
-    );
-
-    setMixChart({
-      ...mixedChart,
-      options: {
-        ...mixedChart.options,
-        xaxis: {
-          categories: categories,
-        },
-      },
-      series: [
-        {
-          ...mixedChart.series[0],
-          data: courseStatistic2.map((entry) => entry.newRevenue),
-        },
-        {
-          ...mixedChart.series[1],
-          data: courseStatistic2.map((entry) => entry.newEnrollments),
-        },
-      ],
-    });
-  }, [courseStatistic2]);
-
-  const [mixedChart, setMixChart] = useState({
-    options: {
-      chart: {
-        stacked: false,
-        toolbar: {
-          show: true,
-          offsetX: 0,
-          offsetY: 0,
-          tools: {
-            download: true,
-            selection: false,
-            zoom: false,
-            zoomin: true,
-            zoomout: true,
-            pan: false,
-          },
-          export: {
-            csv: {
-              filename: "Revenue Statistics",
-              columnDelimiter: ",",
-              headerCategory: "Date",
-              headerValue: "value",
-            },
-            svg: {
-              filename: "Statistics",
-            },
-            png: {
-              filename: "Statistics",
-            },
-          },
-          autoSelected: "zoom" as "zoom",
-        },
-      },
-      xaxis: {
-        categories: [] as string[],
-      },
-      yaxis: [
-        {
-          axisTicks: {
-            show: true,
-          },
-          axisBorder: {
-            show: true,
-            color: "#309255",
-          },
-          labels: {
-            style: {
-              colors: "#309255",
-            },
-          },
-          title: {
-            text: "Revenue (in VND)",
-            style: {
-              color: "#309255",
-            },
-          },
-          tooltip: {
-            enabled: true,
-          },
-          fill: {
-            colors: ["#309255"], // Màu của miền giá trị trục y
-          },
-        },
-        {
-          opposite: true,
-          axisTicks: {
-            show: true,
-          },
-          axisBorder: {
-            show: true,
-            color: "rgba(254,176,25,1)",
-          },
-          labels: {
-            style: {
-              colors: "rgba(254,176,25,1)",
-            },
-          },
-          title: {
-            text: "Enrollments",
-            style: {
-              color: "rgba(254,176,25,1)",
-            },
-          },
-          fill: {
-            colors: ["rgba(254,176,25,1)"], // Màu của miền giá trị trục y
-          },
-        },
-      ],
-    },
-    series: [
-      {
-        name: "Revenue",
-        type: "column",
-        data: [] as number[],
-      },
-      {
-        name: "Enrollments",
-        type: "line",
-        data: [] as number[],
-      },
-    ],
-  });
 
   const menuItem = [
     {
@@ -330,12 +131,11 @@ const OrderHistory = () => {
       title: "Date",
       dataIndex: "successDate",
       key: "successDate",
-      width: 200,
+      width: 120,
       sorter: (a, b) => a.successDate.localeCompare(b.successDate),
       sortDirections: ["ascend", "descend"] as SortOrder[],
       render: (date) => moment(date).format("YYYY-MM-DD HH:mm:ss"),
     },
-
     {
       title: "Course Name",
       dataIndex: "courseName",
@@ -352,19 +152,41 @@ const OrderHistory = () => {
       sortDirections: ["ascend", "descend"] as SortOrder[],
     },
     {
-      title: "Revenue (VND)",
-      dataIndex: "amount",
-      key: "amount",
-      width: 160,
-      sorter: (a, b) => a.amount - b.amount,
+      title: "Amount (VND)",
+      dataIndex: "revenue",
+      key: "revenue",
+      width: 150,
+      sorter: (a, b) => a.revenue - b.revenue,
       sortDirections: ["ascend", "descend"] as SortOrder[],
-      render: (price) => (price === 0 ? <>Free</> : numberWithCommas(price)),
+      render: (revenue) =>
+        revenue === 0 ? <>Free</> : numberWithCommas(revenue),
     },
+    {
+      title: "Course Fee",
+      dataIndex: "coursePrice",
+      key: "coursePrice",
+      width: 150,
+      sorter: (a, b) => a.coursePrice - b.coursePrice,
+      sortDirections: ["ascend", "descend"] as SortOrder[],
+      render: (coursePrice) =>
+        coursePrice === 0 ? <>Free</> : numberWithCommas(coursePrice),
+    },
+    {
+      title: "Platform Fee",
+      dataIndex: "platformFee",
+      key: "platformFee",
+      width: 150,
+      sorter: (a, b) => a.platformFee - b.platformFee,
+      sortDirections: ["ascend", "descend"] as SortOrder[],
+      render: (platformFee) =>
+        platformFee === 0 ? <>Free</> : numberWithCommas(platformFee),
+    },
+
     {
       title: "Transaction Code",
       dataIndex: "transactionId",
       key: "transactionId",
-      width: 250,
+      width: 200,
       sorter: (a, b) => a.transactionId - b.transactionId,
       sortDirections: ["ascend", "descend"] as SortOrder[],
       render: (text) => (text === null ? <>-</> : text),
@@ -485,34 +307,6 @@ const OrderHistory = () => {
                   columns={columns}
                   pagination={{ ...pagination, onChange: handlePageChange }}
                 />
-              </div>
-              <div className="mt-10 rounded-lg border-solid border-2 mx-5 p-10 shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)] flex flex-col gap-4">
-                <div className="flex justify-between items-center">
-                  <div className="text-2xl font-semibold mb-0 leading-5 flex items-center">
-                    Revenue
-                  </div>
-                  <Select
-                    size="large"
-                    defaultValue={selected2}
-                    onChange={handleChangeSelected2}
-                    // style={{ width: 120 }}
-                    className="mx-5 w-[150px]"
-                  >
-                    {timeLine.map((option, index) => (
-                      <Option key={option.title} value={option.value}>
-                        {option.title}
-                      </Option>
-                    ))}
-                  </Select>
-                </div>
-                <div>
-                  <ReactApexChart
-                    options={mixedChart.options}
-                    series={mixedChart.series}
-                    type="line"
-                    height={350}
-                  />
-                </div>
               </div>
             </div>
           </div>
