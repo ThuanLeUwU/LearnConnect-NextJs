@@ -152,10 +152,10 @@ const OrderHistory = () => {
       sortDirections: ["ascend", "descend"] as SortOrder[],
     },
     {
-      title: "Amount (VND)",
+      title: "Amount",
       dataIndex: "revenue",
       key: "revenue",
-      width: 150,
+      width: 140,
       sorter: (a, b) => a.revenue - b.revenue,
       sortDirections: ["ascend", "descend"] as SortOrder[],
       render: (revenue) =>
@@ -165,7 +165,7 @@ const OrderHistory = () => {
       title: "Course Fee",
       dataIndex: "coursePrice",
       key: "coursePrice",
-      width: 150,
+      width: 140,
       sorter: (a, b) => a.coursePrice - b.coursePrice,
       sortDirections: ["ascend", "descend"] as SortOrder[],
       render: (coursePrice) =>
@@ -175,13 +175,12 @@ const OrderHistory = () => {
       title: "Platform Fee",
       dataIndex: "platformFee",
       key: "platformFee",
-      width: 150,
+      width: 140,
       sorter: (a, b) => a.platformFee - b.platformFee,
       sortDirections: ["ascend", "descend"] as SortOrder[],
       render: (platformFee) =>
         platformFee === 0 ? <>Free</> : numberWithCommas(platformFee),
     },
-
     {
       title: "Transaction Code",
       dataIndex: "transactionId",
