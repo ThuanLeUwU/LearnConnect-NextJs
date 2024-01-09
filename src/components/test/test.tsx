@@ -3,7 +3,7 @@ import { ReactNode, useEffect, useState } from "react";
 import "../../app/./globals.css";
 import axios from "axios";
 import { UserAuth } from "@/app/context/AuthContext";
-import { Empty, Modal, Tabs } from "antd";
+import { Button, Empty, Modal, Table, Tabs } from "antd";
 import { useRouter } from "next/navigation";
 import { http } from "@/api/http";
 import { toast } from "sonner";
@@ -12,6 +12,7 @@ import { Chart as ChartJs, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
 import { Breadcrumb, Spin } from "antd";
 import { Course } from "@/components/courses/courses";
+import { format } from "date-fns";
 
 ChartJs.register(ArcElement, Tooltip, Legend);
 
@@ -47,18 +48,53 @@ export type Test = {
   ];
 };
 
+export type TestResult = {
+  id: number;
+  score: number;
+  timeSpent: string;
+  timeSubmit: string;
+  userId: number;
+  testId: number;
+};
+
 const Quiz = (props) => {
   const { idCourse, setScore, IdTest } = props;
   //   console.log("idcourse1", idCourse);
   const [idTest, setIdTest] = useState<number>();
   const router = useRouter();
   const [questionsTest, setQuestionsTest] = useState<Test[]>([]);
+  const [titleTest, setTitleTest] = useState<string>();
   const [selectedAnswers, setSelectedAnswers] = useState<number[]>([]);
+
   const { userData } = UserAuth();
   const [submitted, setSubmitted] = useState(false); // Track whether the quiz has been submitted
+  const [testResulted, setTestResulted] = useState(false);
+  const [reviewQuiz, setReviewQuiz] = useState(false);
+  const [resultAllTest, setResultAllTest] = useState<TestResult[]>([]);
+
+  const [startTime, setStartTime] = useState<Date | null>(null);
+  const [endTime, setEndTime] = useState<Date | null>(null);
+
+  const [refresh, setRefresh] = useState<boolean>();
+  // console.log("submit", endTime);
+
   const handleCancel = () => {
     console.log("Modal has been canceled.");
   };
+
+  useEffect(() => {
+    try {
+      http
+        .get(
+          `https://learnconnectserver.azurewebsites.net/api/test-resutl/get-tests-result?userId=${userData?.id}&courseId=${idCourse}`
+        )
+        .then((res) => {
+          setResultAllTest(res.data);
+        });
+    } catch (err) {
+      console.error(err);
+    }
+  }, [userData, refresh]);
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -69,13 +105,19 @@ const Quiz = (props) => {
         setQuestionsTest(response.data);
 
         const userAnswersResponse = await http.get(
-          `https://learnconnectserver.azurewebsites.net/api/user-answer/get-list-answer-by-course?userId=${userData?.id}&courseId=${idCourse}`
+          `https://learnconnectserver.azurewebsites.net/api/user-answer/get-list-answer-by-test?userId=${userData?.id}&testId=${idTest}`
         );
         // console.log("userAnswersResponse", userAnswersResponse.data.length);
         if (userAnswersResponse.data.length !== 0) {
+          // console.log(
+          //   "data",
+          //   userAnswersResponse.data[0].map((answer) => answer.answerId)
+          // );
+          setTestResulted(true);
           setSelectedAnswers(
-            userAnswersResponse.data.map((answer) => answer.answerId)
+            userAnswersResponse.data[0].map((answer) => answer.answerId)
           );
+          console.log("dataaaa", selectedAnswers);
           setSubmitted(true);
         }
       } catch (error) {
@@ -83,7 +125,23 @@ const Quiz = (props) => {
       }
     };
     fetchQuestions();
-  }, []);
+  }, [idTest, userData]);
+
+  const [oneQuestionTest, setOneQuestionTest] = useState<Test[]>([]);
+
+  useEffect(() => {
+    try {
+      http
+        .get(
+          `https://learnconnectserver.azurewebsites.net/api/test/get-test-by-course?courseId=${idCourse}&testId=${idTest}`
+        )
+        .then((res) => {
+          setOneQuestionTest(res.data);
+        });
+    } catch (err) {
+      console.error(err);
+    }
+  }, [idTest]);
 
   const handleAnswerSelect = (answerId) => {
     if (!submitted) {
@@ -110,10 +168,11 @@ const Quiz = (props) => {
     console.log("dapan", data);
     setSubmitted(true);
     setQuizStarted(false);
+    // setReviewQuiz(true);
     let count = 0;
     let totalQuestions = 0;
 
-    questionsTest.forEach((item) => {
+    oneQuestionTest.forEach((item) => {
       totalQuestions += item.test.totalQuestion;
       item.questions.forEach((q) => {
         const correctAnswer = q.answers
@@ -135,7 +194,9 @@ const Quiz = (props) => {
     const urlAPI = `https://learnconnectserver.azurewebsites.net/api/user-answer?userId=${userData?.id}&testId=${data}`;
 
     try {
-      const response = await axios.post(urlAPI, selectedAnswers);
+      await axios
+        .post(urlAPI, selectedAnswers)
+        .then((res) => setEndTime(new Date(res.data.timeSubmit)));
       // console.log("User answers posted successfully:", response.data);
 
       setTimeout(() => {
@@ -155,12 +216,24 @@ const Quiz = (props) => {
     }
     setScore(averageScore);
     const userId = userData?.id;
-    const url = `https://learnconnectserver.azurewebsites.net/api/learning-performance/user/${userId}/course/${idCourse}`;
+    const testId = data;
+
+    const formData = new FormData();
+    formData.append("score", averageScore.toString());
+    if (startTime && endTime) {
+      const timeSpentInSeconds = calculateTimeSpentInSeconds(
+        startTime,
+        endTime
+      );
+      formData.append("timeSpent", timeSpentInSeconds.toString());
+      formData.append("timeSubmit", endTime.toString());
+    }
+
+    const url = `https://learnconnectserver.azurewebsites.net/api/test-resutl?userId=${userData?.id}&testId=${data}`;
     try {
-      const response = await http.put(url, {
-        score: averageScore,
-        userId: userId,
-        courseId: idCourse,
+      const response = await http.put(url, formData).then(() => {
+        setShowTable(true);
+        setRefresh(!refresh);
       });
 
       const chartDataFormatted = {
@@ -201,9 +274,25 @@ const Quiz = (props) => {
     }
   };
 
-  const handleDoAgain = () => {
+  const calculateTimeSpentInSeconds = (startTime, endTime) => {
+    const timeSpentMilliseconds = endTime.getTime() - startTime.getTime();
+    const timeSpentSeconds = Math.floor(timeSpentMilliseconds / 1000);
+
+    return timeSpentSeconds;
+  };
+
+  const [scoreLastSubmit, setScoreLastSubmit] = useState<number>();
+
+  const handleDoAgain = (record) => {
+    // setOneTest(record);
+    setShowTable(false);
+    // setIdTest(record.test.id);
+    setStartTime(new Date());
     setSubmitted(false);
+    setQuizStarted(true);
+    setReviewQuiz(false);
     setSelectedAnswers([]);
+    setSubmitted(false);
     window.scrollTo({
       top: 0,
       behavior: "smooth",
@@ -237,18 +326,134 @@ const Quiz = (props) => {
   const [selectedTab, setSelectedTab] = useState("1");
 
   const handleTabChange = (key) => {
-    if (!quizStarted && !submitted) {
+    if (!quizStarted) {
       // Allow switching tabs only if the quiz is started and not submitted
       setSelectedTab(key);
+      console.log("key", key);
+      setIdTest(key);
     }
   };
 
-  const handleStartQuiz = () => {
+  const [showTable, setShowTable] = useState(true);
+  const [oneTest, setOneTest] = useState<Test>();
+  console.log("mía", oneTest);
+
+  const handleStartQuiz = (record) => {
+    setStartTime(new Date());
+    setShowTable(false);
+    // console.log("cột này", record);
+    setOneTest(record);
+    setIdTest(record.test.id);
+    setReviewQuiz(false);
+    setSubmitted(false);
     setQuizStarted(true);
     // setSelectedTab(); // Start with the first test
   };
 
+  const handleReviewQuiz = (record) => {
+    setReviewQuiz(true);
+    setQuizStarted(false);
+    setShowTable(false);
+    // setSelectedTab(); // Start with the first test
+    setOneTest(record);
+    setIdTest(record.test.id);
+  };
+
+  const handleBackListTest = () => {
+    setReviewQuiz(false);
+    setQuizStarted(false);
+    setShowTable(true);
+  };
+
   const [quizStarted, setQuizStarted] = useState(false);
+
+  const columns = [
+    {
+      title: "Title",
+      dataIndex: ["test", "title"],
+      key: "test.title",
+    },
+    // {
+    //   title: "Description",
+    //   dataIndex: ["test", "description"],
+    //   key: "description",
+    // },
+    {
+      title: "Total Questions",
+      dataIndex: ["test", "totalQuestion"],
+      key: "totalQuestion",
+    },
+    {
+      title: "Score",
+      dataIndex: "score",
+      key: "score",
+      render: (text, record) => (
+        <span>
+          {
+            resultAllTest.find((score) => score.testId === record.test.id)
+              ?.score
+          }
+        </span>
+      ),
+    },
+    {
+      title: "Last Submit",
+      dataIndex: "timeSubmit",
+      key: "timeSubmit",
+      render: (text, record) => {
+        const timeSubmit = resultAllTest.find(
+          (timeSubmit) => timeSubmit.testId === record.test.id
+        )?.timeSubmit;
+
+        return (
+          <span>
+            {timeSubmit
+              ? format(new Date(timeSubmit), "dd/MM/yyyy HH:mm:ss")
+              : "Not submitted"}
+          </span>
+        );
+      },
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (text, record) => {
+        const testScore = resultAllTest.find(
+          (score) => score.testId === record.test.id
+        )?.score;
+
+        return (
+          <span>
+            {testScore !== undefined ? (
+              <>
+                {/* <Button onClick={() => handleDoAgain(record)}>
+                  Try It Again
+                </Button> */}
+                <Button onClick={() => handleReviewQuiz(record)}>Review</Button>
+              </>
+            ) : (
+              <Button onClick={() => handleStartQuiz(record)}>
+                Start Quiz
+              </Button>
+            )}
+          </span>
+        );
+      },
+    },
+    // {
+    //   title: "Action",
+    //   key: "action",
+    //   render: (text, record) => (
+    //     <span>
+    //       {/* {record.test.status === 0 ? ( */}
+    //       <Button onClick={() => handleStartQuiz(record)}>Start Quiz</Button>
+    //       {/* ) : ( */}
+    //       <Button onClick={() => handleReviewQuiz(record)}>Review</Button>
+    //       {/* )} */}
+    //     </span>
+    //   ),
+    // },
+  ];
 
   return (
     <>
@@ -293,14 +498,166 @@ const Quiz = (props) => {
                 </button>
               )} */}
               {/* {quizStarted && ( */}
-              <Tabs activeKey={selectedTab} onChange={handleTabChange}>
-                {questionsTest.map((item, index) => (
-                  <TabPane tab={`Test ${index + 1}`} key={item.test.id}>
-                    <div key={item.test.id} className="mb-4">
-                      <p className="text-3xl font-semibold mb-2 text-center">
-                        {item.test.title}
-                      </p>
-                      <p className="text-start my-5">{item.test.description}</p>
+
+              {!showTable ? (
+                <>
+                  <div key={oneTest?.test.id} className="mb-4">
+                    <p className="text-3xl font-semibold mb-2 text-center">
+                      {oneTest?.test.title}
+                    </p>
+                    <p className="text-start my-5">
+                      {oneTest?.test.description}
+                    </p>
+                    {quizStarted && (
+                      <>
+                        {oneTest?.questions.map((q, index) => (
+                          <div
+                            key={q.question.id}
+                            className="mb-2 mt-6 p-6 border-2 rounded-lg border-gray-200 shadow-lg"
+                          >
+                            <p className="mb-1 font-medium text-[18px]">
+                              {index + 1}.{" "}
+                              <span className="text-gray-500 text-[18px] text font-light">
+                                (Choose{" "}
+                                {q.answers.filter((a) => a.isCorrect).length}{" "}
+                                answer
+                                {q.answers.filter((a) => a.isCorrect).length <=
+                                1
+                                  ? ""
+                                  : "s"}
+                                ){" "}
+                              </span>
+                              {q.question.questionText}
+                            </p>
+                            <div className="px-4 grid grid-cols-2 gap-4 mt-10">
+                              {q.answers.map((answer, ansIndex) => (
+                                <button
+                                  key={answer.id}
+                                  className={` border-2 p-2 text-left rounded-lg ${
+                                    submitted
+                                      ? selectedAnswers?.includes(answer.id)
+                                        ? answer.isCorrect
+                                          ? "border-green-500 bg-green-100"
+                                          : "border-red-500 bg-red-100"
+                                        : "border-gray-300"
+                                      : selectedAnswers?.includes(answer.id)
+                                      ? "border-blue-500 bg-blue-100 hover:border-blue-700"
+                                      : "border-gray-300 hover:border-blue-500"
+                                  }`}
+                                  onClick={() => handleAnswerSelect(answer.id)}
+                                >
+                                  <span className="mr-2">
+                                    {answerOptions[ansIndex]}
+                                  </span>
+                                  {answer.answerText}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                        {questionsTest.length > 0 && ( // Conditionally render submit button
+                          <div className="flex justify-end">
+                            <button
+                              className="bg-[#309255] text-white font-bold py-2 px-4 my-4 rounded mx-2 hover:bg-[#309256da] shadow-lg w-full"
+                              onClick={() => handleSubmit(oneTest?.test.id)}
+                            >
+                              Submit
+                            </button>
+                          </div>
+                        )}
+                      </>
+                    )}
+
+                    {reviewQuiz && (
+                      <>
+                        {oneTest?.questions.map((q, index) => (
+                          <div
+                            key={q.question.id}
+                            className="mb-2 mt-6 p-6 border-2 rounded-lg border-gray-200 shadow-lg"
+                          >
+                            <p className="mb-1 font-medium text-[18px]">
+                              {index + 1}.{" "}
+                              <span className="text-gray-500 text-[18px] text font-light">
+                                (Choose{" "}
+                                {q.answers.filter((a) => a.isCorrect).length}{" "}
+                                answer
+                                {q.answers.filter((a) => a.isCorrect).length <=
+                                1
+                                  ? ""
+                                  : "s"}
+                                ){" "}
+                              </span>
+                              {q.question.questionText}
+                            </p>
+                            <div className="px-4 grid grid-cols-2 gap-4 mt-10">
+                              {q.answers.map((answer, ansIndex) => (
+                                <button
+                                  key={answer.id}
+                                  className={` border-2 p-2 text-left rounded-lg ${
+                                    submitted
+                                      ? selectedAnswers?.includes(answer.id)
+                                        ? answer.isCorrect
+                                          ? "border-green-500 bg-green-100"
+                                          : "border-red-500 bg-red-100"
+                                        : "border-gray-300"
+                                      : selectedAnswers?.includes(answer.id)
+                                      ? "border-blue-500 bg-blue-100 hover:border-blue-700"
+                                      : "border-gray-300 hover:border-blue-500"
+                                  }`}
+                                  onClick={() => handleAnswerSelect(answer.id)}
+                                >
+                                  <span className="mr-2">
+                                    {answerOptions[ansIndex]}
+                                  </span>
+                                  {answer.answerText}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                        {questionsTest.length > 0 && ( // Conditionally render submit button
+                          <div className="flex justify-end">
+                            <button
+                              className="bg-[#309255] text-white font-bold py-2 px-4 my-4 rounded mx-2 hover:bg-[#309256da] shadow-lg w-full"
+                              onClick={handleDoAgain}
+                            >
+                              Try it again
+                            </button>
+                            <button
+                              className="bg-[#309255] text-white font-bold py-2 px-4 my-4 rounded mx-2 hover:bg-[#309256da] shadow-lg w-full"
+                              onClick={handleBackListTest}
+                            >
+                              Back To List
+                            </button>
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </div>
+                </>
+              ) : (
+                <Table dataSource={questionsTest} columns={columns} />
+              )}
+              {/* {questionsTest.map((item, index) => (
+                <TabPane tab={`Test ${index + 1}`} key={item.test.id}>
+                <div key={item.test.id} className="mb-4">
+                  <p className="text-3xl font-semibold mb-2 text-center">
+                    {item.test.title}
+                  </p>
+                  <p className="text-start my-5">{item.test.description}</p>
+                  {testResulted ? (
+                    <>
+                      {!reviewQuiz && (
+                        <button
+                          className="bg-[#309255] text-white font-bold py-2 px-4 my-4 rounded mx-2 hover:bg-[#309256da] shadow-lg w-full"
+                          onClick={handleReviewQuiz}
+                        >
+                          Review
+                        </button>
+                      )}
+                    </>
+                  ) : (
+                    <>
                       {!quizStarted && (
                         <button
                           className="bg-[#309255] text-white font-bold py-2 px-4 my-4 rounded mx-2 hover:bg-[#309256da] shadow-lg w-full"
@@ -309,61 +666,56 @@ const Quiz = (props) => {
                           Start Quiz
                         </button>
                       )}
-                      {quizStarted && (
-                        <>
-                          {item.questions.map((q, index) => (
-                            <div
-                              key={q.question.id}
-                              className="mb-2 mt-6 p-6 border-2 rounded-lg border-gray-200 shadow-lg"
-                            >
-                              <p className="mb-1 font-medium text-[18px]">
-                                {index + 1}.{" "}
-                                <span className="text-gray-500 text-[18px] text font-light">
-                                  (Choose{" "}
-                                  {q.answers.filter((a) => a.isCorrect).length}{" "}
-                                  answer
-                                  {q.answers.filter((a) => a.isCorrect)
-                                    .length <= 1
-                                    ? ""
-                                    : "s"}
-                                  ){" "}
+                    </>
+                  )}
+                  {reviewQuiz && (
+                    <>
+                      {item.questions.map((q, index) => (
+                        <div
+                          key={q.question.id}
+                          className="mb-2 mt-6 p-6 border-2 rounded-lg border-gray-200 shadow-lg"
+                        >
+                          <p className="mb-1 font-medium text-[18px]">
+                            {index + 1}.{" "}
+                            <span className="text-gray-500 text-[18px] text font-light">
+                              (Choose{" "}
+                              {q.answers.filter((a) => a.isCorrect).length}{" "}
+                              answer
+                              {q.answers.filter((a) => a.isCorrect).length <= 1
+                                ? ""
+                                : "s"}
+                              ){" "}
+                            </span>
+                            {q.question.questionText}
+                          </p>
+                          <div className="px-4 grid grid-cols-2 gap-4 mt-10">
+                            {q.answers.map((answer, ansIndex) => (
+                              <button
+                                key={answer.id}
+                                className={` border-2 p-2 text-left rounded-lg ${
+                                  submitted
+                                    ? selectedAnswers?.includes(answer.id)
+                                      ? answer.isCorrect
+                                        ? "border-green-500 bg-green-100"
+                                        : "border-red-500 bg-red-100"
+                                      : "border-gray-300"
+                                    : selectedAnswers?.includes(answer.id)
+                                    ? "border-blue-500 bg-blue-100 hover:border-blue-700"
+                                    : "border-gray-300 hover:border-blue-500"
+                                }`}
+                                onClick={() => handleAnswerSelect(answer.id)}
+                              >
+                                <span className="mr-2">
+                                  {answerOptions[ansIndex]}
                                 </span>
-                                {q.question.questionText}
-                              </p>
-                              <div className="px-4 grid grid-cols-2 gap-4 mt-10">
-                                {q.answers.map((answer, ansIndex) => (
-                                  <button
-                                    key={answer.id}
-                                    className={` border-2 p-2 text-left rounded-lg ${
-                                      submitted
-                                        ? selectedAnswers?.includes(answer.id)
-                                          ? answer.isCorrect
-                                            ? "border-green-500 bg-green-100"
-                                            : "border-red-500 bg-red-100"
-                                          : "border-gray-300"
-                                        : selectedAnswers?.includes(answer.id)
-                                        ? "border-blue-500 bg-blue-100 hover:border-blue-700"
-                                        : "border-gray-300 hover:border-blue-500"
-                                    }`}
-                                    onClick={() =>
-                                      handleAnswerSelect(answer.id)
-                                    }
-                                  >
-                                    <span className="mr-2">
-                                      {answerOptions[ansIndex]}
-                                    </span>
-                                    {answer.answerText}
-                                  </button>
-                                ))}
-                              </div>
-                            </div>
-                          ))}
-                        </>
-                      )}
-                    </div>
-                    {questionsTest.length > 0 && ( // Conditionally render submit button
-                      <div className="flex justify-end">
-                        {submitted ? (
+                                {answer.answerText}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                      {questionsTest.length > 0 && ( // Conditionally render submit button
+                        <div className="flex justify-end">
                           <>
                             <button
                               className="bg-[#309255] text-white font-bold py-2 px-4 my-4 rounded mx-2 hover:bg-[#309256da] shadow-lg w-full"
@@ -372,19 +724,76 @@ const Quiz = (props) => {
                               Try it again
                             </button>
                           </>
-                        ) : (
+                        </div>
+                      )}
+                    </>
+                  )}
+
+                  {quizStarted && (
+                    <>
+                      {item.questions.map((q, index) => (
+                        <div
+                          key={q.question.id}
+                          className="mb-2 mt-6 p-6 border-2 rounded-lg border-gray-200 shadow-lg"
+                        >
+                          <p className="mb-1 font-medium text-[18px]">
+                            {index + 1}.{" "}
+                            <span className="text-gray-500 text-[18px] text font-light">
+                              (Choose{" "}
+                              {q.answers.filter((a) => a.isCorrect).length}{" "}
+                              answer
+                              {q.answers.filter((a) => a.isCorrect).length <= 1
+                                ? ""
+                                : "s"}
+                              ){" "}
+                            </span>
+                            {q.question.questionText}
+                          </p>
+                          <div className="px-4 grid grid-cols-2 gap-4 mt-10">
+                            {q.answers.map((answer, ansIndex) => (
+                              <button
+                                key={answer.id}
+                                className={` border-2 p-2 text-left rounded-lg ${
+                                  submitted
+                                    ? selectedAnswers?.includes(answer.id)
+                                      ? answer.isCorrect
+                                        ? "border-green-500 bg-green-100"
+                                        : "border-red-500 bg-red-100"
+                                      : "border-gray-300"
+                                    : selectedAnswers?.includes(answer.id)
+                                    ? "border-blue-500 bg-blue-100 hover:border-blue-700"
+                                    : "border-gray-300 hover:border-blue-500"
+                                }`}
+                                onClick={() => handleAnswerSelect(answer.id)}
+                              >
+                                <span className="mr-2">
+                                  {answerOptions[ansIndex]}
+                                </span>
+                                {answer.answerText}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                      {questionsTest.length > 0 && ( // Conditionally render submit button
+                        <div className="flex justify-end">
                           <button
                             className="bg-[#309255] text-white font-bold py-2 px-4 my-4 rounded mx-2 hover:bg-[#309256da] shadow-lg w-full"
                             onClick={() => handleSubmit(item.test.id)}
                           >
                             Submit
                           </button>
-                        )}
-                      </div>
-                    )}
-                  </TabPane>
-                ))}
-              </Tabs>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+                </TabPane>
+              ))} */}
+
+              {/* <Tabs activeKey={selectedTab} onChange={handleTabChange}>
+               
+              </Tabs> */}
               {/* )} */}
             </div>
           )}

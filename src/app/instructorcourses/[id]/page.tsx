@@ -391,7 +391,7 @@ const Dashboard = ({ params }: any) => {
       .then((response) => {
         setListQuestion(response.data);
         setAllQuestions(response.data[0].questions);
-        setIdTest(response.data[0].test.iyd);
+        setIdTest(response.data[0].test.id);
         listQuestion.forEach((item) => {
           const totalQuestion = item.test.totalQuestion;
         });
@@ -667,8 +667,10 @@ const Dashboard = ({ params }: any) => {
 
   const [showQuestionForm, setShowQuestionForm] = useState(false);
 
-  const handleNewQuestionClick = () => {
+  const handleNewQuestionClick = (data) => {
     setShowQuestionForm(true);
+    setIdTest(data);
+    console.log("tao nef", data);
   };
 
   const [showAnswerForm, setShowAnswerForm] = useState(false);
@@ -1616,7 +1618,11 @@ const Dashboard = ({ params }: any) => {
                                     </>
                                   ) : (
                                     <div className="flex justify-between mb-5 mt-10">
-                                      <Button onClick={handleNewQuestionClick}>
+                                      <Button
+                                        onClick={() =>
+                                          handleNewQuestionClick(item.test.id)
+                                        }
+                                      >
                                         Add Question
                                       </Button>
                                     </div>

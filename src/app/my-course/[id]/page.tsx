@@ -1556,12 +1556,12 @@ export default function AfterEnroll({ params }: any) {
                       </button>
                     );
                   })}
-                  <div className="pl-10 py-2 pr-[30px] bg-[#dff0e6] flex">
+                  {/* <div className="pl-10 py-2 pr-[30px] bg-[#dff0e6] flex">
                     <p className=" py-1">
                       Time Spent: {formatTime(timeSpent?.timeSpent)}
                     </p>
-                  </div>
-                  <div className="pl-10 py-2 pr-[30px] bg-[#dff0e6] flex">
+                  </div> */}
+                  <div className="pl-10 py-2 pr-[30px] bg-[#dff0e6] flex flex-end">
                     <button
                       className="border-2 border-[#309255] px-5 py-1 rounded-lg hover:bg-[#309255] active:bg-[#75c989] hover:text-white flex"
                       onClick={handleClick}
@@ -1572,7 +1572,7 @@ export default function AfterEnroll({ params }: any) {
                       <span>Practice Test</span>
                     </button>
 
-                    <p className="ml-auto my-auto">Score: {score}</p>
+                    {/* <p className="ml-auto my-auto">Score: {score}</p> */}
                   </div>
                 </nav>
               </div>
