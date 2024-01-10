@@ -184,7 +184,7 @@ const StaffTransaction = () => {
         return "red"; // Màu đỏ hồng cho trạng thái Banned
       case 2:
         return "yellow";
-      default:
+      case 3:
         return "purple"; // Màu mặc định nếu status không phù hợp với bất kỳ trạng thái nào
     }
   };
@@ -197,8 +197,8 @@ const StaffTransaction = () => {
         return "Error";
       case 2:
         return "Pending";
-      default:
-        return "Unknown Status";
+      case 3:
+        return "Handled";
     }
   };
 
@@ -237,7 +237,7 @@ const StaffTransaction = () => {
       render: (amount) => (amount === 0 ? <>Free</> : numberWithCommas(amount)),
     },
     {
-      title: "Course Fee",
+      title: "Course Price",
       dataIndex: "coursePrice",
       key: "coursePrice",
       width: 140,

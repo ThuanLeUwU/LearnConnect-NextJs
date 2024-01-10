@@ -231,8 +231,8 @@ const OrderHistory = () => {
         return "red"; // Màu đỏ hồng cho trạng thái Banned
       case 2:
         return "yellow"; // Màu yellow cho trạng thái Pending
-      default:
-        return "defaultColor"; // Màu mặc định nếu status không phù hợp với bất kỳ trạng thái nào
+      case 3:
+        return "purple"; // Màu mặc định nếu status không phù hợp với bất kỳ trạng thái nào
     }
   };
 
@@ -244,8 +244,8 @@ const OrderHistory = () => {
         return "Error";
       case 2:
         return "Pending";
-      default:
-        return "gray";
+      case 3:
+        return "Handled";
     }
   };
 
