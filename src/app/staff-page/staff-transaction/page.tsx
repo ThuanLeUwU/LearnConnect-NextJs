@@ -66,6 +66,7 @@ const StaffTransaction = () => {
 
   const [transaction, setTransaction] = useState<Transaction[]>([]);
   const [date, setDate] = useState<any>("");
+  const [currentRecord, setCurrentRecord] = useState(null);
 
   useEffect(() => {
     if (userData) {
@@ -182,9 +183,9 @@ const StaffTransaction = () => {
       case 1:
         return "red"; // Màu đỏ hồng cho trạng thái Banned
       case 2:
-        return "red";
+        return "yellow";
       default:
-        return "defaultColor"; // Màu mặc định nếu status không phù hợp với bất kỳ trạng thái nào
+        return "purple"; // Màu mặc định nếu status không phù hợp với bất kỳ trạng thái nào
     }
   };
 
@@ -195,7 +196,7 @@ const StaffTransaction = () => {
       case 1:
         return "Error";
       case 2:
-        return "Error";
+        return "Pending";
       default:
         return "Unknown Status";
     }
@@ -203,9 +204,26 @@ const StaffTransaction = () => {
 
   const columns2 = [
     {
+      title: "Date",
+      dataIndex: "successDate",
+      key: "successDate",
+      width: 120,
+      sorter: (a, b) => a.successDate.localeCompare(b.successDate),
+      sortDirections: ["ascend", "descend"] as SortOrder[],
+      render: (date) => moment(date).format("YYYY-MM-DD HH:mm:ss"),
+    },
+    {
+      title: "Course Name",
+      dataIndex: "courseName",
+      key: "courseName",
+      sorter: (a, b) => a.courseName.localeCompare(b.courseName),
+      sortDirections: ["ascend", "descend"] as SortOrder[],
+    },
+    {
       title: "Mentor Name",
       dataIndex: "mentorPay",
       key: "mentorPay",
+      width: 200,
       sorter: (a, b) => a.mentorPay.localeCompare(b.mentorPay),
       sortDirections: ["ascend", "descend"] as SortOrder[],
     },
@@ -213,44 +231,45 @@ const StaffTransaction = () => {
       title: "Amount",
       dataIndex: "amount",
       key: "amount",
+      width: 140,
       sorter: (a, b) => a.amount - b.amount,
       sortDirections: ["ascend", "descend"] as SortOrder[],
+      render: (amount) => (amount === 0 ? <>Free</> : numberWithCommas(amount)),
+    },
+    {
+      title: "Course Fee",
+      dataIndex: "coursePrice",
+      key: "coursePrice",
+      width: 140,
+      sorter: (a, b) => a.coursePrice - b.coursePrice,
+      sortDirections: ["ascend", "descend"] as SortOrder[],
+      render: (coursePrice) =>
+        coursePrice === 0 ? <>Free</> : numberWithCommas(coursePrice),
+    },
+    {
+      title: "Platform Fee",
+      dataIndex: "platformFee",
+      key: "platformFee",
+      width: 140,
+      sorter: (a, b) => a.platformFee - b.platformFee,
+      sortDirections: ["ascend", "descend"] as SortOrder[],
+      render: (platformFee) =>
+        platformFee === 0 ? <>Free</> : numberWithCommas(platformFee),
     },
     {
       title: "Transaction Code",
       dataIndex: "transactionId",
       key: "transactionId",
+      width: 200,
       sorter: (a, b) => a.transactionId - b.transactionId,
       sortDirections: ["ascend", "descend"] as SortOrder[],
       render: (text) => (text === null ? <>-</> : text),
     },
     {
-      title: "Create Date",
-      dataIndex: "createDate",
-      key: "createDate",
-      sorter: (a, b) =>
-        new Date(a.createDate).getTime() - new Date(b.createDate).getTime(),
-      sortDirections: ["ascend", "descend"] as SortOrder[],
-      render: (text) => moment(text).locale("en").format("LLL"),
-    },
-    {
-      title: "Success Date",
-      dataIndex: "successDate",
-      key: "successDate",
-      sorter: (a, b) =>
-        new Date(a.successDate).getTime() - new Date(b.successDate).getTime(),
-      sortDirections: ["ascend", "descend"] as SortOrder[],
-      render: (text) => {
-        const successDate = moment(text);
-        return successDate.isValid()
-          ? successDate.locale("en").format("LLL")
-          : "-"; // Hoặc bạn có thể sử dụng một giá trị khác thay vì "N/A"
-      },
-    },
-    {
       title: "Status",
       dataIndex: "status",
       key: "status",
+      width: 100,
       sorter: (a, b) => a.status - b.status,
       sortDirections: ["ascend", "descend"] as SortOrder[],
       render: (status, record) => (
@@ -264,6 +283,7 @@ const StaffTransaction = () => {
     {
       title: "Action",
       key: "actionRepay",
+      width: 100,
       render: (text, record) => {
         // Kiểm tra nếu trạng thái là 1, hiển thị nút hoặc phần giao diện bạn muốn
         if (record.status === 1) {
@@ -282,13 +302,30 @@ const StaffTransaction = () => {
       },
     },
   ];
-
+  function numberWithCommas(x) {
+    if (x !== undefined && x !== null) {
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    } else {
+      return "N/A";
+    }
+  }
   const [modalRepay, setModalRepay] = useState(false);
   const [repayId, setRepayId] = useState<number>(0);
+
+  const [mentorPay, setMentorPay] = useState<string>("");
+  const [dateError, setdateError] = useState<string>("");
+  const [courseName, setCourseName] = useState<string>("");
+  const [transactionError, setTransactionError] = useState<string>("");
+  const [amount, setAmount] = useState<string>("");
 
   const handleRepay = (record) => {
     // Thực hiện các hành động cần thiết khi người dùng nhấn nút Repay
     setRepayId(record.paymentTransactionId);
+    setMentorPay(record.mentorPay); // Set mentorPay value
+    setAmount(record.amount);
+    setTransactionError(record.transactionError);
+    setCourseName(record.courseName);
+    setdateError(record.createDate);
     setModalRepay(true);
     console.log("Repay action for record:", record.paymentTransactionId);
     // ... (thêm logic xử lý ở đây)
@@ -428,8 +465,8 @@ const StaffTransaction = () => {
       <Modal
         destroyOnClose={true}
         title={
-          <div className="text-lg">
-            Are you sure you want to Repay for this Mentor?
+          <div className="text-xl">
+            Are you sure you want to Repay for {mentorPay}?
           </div>
         }
         open={modalRepay}
@@ -445,21 +482,33 @@ const StaffTransaction = () => {
           autoComplete="off"
           form={form}
           labelCol={{ span: 4 }}
-          wrapperCol={{ span: 20 }}
+          wrapperCol={{ span: 23 }}
           layout="horizontal"
           className="mt-5"
           style={{ width: "100%" }}
           onFinish={handleRepayClick}
         >
-          <Space className="justify-end w-full">
+          <Form.Item className="w-full mb-0">
+            <div className="text-lg">
+              There seems to be an issue with the payment for the course &quot;
+              <strong>{courseName}</strong>&quot; scheduled for{" "}
+              <strong>{moment(dateError).format("YYYY-MM-DD HH:mm:ss")}</strong>{" "}
+              with mentor <strong>{mentorPay}</strong>. Width error is{" "}
+              <strong>{transactionError}</strong>.
+            </div>
+            <div className="text-lg mt-5">
+              Are you sure you want to proceed with the payment of{" "}
+              <strong>{numberWithCommas(amount)}</strong> vnd for mentor{" "}
+              <strong>{mentorPay}</strong> ?
+            </div>
+          </Form.Item>
+          <Space className="justify-end w-full mt-5">
             <Form.Item className="mb-0">
               <Space>
                 <Button
                   className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
                   onClick={handleCancel}
                   style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
                     border: "2px solid #E0E0E0",
                     color: "black",
                   }}
@@ -470,8 +519,6 @@ const StaffTransaction = () => {
                   className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
                   htmlType="submit"
                   style={{
-                    // backgroundColor: "#4caf50",
-                    // borderColor: "#4caf50",
                     border: "2px solid #4caf50",
                     color: "#fff",
                   }}

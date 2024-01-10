@@ -19,15 +19,6 @@ import { Rating } from "@mui/material";
 import { http } from "@/api/http";
 import { UserAuth } from "../context/AuthContext";
 import { useRouter } from "next/navigation";
-// import {
-//   Chart as ChartJs,
-//   BarElement,
-//   CategoryScale,
-//   LinearScale,
-//   Legend,
-//   Tooltip,
-// } from "chart.js";
-// import { Bar } from "react-chartjs-2";
 import { Chart } from "react-google-charts";
 import {
   ArrowUpOutlined,
@@ -35,20 +26,7 @@ import {
   CaretUpOutlined,
   SortAscendingOutlined,
 } from "@ant-design/icons";
-
-// ChartJs.register(BarElement, CategoryScale, LinearScale, Legend, Tooltip);
-
-// export type Revenue = {
-//   date: string;
-//   dayOfWeek: string;
-//   revenueDate: number;
-//   revenueCourse: {
-//     courseName: string;
-//     totalEnroll: number;
-//     totalRevenueCourse: string;
-//   };
-// };
-
+import ChartRevenue from "@/components/chart-revenue/page";
 interface RevenueEntry {
   date: string;
   revenueDate: number;
@@ -113,21 +91,6 @@ const Revenue = () => {
 
   const [today, setToday] = useState<string>();
   const [listDate, setListDate] = useState<RevenueEntry[]>([]);
-  // console.log(listDate);
-
-  // const [chartData, setChartData] = useState({
-  //   labels: [] as string[],
-  //   datasets: [
-  //     {
-  //       label: "Revenue",
-  //       data: [] as number[],
-  //       backgroundColor: "#309255d9",
-  //       borderColor: "black",
-  //       borderWidth: 2,
-  //       barPercentage: 0.6,
-  //     },
-  //   ],
-  // });
   const moment = require("moment-timezone");
 
   const menuItem = [
@@ -176,12 +139,9 @@ const Revenue = () => {
   const [loading, setLoading] = useState(false);
 
   const [date, setDate] = useState<string | null>(null);
-  // console.log("homnay", date);
-
   useEffect(() => {
     if (Array.isArray(listDate) && listDate.length > 0) {
       setDate(listDate[listDate.length - 1].date);
-      // console.log("homnay1", listDate[listDate.length - 1].date);
       http
         .get(
           `https://learnconnectserver.azurewebsites.net/api/payment-transaction/revenue-mentor?mentorUserId=${id}&filterDate=${new Date(
@@ -204,14 +164,12 @@ const Revenue = () => {
 
   const handleFilterClick = (selectedDate) => {
     // Đặt logic xử lý cho việc lọc dữ liệu theo ngày ở đây
-    // console.log(`Filter by: ${selectedDate}`);
     setDate(selectedDate);
 
     http
       .get(
         `https://learnconnectserver.azurewebsites.net/api/payment-transaction/revenue-mentor?mentorUserId=${id}&filterDate=${selectedDate}`
       )
-      // setIsMenuOpen(false);
       .then((response) => {
         setRevenueEachCourse(response.data);
         setEachCourse(response.data[0].revenueCourse);
@@ -226,7 +184,6 @@ const Revenue = () => {
 
   const detailsEnroll = (value) => {
     // Đặt logic xử lý cho việc lọc dữ liệu theo ngày ở đây
-    // console.log(`Filter by: ${value}`);
     setIsModal(true);
     setEnrollList(value);
   };
@@ -306,8 +263,6 @@ const Revenue = () => {
   };
 
   const [totalStatistic, setTotalStatistic] = useState<TotalStatistic>();
-  // console.log(totalStatistic);
-
   const [courseStatistic1, setCourseStatistic1] = useState<CourseData[]>([]);
   console.log(courseStatistic1);
 
@@ -331,13 +286,7 @@ const Revenue = () => {
   useEffect(() => {
     const processedData1: (string | number)[][] = [["Course", "Revenue"]];
     let localMaxRevenue = 0;
-
     courseStatistic1.forEach((course) => {
-      // const truncatedCourseName =
-      //   course.courseName.length > 20
-      //     ? course.courseName.slice(0, 20) + "..."
-      //     : course.courseName;
-      // processedData1.push([truncatedCourseName, course.revenue]);
       processedData1.push([course.courseName, course.revenue]);
       localMaxRevenue = Math.max(localMaxRevenue, course.revenue);
     });
@@ -375,7 +324,6 @@ const Revenue = () => {
     setSortOrder2(newSortOrder);
     // onSort(newSortOrder);
     setClickCount2(clickCount2 + 1);
-
     // Tăng số lần bấm
   };
 
@@ -562,10 +510,6 @@ const Revenue = () => {
                     />
                   </div>
                 )}
-
-                {/* <div className="relative flex justify-center">
-                  <Bar data={chartData} options={options}></Bar>
-                </div> */}
               </div>
               <div className="mt-10 rounded-lg border-solid border-2 mx-10 p-5 shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)] flex flex-col gap-4 ">
                 <div className="flex gap-5 justify-between">
@@ -581,7 +525,6 @@ const Revenue = () => {
                       className="mx-5"
                     >
                       {timeLine.map((option, index) => (
-                        // <div key={index}>hahaha {option.date}</div>
                         <Option key={option.title} value={option.value}>
                           {option.title}
                         </Option>
@@ -621,65 +564,10 @@ const Revenue = () => {
                     />
                   </div>
                 )}
-
-                {/* <div className="relative flex justify-center">
-                  <Bar data={chartData} options={options}></Bar>
-                </div> */}
               </div>
+              <ChartRevenue />
             </div>
           )}
-          {/* <div className={`${InstructorCourseStyle.body_wrapper}`}>
-            <div className="mx-10">
-              <div className="bg-[#e5f4eb] rounded-[10px] px-10 ">
-                <div className="flex justify-between p-5 items-center text-center ">
-                  <div className="w-[350px]">Courses</div>
-                  <div className="w-[100px]">Revenue</div>
-                  <div>Enrollment</div>
-
-                  {date ? (
-                    <Select
-                      defaultValue={date}
-                      onChange={handleFilterClick}
-                      style={{ width: 120 }}
-                    >
-                      {listDate.map((option, index) => (
-                        <Option key={option.date} value={option.date}>
-                          {new Date(option.date).toISOString().slice(0, 10)}
-                        </Option>
-                      ))}
-                    </Select>
-                  ) : (
-                    <></>
-                  )}
-                </div>{" "}
-              </div>
-              <div className=" flex flex-col">
-                {eachCourse.map((item, index) => (
-                  <>
-                    <div className="flex mt-5 rounded-[10px] py-5 border-solid border px-[60px] hover:border-[#309255] justify-between items-center text-center shadow-[5px_5px_30px_10px_rgba(0,0,0,0.15)]">
-                      <div className="w-[300px]">{item.courseName}</div>
-                      <div className="w-[100px]">{item.totalRevenueCourse}</div>
-                      <div className="">{item.totalEnroll}</div>
-                      <button
-                        className="rounded-[10px] border-solid border-2 p-2"
-                        onClick={() => detailsEnroll(item.usersEnroll)}
-                      >
-                        View Details
-                      </button>
-                    </div>
-                  </>
-                ))}
-              </div>
-            </div>
-          </div> */}
-          {/* <Modal
-            title="List Enrollment"
-            open={isModal}
-            onCancel={handleCancel}
-            footer={false}
-          >
-            <Table columns={columns} dataSource={enrollList} />
-          </Modal> */}
         </div>
       )}
     </>
