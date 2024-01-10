@@ -387,17 +387,20 @@ const Quiz = (props) => {
       title: "Score",
       dataIndex: "score",
       key: "score",
-      render: (text, record) => (
-        <span>
-          {
-            resultAllTest.find((score) => score.testId === record.test.id)
-              ?.score
-          }
-        </span>
-      ),
+      render: (text, record) => {
+        const score = resultAllTest.find(
+          (score) => score.testId === record.test.id
+        )?.score;
+
+        if (score !== undefined && score !== null) {
+          return <span>{score}/100</span>;
+        } else {
+          return <span>-</span>;
+        }
+      },
     },
     {
-      title: "Last Submit",
+      title: "Last Submitted",
       dataIndex: "timeSubmit",
       key: "timeSubmit",
       render: (text, record) => {

@@ -1330,11 +1330,11 @@ const Dashboard = ({ params }: any) => {
                 </>
                 {listQuestion.length === 0 ? (
                   <>
-                    <div className="flex justify-between mb-5">
+                    {/* <div className="flex justify-between mb-5">
                       <Button onClick={showTestTitleModal}>
                         Create New Test
                       </Button>
-                    </div>
+                    </div> */}
                     <Empty />
                   </>
                 ) : (
