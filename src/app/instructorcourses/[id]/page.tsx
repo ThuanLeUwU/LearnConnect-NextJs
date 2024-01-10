@@ -14,6 +14,7 @@ import {
   Space,
   Spin,
   Table,
+  Tabs,
   Tag,
   Tooltip,
   Typography,
@@ -390,7 +391,7 @@ const Dashboard = ({ params }: any) => {
       .then((response) => {
         setListQuestion(response.data);
         setAllQuestions(response.data[0].questions);
-        setIdTest(response.data[0].test.iyd);
+        setIdTest(response.data[0].test.id);
         listQuestion.forEach((item) => {
           const totalQuestion = item.test.totalQuestion;
         });
@@ -666,8 +667,10 @@ const Dashboard = ({ params }: any) => {
 
   const [showQuestionForm, setShowQuestionForm] = useState(false);
 
-  const handleNewQuestionClick = () => {
+  const handleNewQuestionClick = (data) => {
     setShowQuestionForm(true);
+    setIdTest(data);
+    console.log("tao nef", data);
   };
 
   const [showAnswerForm, setShowAnswerForm] = useState(false);
@@ -1093,6 +1096,13 @@ const Dashboard = ({ params }: any) => {
     router.push("/instructorcourses");
   };
 
+  const { TabPane } = Tabs;
+  const [selectedTab, setSelectedTab] = useState("1");
+
+  const handleTabChange = (key) => {
+    setSelectedTab(key);
+  };
+
   return (
     <>
       {!userData ? (
@@ -1311,6 +1321,13 @@ const Dashboard = ({ params }: any) => {
                 {/* <div className="flex justify-between mb-5">
               <Button onClick={showModal}> New Question</Button>
             </div> */}
+                <>
+                  <div className="flex justify-between mb-5">
+                    <Button onClick={showTestTitleModal}>
+                      Create New Test
+                    </Button>
+                  </div>
+                </>
                 {listQuestion.length === 0 ? (
                   <>
                     <div className="flex justify-between mb-5">
@@ -1326,19 +1343,27 @@ const Dashboard = ({ params }: any) => {
                       <Spin size="large" />
                     ) : (
                       <>
-                        {listQuestion.map((item) => (
-                          <div key={item.test.id} className="mb-4 mt-6">
-                            <div className="flex flex-col">
-                              <div className="flex flex-row justify-end gap-2">
-                                <Button
-                                  onClick={() => {
-                                    handleUpdateTestModal(item.test.id);
-                                  }}
-                                  className="flex flex-row items-center"
-                                >
-                                  Update
-                                </Button>
-                                {/* <button
+                        <Tabs
+                          activeKey={selectedTab}
+                          onChange={handleTabChange}
+                        >
+                          {listQuestion.map((item, index) => (
+                            <TabPane
+                              tab={`Test ${index + 1}`}
+                              key={item.test.id}
+                            >
+                              <div key={index} className="mb-4 mt-6">
+                                <div className="flex flex-col">
+                                  <div className="flex flex-row justify-end gap-2">
+                                    <Button
+                                      onClick={() => {
+                                        handleUpdateTestModal(item.test.id);
+                                      }}
+                                      className="flex flex-row items-center"
+                                    >
+                                      Update
+                                    </Button>
+                                    {/* <button
                                   // className="flex items-end"
                                   style={{
                                     backgroundColor: "#fdc6c6",
@@ -1353,112 +1378,268 @@ const Dashboard = ({ params }: any) => {
                                 >
                                   <DeleteOutlined />
                                 </button> */}
-                              </div>
-                              <h3 className="text-xl font-semibold mt-2 text-center ">
-                                <div className=" flex flex-col items-center justify-center mb-2">
-                                  <div className="flex justify-center items-center gap-2 ">
-                                    <div className="text-3xl flex flex-col gap-2">
-                                      <div>{item.test.title} </div>
-                                      <div className="flex justify-center ">
-                                        <Tag
-                                          className="text-2xl"
-                                          color={getStatusColor(
-                                            item.test.status
-                                          )}
+                                  </div>
+                                  <h3 className="text-xl font-semibold mt-2 text-center ">
+                                    <div className=" flex flex-col items-center justify-center mb-2">
+                                      <div className="flex justify-center items-center gap-2 ">
+                                        <div className="text-3xl flex flex-col gap-2">
+                                          <div>{item.test.title} </div>
+                                          <div className="flex justify-center ">
+                                            <Tag
+                                              className="text-2xl"
+                                              color={getStatusColor(
+                                                item.test.status
+                                              )}
+                                            >
+                                              {getStatusText(item.test.status)}
+                                            </Tag>
+                                          </div>
+                                        </div>
+                                      </div>
+
+                                      <br />
+                                      <div>{item.test.description}</div>
+                                    </div>
+                                  </h3>
+                                </div>
+
+                                {/* {item.questions.length == 0 ? <></> : <></>} */}
+                                {item.questions.map((q, index) => (
+                                  <div
+                                    key={q.question.id}
+                                    className="mb-2 my-8 p-4 border-2 rounded-lg border-gray-200 shadow-[10px_10px_20px_10px_rgba(0,0,0,0.15)] "
+                                  >
+                                    <div className="mb-1 font-medium text-[18px] flex flex-row justify-between">
+                                      <div className="flex flex-row gap-2">
+                                        {index + 1}.{" "}
+                                        {showUpdateQuestion &&
+                                        questionId === q.question.id ? (
+                                          <Input.TextArea
+                                            autoSize={{ minRows: 1 }}
+                                            cols={120}
+                                            autoFocus
+                                            defaultValue={
+                                              q.question.questionText
+                                            }
+                                            value={updateQuestion}
+                                            onChange={handleInputChange}
+                                            onBlur={() =>
+                                              handleBlur(q.question.id)
+                                            }
+                                            className="w-full"
+                                          />
+                                        ) : (
+                                          <div
+                                            className="w-full"
+                                            onClick={() => {
+                                              handleUpdateQuestionClick(
+                                                q.question.id
+                                              );
+                                              setQuestionId(q.question.id);
+                                              setUpdateQuestion(
+                                                q.question.questionText
+                                              );
+                                            }}
+                                          >
+                                            {q.question.questionText}
+                                          </div>
+                                        )}
+                                      </div>
+                                      <div className="gap-2 flex items-center">
+                                        <Button
+                                          onClick={() => {
+                                            handleNewAnswerClick(q.question.id);
+                                            setQuestionId(q.question.id);
+                                          }}
+                                          className="flex flex-row items-center"
                                         >
-                                          {getStatusText(item.test.status)}
-                                        </Tag>
+                                          {/* <div></div> */}
+                                          <PlusOutlined /> Add Answer
+                                        </Button>
+                                        {item.questions.length > 2 && (
+                                          <button
+                                            style={{
+                                              backgroundColor: "#fdc6c6",
+                                              color: "black",
+                                              width: "40px", // Thiết lập chiều rộng mong muốn
+                                              height: "24px",
+                                              borderRadius: "5px",
+                                              // Thiết lập chiều cao mong muốn
+                                            }}
+                                            onClick={() =>
+                                              showDeleteQuestionModal(
+                                                q.question.id
+                                              )
+                                            }
+                                          >
+                                            <DeleteOutlined />
+                                          </button>
+                                        )}
                                       </div>
                                     </div>
+                                    {showAnswerForm &&
+                                      questionId === q.question.id && (
+                                        <Form
+                                          onFinish={handleFormAnswerSubmit}
+                                          style={{
+                                            width: "80%",
+                                            alignItems: "start",
+                                          }}
+                                        >
+                                          <div className="flex flex-col justify-end">
+                                            <Form.Item
+                                              name="answer"
+                                              label="Answer"
+                                              rules={[
+                                                {
+                                                  required: true,
+                                                  message:
+                                                    "Please input your question!",
+                                                },
+                                              ]}
+                                            >
+                                              <Input
+                                                className={` border-2 p-2 text-left rounded-lg ${
+                                                  isChecked
+                                                    ? "border-green-500 bg-green-100"
+                                                    : ""
+                                                }`}
+                                              />
+                                            </Form.Item>
+                                            <Checkbox
+                                              className="flex items-end justify-end"
+                                              checked={isChecked}
+                                              onChange={handleCheckboxChange}
+                                            >
+                                              Correct Answer
+                                            </Checkbox>
+                                          </div>
+                                          <div className="flex justify-end gap-2 mt-2">
+                                            <Button onClick={handleCancel}>
+                                              Cancel
+                                            </Button>
+                                            <Button
+                                              style={{
+                                                backgroundColor: "#4caf50",
+                                                // borderColor: "#4caf50",
+                                                color: "#fff",
+                                              }}
+                                              type="primary"
+                                              htmlType="submit"
+                                            >
+                                              Submit
+                                            </Button>
+                                          </div>
+                                        </Form>
+                                      )}
+                                    <div className="px-4 grid grid-cols-2 gap-4">
+                                      {q.answers.map((answer, ansIndex) => (
+                                        <>
+                                          {showUpdateAnswer &&
+                                          AnswerId === answer.id ? (
+                                            <Input
+                                              // autoFocus
+                                              defaultValue={answer.answerText}
+                                              value={updateAnswer}
+                                              onChange={handleAnswerChange}
+                                              onBlur={() =>
+                                                handleBlur2(answer.id)
+                                              }
+                                              key={answer.id}
+                                              className={`mt-3 border-2 p-2 text-left rounded-lg ${
+                                                answer.isCorrect === true
+                                                  ? "border-green-500 bg-green-100"
+                                                  : ""
+                                              }`}
+                                            />
+                                          ) : (
+                                            <div className="flex gap-2 justify-center align-middle items-center mt-3">
+                                              <div
+                                                className={` border-2 p-2 flex-auto text-left rounded-lg ${
+                                                  answer.isCorrect === true
+                                                    ? "border-green-500 bg-green-100"
+                                                    : ""
+                                                }`}
+                                                onClick={() => {
+                                                  handleUpdateAnswerClick(
+                                                    answer.id
+                                                  );
+                                                  setAnswerId(answer.id);
+                                                  setQuestionId(q.question.id);
+                                                  setUpdateAnswer(
+                                                    answer.answerText
+                                                  );
+                                                  handleSetIsChecked(
+                                                    answer.isCorrect
+                                                  );
+                                                }}
+                                              >
+                                                {answer.answerText}
+                                              </div>
+                                              {q.answers.length > 2 && (
+                                                <button
+                                                  style={{
+                                                    backgroundColor: "#fdc6c6",
+                                                    color: "black",
+                                                    width: "24px", // Thiết lập chiều rộng mong muốn
+                                                    height: "24px",
+                                                    borderRadius: "5px", // Thiết lập chiều cao mong muốn
+                                                  }}
+                                                  onClick={() =>
+                                                    showDeleteAnswerModal(
+                                                      answer.id
+                                                    )
+                                                  }
+                                                >
+                                                  <DeleteOutlined size={16} />
+                                                </button>
+                                              )}
+                                            </div>
+                                          )}
+                                        </>
+                                      ))}
+                                    </div>
                                   </div>
-
-                                  <br />
-                                  <div>{item.test.description}</div>
-                                </div>
-                              </h3>
-                            </div>
-
-                            {/* {item.questions.length == 0 ? <></> : <></>} */}
-                            {item.questions.map((q, index) => (
-                              <div
-                                key={q.question.id}
-                                className="mb-2 my-8 p-4 border-2 rounded-lg border-gray-200 shadow-[10px_10px_20px_10px_rgba(0,0,0,0.15)] "
-                              >
-                                <div className="mb-1 font-medium text-[18px] flex flex-row justify-between">
-                                  <div className="flex flex-row gap-2">
-                                    {index + 1}.{" "}
-                                    {showUpdateQuestion &&
-                                    questionId === q.question.id ? (
-                                      <Input.TextArea
-                                        autoSize={{ minRows: 1 }}
-                                        cols={120}
-                                        autoFocus
-                                        defaultValue={q.question.questionText}
-                                        value={updateQuestion}
-                                        onChange={handleInputChange}
-                                        onBlur={() => handleBlur(q.question.id)}
-                                        className="w-full"
-                                      />
-                                    ) : (
-                                      <div
-                                        className="w-full"
-                                        onClick={() => {
-                                          handleUpdateQuestionClick(
-                                            q.question.id
-                                          );
-                                          setQuestionId(q.question.id);
-                                          setUpdateQuestion(
-                                            q.question.questionText
-                                          );
-                                        }}
-                                      >
-                                        {q.question.questionText}
-                                      </div>
-                                    )}
-                                  </div>
-                                  <div className="gap-2 flex items-center">
-                                    <Button
-                                      onClick={() => {
-                                        handleNewAnswerClick(q.question.id);
-                                        setQuestionId(q.question.id);
-                                      }}
-                                      className="flex flex-row items-center"
-                                    >
-                                      {/* <div></div> */}
-                                      <PlusOutlined /> Add Answer
-                                    </Button>
-                                    {item.questions.length > 2 && (
-                                      <button
-                                        style={{
-                                          backgroundColor: "#fdc6c6",
-                                          color: "black",
-                                          width: "40px", // Thiết lập chiều rộng mong muốn
-                                          height: "24px",
-                                          borderRadius: "5px",
-                                          // Thiết lập chiều cao mong muốn
-                                        }}
+                                ))}
+                                <>
+                                  {allQuestions.length === 0 ? (
+                                    <>
+                                      <p className="font-medium text-lg text-center">
+                                        Oh, it looks like you don&apos;t have
+                                        any questions yet. Let&apos;s{" "}
+                                        <button
+                                          className="text-green-500 underline"
+                                          onClick={handleNewQuestionClick}
+                                        >
+                                          create
+                                        </button>{" "}
+                                        a set of questions for your test
+                                      </p>
+                                    </>
+                                  ) : (
+                                    <div className="flex justify-between mb-5 mt-10">
+                                      <Button
                                         onClick={() =>
-                                          showDeleteQuestionModal(q.question.id)
+                                          handleNewQuestionClick(item.test.id)
                                         }
                                       >
-                                        <DeleteOutlined />
-                                      </button>
-                                    )}
-                                  </div>
-                                </div>
-                                {showAnswerForm &&
-                                  questionId === q.question.id && (
-                                    <Form
-                                      onFinish={handleFormAnswerSubmit}
-                                      style={{
-                                        width: "80%",
-                                        alignItems: "start",
-                                      }}
-                                    >
-                                      <div className="flex flex-col justify-end">
+                                        Add Question
+                                      </Button>
+                                    </div>
+                                  )}
+
+                                  <div className=" flex justify-center">
+                                    {showQuestionForm && (
+                                      <Form
+                                        onFinish={handleFormQuestionSubmit}
+                                        style={{
+                                          width: "80%",
+                                          alignItems: "center",
+                                        }}
+                                      >
                                         <Form.Item
-                                          name="answer"
-                                          label="Answer"
+                                          name="question"
+                                          label="Question"
                                           rules={[
                                             {
                                               required: true,
@@ -1467,183 +1648,43 @@ const Dashboard = ({ params }: any) => {
                                             },
                                           ]}
                                         >
-                                          <Input
-                                            className={` border-2 p-2 text-left rounded-lg ${
-                                              isChecked
-                                                ? "border-green-500 bg-green-100"
-                                                : ""
-                                            }`}
-                                          />
+                                          <Input />
                                         </Form.Item>
-                                        <Checkbox
-                                          className="flex items-end justify-end"
-                                          checked={isChecked}
-                                          onChange={handleCheckboxChange}
-                                        >
-                                          Correct Answer
-                                        </Checkbox>
-                                      </div>
-                                      <div className="flex justify-end gap-2 mt-2">
-                                        <Button onClick={handleCancel}>
-                                          Cancel
-                                        </Button>
-                                        <Button
-                                          style={{
-                                            backgroundColor: "#4caf50",
-                                            // borderColor: "#4caf50",
-                                            color: "#fff",
-                                          }}
-                                          type="primary"
-                                          htmlType="submit"
-                                        >
-                                          Submit
-                                        </Button>
-                                      </div>
-                                    </Form>
-                                  )}
-                                <div className="px-4 grid grid-cols-2 gap-4">
-                                  {q.answers.map((answer, ansIndex) => (
-                                    <>
-                                      {showUpdateAnswer &&
-                                      AnswerId === answer.id ? (
-                                        <Input
-                                          // autoFocus
-                                          defaultValue={answer.answerText}
-                                          value={updateAnswer}
-                                          onChange={handleAnswerChange}
-                                          onBlur={() => handleBlur2(answer.id)}
-                                          key={answer.id}
-                                          className={`mt-3 border-2 p-2 text-left rounded-lg ${
-                                            answer.isCorrect === true
-                                              ? "border-green-500 bg-green-100"
-                                              : ""
-                                          }`}
-                                        />
-                                      ) : (
-                                        <div className="flex gap-2 justify-center align-middle items-center mt-3">
-                                          <div
-                                            className={` border-2 p-2 flex-auto text-left rounded-lg ${
-                                              answer.isCorrect === true
-                                                ? "border-green-500 bg-green-100"
-                                                : ""
-                                            }`}
-                                            onClick={() => {
-                                              handleUpdateAnswerClick(
-                                                answer.id
-                                              );
-                                              setAnswerId(answer.id);
-                                              setQuestionId(q.question.id);
-                                              setUpdateAnswer(
-                                                answer.answerText
-                                              );
-                                              handleSetIsChecked(
-                                                answer.isCorrect
-                                              );
+                                        <div className="flex gap-5 justify-end">
+                                          {/* Thêm các trường dữ liệu khác cần thiết vào đây */}
+                                          <Button
+                                            className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                                            onClick={handleCancel}
+                                            style={{
+                                              // backgroundColor: "#4caf50",
+                                              // borderColor: "#4caf50",
+                                              border: "2px solid #E0E0E0",
+                                              color: "black",
                                             }}
                                           >
-                                            {answer.answerText}
-                                          </div>
-                                          {q.answers.length > 2 && (
-                                            <button
-                                              style={{
-                                                backgroundColor: "#fdc6c6",
-                                                color: "black",
-                                                width: "24px", // Thiết lập chiều rộng mong muốn
-                                                height: "24px",
-                                                borderRadius: "5px", // Thiết lập chiều cao mong muốn
-                                              }}
-                                              onClick={() =>
-                                                showDeleteAnswerModal(answer.id)
-                                              }
-                                            >
-                                              <DeleteOutlined size={16} />
-                                            </button>
-                                          )}
+                                            Cancel
+                                          </Button>
+                                          <Button
+                                            className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                                            htmlType="submit"
+                                            style={{
+                                              // backgroundColor: "#4caf50",
+                                              // borderColor: "#4caf50",
+                                              border: "2px solid #4caf50",
+                                              color: "#fff",
+                                            }}
+                                          >
+                                            Submit
+                                          </Button>
                                         </div>
-                                      )}
-                                    </>
-                                  ))}
-                                </div>
-                              </div>
-                            ))}
-                            <>
-                              {allQuestions.length === 0 ? (
-                                <>
-                                  <p className="font-medium text-lg text-center">
-                                    Oh, it looks like you don&apos;t have any
-                                    questions yet. Let&apos;s{" "}
-                                    <button
-                                      className="text-green-500 underline"
-                                      onClick={handleNewQuestionClick}
-                                    >
-                                      create
-                                    </button>{" "}
-                                    a set of questions for your test
-                                  </p>
+                                      </Form>
+                                    )}
+                                  </div>
                                 </>
-                              ) : (
-                                <div className="flex justify-between mb-5 mt-10">
-                                  <Button onClick={handleNewQuestionClick}>
-                                    Add Question
-                                  </Button>
-                                </div>
-                              )}
-
-                              <div className=" flex justify-center">
-                                {showQuestionForm && (
-                                  <Form
-                                    onFinish={handleFormQuestionSubmit}
-                                    style={{
-                                      width: "80%",
-                                      alignItems: "center",
-                                    }}
-                                  >
-                                    <Form.Item
-                                      name="question"
-                                      label="Question"
-                                      rules={[
-                                        {
-                                          required: true,
-                                          message:
-                                            "Please input your question!",
-                                        },
-                                      ]}
-                                    >
-                                      <Input />
-                                    </Form.Item>
-                                    <div className="flex gap-5 justify-end">
-                                      {/* Thêm các trường dữ liệu khác cần thiết vào đây */}
-                                      <Button
-                                        className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
-                                        onClick={handleCancel}
-                                        style={{
-                                          // backgroundColor: "#4caf50",
-                                          // borderColor: "#4caf50",
-                                          border: "2px solid #E0E0E0",
-                                          color: "black",
-                                        }}
-                                      >
-                                        Cancel
-                                      </Button>
-                                      <Button
-                                        className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
-                                        htmlType="submit"
-                                        style={{
-                                          // backgroundColor: "#4caf50",
-                                          // borderColor: "#4caf50",
-                                          border: "2px solid #4caf50",
-                                          color: "#fff",
-                                        }}
-                                      >
-                                        Submit
-                                      </Button>
-                                    </div>
-                                  </Form>
-                                )}
                               </div>
-                            </>
-                          </div>
-                        ))}
+                            </TabPane>
+                          ))}
+                        </Tabs>
                       </>
                     )}
                   </>

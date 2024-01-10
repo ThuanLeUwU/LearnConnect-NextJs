@@ -236,6 +236,7 @@ const StaffTransaction = () => {
       sortDirections: ["ascend", "descend"] as SortOrder[],
       render: (amount) => (amount === 0 ? <>Free</> : numberWithCommas(amount)),
     },
+
     {
       title: "Course Price",
       dataIndex: "coursePrice",
@@ -264,6 +265,16 @@ const StaffTransaction = () => {
       sorter: (a, b) => a.transactionId - b.transactionId,
       sortDirections: ["ascend", "descend"] as SortOrder[],
       render: (text) => (text === null ? <>-</> : text),
+    },
+    {
+      title: "Enrollment Id",
+      dataIndex: "enrollmentId",
+      key: "enrollmentId",
+      width: 140,
+      sorter: (a, b) => a.enrollmentId - b.enrollmentId,
+      sortDirections: ["ascend", "descend"] as SortOrder[],
+      render: (enrollmentId) =>
+        enrollmentId === 0 ? <>Free</> : numberWithCommas(enrollmentId),
     },
     {
       title: "Status",
