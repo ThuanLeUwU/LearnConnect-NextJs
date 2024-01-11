@@ -297,7 +297,7 @@ const StaffTransaction = () => {
       width: 100,
       render: (text, record) => {
         // Kiểm tra nếu trạng thái là 1, hiển thị nút hoặc phần giao diện bạn muốn
-        if (record.status === 1) {
+        if (record.status === 2) {
           return (
             <Button
               onClick={() => {
