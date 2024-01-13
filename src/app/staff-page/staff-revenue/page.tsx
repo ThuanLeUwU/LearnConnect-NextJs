@@ -108,25 +108,24 @@ const StaffRevenue = () => {
 
   const handleRePay = () => {
     try {
-      http
-        .post(
-          `https://learnconnectserver.azurewebsites.net/api/PayPal/pay-revenue?mentorId=${payToMentor}`,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        )
-        .then(() => {
-          toast.success("Payment Successfully !!!");
-          http
-            .get(
-              "https://learnconnectserver.azurewebsites.net/api/payment-transaction/aoumt-to-pay-of-mentors-today"
-            )
-            .then((res) => {
-              setRevenueOneMentor(res.data);
-            });
-        });
+      http.post(
+        `https://learnconnectserver.azurewebsites.net/api/PayPal/pay-revenue?mentorId=${payToMentor}`,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      // .then(() => {
+      //   toast.success("Payment Successfully !!!");
+      //   http
+      //     .get(
+      //       "https://learnconnectserver.azurewebsites.net/api/payment-transaction/aoumt-to-pay-of-mentors-today"
+      //     )
+      //     .then((res) => {
+      //       setRevenueOneMentor(res.data);
+      //     });
+      // });
     } catch (e) {
       console.error(e);
     }
@@ -184,19 +183,19 @@ const StaffRevenue = () => {
 
   const [revenueOneMentor, setRevenueOneMentor] = useState<RevenueMentor[]>([]);
 
-  useEffect(() => {
-    try {
-      http
-        .get(
-          "https://learnconnectserver.azurewebsites.net/api/payment-transaction/aoumt-to-pay-of-mentors-today"
-        )
-        .then((res) => {
-          setRevenueOneMentor(res.data);
-        });
-    } catch (err) {
-      console.error(err);
-    }
-  }, []);
+  // useEffect(() => {
+  //   try {
+  //     http
+  //       .get(
+  //         "https://learnconnectserver.azurewebsites.net/api/payment-transaction/aoumt-to-pay-of-mentors-today"
+  //       )
+  //       .then((res) => {
+  //         setRevenueOneMentor(res.data);
+  //       });
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // }, []);
 
   const [pagination, setPagination] = useState({
     current: 1,

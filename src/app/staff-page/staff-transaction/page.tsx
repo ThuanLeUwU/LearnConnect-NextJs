@@ -108,6 +108,29 @@ const StaffTransaction = () => {
 
   const columns = [
     {
+      title: "Create Date",
+      dataIndex: "createDate",
+      key: "createDate",
+      width: 140,
+      sorter: (a, b) =>
+        new Date(a.createDate).getTime() - new Date(b.createDate).getTime(),
+      sortDirections: ["ascend", "descend"] as SortOrder[],
+      render: (date) => moment(date).format("YYYY-MM-DD HH:mm:ss"),
+    },
+    {
+      title: "Success Date",
+      dataIndex: "successDate",
+      key: "successDate",
+      width: 140,
+      sorter: (a, b) =>
+        new Date(a.successDate).getTime() - new Date(b.successDate).getTime(),
+      sortDirections: ["ascend", "descend"] as SortOrder[],
+      render: (date) =>
+        moment(date).isValid()
+          ? moment(date).format("YYYY-MM-DD HH:mm:ss")
+          : "-",
+    },
+    {
       title: "Student Name",
       dataIndex: "userBuy",
       key: "userBuy",
@@ -125,40 +148,29 @@ const StaffTransaction = () => {
       title: "Price",
       dataIndex: "price",
       key: "price",
+      width: 100,
       sorter: (a, b) => a.price - b.price,
       sortDirections: ["ascend", "descend"] as SortOrder[],
-      render: (price) => (price === 0 ? <>Free</> : price),
+      render: (price) => (price === 0 ? <>Free</> : numberWithCommas(price)),
     },
     {
       title: "Transaction Code",
       dataIndex: "transactionId",
       key: "transactionId",
+      width: 150,
       sorter: (a, b) => a.transactionId - b.transactionId,
       sortDirections: ["ascend", "descend"] as SortOrder[],
       render: (text) => (text === null ? <>-</> : text),
     },
     {
-      title: "Create Date",
-      dataIndex: "createDate",
-      key: "createDate",
-      sorter: (a, b) =>
-        new Date(a.createDate).getTime() - new Date(b.createDate).getTime(),
+      title: "Enrollment Number",
+      dataIndex: "enrollmentId",
+      key: "enrollmentId",
+      width: 140,
+      sorter: (a, b) => a.enrollmentId - b.enrollmentId,
       sortDirections: ["ascend", "descend"] as SortOrder[],
-      render: (text) => moment(text).locale("en").format("LLL"),
-    },
-    {
-      title: "Success Date",
-      dataIndex: "successDate",
-      key: "successDate",
-      sorter: (a, b) =>
-        new Date(a.successDate).getTime() - new Date(b.successDate).getTime(),
-      sortDirections: ["ascend", "descend"] as SortOrder[],
-      render: (text) => {
-        const successDate = moment(text);
-        return successDate.isValid()
-          ? successDate.locale("en").format("LLL")
-          : "-"; // Hoặc bạn có thể sử dụng một giá trị khác thay vì "N/A"
-      },
+      render: (enrollmentId) =>
+        enrollmentId === 0 ? <>Free</> : numberWithCommas(enrollmentId),
     },
     {
       title: "Status",
@@ -267,7 +279,7 @@ const StaffTransaction = () => {
       render: (text) => (text === null ? <>-</> : text),
     },
     {
-      title: "Enrollment Id",
+      title: "Enrollment Number",
       dataIndex: "enrollmentId",
       key: "enrollmentId",
       width: 140,
@@ -292,12 +304,21 @@ const StaffTransaction = () => {
       ),
     },
     {
+      title: "Note",
+      dataIndex: "transactionError",
+      key: "transactionError",
+      width: 200,
+      sorter: (a, b) => a.transactionError - b.transactionError,
+      sortDirections: ["ascend", "descend"] as SortOrder[],
+      render: (text) => (text === null ? <>-</> : text),
+    },
+    {
       title: "Action",
       key: "actionRepay",
       width: 100,
       render: (text, record) => {
         // Kiểm tra nếu trạng thái là 1, hiển thị nút hoặc phần giao diện bạn muốn
-        if (record.status === 1) {
+        if (record.status === 2) {
           return (
             <Button
               onClick={() => {
