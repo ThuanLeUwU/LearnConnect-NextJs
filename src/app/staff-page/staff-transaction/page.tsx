@@ -157,8 +157,7 @@ const StaffTransaction = () => {
       title: "Transaction Code",
       dataIndex: "transactionId",
       key: "transactionId",
-      width: 150,
-      sorter: (a, b) => a.transactionId - b.transactionId,
+      width: 200,
       sortDirections: ["ascend", "descend"] as SortOrder[],
       render: (text) => (text === null ? <>-</> : text),
     },
@@ -274,7 +273,6 @@ const StaffTransaction = () => {
       dataIndex: "transactionId",
       key: "transactionId",
       width: 200,
-      sorter: (a, b) => a.transactionId - b.transactionId,
       sortDirections: ["ascend", "descend"] as SortOrder[],
       render: (text) => (text === null ? <>-</> : text),
     },
@@ -308,7 +306,11 @@ const StaffTransaction = () => {
       dataIndex: "transactionError",
       key: "transactionError",
       width: 200,
-      sorter: (a, b) => a.transactionError - b.transactionError,
+      sorter: (a, b) => {
+        const errorA = a.transactionError || "";
+        const errorB = b.transactionError || "";
+        return errorA.localeCompare(errorB);
+      },
       sortDirections: ["ascend", "descend"] as SortOrder[],
       render: (text) => (text === null ? <>-</> : text),
     },
