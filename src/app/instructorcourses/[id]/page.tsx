@@ -1055,7 +1055,9 @@ const Dashboard = ({ params }: any) => {
 
   const handleUpdateTestModal = (data: any) => {
     setUpdateTestModal(true);
-    setTestId(data);
+    setTestId(data.test.id);
+    setTest(data.test);
+    // console.log("tui ne", data.test);
   };
 
   const handleUpdateTestClick = (data: any) => {
@@ -1357,7 +1359,8 @@ const Dashboard = ({ params }: any) => {
                                   <div className="flex flex-row justify-end gap-2">
                                     <Button
                                       onClick={() => {
-                                        handleUpdateTestModal(item.test.id);
+                                        // handleUpdateTestModal(item.test.id);
+                                        handleUpdateTestModal(item);
                                       }}
                                       className="flex flex-row items-center"
                                     >
