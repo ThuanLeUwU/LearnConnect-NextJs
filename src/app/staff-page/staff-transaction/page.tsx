@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { toast } from "sonner";
 import {
   Breadcrumb,
   Button,
@@ -14,13 +13,13 @@ import {
   Tooltip,
 } from "antd";
 import LeftNavbar from "@/components/left-navbar/page";
-import MentorRequest from "@/components/mentor-request/page";
 import { UserAuth } from "@/app/context/AuthContext";
 import { SortOrder } from "antd/es/table/interface";
 import { http } from "@/api/http";
 import moment from "moment";
 import "moment/locale/vi";
 import dayjs from "dayjs";
+import { useRouter } from "next/navigation";
 
 export type Transaction = {
   userBuy: string;
@@ -40,7 +39,6 @@ const StaffTransaction = () => {
   const { id, userData } = UserAuth();
 
   const [form] = Form.useForm();
-
   const [activeTab, setActiveTab] = useState("revenue");
   const handleTabClick = (tabName: string) => {
     setActiveTab(tabName);
@@ -118,18 +116,33 @@ const StaffTransaction = () => {
       render: (date) => moment(date).format("YYYY-MM-DD HH:mm:ss"),
     },
     {
-      title: "Success Date",
-      dataIndex: "successDate",
-      key: "successDate",
-      width: 140,
-      sorter: (a, b) =>
-        new Date(a.successDate).getTime() - new Date(b.successDate).getTime(),
+      title: "Course Name",
+      dataIndex: "courseName",
+      key: "courseName",
+      sorter: (a, b) => a.courseName.localeCompare(b.courseName),
       sortDirections: ["ascend", "descend"] as SortOrder[],
-      render: (date) =>
-        moment(date).isValid()
-          ? moment(date).format("YYYY-MM-DD HH:mm:ss")
-          : "-",
+      onCell: (record) => ({
+        onClick: () => {
+          const courseId = record.courseId;
+          if (courseId) {
+            router.push(`/staff-page/moderation/${courseId}`);
+          }
+        },
+      }),
     },
+    // {
+    //   title: "Success Date",
+    //   dataIndex: "successDate",
+    //   key: "successDate",
+    //   width: 140,
+    //   sorter: (a, b) =>
+    //     new Date(a.successDate).getTime() - new Date(b.successDate).getTime(),
+    //   sortDirections: ["ascend", "descend"] as SortOrder[],
+    //   render: (date) =>
+    //     moment(date).isValid()
+    //       ? moment(date).format("YYYY-MM-DD HH:mm:ss")
+    //       : "-",
+    // },
     {
       title: "Student Name",
       dataIndex: "userBuy",
@@ -137,32 +150,34 @@ const StaffTransaction = () => {
       sorter: (a, b) => a.userBuy.localeCompare(b.userBuy),
       sortDirections: ["ascend", "descend"] as SortOrder[],
     },
-    {
-      title: "Course Name",
-      dataIndex: "courseName",
-      key: "courseName",
-      sorter: (a, b) => a.courseName.localeCompare(b.courseName),
-      sortDirections: ["ascend", "descend"] as SortOrder[],
-    },
+
     {
       title: "Price",
       dataIndex: "price",
       key: "price",
-      width: 100,
+      width: 140,
       sorter: (a, b) => a.price - b.price,
       sortDirections: ["ascend", "descend"] as SortOrder[],
-      render: (price) => (price === 0 ? <>Free</> : numberWithCommas(price)),
+      render: (price) =>
+        price === 0 ? <>Free</> : <>{numberWithCommas(price)} vnd</>,
     },
     {
-      title: "Transaction Code",
+      title: "VNPay Transaction Code",
       dataIndex: "transactionId",
       key: "transactionId",
       width: 200,
       sortDirections: ["ascend", "descend"] as SortOrder[],
-      render: (text) => (text === null ? <>-</> : text),
+      render: (text, record) =>
+        record.paymentUrl ? (
+          <a href={record.paymentUrl} target="_blank" rel="noopener noreferrer">
+            {text}
+          </a>
+        ) : (
+          <>-</>
+        ),
     },
     {
-      title: "Enrollment Number",
+      title: "Enrollment ID",
       dataIndex: "enrollmentId",
       key: "enrollmentId",
       width: 140,
@@ -175,11 +190,20 @@ const StaffTransaction = () => {
       title: "Status",
       dataIndex: "status",
       key: "status",
+      width: 100,
       sorter: (a, b) => a.status - b.status,
       sortDirections: ["ascend", "descend"] as SortOrder[],
-      render: (status) => (
-        <Tag color={getStatusColor(status)}>{getStatusText(status)}</Tag>
-      ),
+      render: (status, record) => {
+        const formattedSuccessDate = record.successDate
+          ? moment(record.successDate).format("YYYY-MM-DD HH:mm:ss")
+          : null;
+
+        return (
+          <Tooltip title={formattedSuccessDate}>
+            <Tag color={getStatusColor(status)}>{getStatusText(status)}</Tag>
+          </Tooltip>
+        );
+      },
     },
   ];
 
@@ -213,13 +237,15 @@ const StaffTransaction = () => {
     }
   };
 
+  const router = useRouter();
+
   const columns2 = [
     {
       title: "Date",
-      dataIndex: "successDate",
-      key: "successDate",
+      dataIndex: "createDate",
+      key: "createDate",
       width: 120,
-      sorter: (a, b) => a.successDate.localeCompare(b.successDate),
+      sorter: (a, b) => a.createDate.localeCompare(b.createDate),
       sortDirections: ["ascend", "descend"] as SortOrder[],
       render: (date) => moment(date).format("YYYY-MM-DD HH:mm:ss"),
     },
@@ -229,6 +255,14 @@ const StaffTransaction = () => {
       key: "courseName",
       sorter: (a, b) => a.courseName.localeCompare(b.courseName),
       sortDirections: ["ascend", "descend"] as SortOrder[],
+      onCell: (record) => ({
+        onClick: () => {
+          const courseId = record.courseId;
+          if (courseId) {
+            router.push(`/staff-page/moderation/${courseId}`);
+          }
+        },
+      }),
     },
     {
       title: "Mentor Name",
@@ -239,16 +273,6 @@ const StaffTransaction = () => {
       sortDirections: ["ascend", "descend"] as SortOrder[],
     },
     {
-      title: "Amount",
-      dataIndex: "amount",
-      key: "amount",
-      width: 140,
-      sorter: (a, b) => a.amount - b.amount,
-      sortDirections: ["ascend", "descend"] as SortOrder[],
-      render: (amount) => (amount === 0 ? <>Free</> : numberWithCommas(amount)),
-    },
-
-    {
       title: "Course Price",
       dataIndex: "coursePrice",
       key: "coursePrice",
@@ -256,7 +280,11 @@ const StaffTransaction = () => {
       sorter: (a, b) => a.coursePrice - b.coursePrice,
       sortDirections: ["ascend", "descend"] as SortOrder[],
       render: (coursePrice) =>
-        coursePrice === 0 ? <>Free</> : numberWithCommas(coursePrice),
+        coursePrice === 0 ? (
+          <>Free</>
+        ) : (
+          <>{numberWithCommas(coursePrice)} vnd</>
+        ),
     },
     {
       title: "Platform Fee",
@@ -266,18 +294,43 @@ const StaffTransaction = () => {
       sorter: (a, b) => a.platformFee - b.platformFee,
       sortDirections: ["ascend", "descend"] as SortOrder[],
       render: (platformFee) =>
-        platformFee === 0 ? <>Free</> : numberWithCommas(platformFee),
+        platformFee === 0 ? (
+          <>Free</>
+        ) : (
+          <>{numberWithCommas(platformFee)} vnd</>
+        ),
     },
     {
-      title: "Transaction Code",
+      title: "Amount",
+      dataIndex: "amount",
+      key: "amount",
+      width: 140,
+      sorter: (a, b) => a.amount - b.amount,
+      sortDirections: ["ascend", "descend"] as SortOrder[],
+      render: (amount) =>
+        amount === 0 ? <>Free</> : <>{numberWithCommas(amount)} vnd</>,
+    },
+    {
+      title: "PayPal Transaction Code",
       dataIndex: "transactionId",
       key: "transactionId",
       width: 200,
       sortDirections: ["ascend", "descend"] as SortOrder[],
-      render: (text) => (text === null ? <>-</> : text),
+      render: (text) =>
+        text === null ? (
+          <>-</>
+        ) : (
+          <a
+            href={`https://www.sandbox.paypal.com/activity/masspay/${text}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {text}
+          </a>
+        ),
     },
     {
-      title: "Enrollment Number",
+      title: "Enrollment ID",
       dataIndex: "enrollmentId",
       key: "enrollmentId",
       width: 140,
@@ -293,13 +346,17 @@ const StaffTransaction = () => {
       width: 100,
       sorter: (a, b) => a.status - b.status,
       sortDirections: ["ascend", "descend"] as SortOrder[],
-      render: (status, record) => (
-        <Tooltip
-          title={record.transactionError ? record.transactionError : null}
-        >
-          <Tag color={getStatusColor(status)}>{getStatusText(status)}</Tag>
-        </Tooltip>
-      ),
+      render: (status, record) => {
+        const formattedSuccessDate = record.successDate
+          ? moment(record.successDate).format("YYYY-MM-DD HH:mm:ss")
+          : null;
+
+        return (
+          <Tooltip title={formattedSuccessDate}>
+            <Tag color={getStatusColor(status)}>{getStatusText(status)}</Tag>
+          </Tooltip>
+        );
+      },
     },
     {
       title: "Note",
@@ -315,7 +372,7 @@ const StaffTransaction = () => {
       render: (text) => (text === null ? <>-</> : text),
     },
     {
-      title: "Action",
+      title: "",
       key: "actionRepay",
       width: 100,
       render: (text, record) => {
@@ -524,12 +581,18 @@ const StaffTransaction = () => {
         >
           <Form.Item className="w-full mb-0">
             <div className="text-lg">
+              Course: <strong>{courseName}</strong>
+              Mentor: <strong>{mentorPay}</strong>
+              Course Price: <strong>{numberWithCommas(amount)}</strong> vnd
+              Error: <strong>{transactionError}</strong>.
+            </div>
+            {/* <div className="text-lg">
               There seems to be an issue with the payment for the course &quot;
               <strong>{courseName}</strong>&quot; scheduled for{" "}
               <strong>{moment(dateError).format("YYYY-MM-DD HH:mm:ss")}</strong>{" "}
               with mentor <strong>{mentorPay}</strong>. Width error is{" "}
               <strong>{transactionError}</strong>.
-            </div>
+            </div> */}
             <div className="text-lg mt-5">
               Are you sure you want to proceed with the payment of{" "}
               <strong>{numberWithCommas(amount)}</strong> vnd for mentor{" "}
