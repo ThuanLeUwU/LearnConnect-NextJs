@@ -63,7 +63,7 @@ export default function LoginPage() {
     try {
       setLoading(true);
       const response = await http.post(
-        "https://learnconnectapitest.azurewebsites.net/api/user/login-by-email",
+        "https://learnconnectserver.azurewebsites.net/api/user/login-by-email",
         { email: email, password: password },
         {
           headers: {
@@ -98,7 +98,7 @@ export default function LoginPage() {
         let userData;
         const fetchUser = async (userId: string) => {
           const responseUser = await axios.get(
-            `https://learnconnectapitest.azurewebsites.net/api/user/${userId}`,
+            `https://learnconnectserver.azurewebsites.net/api/user/${userId}`,
             {
               headers: {
                 Authorization: `Bearer ${response}`,
@@ -135,7 +135,7 @@ export default function LoginPage() {
             }}
           >
             <div>
-              <Breadcrumb className="font-semibold text-3xl py-5 px-64 flex-auto">
+              <Breadcrumb className="font-semibold text-2xl py-5 px-64 flex-auto">
                 <Breadcrumb.Item>
                   <span>{""}</span>
                 </Breadcrumb.Item>

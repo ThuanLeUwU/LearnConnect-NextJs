@@ -723,22 +723,18 @@
 .footer_widget_title {
   color: $dark;
   font-weight: 500;
-  font-size: 22px;
+  font-size: 36px;
   margin-bottom: 0px;
 }
 
 // Footer Widget
 .footer_widget {
-  margin-top: 50px;
-
   &_logo {
     & a {
     }
   }
 
   &_address {
-    margin-top: 27px;
-
     & p {
       font-size: 15px;
       font-weight: 400;

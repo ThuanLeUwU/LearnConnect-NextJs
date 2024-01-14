@@ -27,6 +27,8 @@ interface AuthContextProps {
 }
 
 export type User = {
+  mentor: any;
+  user: any;
   id: string | number;
   password: string;
   email: string;
@@ -49,6 +51,7 @@ export enum UserRole {
 interface AuthContextValue {
   user: FirebaseUser | null;
   jwtToken: string;
+  requestBecomeMentor: boolean;
   id: string;
   role: number;
   userData: User | null;
@@ -61,6 +64,7 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue>({
   user: null,
+  requestBecomeMentor: false,
   jwtToken: "",
   id: "",
   role: -1,
@@ -78,6 +82,7 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
   // const [authToken, _] = useLocalStorage("token", "neasdasd");
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [jwtToken, setJwtToken] = useState("");
+  const [requestBecomeMentor, setRequestBecomeMentor] = useState(false);
   const [id, setId] = useState("");
   const [role, setRole] = useState(-1);
   const [userData, setUserData] = useState<User | null>(null);
@@ -95,16 +100,15 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
   const googleSignIn = async () => {
     const provider = new GoogleAuthProvider();
     await signInWithPopup(auth, provider);
-
-    setTimeout(() => {
-      toast.success("Login Successful");
-    });
+    // setTimeout(() => {
+    //   toast.success("Login Successful");
+    // });
   };
 
   const logOut = () => {
     signOut(auth);
     setUser(null);
-    console.log("logOut");
+
     localStorage.removeItem("token");
     setJwtToken("");
     setId("");
@@ -114,7 +118,7 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
 
   const setUserLogin = (user, token) => {
     setUser(null);
-    console.log("setUserLogin");
+
     localStorage.setItem("token", token);
     setJwtToken(token);
     setId(user?.id);
@@ -162,7 +166,6 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
 
     if (token) {
       const decodedToken = jwt.decode(token);
-      console.log("token 12312", decodedToken);
 
       http
         .get(`user/${decodedToken?.Id}`)
@@ -177,38 +180,42 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
-      console.log("token", currentUser?.getIdToken());
 
       if (currentUser) {
         currentUser.getIdToken().then((token) => {
           const fetchData = async () => {
-            const responseData = await axios.post(
-              `https://learnconnectapitest.azurewebsites.net/api/user/login`,
-              token,
-              {
-                headers: {
-                  "Content-Type": "application/json",
-                },
-              }
-            );
-            // setJwtToken(responseData?.data);
-            localStorage.setItem("token", responseData?.data.data);
-            console.log("useEffect");
-            const api_token = responseData?.data.data;
-            var jwt = require("jsonwebtoken");
-            var decoded = jwt.decode(api_token);
-            setJwtToken(api_token);
-            const userId = decoded.Id;
-            const userRole = decoded.role;
-            setId(userId);
-            setRole(parseInt(userRole));
-            console.log("user role", parseInt(userRole));
-            const fetchUser = async (userId: string) => {
-              const responseUser = await http.get(`/user/${userId}`);
-              setUserData(responseUser?.data);
-            };
-            fetchUser(userId);
+            try {
+              const responseData = await axios.post(
+                `https://learnconnectserver.azurewebsites.net/api/user/login`,
+                token,
+                {
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                }
+              );
+              localStorage.setItem("token", responseData?.data.data);
+              const apiToken = responseData?.data.data;
+              setRequestBecomeMentor(responseData?.data.isRequestBecomeMentor);
+              toast.success("Login Successful");
+              var jwt = require("jsonwebtoken");
+              var decoded = jwt.decode(apiToken);
+              setJwtToken(apiToken);
+              const userId = decoded.Id;
+              const userRole = decoded.role;
+              setId(userId);
+              setRole(parseInt(userRole));
+              const fetchUser = async (userId: string) => {
+                const responseUser = await http.get(`/user/${userId}`);
+                setUserData(responseUser?.data);
+              };
+              fetchUser(userId);
+            } catch (error) {
+              console.error("Login Error:", error);
+              toast.error(error.response.data);
+            }
           };
+
           fetchData();
         });
       }
@@ -220,6 +227,7 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
     <AuthContext.Provider
       value={{
         user,
+        requestBecomeMentor,
         jwtToken,
         id,
         role,

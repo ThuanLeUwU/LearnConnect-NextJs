@@ -14,6 +14,7 @@ import {
   Space,
   Spin,
   Table,
+  Tabs,
   Tag,
   Tooltip,
   Typography,
@@ -42,9 +43,11 @@ import { Course } from "@/components/courses/courses";
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 import { Test } from "@/components/test/test";
+import UpdateFirebase from "@/components/uploadfirebase/updatefirbase";
 // import { Rating } from "@/app/course-detail/[id]/page";
 
 export type TestTitle = {
+  test: any;
   id: number;
   title: string;
   description: string;
@@ -74,16 +77,15 @@ export type Rating = {
 
 const Dashboard = ({ params }: any) => {
   const idCourse = params.id;
-  // console.log("param", params);
-  const { id, userData, jwtToken } = UserAuth();
 
-  //   console.log(" idcourse", idCourse);
+  const { id, userData, jwtToken } = UserAuth();
 
   //create lecture
   const [loading, setLoading] = useState(true);
   const [isModal, setIsModal] = useState(false);
   const [sortOrder, setSortOrder] = useState(null);
   const [sortColumn, setSortColumn] = useState(null);
+
   const [form] = Form.useForm();
 
   const showModal = () => {
@@ -104,6 +106,8 @@ const Dashboard = ({ params }: any) => {
     setDeleteQuestionModal(false);
     setDeleteAnswerModal(false);
     setSource("");
+    setUpdateTestModal(false);
+    setModalVisible(false);
   };
 
   //update
@@ -113,8 +117,10 @@ const Dashboard = ({ params }: any) => {
   const [oneLecture, setOneLecture] = useState<Lecture>();
   const [updateType, setUpdateType] = useState(oneLecture?.contentType);
   const [updateSrc, setUpdateSrc] = useState<string>("");
+  const [lectures, setLectures] = useState<Lecture[]>([]);
 
   const handleUpdateModal = (record: any) => {
+    console.log("...", record);
     setSelectedItem(record);
     setOneLecture(record);
     setUpdateVisible(true);
@@ -124,11 +130,9 @@ const Dashboard = ({ params }: any) => {
 
   const handleUpdateType = (data: number) => {
     setUpdateType(data);
-    // setType(data);
   };
 
   const handleDeleteModal = (record: any) => {
-    // console.log("record", record);
     setSelectedItem(record);
     setOneLecture(record);
     setDeleteVisible(true);
@@ -140,7 +144,7 @@ const Dashboard = ({ params }: any) => {
   useEffect(() => {
     http
       .get(
-        `https://learnconnectapitest.azurewebsites.net/api/course/get-course-by-mentor/mentorUserId/${id}/course/${idCourse}`
+        `https://learnconnectserver.azurewebsites.net/api/course/get-course-by-mentor/mentorUserId/${id}/course/${idCourse}`
       )
       .then((response) => {
         setCourse(response.data);
@@ -150,7 +154,7 @@ const Dashboard = ({ params }: any) => {
         console.error("Error fetching user data:", error);
         setLoading(false);
       });
-  }, [id]);
+  }, [id, lectures]);
 
   // const [updateType, setUpdateType] = useState(oneLecture?.contentType);
 
@@ -217,13 +221,14 @@ const Dashboard = ({ params }: any) => {
       // toast.info("Video is Moderating By")
       http
         .get(
-          `https://learnconnectapitest.azurewebsites.net/api/lecture/by-course/${idCourse}`
+          `https://learnconnectserver.azurewebsites.net/api/lecture/by-course/${idCourse}`
         )
         .then((response) => {
           setLectures(response.data);
           setLoading(false);
           setIsModerating(true);
           form.resetFields();
+          setSource("");
           handleCreateCancel();
         });
     }, 3000);
@@ -232,10 +237,8 @@ const Dashboard = ({ params }: any) => {
   useEffect(() => {
     if (isModerating === false) {
       toast.success("Moderation Video Complete!");
-      // console.log("moder", isModerating);
     } else if (isModerating === true) {
       toast.info("Create Lecture Successfully! Video is moderating ... ");
-      // console.log("moder", isModerating);
     }
   }, [isModerating]);
 
@@ -255,7 +258,7 @@ const Dashboard = ({ params }: any) => {
       try {
         await http
           .post(
-            `https://learnconnectapitest.azurewebsites.net/api/lecture/create-new-lecture?userId=${id}&courseId=${idCourse}`,
+            `https://learnconnectserver.azurewebsites.net/api/lecture/create-new-lecture?userId=${id}&courseId=${idCourse}`,
             formData,
             {
               headers: {
@@ -264,12 +267,12 @@ const Dashboard = ({ params }: any) => {
             }
           )
           .then(() => {
-            // form.resetFields();
+            form.resetFields();
             // handleCreateCancel();
             // toast.success("Create Lecture Successfully");
             // http
             //   .get(
-            //     `https://learnconnectapitest.azurewebsites.net/api/lecture/by-course/${idCourse}`
+            //     `https://learnconnectserver.azurewebsites.net/api/lecture/by-course/${idCourse}`
             //   )
             //   .then((response) => {
             //     setLectures(response.data);
@@ -287,13 +290,11 @@ const Dashboard = ({ params }: any) => {
   };
 
   //get list lecture
-  const [lectures, setLectures] = useState<Lecture[]>([]);
-  // console.log("lecture", lectures);
+
   useEffect(() => {
-    // Gọi API để lấy danh sách người dùng
     http
       .get(
-        `https://learnconnectapitest.azurewebsites.net/api/lecture/by-course/${idCourse}`
+        `https://learnconnectserver.azurewebsites.net/api/lecture/by-course/${idCourse}`
       )
       .then((response) => {
         setLectures(response.data);
@@ -308,7 +309,6 @@ const Dashboard = ({ params }: any) => {
   //type
   const [type, setType] = useState<number>(1);
   const { Option } = Select;
-  // console.log("type", type);
 
   const Type = [
     { id: 1, title: "Video" },
@@ -379,36 +379,26 @@ const Dashboard = ({ params }: any) => {
   // };
 
   //List Of Question
-  // const [infoTest, setInfoTest] = useState<Test>();
-  // console.log("test", infoTest);
   const [listQuestion, setListQuestion] = useState<Test[]>([]);
+  // console.log("vải ò", listQuestion);
   const [allQuestions, setAllQuestions] = useState<Test[]>([]);
-  // console.log("all", allQuestions);
+
   const [idTest, setIdTest] = useState<Test>();
-  // console.log("list", idTest);
-  const [submitted, setSubmitted] = useState(false);
-  const [selectedAnswers, setSelectedAnswers] = useState<{
-    [key: number]: { answer: string; isCorrect: boolean };
-  }>({});
-  // console.log("Questions", listQuestion);
+
   useEffect(() => {
-    // Gọi API để lấy danh sách người dùng
     http
       .get(`/test/get-tests-by-course?courseId=${idCourse}`)
       .then((response) => {
-        // setInfoTest(response.data.questions);
         setListQuestion(response.data);
         setAllQuestions(response.data[0].questions);
         setIdTest(response.data[0].test.id);
-        // console.log("vải ò", response.data);
         listQuestion.forEach((item) => {
           const totalQuestion = item.test.totalQuestion;
-          // console.log("Total Questions:", totalQuestion);
         });
         setLoading(false);
       })
       .catch((error) => {
-        console.log("Error fetching user data:", error);
+        console.error("Error fetching user data:", error);
         setLoading(false);
       });
   }, []);
@@ -418,35 +408,68 @@ const Dashboard = ({ params }: any) => {
     setActiveTab(tabName);
   };
 
+  const [videoModal, setVideoModal] = useState(false);
+  const [videoUrl, setVideoUrl] = useState<string>("");
+
+  const handleOpenModal = (url) => {
+    setVideoUrl(url);
+    setVideoModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setVideoUrl("");
+    setVideoModal(false);
+  };
+
   //table lecture
   const columns = [
-    {
-      title: "No.",
-      dataIndex: "index",
-      key: "index",
-      render: (text, record, index) => index + 1,
-    },
+    // {
+    //   title: "No.",
+    //   dataIndex: "index",
+    //   key: "index",
+    //   render: (text, record, index) => index + 1,
+    // },
     {
       title: "Title",
       dataIndex: "title",
       key: "title",
+      render: (text, record) => (
+        <>
+          {text.length > 50 ? (
+            <>
+              <a type="link" onClick={() => showContentModal(text)}>
+                {`${text.slice(0, 50)}...`}
+              </a>
+            </>
+          ) : (
+            text
+          )}
+        </>
+      ),
     },
     {
       title: "Content",
       dataIndex: "content",
       key: "title",
+      render: (text, record) => (
+        <>
+          {text.length > 50 ? (
+            <>
+              <a type="link" onClick={() => showContentModal(text)}>
+                {`${text.slice(0, 50)}...`}
+              </a>
+            </>
+          ) : (
+            text
+          )}
+        </>
+      ),
     },
     {
       title: "URL",
       dataIndex: "contentUrl",
       key: "contentUrl",
-      render: (text, record) => {
-        return (
-          <a href={text} target="_blank" rel="noopener noreferrer">
-            Link
-          </a>
-        );
-      },
+      render: (text) => <a onClick={() => handleOpenModal(text)}>Link</a>,
     },
     {
       title: "Type",
@@ -462,10 +485,29 @@ const Dashboard = ({ params }: any) => {
       key: "actions",
       render: (text, record) => (
         <Space className="flex justify-center">
-          <Button onClick={() => handleUpdateModal(record)}>Update</Button>
-          <Button danger onClick={() => handleDeleteModal(record)}>
-            Delete
+          {/* {record.status === 0 && ( */}
+          <Button
+            onClick={() => {
+              routerLecture(record.id);
+            }}
+          >
+            Details
           </Button>
+          {/* )} */}
+          {course?.status !== 3 && (
+            <>
+              <Button
+                onClick={() => {
+                  handleUpdateModal(record), console.log("...", record.status);
+                }}
+              >
+                Update
+              </Button>
+              <Button danger onClick={() => handleDeleteModal(record)}>
+                Delete
+              </Button>
+            </>
+          )}
         </Space>
       ),
     },
@@ -478,18 +520,31 @@ const Dashboard = ({ params }: any) => {
       title: "Status",
       dataIndex: "status",
       key: "status",
+      sorter: (a, b) => a.status - b.status,
       render: (status) => (
         <Tag color={getStatusColor(status)}>{getStatusText(status)}</Tag>
       ),
     },
   ];
 
+  const routerLecture = (data: any) => {
+    router.push(`/instructorcourses/${idCourse}/${data}`);
+  };
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedContent, setSelectedContent] = useState("");
+
+  const showContentModal = (content) => {
+    setSelectedContent(content);
+    setModalVisible(true);
+  };
+
   const getStatusColor = (status) => {
     switch (status) {
       case 0:
         return "green"; // Màu xanh cho trạng thái Active
       case 1:
-        return "grey"; // Màu đỏ cho trạng thái Pending
+        return "gray"; // Màu đỏ cho trạng thái Pending
       case 2:
         return "volcano"; // Màu đỏ cam cho trạng thái Reject
       case 3:
@@ -521,9 +576,7 @@ const Dashboard = ({ params }: any) => {
     http
       .get(`/rating/listRatingOfCourse/${idCourse}`)
       .then((response) => {
-        // setInfoTest(response.data.questions);
         setListRating(response.data);
-        // console.log("rating", response.data);
         setLoading(false);
       })
       .catch((error) => {
@@ -532,16 +585,18 @@ const Dashboard = ({ params }: any) => {
       });
   }, [idCourse]);
 
-  const [test, setTest] = useState<Test[]>([]);
-  // console.log("test", test);
+  const [test, setTest] = useState<TestTitle>();
+  // console.log("ffff", test);
 
   useEffect(() => {
+    // Gọi API để lấy danh sách người dùng
     http
       .get(`/test/get-tests-by-course?courseId=${idCourse}`)
       .then((response) => {
-        setTest(response.data);
+        setListQuestion(response.data);
+        // setAllQuestions(response.data[0].questions);
       });
-  }, []);
+  }, [idCourse]);
 
   const [testTitleModal, setTestTitleModal] = useState(false);
 
@@ -557,7 +612,7 @@ const Dashboard = ({ params }: any) => {
     try {
       http
         .post(
-          `https://learnconnectapitest.azurewebsites.net/api/test/create-test?courseId=${idCourse}`,
+          `https://learnconnectserver.azurewebsites.net/api/test/create-test?courseId=${idCourse}`,
           formData,
           {
             headers: {
@@ -587,50 +642,46 @@ const Dashboard = ({ params }: any) => {
       title: "Courses",
       href: "/instructorcourses",
     },
-    // {
-    //   image: "/menu-icon/icon-2.png",
-    //   href: "/dashboard",
-    // },
-    {
-      image: "/menu-icon/feedback-review.png",
-      title: "Reviews",
-      href: "/review-mentor",
-    },
-    {
-      image: "/menu-icon/money-check-edit.png",
-      title: "Revenues",
-      href: "/revenue",
-    },
     {
       image: "/menu-icon/file-edit.png",
       title: "Requests",
       href: "/request-history",
     },
+    {
+      image: "/menu-icon/feedback-review.png",
+      title: "Reviews",
+      href: "/review-mentor",
+    },
+
+    {
+      image: "/menu-icon/receipt.png",
+      title: "Transaction History",
+      href: "/order-history",
+    },
+    {
+      image: "/menu-icon/money-check-edit.png",
+      title: "Statistics",
+      href: "/revenue",
+    },
   ];
 
   const [showQuestionForm, setShowQuestionForm] = useState(false);
 
-  const handleNewQuestionClick = () => {
+  const handleNewQuestionClick = (data) => {
     setShowQuestionForm(true);
+    setIdTest(data);
+    console.log("tao nef", data);
   };
 
   const [showAnswerForm, setShowAnswerForm] = useState(false);
   const [mano, setmano] = useState<number>(0);
-  // console.log("mano", mano);
 
   const handleNewAnswerClick = (data: any) => {
     setShowAnswerForm(true);
     setmano(data);
   };
   const [questionId, setQuestionId] = useState<number>(0);
-  // console.log("question", questionId);
-  // useEffect(() => {
-  //   if (showAnswerForm && questionId !== 0) {
-  //     http.get(
-  //       `https://learnconnectapitest.azurewebsites.net/api/question/${questionId}`
-  //     );
-  //   }
-  // }, [showAnswerForm, questionId]);
+
   const [showUpdateQuestion, setShowUpdateQuestion] = useState(false);
   const handleUpdateQuestionClick = (data: any) => {
     setShowUpdateQuestion(true);
@@ -639,7 +690,6 @@ const Dashboard = ({ params }: any) => {
 
   const [showUpdateAnswer, setShowUpdateAnswer] = useState(false);
   const [AnswerId, setAnswerId] = useState<number>(0);
-  // console.log("answer", AnswerId);
 
   const handleUpdateAnswerClick = (data: any) => {
     setShowUpdateAnswer(true);
@@ -647,7 +697,6 @@ const Dashboard = ({ params }: any) => {
   };
 
   const handleFormQuestionSubmit = (data: any) => {
-    // Xử lý dữ liệu khi form được gửi
     const formDataQ = new FormData();
     formDataQ.append("questionText", data.question);
     const formDataA = new FormData();
@@ -658,7 +707,7 @@ const Dashboard = ({ params }: any) => {
     try {
       http
         .post(
-          `https://learnconnectapitest.azurewebsites.net/api/question/create-question?testId=${idTest}`,
+          `https://learnconnectserver.azurewebsites.net/api/question/create-question?testId=${idTest}`,
           formDataQ,
           {
             headers: {
@@ -674,34 +723,29 @@ const Dashboard = ({ params }: any) => {
               setAllQuestions(response.data[0].questions);
               setIdTest(response.data[0].test.id);
             });
-          // http.get();
+
           setShowQuestionForm(false);
           toast.success("create question successfully!");
         });
     } catch (err) {
       console.error(err);
     }
-    // console.log("Received values:", values);
-    // Đóng form sau khi xử lý
   };
 
   const [isChecked, setIsChecked] = useState<boolean>(false);
   const handleSetIsChecked = (value: boolean) => {
-    // console.log("CALL: ", value);
     setIsChecked(value);
   };
-  // console.log("check", isChecked);
 
   const handleFormAnswerSubmit = (data: any) => {
     const formData = new FormData();
     formData.append("answerText", data.answer);
     formData.append("isCorrect", isChecked.toString());
-    // console.log("nani2", isChecked.toString());
 
     try {
       http
         .post(
-          `https://learnconnectapitest.azurewebsites.net/api/answer/create-answer?questionId=${mano}`,
+          `https://learnconnectserver.azurewebsites.net/api/answer/create-answer?questionId=${mano}`,
           formData,
           {
             headers: {
@@ -738,14 +782,11 @@ const Dashboard = ({ params }: any) => {
   const handleInputChange = (event) => {
     // Xử lý sự kiện khi có sự thay đổi trong ô input
     setUpdateQuestion(event.target.value);
-    // console.log("tehje", event.target.value);
     setHasChanged(true);
   };
 
   const handleAnswerChange = (event) => {
     setUpdateAnswer(event.target.value);
-
-    // console.log("tehje", event.target.value);
     setHasChanged2(true);
   };
 
@@ -753,14 +794,12 @@ const Dashboard = ({ params }: any) => {
   const [hasChanged2, setHasChanged2] = useState(false);
 
   const handleSaveData = (data: any) => {
-    // console.log("tui nè má", data);
-    // console.log("Data saved successfully:", updateQuestion);
     const formData = new FormData();
     formData.append("questionText", updateQuestion);
     try {
       http
         .put(
-          `https://learnconnectapitest.azurewebsites.net/api/question/${data}`,
+          `https://learnconnectserver.azurewebsites.net/api/question/${data}`,
           formData,
           {
             headers: {
@@ -787,16 +826,13 @@ const Dashboard = ({ params }: any) => {
   };
 
   const handleSaveData2 = (data: any, isCheckedCustom: boolean) => {
-    // console.log("tui nè má", data);
-    // setAnswerId(0);
-    // console.log("nani", isCheckedCustom);
     const formData = new FormData();
     formData.append("answerText", updateAnswer);
     formData.append("isCorrect", isCheckedCustom.toString());
     try {
       http
         .put(
-          `https://learnconnectapitest.azurewebsites.net/api/answer/${data}`,
+          `https://learnconnectserver.azurewebsites.net/api/answer/${data}`,
           formData,
           {
             headers: {
@@ -822,21 +858,18 @@ const Dashboard = ({ params }: any) => {
     } catch (err) {
       toast.error("Update Fail !");
     }
-    // setHasChanged(false);
-    // Modal.destroyAll();
   };
 
   const handleBlur = (data: any) => {
-    // console.log("tao nè", data);
     if (hasChanged) {
       Modal.confirm({
         title: "Confirm",
         content: "Do you want to save these changes?",
         okButtonProps: {
           style: {
-            background: "#4caf50", // Màu nền của nút "OK"
-            borderColor: "#4caf50", // Màu viền của nút "OK"
-            color: "#fff", // Màu chữ của nút "OK"
+            background: "#4caf50",
+            borderColor: "#4caf50",
+            color: "#fff",
           },
         },
         onOk: () => {
@@ -852,11 +885,10 @@ const Dashboard = ({ params }: any) => {
     setShowUpdateQuestion(false);
   };
   useEffect(() => {
-    console.log("check", isChecked);
+    // console.log("check", isChecked)
   }, [isChecked]);
 
   const handleBlur2 = (data: any) => {
-    // console.log("DÈAULT: ", isChecked);
     let isCheckVal = isChecked;
     if (hasChanged2) {
       Modal.confirm({
@@ -877,21 +909,18 @@ const Dashboard = ({ params }: any) => {
         ),
         okButtonProps: {
           style: {
-            background: "#4caf50", // Màu nền của nút "OK"
-            borderColor: "#4caf50", // Màu viền của nút "OK"
-            color: "#fff", // Màu chữ của nút "OK"
+            background: "#4caf50",
+            borderColor: "#4caf50",
+            color: "#fff",
           },
         },
         onOk: (...args: any[]) => {
-          // console.log("SEND: ", isCheckVal);
           handleSaveData2(data, isCheckVal);
         },
         onCancel: () => {
           setHasChanged2(false);
           setQuestionId(0);
           setAnswerId(0);
-          // setUpdateQuestion("");
-          // handleSetIsChecked(false);
         },
       });
     }
@@ -907,11 +936,10 @@ const Dashboard = ({ params }: any) => {
   };
 
   const handleDeleteAnswer = (data: any) => {
-    // console.log("hehe", data);
     try {
       http
         .delete(
-          `https://learnconnectapitest.azurewebsites.net/api/answer/${aId}`
+          `https://learnconnectserver.azurewebsites.net/api/answer/${aId}`
         )
         .then(() => {
           toast.success("Delete Successfully!!");
@@ -943,7 +971,7 @@ const Dashboard = ({ params }: any) => {
     try {
       http
         .delete(
-          `https://learnconnectapitest.azurewebsites.net/api/question/${qId}`
+          `https://learnconnectserver.azurewebsites.net/api/question/${qId}`
         )
         .then(() => {
           toast.success("Delete Successfully!!");
@@ -975,7 +1003,7 @@ const Dashboard = ({ params }: any) => {
     try {
       http
         .delete(
-          `https://learnconnectapitest.azurewebsites.net/api/test/${testId}`
+          `https://learnconnectserver.azurewebsites.net/api/test/${testId}`
         )
         .then(() => {
           toast.success("Delete Successfully !");
@@ -998,22 +1026,20 @@ const Dashboard = ({ params }: any) => {
   const handleRowClick = (record) => {
     // Xử lý khi click vào một hàng (item)
     console.log("Clicked item:", record);
-    // Thực hiện các hành động khác cần thiết
   };
 
   const handleDeleteLecture = (data: any) => {
-    // console.log("má m", data.id);
     try {
       http
         .delete(
-          `https://learnconnectapitest.azurewebsites.net/api/lecture/${data.id}`
+          `https://learnconnectserver.azurewebsites.net/api/lecture/${data.id}`
         )
         .then(() => {
           handleDeleteCancel();
           toast.success("Delete Lecture Successfully !");
           http
             .get(
-              `https://learnconnectapitest.azurewebsites.net/api/lecture/by-course/${idCourse}`
+              `https://learnconnectserver.azurewebsites.net/api/lecture/by-course/${idCourse}`
             )
             .then((response) => {
               setLectures(response.data);
@@ -1021,13 +1047,62 @@ const Dashboard = ({ params }: any) => {
             });
         });
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
+
+  const [updateTestModal, setUpdateTestModal] = useState(false);
+
+  const handleUpdateTestModal = (data: any) => {
+    setUpdateTestModal(true);
+    setTestId(data.test.id);
+    setTest(data.test);
+    // console.log("tui ne", data.test);
+  };
+
+  const handleUpdateTestClick = (data: any) => {
+    const formData = new FormData();
+    formData.append("title", data.title || test?.title);
+    formData.append("description", data.description || test?.description);
+
+    try {
+      http
+        .put(
+          `https://learnconnectserver.azurewebsites.net/api/test/${testId}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        )
+        .then(() => {
+          http
+            .get(`/test/get-tests-by-course?courseId=${idCourse}`)
+            .then((response) => {
+              setListQuestion(response.data);
+              setAllQuestions(response.data[0].questions);
+              setIdTest(response.data[0].test.id);
+              toast.success("Update Test Successfully");
+              setUpdateTestModal(false);
+            });
+        });
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   const router = useRouter();
 
   const breadCrumbHome = () => {
     router.push("/instructorcourses");
+  };
+
+  const { TabPane } = Tabs;
+  const [selectedTab, setSelectedTab] = useState("1");
+
+  const handleTabChange = (key) => {
+    setSelectedTab(key);
   };
 
   return (
@@ -1057,7 +1132,7 @@ const Dashboard = ({ params }: any) => {
           </div>
           <div className={`${InstructorCourseStyle.body_wrapper}`}>
             <div className={`${InstructorCourseStyle.course_tab} bg-[#e7f8ee]`}>
-              <Breadcrumb className="text-start font-semibold text-4xl my-5 px-4">
+              <Breadcrumb className="text-start font-semibold text-2xl my-5 px-4">
                 <Breadcrumb.Item>
                   <button onClick={breadCrumbHome}>Courses</button>
                 </Breadcrumb.Item>
@@ -1079,12 +1154,22 @@ const Dashboard = ({ params }: any) => {
                   <p
                     className={`${InstructorCourseStyle.featured_bottom_title}`}
                   >
-                    {course?.name}
+                    <div className="flex flex-row justify-between items-center">
+                      <div>{course?.name}</div>{" "}
+                      <div className="flex justify-center items-center text-2xl">
+                        <Tag
+                          className="text-lg"
+                          color={getStatusColor(course?.status)}
+                        >
+                          {getStatusText(course?.status)}
+                        </Tag>
+                      </div>
+                    </div>
                   </p>
                   <p
                     className={`${InstructorCourseStyle.featured_bottom_cate}`}
                   >
-                    {course?.specializationName}
+                    {course?.specializationName}{" "}
                   </p>
                   <div className="flex flex-row justify-between">
                     <div>
@@ -1102,6 +1187,11 @@ const Dashboard = ({ params }: any) => {
                         className={`${InstructorCourseStyle.featured_bottom_amount}`}
                       >
                         Enrollment: {course?.totalEnrollment}
+                      </p>
+                      <p
+                        className={`${InstructorCourseStyle.featured_bottom_amount}`}
+                      >
+                        Lectures : {course?.lectureCount}
                       </p>
                     </div>
                     <div>
@@ -1128,7 +1218,7 @@ const Dashboard = ({ params }: any) => {
                     className={`${InstructorCourseStyle.featured_bottom_amount}`}
                   >
                     <p>
-                      <span className="text-green-500">Create Date: </span>
+                      <span className="">Create Date: </span>
                       {course?.createDate
                         ? new Date(course?.createDate).toLocaleTimeString(
                             "en-US"
@@ -1184,31 +1274,33 @@ const Dashboard = ({ params }: any) => {
                     Test
                   </button>
                 </li>
-                <li
-                  className={`cursor-pointer rounded-md ${
-                    activeTab === "tab3"
-                      ? "bg-[#309255] text-white"
-                      : "bg-white"
-                  }`}
-                  onClick={() => handleTabClick("tab3")}
-                >
-                  <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#309255]">
-                    Reviews
-                  </button>
-                </li>
+                {course?.status === 0 && (
+                  <li
+                    className={`cursor-pointer rounded-md ${
+                      activeTab === "tab3"
+                        ? "bg-[#309255] text-white"
+                        : "bg-white"
+                    }`}
+                    onClick={() => handleTabClick("tab3")}
+                  >
+                    <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#309255]">
+                      Reviews
+                    </button>
+                  </li>
+                )}
               </ul>
             </div>
             {activeTab === "tab1" && (
               <div className={`${InstructorCourseStyle.lecture}`}>
-                {course?.lectureCount !== lectures.length ? (
+                {/* {course?.lectureCount !== lectures.length ? (
                   <div className="flex justify-between mb-5">
                     <Button onClick={showModal}> New Lectures</Button>
                   </div>
-                ) : (
-                  <div className="flex justify-between mb-5">
-                    <Button disabled> New Lectures</Button>
-                  </div>
-                )}
+                ) : ( */}
+                <div className="flex justify-between mb-5">
+                  <Button onClick={showModal}> New Lectures</Button>
+                </div>
+                {/* )} */}
 
                 {loading ? (
                   <Spin size="large" />
@@ -1231,13 +1323,20 @@ const Dashboard = ({ params }: any) => {
                 {/* <div className="flex justify-between mb-5">
               <Button onClick={showModal}> New Question</Button>
             </div> */}
+                <>
+                  <div className="flex justify-between mb-5">
+                    <Button onClick={showTestTitleModal}>
+                      Create New Test
+                    </Button>
+                  </div>
+                </>
                 {listQuestion.length === 0 ? (
                   <>
-                    <div className="flex justify-between mb-5">
+                    {/* <div className="flex justify-between mb-5">
                       <Button onClick={showTestTitleModal}>
                         Create New Test
                       </Button>
-                    </div>
+                    </div> */}
                     <Empty />
                   </>
                 ) : (
@@ -1246,11 +1345,28 @@ const Dashboard = ({ params }: any) => {
                       <Spin size="large" />
                     ) : (
                       <>
-                        {listQuestion.map((item) => (
-                          <div key={item.test.id} className="mb-4 mt-6">
-                            <div className="flex flex-col">
-                              <div className="flex justify-end">
-                                <button
+                        <Tabs
+                          activeKey={selectedTab}
+                          onChange={handleTabChange}
+                        >
+                          {listQuestion.map((item, index) => (
+                            <TabPane
+                              tab={`Test ${index + 1}`}
+                              key={item.test.id}
+                            >
+                              <div key={index} className="mb-4 mt-6">
+                                <div className="flex flex-col">
+                                  <div className="flex flex-row justify-end gap-2">
+                                    <Button
+                                      onClick={() => {
+                                        // handleUpdateTestModal(item.test.id);
+                                        handleUpdateTestModal(item);
+                                      }}
+                                      className="flex flex-row items-center"
+                                    >
+                                      Update
+                                    </Button>
+                                    {/* <button
                                   // className="flex items-end"
                                   style={{
                                     backgroundColor: "#fdc6c6",
@@ -1264,100 +1380,269 @@ const Dashboard = ({ params }: any) => {
                                   }}
                                 >
                                   <DeleteOutlined />
-                                </button>
-                              </div>
-                              <h3 className="text-xl font-semibold mt-2 text-center ">
-                                <div className=" flex flex-col items-center justify-center mb-2">
-                                  <div>Title: {item.test.title}</div>
-
-                                  <br />
-                                  <div>
-                                    Description: {item.test.description}
+                                </button> */}
                                   </div>
-                                </div>
-                              </h3>
-                            </div>
+                                  <h3 className="text-xl font-semibold mt-2 text-center ">
+                                    <div className=" flex flex-col items-center justify-center mb-2">
+                                      <div className="flex justify-center items-center gap-2 ">
+                                        <div className="text-3xl flex flex-col gap-2">
+                                          <div>{item.test.title} </div>
+                                          <div className="flex justify-center ">
+                                            <Tag
+                                              className="text-2xl"
+                                              color={getStatusColor(
+                                                item.test.status
+                                              )}
+                                            >
+                                              {getStatusText(item.test.status)}
+                                            </Tag>
+                                          </div>
+                                        </div>
+                                      </div>
 
-                            {/* {item.questions.length == 0 ? <></> : <></>} */}
-                            {item.questions.map((q, index) => (
-                              <div
-                                key={q.question.id}
-                                className="mb-2 my-8 p-4 border-2 rounded-lg border-gray-200 shadow-[10px_10px_20px_10px_rgba(0,0,0,0.15)] "
-                              >
-                                <div className="mb-1 font-medium text-[18px] flex flex-row justify-between">
-                                  <div className="flex flex-row gap-2">
-                                    {index + 1}.{" "}
-                                    {showUpdateQuestion &&
-                                    questionId === q.question.id ? (
-                                      <Input.TextArea
-                                        autoSize={{ minRows: 1 }}
-                                        cols={120}
-                                        autoFocus
-                                        defaultValue={q.question.questionText}
-                                        value={updateQuestion}
-                                        onChange={handleInputChange}
-                                        onBlur={() => handleBlur(q.question.id)}
-                                        className="w-full"
-                                      />
-                                    ) : (
-                                      <div
-                                        className="w-full"
-                                        onClick={() => {
-                                          handleUpdateQuestionClick(
-                                            q.question.id
-                                          );
-                                          setQuestionId(q.question.id);
-                                          setUpdateQuestion(
-                                            q.question.questionText
-                                          );
+                                      <br />
+                                      <div>{item.test.description}</div>
+                                    </div>
+                                  </h3>
+                                </div>
+
+                                {/* {item.questions.length == 0 ? <></> : <></>} */}
+                                {item.questions.map((q, index) => (
+                                  <div
+                                    key={q.question.id}
+                                    className="mb-2 my-8 p-4 border-2 rounded-lg border-gray-200 shadow-[10px_10px_20px_10px_rgba(0,0,0,0.15)] "
+                                  >
+                                    <div className="mb-1 font-medium text-[18px] flex flex-row justify-between">
+                                      <div className="flex flex-row gap-2">
+                                        {index + 1}.{" "}
+                                        {showUpdateQuestion &&
+                                        questionId === q.question.id ? (
+                                          <Input.TextArea
+                                            autoSize={{ minRows: 1 }}
+                                            cols={120}
+                                            autoFocus
+                                            defaultValue={
+                                              q.question.questionText
+                                            }
+                                            value={updateQuestion}
+                                            onChange={handleInputChange}
+                                            onBlur={() =>
+                                              handleBlur(q.question.id)
+                                            }
+                                            className="w-full"
+                                          />
+                                        ) : (
+                                          <div
+                                            className="w-full"
+                                            onClick={() => {
+                                              handleUpdateQuestionClick(
+                                                q.question.id
+                                              );
+                                              setQuestionId(q.question.id);
+                                              setUpdateQuestion(
+                                                q.question.questionText
+                                              );
+                                            }}
+                                          >
+                                            {q.question.questionText}
+                                          </div>
+                                        )}
+                                      </div>
+                                      <div className="gap-2 flex items-center">
+                                        <Button
+                                          onClick={() => {
+                                            handleNewAnswerClick(q.question.id);
+                                            setQuestionId(q.question.id);
+                                          }}
+                                          className="flex flex-row items-center"
+                                        >
+                                          {/* <div></div> */}
+                                          <PlusOutlined /> Add Answer
+                                        </Button>
+                                        {item.questions.length > 2 && (
+                                          <button
+                                            style={{
+                                              backgroundColor: "#fdc6c6",
+                                              color: "black",
+                                              width: "40px", // Thiết lập chiều rộng mong muốn
+                                              height: "24px",
+                                              borderRadius: "5px",
+                                              // Thiết lập chiều cao mong muốn
+                                            }}
+                                            onClick={() =>
+                                              showDeleteQuestionModal(
+                                                q.question.id
+                                              )
+                                            }
+                                          >
+                                            <DeleteOutlined />
+                                          </button>
+                                        )}
+                                      </div>
+                                    </div>
+                                    {showAnswerForm &&
+                                      questionId === q.question.id && (
+                                        <Form
+                                          onFinish={handleFormAnswerSubmit}
+                                          style={{
+                                            width: "80%",
+                                            alignItems: "start",
+                                          }}
+                                        >
+                                          <div className="flex flex-col justify-end">
+                                            <Form.Item
+                                              name="answer"
+                                              label="Answer"
+                                              rules={[
+                                                {
+                                                  required: true,
+                                                  message:
+                                                    "Please input your question!",
+                                                },
+                                              ]}
+                                            >
+                                              <Input
+                                                className={` border-2 p-2 text-left rounded-lg ${
+                                                  isChecked
+                                                    ? "border-green-500 bg-green-100"
+                                                    : ""
+                                                }`}
+                                              />
+                                            </Form.Item>
+                                            <Checkbox
+                                              className="flex items-end justify-end"
+                                              checked={isChecked}
+                                              onChange={handleCheckboxChange}
+                                            >
+                                              Correct Answer
+                                            </Checkbox>
+                                          </div>
+                                          <div className="flex justify-end gap-2 mt-2">
+                                            <Button onClick={handleCancel}>
+                                              Cancel
+                                            </Button>
+                                            <Button
+                                              style={{
+                                                backgroundColor: "#4caf50",
+                                                // borderColor: "#4caf50",
+                                                color: "#fff",
+                                              }}
+                                              type="primary"
+                                              htmlType="submit"
+                                            >
+                                              Submit
+                                            </Button>
+                                          </div>
+                                        </Form>
+                                      )}
+                                    <div className="px-4 grid grid-cols-2 gap-4">
+                                      {q.answers.map((answer, ansIndex) => (
+                                        <>
+                                          {showUpdateAnswer &&
+                                          AnswerId === answer.id ? (
+                                            <Input
+                                              // autoFocus
+                                              defaultValue={answer.answerText}
+                                              value={updateAnswer}
+                                              onChange={handleAnswerChange}
+                                              onBlur={() =>
+                                                handleBlur2(answer.id)
+                                              }
+                                              key={answer.id}
+                                              className={`mt-3 border-2 p-2 text-left rounded-lg ${
+                                                answer.isCorrect === true
+                                                  ? "border-green-500 bg-green-100"
+                                                  : ""
+                                              }`}
+                                            />
+                                          ) : (
+                                            <div className="flex gap-2 justify-center align-middle items-center mt-3">
+                                              <div
+                                                className={` border-2 p-2 flex-auto text-left rounded-lg ${
+                                                  answer.isCorrect === true
+                                                    ? "border-green-500 bg-green-100"
+                                                    : ""
+                                                }`}
+                                                onClick={() => {
+                                                  handleUpdateAnswerClick(
+                                                    answer.id
+                                                  );
+                                                  setAnswerId(answer.id);
+                                                  setQuestionId(q.question.id);
+                                                  setUpdateAnswer(
+                                                    answer.answerText
+                                                  );
+                                                  handleSetIsChecked(
+                                                    answer.isCorrect
+                                                  );
+                                                }}
+                                              >
+                                                {answer.answerText}
+                                              </div>
+                                              {q.answers.length > 2 && (
+                                                <button
+                                                  style={{
+                                                    backgroundColor: "#fdc6c6",
+                                                    color: "black",
+                                                    width: "24px", // Thiết lập chiều rộng mong muốn
+                                                    height: "24px",
+                                                    borderRadius: "5px", // Thiết lập chiều cao mong muốn
+                                                  }}
+                                                  onClick={() =>
+                                                    showDeleteAnswerModal(
+                                                      answer.id
+                                                    )
+                                                  }
+                                                >
+                                                  <DeleteOutlined size={16} />
+                                                </button>
+                                              )}
+                                            </div>
+                                          )}
+                                        </>
+                                      ))}
+                                    </div>
+                                  </div>
+                                ))}
+                                <>
+                                  {allQuestions.length === 0 ? (
+                                    <>
+                                      <p className="font-medium text-lg text-center">
+                                        Oh, it looks like you don&apos;t have
+                                        any questions yet. Let&apos;s{" "}
+                                        <button
+                                          className="text-green-500 underline"
+                                          onClick={handleNewQuestionClick}
+                                        >
+                                          create
+                                        </button>{" "}
+                                        a set of questions for your test
+                                      </p>
+                                    </>
+                                  ) : (
+                                    <div className="flex justify-between mb-5 mt-10">
+                                      <Button
+                                        onClick={() =>
+                                          handleNewQuestionClick(item.test.id)
+                                        }
+                                      >
+                                        Add Question
+                                      </Button>
+                                    </div>
+                                  )}
+
+                                  <div className=" flex justify-center">
+                                    {showQuestionForm && (
+                                      <Form
+                                        onFinish={handleFormQuestionSubmit}
+                                        style={{
+                                          width: "80%",
+                                          alignItems: "center",
                                         }}
                                       >
-                                        {q.question.questionText}
-                                      </div>
-                                    )}
-                                  </div>
-                                  <div className="gap-2 flex items-center">
-                                    <Button
-                                      onClick={() => {
-                                        handleNewAnswerClick(q.question.id);
-                                        setQuestionId(q.question.id);
-                                      }}
-                                      className="flex flex-row items-center"
-                                    >
-                                      {/* <div></div> */}
-                                      <PlusOutlined /> Add Answer
-                                    </Button>
-
-                                    <button
-                                      style={{
-                                        backgroundColor: "#fdc6c6",
-                                        color: "black",
-                                        width: "40px", // Thiết lập chiều rộng mong muốn
-                                        height: "24px",
-                                        borderRadius: "5px",
-                                        // Thiết lập chiều cao mong muốn
-                                      }}
-                                      onClick={() =>
-                                        showDeleteQuestionModal(q.question.id)
-                                      }
-                                    >
-                                      <DeleteOutlined />
-                                    </button>
-                                  </div>
-                                </div>
-                                {showAnswerForm &&
-                                  questionId === q.question.id && (
-                                    <Form
-                                      onFinish={handleFormAnswerSubmit}
-                                      style={{
-                                        width: "80%",
-                                        alignItems: "start",
-                                      }}
-                                    >
-                                      <div className="flex flex-col justify-end">
                                         <Form.Item
-                                          name="answer"
-                                          label="Answer"
+                                          name="question"
+                                          label="Question"
                                           rules={[
                                             {
                                               required: true,
@@ -1366,182 +1651,43 @@ const Dashboard = ({ params }: any) => {
                                             },
                                           ]}
                                         >
-                                          <Input
-                                            className={` border-2 p-2 text-left rounded-lg ${
-                                              isChecked
-                                                ? "border-green-500 bg-green-100"
-                                                : ""
-                                            }`}
-                                          />
+                                          <Input />
                                         </Form.Item>
-                                        <Checkbox
-                                          className="flex items-end justify-end"
-                                          checked={isChecked}
-                                          onChange={handleCheckboxChange}
-                                        >
-                                          Correct Answer
-                                        </Checkbox>
-                                      </div>
-                                      <div className="flex justify-end gap-2 mt-2">
-                                        <Button onClick={handleCancel}>
-                                          Cancel
-                                        </Button>
-                                        <Button
-                                          style={{
-                                            backgroundColor: "#4caf50",
-                                            // borderColor: "#4caf50",
-                                            color: "#fff",
-                                          }}
-                                          type="primary"
-                                          htmlType="submit"
-                                        >
-                                          Submit
-                                        </Button>
-                                      </div>
-                                    </Form>
-                                  )}
-                                <div className="px-4 grid grid-cols-2 gap-4">
-                                  {q.answers.map((answer, ansIndex) => (
-                                    <>
-                                      {showUpdateAnswer &&
-                                      AnswerId === answer.id ? (
-                                        <Input
-                                          // autoFocus
-                                          defaultValue={answer.answerText}
-                                          value={updateAnswer}
-                                          onChange={handleAnswerChange}
-                                          onBlur={() => handleBlur2(answer.id)}
-                                          key={answer.id}
-                                          className={`mt-3 border-2 p-2 text-left rounded-lg ${
-                                            answer.isCorrect === true
-                                              ? "border-green-500 bg-green-100"
-                                              : ""
-                                          }`}
-                                        />
-                                      ) : (
-                                        <div className="flex gap-2 justify-center align-middle items-center mt-3">
-                                          <div
-                                            className={` border-2 p-2 flex-auto text-left rounded-lg ${
-                                              answer.isCorrect === true
-                                                ? "border-green-500 bg-green-100"
-                                                : ""
-                                            }`}
-                                            onClick={() => {
-                                              handleUpdateAnswerClick(
-                                                answer.id
-                                              );
-                                              setAnswerId(answer.id);
-                                              setQuestionId(q.question.id);
-                                              setUpdateAnswer(
-                                                answer.answerText
-                                              );
-                                              handleSetIsChecked(
-                                                answer.isCorrect
-                                              );
-                                            }}
-                                          >
-                                            {answer.answerText}
-                                          </div>
-
-                                          <button
+                                        <div className="flex gap-5 justify-end">
+                                          {/* Thêm các trường dữ liệu khác cần thiết vào đây */}
+                                          <Button
+                                            className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                                            onClick={handleCancel}
                                             style={{
-                                              backgroundColor: "#fdc6c6",
+                                              // backgroundColor: "#4caf50",
+                                              // borderColor: "#4caf50",
+                                              border: "2px solid #E0E0E0",
                                               color: "black",
-                                              width: "24px", // Thiết lập chiều rộng mong muốn
-                                              height: "24px",
-                                              borderRadius: "5px", // Thiết lập chiều cao mong muốn
                                             }}
-                                            onClick={() =>
-                                              showDeleteAnswerModal(answer.id)
-                                            }
                                           >
-                                            <DeleteOutlined size={16} />
-                                          </button>
+                                            Cancel
+                                          </Button>
+                                          <Button
+                                            className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                                            htmlType="submit"
+                                            style={{
+                                              // backgroundColor: "#4caf50",
+                                              // borderColor: "#4caf50",
+                                              border: "2px solid #4caf50",
+                                              color: "#fff",
+                                            }}
+                                          >
+                                            Submit
+                                          </Button>
                                         </div>
-                                      )}
-                                    </>
-                                  ))}
-                                </div>
-                              </div>
-                            ))}
-                            <>
-                              {allQuestions.length === 0 ? (
-                                <>
-                                  <p className="font-medium text-lg text-center">
-                                    Oh, it looks like you don&apos;t have any
-                                    questions yet. Let&apos;s{" "}
-                                    <button
-                                      className="text-green-500 underline"
-                                      onClick={handleNewQuestionClick}
-                                    >
-                                      create
-                                    </button>{" "}
-                                    a set of questions for your test
-                                  </p>
+                                      </Form>
+                                    )}
+                                  </div>
                                 </>
-                              ) : (
-                                <div className="flex justify-between mb-5 mt-10">
-                                  <Button onClick={handleNewQuestionClick}>
-                                    Add Question
-                                  </Button>
-                                </div>
-                              )}
-
-                              <div className=" flex justify-center">
-                                {showQuestionForm && (
-                                  <Form
-                                    onFinish={handleFormQuestionSubmit}
-                                    style={{
-                                      width: "80%",
-                                      alignItems: "center",
-                                    }}
-                                  >
-                                    <Form.Item
-                                      name="question"
-                                      label="Question"
-                                      rules={[
-                                        {
-                                          required: true,
-                                          message:
-                                            "Please input your question!",
-                                        },
-                                      ]}
-                                    >
-                                      <Input />
-                                    </Form.Item>
-                                    <div className="flex gap-5 justify-end">
-                                      {/* Thêm các trường dữ liệu khác cần thiết vào đây */}
-                                      <Button
-                                        className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
-                                        onClick={handleCancel}
-                                        style={{
-                                          // backgroundColor: "#4caf50",
-                                          // borderColor: "#4caf50",
-                                          border: "2px solid #E0E0E0",
-                                          color: "black",
-                                        }}
-                                      >
-                                        Cancel
-                                      </Button>
-                                      <Button
-                                        className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
-                                        htmlType="submit"
-                                        style={{
-                                          // backgroundColor: "#4caf50",
-                                          // borderColor: "#4caf50",
-                                          border: "2px solid #4caf50",
-                                          color: "#fff",
-                                        }}
-                                      >
-                                        Submit
-                                      </Button>
-                                    </div>
-                                  </Form>
-                                )}
                               </div>
-                            </>
-                          </div>
-                        ))}
+                            </TabPane>
+                          ))}
+                        </Tabs>
                       </>
                     )}
                   </>
@@ -1550,9 +1696,6 @@ const Dashboard = ({ params }: any) => {
             )}
             {activeTab === "tab3" && (
               <div className={`${InstructorCourseStyle.lecture}`}>
-                <div className="flex justify-between mb-5">
-                  <span className="text-lg">Rating of Course</span>
-                </div>
                 {listRating.length === 0 ? (
                   <Empty />
                 ) : (
@@ -1731,7 +1874,7 @@ const Dashboard = ({ params }: any) => {
                       onChange={handleFileChange}
                       // beforeUpload={beforeUpload}
                       // headers={{ Authorization: authorization }}
-                      action="https://learnconnectapitest.azurewebsites.net/api/Upload/video"
+                      action="https://learnconnectserver.azurewebsites.net/api/Upload/video"
                     >
                       <Button>Upload</Button>
                     </Upload>
@@ -1839,7 +1982,7 @@ const Dashboard = ({ params }: any) => {
                     className="flex justify-center pt-2 pb-2"
                     style={{ display: "flex" }}
                   >
-                    <UploadFirebase
+                    <UpdateFirebase
                       fileName={`Course${idCourse}_Lecture${
                         lectures.length + 1
                       }_${Math.floor(
@@ -1864,7 +2007,7 @@ const Dashboard = ({ params }: any) => {
                       onChange={handleFileChange}
                       // beforeUpload={beforeUpload}
                       // headers={{ Authorization: authorization }}
-                      action="https://learnconnectapitest.azurewebsites.net/api/Upload/video"
+                      action="https://learnconnectserver.azurewebsites.net/api/Upload/video"
                     >
                       <Button>Upload</Button>
                     </Upload>
@@ -2214,6 +2357,102 @@ const Dashboard = ({ params }: any) => {
                 </Form.Item>
               </Space>
             </Form>
+          </Modal>
+
+          <Modal
+            destroyOnClose={true}
+            title={`Update test`}
+            open={updateTestModal}
+            // onOk={handleUpdateOk}
+            width="40%"
+            onCancel={handleCancel}
+            footer={false}
+            style={{
+              top: "30%",
+            }}
+          >
+            {/* Add your update form here */}
+            <Form
+              autoComplete="off"
+              form={form}
+              labelCol={{ span: 4 }}
+              wrapperCol={{ span: 16 }}
+              layout="horizontal"
+              className="mt-5"
+              style={{ width: "100%" }}
+              onFinish={handleUpdateTestClick}
+            >
+              <Form.Item
+                // rules={[{ required: true, message: "Please input Name!" }]}
+                label="Title"
+                name="title"
+              >
+                <Input defaultValue={test?.title} />
+              </Form.Item>
+              <Form.Item
+                // rules={[{ required: true, message: "Please input Name!" }]}
+                label="Description"
+                name="description"
+              >
+                <Input.TextArea rows={4} defaultValue={test?.description} />
+              </Form.Item>
+              <Space className="justify-end w-full">
+                <Form.Item className="mb-0">
+                  <Space>
+                    <Button
+                      className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                      onClick={handleCancel}
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #E0E0E0",
+                        color: "black",
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                      htmlType="submit"
+                      style={{
+                        // backgroundColor: "#4caf50",
+                        // borderColor: "#4caf50",
+                        border: "2px solid #4caf50",
+                        color: "#fff",
+                      }}
+                    >
+                      Confirm
+                    </Button>
+                  </Space>
+                </Form.Item>
+              </Space>
+            </Form>
+          </Modal>
+          <Modal
+            title="Details"
+            open={modalVisible}
+            onCancel={handleCancel}
+            footer={null}
+          >
+            <p>{selectedContent}</p>
+          </Modal>
+
+          <Modal
+            title="Video"
+            open={videoModal}
+            onCancel={handleCloseModal}
+            footer={null}
+          >
+            {videoUrl && (
+              <iframe
+                width="100%"
+                height="315"
+                src={videoUrl}
+                title="Video"
+                frameBorder="0"
+                allowFullScreen
+              />
+            )}
           </Modal>
         </div>
       )}

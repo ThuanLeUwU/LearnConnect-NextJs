@@ -31,7 +31,6 @@ export default function ListMentor() {
   const { loading, mentor, mentorID, totalPages, currentPage, setCurrentPage } =
     useDataMentorFetcher();
   const handleSwiperWrapperClick = (IdMentor) => {
-    // console.log("id mentor:", IdMentor);
     router.push(`/profile-mentor/${IdMentor}`);
   };
   const breadcrumbsHome = () => {
@@ -47,7 +46,7 @@ export default function ListMentor() {
           }}
         >
           <div>
-            <Breadcrumb className="font-semibold text-3xl py-5 px-64 flex-auto">
+            <Breadcrumb className="font-semibold text-2xl py-5 px-64 flex-auto">
               <Breadcrumb.Item>
                 <button onClick={breadcrumbsHome}>Home</button>
               </Breadcrumb.Item>
@@ -83,7 +82,9 @@ export default function ListMentor() {
                           className="swiper-wrapper mb-3 shadow-lg  w-full rounded-lg hover:border-[#309255] hover:bg-[#e7f8ee]"
                           key={mentorItem.id}
                           onClick={() =>
-                            handleSwiperWrapperClick(mentorItem.mentorInfo.id)
+                            handleSwiperWrapperClick(
+                              mentorItem.mentorInfo.userId
+                            )
                           }
                         >
                           <div className="single-review border border-opacity-20 border-[#30925533] p-7 rounded-md flex flex-col items-start w-full">

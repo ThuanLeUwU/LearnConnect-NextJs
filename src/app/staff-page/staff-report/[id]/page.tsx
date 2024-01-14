@@ -6,10 +6,20 @@ import axios from "axios";
 import { useRouter, useSearchParams } from "next/navigation";
 import { GrFormPrevious } from "react-icons/gr";
 import { toast } from "sonner";
-import { Breadcrumb, Button, Form, Modal, Space, Spin } from "antd";
+import {
+  Breadcrumb,
+  Button,
+  Empty,
+  Form,
+  Input,
+  Modal,
+  Space,
+  Spin,
+} from "antd";
 import { UserAuth } from "@/app/context/AuthContext";
 import { Course } from "@/components/courses/courses";
 import { Mentor } from "@/components/pagination/useDataMentorFetcher";
+import moment from "moment";
 
 interface Report {
   id: number;
@@ -33,8 +43,10 @@ const StaffReportID = ({ params }: any) => {
   const [isConfirmationModalOpen, setConfirmationModalOpen] = useState(false);
   const [form] = Form.useForm();
   const { id, userData } = UserAuth();
+  const [banReason, setBanReason] = useState<string>("");
 
   const handleBanClick = () => {
+    setBanReason("");
     setConfirmationModalOpen(true);
   };
 
@@ -47,9 +59,9 @@ const StaffReportID = ({ params }: any) => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `https://learnconnectapitest.azurewebsites.net/api/report/get-reports?targetId=${idCourse}&reportType=${target}`
+          `https://learnconnectserver.azurewebsites.net/api/report/get-reports?targetId=${idCourse}&reportType=${target}`
         );
-        console.log("API Response:", response.data);
+        // console.log("API Response:", response.data);
         setReportData(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -66,9 +78,9 @@ const StaffReportID = ({ params }: any) => {
       const fetchData = async () => {
         try {
           const response = await axios.get(
-            `https://learnconnectapitest.azurewebsites.net/api/course/${idCourse}`
+            `https://learnconnectserver.azurewebsites.net/api/course/${idCourse}`
           );
-          console.log("API Response:", response.data);
+          // console.log("API Response:", response.data);
           setCourse(response.data);
         } catch (error) {
           console.error("Error fetching data:", error);
@@ -80,16 +92,16 @@ const StaffReportID = ({ params }: any) => {
   }, [idCourse]);
 
   const [mentor, setMentor] = useState<Mentor>();
-  console.log("Mentor", mentor?.user.fullName);
+  // console.log("Mentor", mentor?.user.fullName);
 
   useEffect(() => {
     if (target === "mentor") {
       const fetchData = async () => {
         try {
           const response = await axios.get(
-            `https://learnconnectapitest.azurewebsites.net/api/mentor/${idCourse}`
+            `https://learnconnectserver.azurewebsites.net/api/mentor/${idCourse}`
           );
-          console.log("API Response:", response.data);
+          // console.log("API Response:", response.data);
           setMentor(response.data);
         } catch (error) {
           console.error("Error fetching data:", error);
@@ -106,13 +118,22 @@ const StaffReportID = ({ params }: any) => {
 
   const fetchData = async () => {
     try {
+      const formData = new FormData();
+      formData.append("reason", banReason);
+      formData.append("status", "true");
       let apiUrl;
-
       if (target === "course") {
-        apiUrl = `https://learnconnectapitest.azurewebsites.net/api/course/ban-course?courseId=${idCourse}&status=true`;
+        apiUrl = `https://learnconnectserver.azurewebsites.net/api/course/ban-course?courseId=${idCourse}`;
       }
-
-      const response = await axios.post(apiUrl);
+      if (target === "mentor") {
+        apiUrl = `https://learnconnectserver.azurewebsites.net/api/mentor/ban-mentor?mentorUserId=${idCourse}`;
+      }
+      const response = await axios.post(apiUrl, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      console.log("Request Payload:", JSON.stringify(response.config.data));
       setReportData(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -125,10 +146,15 @@ const StaffReportID = ({ params }: any) => {
       setConfirmationModalOpen(false);
       handleBack();
       toast.success(`Successfully banned ${target}`);
+      router.push("/staff-page/staff-report");
     } catch (error) {
-      console.error("Error banning course:", error);
-      toast.error("Failed to ban course. Please try again.");
+      console.error(`Error banning ${target}:`, error);
+      toast.error(`Failed to ban ${target}. Please try again.`);
     }
+  };
+
+  const pushToCourse = () => {
+    router.push(`/staff-page/moderation/${course?.id}`);
   };
 
   return (
@@ -146,12 +172,12 @@ const StaffReportID = ({ params }: any) => {
             page4={"/staff-page/moderation"}
             page5={"/staff-page/list-major"}
             page6={"/staff-page/staff-revenue"}
+            page7={"/staff-page/staff-transaction"}
           />
 
           <div className="w-full mt-4">
-            {/* <div className="flex"> */}
             <div className="flex justify-between items-center px-5 bg-[#e7f8ee] mb-5">
-              <Breadcrumb className="text-start font-semibold text-4xl my-5 px-4">
+              <Breadcrumb className="text-start font-semibold text-2xl my-5 px-4">
                 <Breadcrumb.Item>
                   <button onClick={handleBack}>Report</button>
                 </Breadcrumb.Item>
@@ -162,15 +188,18 @@ const StaffReportID = ({ params }: any) => {
                   <Breadcrumb.Item>{mentor?.user.fullName}</Breadcrumb.Item>
                 )}
               </Breadcrumb>
-
-              {/* <div className="">
-              <button className="mx-5 my-3 px-5 py-3 rounded-lg text-black bg-[#e7f8ee]">
-                <GrFormPrevious className="text-2xl" />
-              </button>
-            </div> */}
               <div className="ml-auto">
+                {target === "course" && (
+                  <button
+                    className=" my-3 px-5 py-3 border-2 text-black border-gray-200 bg-white rounded-lg hover:bg-gray-200"
+                    onClick={pushToCourse}
+                  >
+                    Go to {target}
+                  </button>
+                )}
+
                 <button
-                  className="mx-5 my-3 px-5 py-3 bg-red-500 rounded-lg text-white"
+                  className="mx-5 my-3 px-5 py-3 border-2 text-black border-red-500 bg-white rounded-lg hover:bg-red-500 hover:text-white"
                   onClick={handleBanClick}
                 >
                   Ban this {target}
@@ -203,6 +232,19 @@ const StaffReportID = ({ params }: any) => {
                 style={{ width: "100%" }}
                 onFinish={handleConfirmBan}
               >
+                <Form.Item
+                  label="Reason"
+                  name="reason"
+                  rules={[
+                    { required: true, message: "Please provide a reason" },
+                  ]}
+                >
+                  <Input.TextArea
+                    value={banReason}
+                    onChange={(e) => setBanReason(e.target.value)}
+                    rows={4}
+                  />
+                </Form.Item>
                 <Space className="justify-end w-full">
                   <Form.Item className="mb-0">
                     <Space>
@@ -252,21 +294,7 @@ const StaffReportID = ({ params }: any) => {
                           {report.reportByNavigation.fullName}
                         </div>
                         <span className=" text-[#309255] font-light">
-                          {report.timeStamp
-                            ? new Date(report.timeStamp).toLocaleTimeString(
-                                "en-US"
-                              )
-                            : ""}{" "}
-                          {report.timeStamp
-                            ? new Date(report.timeStamp).toLocaleDateString(
-                                "en-GB",
-                                {
-                                  day: "numeric",
-                                  month: "long",
-                                  year: "numeric",
-                                }
-                              )
-                            : ""}{" "}
+                          {moment(report.timeStamp).locale("en").format("LLL")}
                         </span>
                         <div className="mt-5">
                           <p>Reason: {report.reportType}</p>
@@ -310,7 +338,9 @@ const StaffReportID = ({ params }: any) => {
                 </div>
               ))
             ) : (
-              <p>No reports available.</p>
+              <div className="text-center text-5xl mt-5">
+                <Empty />
+              </div>
             )}
           </div>
         </div>

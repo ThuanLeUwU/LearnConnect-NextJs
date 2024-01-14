@@ -1,16 +1,13 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import "../../globals.css";
-import AccordionItem from "@/components/dropdown/Dropdown";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { Course, Lectures } from "@/components/courses/courses";
-import Image from "next/image";
-import { Worker, Viewer } from "@react-pdf-viewer/core";
 import { FaCheck } from "react-icons/fa";
 import { FaLock } from "react-icons/fa6";
-
-// import { Button } from "react-bootstrap";
+import { VscEllipsis } from "react-icons/vsc";
+import { FaRankingStar } from "react-icons/fa6";
 import {
   Breadcrumb,
   Button,
@@ -25,8 +22,7 @@ import {
   message,
 } from "antd";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
-
-// import { Option } from "antd/es/mentions";
+import { IoChatboxSharp } from "react-icons/io5";
 import { UserAuth } from "@/app/context/AuthContext";
 import { toast } from "sonner";
 import { http } from "@/api/http";
@@ -35,6 +31,8 @@ import { Document, Page } from "react-pdf/dist/esm/entry.webpack";
 import { BsFillFlagFill } from "react-icons/bs";
 import Loading from "@/components/loading/loading";
 import Quiz from "@/components/test/test";
+import { type } from "os";
+import moment from "moment";
 
 export type Lecture = {
   id: string | number;
@@ -54,6 +52,44 @@ export type Performance = {
   timeSpent: number;
   userId: number;
   courseId: number;
+};
+
+export type Comment = {
+  // map(arg0: (item: any, index: any) => React.JSX.Element): React.ReactNode;
+  comment: {
+    id: number;
+    userId: number;
+    parentCommentId: null;
+    comment1: string;
+    commentTime: string;
+    status: number;
+    lectureId: number;
+  };
+  user: {
+    userId: number;
+    userName: string;
+    userEmail: string;
+    userImage: string;
+  };
+  reply: [comment: any, user: any];
+};
+
+export type Reply = {
+  comment: {
+    id: number;
+    userId: number;
+    parentCommentId: null;
+    comment1: string;
+    commentTime: string;
+    status: number;
+    lectureId: number;
+  };
+  user: {
+    userId: number;
+    userName: string;
+    userEmail: string;
+    userImage: string;
+  };
 };
 
 export default function AfterEnroll({ params }: any) {
@@ -95,19 +131,22 @@ export default function AfterEnroll({ params }: any) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
   const idCourse = params.id;
-  console.log("idCourse", idCourse);
   const [courses, setCourses] = useState<Course>();
   const [isTestOpen, setIsTestOpen] = useState(false);
-  // const [videoSrc, setVideoSrc] = useState(
-  //   "https://player.vimeo.com/external/215175080.hd.mp4?s=5b17787857fd95646e67ad0f666ea69388cb703c&profile_id=119"
-  // );
   const showModal = () => {
     setIsModalOpen(true);
   };
   const [timeSpent, setTimeSpent] = useState<Performance>();
-
+  const [comment, setComment] = useState<Comment[]>([]);
+  const [commentText, setCommentText] = useState<string>("");
+  const [IdLecture, setIdLecture] = useState(0);
+  const [editText, setEditText] = useState("");
+  const [replyComment, setReplyComment] = useState("");
+  const [reply, setReply] = useState<Reply[]>([]);
+  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
+  const [idDelete, setIdDelete] = useState(0);
+  const [score, setScore] = useState(0);
   const handleOk = async (data: any) => {
-    // console.log(e)
     setIsModalOpen(false);
     const formdata = new FormData();
     formdata.append("reportReason", selected || "1");
@@ -116,10 +155,8 @@ export default function AfterEnroll({ params }: any) {
       formdata.append("reportImage", formDataImage);
     }
     try {
-      // console.log("formDataImage1", formDataImage);
-      // console.log("image1", image);
       await axios.post(
-        `https://learnconnectapitest.azurewebsites.net/api/report/report-course?userId=${id}&courseId=${idCourse}`,
+        `https://learnconnectserver.azurewebsites.net/api/report/report-course?userId=${id}&courseId=${idCourse}`,
         formdata,
         {
           headers: {
@@ -134,11 +171,9 @@ export default function AfterEnroll({ params }: any) {
       });
     } catch (err) {
       setTimeout(() => {
-        toast.error("Report fail");
+        toast.error(err.response.data);
       });
     }
-
-    // console.log("fomdata", selected);
   };
 
   const handleCancel = () => {
@@ -146,6 +181,7 @@ export default function AfterEnroll({ params }: any) {
     setModalRatingOpen(false);
     setValue(0);
     form.resetFields();
+    setIsConfirmationModalOpen(false);
   };
 
   const handleChange = (info: any) => {
@@ -171,9 +207,9 @@ export default function AfterEnroll({ params }: any) {
     if (!isJpgOrPng) {
       toast.error("You can only upload JPG/PNG file!");
     }
-    const isLt2M = file.size / 1024 / 1024 < 2;
+    const isLt2M = file.size / 1024 / 1024 < 5;
     if (!isLt2M) {
-      toast.error("Image must smaller than 2MB!");
+      toast.error("Image must smaller than 5MB!");
     }
     return isJpgOrPng && isLt2M;
   };
@@ -182,6 +218,7 @@ export default function AfterEnroll({ params }: any) {
     { id: "1", name: "Inappropriate content" },
     { id: "2", name: "Copyright violation" },
     { id: "3", name: "Community standards violation" },
+    { id: "4", name: "Others" },
   ];
 
   const handleChangeReason = (value: React.SetStateAction<null>) => {
@@ -194,31 +231,16 @@ export default function AfterEnroll({ params }: any) {
     }
     return e?.fileList;
   };
-
-  // const newplugin = defaultLayoutPlugin();
-  // const uploadImage = () => {
-  //   const fetchImg= async () => {
-  //     const res = await axios.post(`https://learnconnectapitest.azurewebsites.net/api/image`)
-  //   }
-  // }
-
-  // console.log("id is", idCourse);
-  //   const id = router.query.id;
-  //   console.log("id", id);
   const [testVideo, setTestVideo] = useState<Lecture[]>([]);
   useEffect(() => {
     const fetchData = async () => {
       const responseData = await axios.get(
-        `https://learnconnectapitest.azurewebsites.net/api/lecture/by-course/${idCourse}`
+        `https://learnconnectserver.azurewebsites.net/api/lecture/by-course/${idCourse}`
       );
       setTestVideo(responseData?.data);
     };
 
     fetchData();
-    // if (testVideo.length > 0) {
-    //   setVideoSrc(testVideo[0].contentUrl);
-    //   setActiveVideoIndex(0);
-    // }
   }, []);
 
   const [pdf, setPDF] = useState<number>();
@@ -226,11 +248,17 @@ export default function AfterEnroll({ params }: any) {
   const [pageNumber, setPageNumber] = useState(1);
   const [percentage, setPercentage] = useState(0);
   const [learned, setLearned] = useState(0);
-
-  // const percentage = 10;
+  const [selectedType, setSelectedType] = useState("course");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const onDocumentLoadSuccess = (numPages) => {
     setNumPages(numPages);
+  };
+
+  const [idDropDown, setIdDropdown] = useState<Number>();
+  const toggleDropdown = (data: any) => {
+    setIdDropdown(data);
+    setIsDropdownOpen(!isDropdownOpen);
   };
 
   const [videoSrc, setVideoSrc] = useState("");
@@ -250,19 +278,17 @@ export default function AfterEnroll({ params }: any) {
       const getProcess = async () => {
         await http
           .get(
-            `https://learnconnectapitest.azurewebsites.net/api/learning-process/get_lecture_process?lectureId=${lecture.id}&courseId=${idCourse}&userId=${userData?.id}`
+            `https://learnconnectserver.azurewebsites.net/api/learning-process/get_lecture_process?lectureId=${lecture.id}&courseId=${idCourse}&userId=${userData?.id}`
           )
           .then((res) => {
             const learningProcess = res?.data.status;
             if (learningProcess === 1) {
               setIsComplete(false);
-              console.log("123");
             } else {
               setIsComplete(true);
             }
             setCurrentTime(res?.data.currentStudyTime);
             setMaxTime(res?.data.maxStudyTime);
-            // setHasCurrentTime(true);
             if (res?.data.currentStudyTime > 0) {
               setHasCurrentTime(!hasCurrentTime);
             }
@@ -277,7 +303,7 @@ export default function AfterEnroll({ params }: any) {
   useEffect(() => {
     const fetchData = async () => {
       const responseData = await http.get(
-        `https://learnconnectapitest.azurewebsites.net/api/course/${idCourse}`
+        `https://learnconnectserver.azurewebsites.net/api/course/${idCourse}`
       );
       setCourses(responseData?.data);
     };
@@ -301,23 +327,25 @@ export default function AfterEnroll({ params }: any) {
     setModalRatingOpen(true);
   };
 
+  const handleTabClickComment = (tabName: string, type: string) => {
+    setActiveTab(tabName);
+    setSelectedType(type);
+  };
+
   const handleRateChange = (newValue: number) => {
     setValue(newValue);
   };
 
   const handleSubmit = async (data: any) => {
-    // const numericValue = parseFloat(value);
     const formdata = new FormData();
     formdata.append("rating", value.toString());
-    console.log("rate");
+
     formdata.append(
       "comment",
       data.description !== undefined ? data.description : null
     );
 
     try {
-      // console.log("formDataImage1", formDataImage);
-      // console.log("image1", image);
       await http.post(
         `/rating/rating-course?userId=${id}&courseId=${idCourse}`,
         formdata,
@@ -334,7 +362,7 @@ export default function AfterEnroll({ params }: any) {
       });
     } catch (err) {
       setTimeout(() => {
-        toast.error("Rating fail");
+        toast.error(err.response.data);
       });
     }
     // console.log("value", parseInt(value.toString()));
@@ -344,20 +372,21 @@ export default function AfterEnroll({ params }: any) {
   };
 
   const [performance, setPerformance] = useState<Performance>();
-  useEffect(() => {
-    try {
-      const fetchData = async () => {
-        const responseData = await http.get(
-          `/learning-performance/user/${id}/course/${idCourse}`
-        );
-        setPerformance(responseData?.data);
-        // console.log("performance", performance);
-      };
-      fetchData();
-    } catch (err) {
-      console.error(err);
-    }
-  }, [id]);
+  // useEffect(() => {
+  //   try {
+  //     const fetchData = async () => {
+  //       const responseData = await http.get(
+  //         `/learning-performance/user/${id}/course/${idCourse}`
+  //       );
+  //       setPerformance(responseData?.data);
+  //       setScore(responseData?.data.score);
+  //       // console.log("performance", performance);
+  //     };
+  //     fetchData();
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // }, [score]);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const [maxTime, setMaxTime] = useState<number>(0); //truyen maxTime tu API response
@@ -369,6 +398,10 @@ export default function AfterEnroll({ params }: any) {
       setMaxTime(videoRef.current.played.end(0));
       setTotalTime(Math.floor(videoRef.current.duration));
     }
+    if (Math.floor(e.target.currentTime) >= totalTime * 0.9) {
+      setIsComplete(true);
+      setMaxTime(totalTime);
+    }
     if (
       (Math.floor(e.target.currentTime) > 1 &&
         Math.floor(e.target.currentTime) % 5 == 0) ||
@@ -376,20 +409,19 @@ export default function AfterEnroll({ params }: any) {
     ) {
       // setMaxTime(totalTime);
       http.post(
-        `https://learnconnectapitest.azurewebsites.net/api/learning-process/save_process?userId=${id}&lectureId=${
+        `https://learnconnectserver.azurewebsites.net/api/learning-process/save_process?userId=${id}&lectureId=${
           testVideo[activeVideoIndex].id
         }&courseId=${idCourse}&currentTime=${Math.floor(
           currentTime
         )}&maxTime=${Math.floor(maxTime)}&totalTime=${totalTime}`
       );
     }
-    if (Math.floor(e.target.currentTime) === totalTime) {
-      setIsComplete(true);
-    }
+
     if (activeVideoIndex + 1 === learned) {
       setPercentage((maxTime / totalTime) * 100);
-      if (maxTime > totalTime * 0.9) {
+      if (maxTime >= totalTime * 0.9) {
         setLearned(learned + 1);
+        setPercentage(0);
       }
     }
   };
@@ -417,7 +449,7 @@ export default function AfterEnroll({ params }: any) {
   useEffect(() => {
     const fetchData = async () => {
       const responseData = await axios.get(
-        `https://learnconnectapitest.azurewebsites.net/api/learning-performance/get-by/${userData?.id}/${idCourse}`
+        `https://learnconnectserver.azurewebsites.net/api/learning-performance/get-by/${userData?.id}/${idCourse}`
       );
       setTimeSpent(responseData?.data);
     };
@@ -463,7 +495,7 @@ export default function AfterEnroll({ params }: any) {
     const fetchData = async () => {
       await http
         .get(
-          `https://learnconnectapitest.azurewebsites.net/api/learning-process/get_user_current_lecture?courseId=${idCourse}&userId=${userData?.id}`
+          `https://learnconnectserver.azurewebsites.net/api/learning-process/get_user_current_lecture?courseId=${idCourse}&userId=${userData?.id}`
         )
         .then((response) => {
           setPercentage(response?.data?.progress);
@@ -475,6 +507,152 @@ export default function AfterEnroll({ params }: any) {
     };
     fetchData();
   }, []);
+
+  const handleClickOutside = (event: MouseEvent) => {
+    const dropdown = document.getElementById("dropdown-menu");
+
+    if (dropdown && !dropdown.contains(event.target as Node)) {
+      setIsDropdownOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const consoleLogLectureId = async (lectureId) => {
+    await http
+      .get(
+        `https://learnconnectserver.azurewebsites.net/api/Comment/get-comments-by-lectureId/${lectureId}`
+      )
+      .then((res) => {
+        setComment(res?.data.reverse());
+        setIdLecture(lectureId);
+      });
+  };
+
+  const submitComment = async () => {
+    try {
+      if (!commentText) {
+        toast.error("Comment cannot be empty.");
+        return;
+      }
+      const formData = new FormData();
+      formData.append("comment", commentText);
+      await http
+        .post(
+          `https://learnconnectserver.azurewebsites.net/api/Comment?userId=${userData?.id}&lectureId=${IdLecture}`,
+          formData
+        )
+        .then(() => {
+          http
+            .get(
+              `https://learnconnectserver.azurewebsites.net/api/Comment/get-comments-by-lectureId/${IdLecture}`
+            )
+            .then((res) => {
+              setComment(res?.data.reverse());
+            });
+        });
+      toast.success("Comment posted successfully!!");
+      setCommentText("");
+    } catch (error) {
+      console.error("Error posting comment:", error);
+      toast.error("Failed to post comment. Please try again.");
+    }
+  };
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [isAnswer, setIsAnswer] = useState(false);
+
+  const AnswerMode = (data) => {
+    setIsAnswer(!isAnswer);
+    setIdDropdown(data);
+
+    console.log("isanswer", isAnswer);
+  };
+
+  const EditCommentMode = () => {
+    setIsEditing(true);
+  };
+
+  const ReplyComment = async (comment) => {
+    if (!replyComment) {
+      toast.error("Comment cannot be empty.");
+      return;
+    }
+    const formData = new FormData();
+    formData.append("comment", replyComment);
+    await http
+      .post(
+        `https://learnconnectserver.azurewebsites.net/api/comment?userId=${userData?.id}&lectureId=${IdLecture}&parentCommentId=${comment}`,
+        formData
+      )
+      .then(() => {
+        toast.success("Reply Comment Success");
+        setIsAnswer(false);
+        setReplyComment("");
+        http
+          .get(
+            `https://learnconnectserver.azurewebsites.net/api/Comment/get-comments-by-lectureId/${IdLecture}`
+          )
+          .then((res) => {
+            setComment(res?.data.reverse());
+          });
+      });
+  };
+
+  const EditComment = async (comment) => {
+    if (!editText) {
+      toast.error("Comment cannot be empty.");
+      return;
+    }
+    comment.comment1 = editText;
+    await http
+      .put(
+        `https://learnconnectserver.azurewebsites.net/api/comment/${comment.id}`,
+        comment
+      )
+      .then(() => {
+        toast.success("Edit Comment Success");
+        setIsEditing(false);
+        http
+          .get(
+            `https://learnconnectserver.azurewebsites.net/api/Comment/get-comments-by-lectureId/${IdLecture}`
+          )
+          .then((res) => {
+            setComment(res?.data.reverse());
+          });
+      });
+    setEditText("");
+  };
+
+  const DeleteComment = async (promotionId) => {
+    await http
+      .delete(
+        `https://learnconnectserver.azurewebsites.net/api/comment/${promotionId}`
+      )
+      .then(() => {
+        toast.success("Delete Comment Success");
+        http
+          .get(
+            `https://learnconnectserver.azurewebsites.net/api/Comment/get-comments-by-lectureId/${IdLecture}`
+          )
+          .then((res) => {
+            setComment(res?.data.reverse());
+          });
+      });
+  };
+
+  const HandleOnDelteClick = () => {
+    DeleteComment;
+  };
+
+  const handlePushMentor = () => {
+    router.push(`/profile-mentor/${courses?.mentorId}`);
+  };
 
   return !role ? (
     <Loading />
@@ -488,7 +666,7 @@ export default function AfterEnroll({ params }: any) {
           }}
         >
           <div>
-            <Breadcrumb className="font-semibold text-3xl py-5 px-64 flex-auto">
+            <Breadcrumb className="font-semibold text-2xl py-5 px-64 flex-auto">
               <Breadcrumb.Item>
                 <button onClick={breadcrumbsHome}>Home</button>
               </Breadcrumb.Item>
@@ -512,7 +690,7 @@ export default function AfterEnroll({ params }: any) {
         <div className="grid cols-2 lg:grid-cols-12 mt-[40px] gap-5">
           <div className="lg:col-span-8">
             {isTestOpen ? (
-              <Quiz idCourse={idCourse} />
+              <Quiz idCourse={idCourse} setScore={setScore} />
             ) : (
               <>
                 {!videoSrc && (
@@ -538,7 +716,6 @@ export default function AfterEnroll({ params }: any) {
                         <source src={videoSrc} type="video/mp4" />
                       </video>
                     ) : (
-                      // <></>
                       <iframe
                         title="PDF Viewer"
                         width="100%"
@@ -560,17 +737,11 @@ export default function AfterEnroll({ params }: any) {
                       <div className=" flex gap-[10px]">
                         {value === 0 ? (
                           <Button
-                            style={{ color: "black", background: "lightgreen" }}
-                            type="primary"
+                            style={{ color: "black" }}
                             onClick={showModalRating}
+                            className="text-[20px] border border-[#309255]"
                           >
-                            {/* <Image
-                    width={40}
-                    height={40}
-                    src="/menu-icon/flag-icon.jpg"
-                    alt="flag"
-                  /> */}
-                            Rating
+                            <FaRankingStar />
                           </Button>
                         ) : (
                           <Tooltip title="You have already rated this course !">
@@ -578,23 +749,21 @@ export default function AfterEnroll({ params }: any) {
                               disabled
                               style={{
                                 color: "black",
-                                background: "lightgreen",
                               }}
-                              type="primary"
                               onClick={showModalRating}
                             >
-                              Rating
+                              <FaRankingStar />
                             </Button>
                           </Tooltip>
                         )}
 
-                        <Button danger type="primary" onClick={showModal}>
-                          {/* <Image
-                    width={40}
-                    height={40}
-                    src="/menu-icon/flag-icon.jpg"
-                    alt="flag"
-                  /> */}
+                        <Button
+                          onClick={showModal}
+                          style={{
+                            color: "black",
+                          }}
+                          className="border border-red-500"
+                        >
                           <BsFillFlagFill />
                         </Button>
                       </div>
@@ -603,7 +772,6 @@ export default function AfterEnroll({ params }: any) {
                         destroyOnClose={true}
                         title={`Rating ${courses?.name} by ${user?.displayName}`}
                         open={modalRating}
-                        // onOk={handleOk}
                         onCancel={handleCancel}
                         footer={false}
                       >
@@ -647,7 +815,6 @@ export default function AfterEnroll({ params }: any) {
                         destroyOnClose={true}
                         title={`Report ${courses?.name} by ${user?.displayName}`}
                         open={isModalOpen}
-                        // onOk={handleOk}
                         onCancel={handleCancel}
                         footer={false}
                       >
@@ -662,10 +829,7 @@ export default function AfterEnroll({ params }: any) {
                           onFinish={handleOk}
                         >
                           <Form.Item label="Reason">
-                            <Select
-                              // defaultValue={selected}
-                              onChange={handleChangeReason}
-                            >
+                            <Select onChange={handleChangeReason}>
                               {Reasons.map((option) => {
                                 return (
                                   <Option key={option.id} value={option.name}>
@@ -678,12 +842,8 @@ export default function AfterEnroll({ params }: any) {
                           <Form.Item label="Comment" name="comment">
                             <Input.TextArea rows={4} />
                           </Form.Item>
-                          {/* <Form.Item>
-                      {/* <Image width={200} height={200} src={image} /> */}
-                          {/* </Form.Item> */}
                           <Form.Item
                             label="Capture"
-                            // valuePropName="fileList"
                             getValueFromEvent={normFile}
                           >
                             <Upload
@@ -691,7 +851,7 @@ export default function AfterEnroll({ params }: any) {
                               onChange={handleChange}
                               beforeUpload={beforeUpload}
                               // headers={{ Authorization: authorization }}
-                              action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
+                              action="https://learnconnectserver.azurewebsites.net/api/Upload/image"
                               listType="picture-card"
                             >
                               Upload
@@ -714,23 +874,487 @@ export default function AfterEnroll({ params }: any) {
                         </Form>
                       </Modal>
                     </div>
-                    {/* {activeVideoIndex !== -1
-                ? testVideo[activeVideoIndex].title
-                : courses?.name} */}
-                    {activeVideoIndex === 0 ? (
+                    <div className="flex text-center items-center pt-[10px]">
+                      <div className="author-thumb">
+                        <a href="#">
+                          <img
+                            className="rounded-full w-[50px] h-[50px]"
+                            src={courses?.mentorProfilePictureUrl}
+                            alt="Author"
+                            onClick={handlePushMentor}
+                          />
+                        </a>
+                      </div>
+                      <div className="pl-3">
+                        <button
+                          className="text-[#52565b] hover:text-[#309255] font-medium z-10"
+                          onClick={handlePushMentor}
+                        >
+                          {/* {mentorName} */}
+                          {courses?.mentorName}
+                        </button>
+                      </div>
+                    </div>
+                    {activeVideoIndex + 1 !== 0 ? (
                       <div className="w-full mx-auto mb-3 shadow-lg rounded-lg">
+                        <div className="flex justify-center bg-[#e7f8ee] p-3 rounded-lg mt-5">
+                          <ul className="tabs flex space-x-5">
+                            <li
+                              className={`cursor-pointer rounded-md ${
+                                activeTab === "tab1"
+                                  ? " text-[#fff] bg-[#309255]"
+                                  : "bg-[#fff] "
+                              }`}
+                              onClick={() =>
+                                handleTabClickComment("tab1", "course")
+                              }
+                            >
+                              <button className="w-28 h-14 px-[15px] text-center text-sm font-medium  rounded-md hover:text-[#fff] hover:bg-[#309255]">
+                                Description
+                              </button>
+                            </li>
+                            <li
+                              className={`cursor-pointer rounded-md ${
+                                activeTab === "tab2"
+                                  ? " text-[#fff] bg-[#309255]"
+                                  : "bg-[#fff] "
+                              }`}
+                              onClick={() =>
+                                handleTabClickComment("tab2", "mentor")
+                              }
+                            >
+                              <button className="w-28 h-14 px-[15px] text-center text-sm font-medium  border-opacity-20 rounded-md hover:border-[#309255] hover:text-[#fff] hover:bg-[#309255]">
+                                Comment
+                              </button>
+                            </li>
+                          </ul>
+                        </div>
                         <div className="faq-wrapper">
-                          <div className="single-faq-item">
-                            <div className="grid cols-2 lg:grid-cols-12 border-[#dff0e6] border border-solid rounded-lg px-[70px] pb-[35px] mt-5">
-                              <div className="lg:col-span-12">
-                                <div key={activeVideoIndex}>
-                                  <p className="mt-3.5 text-[#52565b] text-base font-normal">
-                                    {testVideo[activeVideoIndex]?.content}
-                                  </p>
+                          {activeTab === "tab1" && (
+                            <div className="single-faq-item">
+                              <div className="grid cols-2 lg:grid-cols-12 border-[#dff0e6] border border-solid rounded-lg px-[70px] pb-[35px] mt-5">
+                                <div className="lg:col-span-12">
+                                  <div key={activeVideoIndex}>
+                                    <p className="mt-3.5 text-[#52565b] text-base font-normal">
+                                      {testVideo[activeVideoIndex]?.content}
+                                    </p>
+                                  </div>
                                 </div>
                               </div>
                             </div>
-                          </div>
+                          )}
+                          {activeTab === "tab2" && (
+                            <div className="">
+                              <div className="py-7 px-5">
+                                <div className="flex">
+                                  <img
+                                    alt="CommentImg"
+                                    src={userData?.profilePictureUrl}
+                                    className="w-[70px] h-[70px] rounded-full"
+                                  />
+                                  <div className="my-auto pl-5 w-full">
+                                    <TextArea
+                                      placeholder="Post Comment"
+                                      autoSize={{ minRows: 7, maxRows: 15 }}
+                                      className="w-full"
+                                      value={commentText}
+                                      onChange={(e) =>
+                                        setCommentText(e.target.value)
+                                      }
+                                    />
+                                  </div>
+                                </div>
+                                <div className="pt-5 flex justify-end">
+                                  {/* <button
+                                    className="border border-[#309255] px-[35px] mx-1 py-2 rounded-lg hover:border-red-500"
+                                    onClick={() => {
+                                      setCommentText("");
+                                    }}
+                                  >
+                                    Cancel
+                                  </button> */}
+                                  <button
+                                    className="border border-[#309255] px-[35px] mx-1 py-2 rounded-lg text-[#309255] hover:bg-[#309255] hover:text-[#fff]"
+                                    onClick={() => submitComment()}
+                                  >
+                                    Submit
+                                  </button>
+                                </div>
+                              </div>
+                              {comment &&
+                                comment.map((item, index) => (
+                                  <div
+                                    className="py-7 px-5 border-t border-[#30925533]"
+                                    key={index}
+                                  >
+                                    <div className="flex">
+                                      <img
+                                        alt="CommentImg"
+                                        src={item?.user.userImage}
+                                        className="w-[70px] h-[70px] rounded-full"
+                                      />
+                                      <div className="my-auto pl-5">
+                                        <p className="font-bold text-xl">
+                                          {item?.user.userName}
+                                        </p>
+                                        <p className="font-light text-[#8e9298]">
+                                          {moment(
+                                            item?.comment.commentTime
+                                          ).format("DD/MM/YYYY HH:mm:ss")}
+                                        </p>
+                                      </div>
+
+                                      <div className="flex ml-auto">
+                                        <button
+                                          className=" my-auto bg-[#d6e9dd] ml-auto px-5 max-h-[40px] flex item-center rounded-lg border border-[#30925533] w-full py-1 hover:text-[#fff] hover:bg-[#309255]"
+                                          onClick={() => {
+                                            AnswerMode(item.comment.id);
+                                          }}
+                                        >
+                                          <span className="my-auto pr-1">
+                                            <IoChatboxSharp />
+                                          </span>
+                                          Answer
+                                        </button>
+                                        {item?.user.userId === userData?.id && (
+                                          <button
+                                            className="w-full flex my-auto ml-2 border border-[#30925533] p-2 rounded-lg hover:text-[#000] hover:bg-[#30925533]"
+                                            onClick={() => {
+                                              toggleDropdown(item?.comment.id);
+                                            }}
+                                          >
+                                            <VscEllipsis />
+                                            {isDropdownOpen &&
+                                              item?.comment.id ===
+                                                idDropDown && (
+                                                <div
+                                                  id="dropdown-menu"
+                                                  className="modal-overlay absolute mt-[30px] z-50"
+                                                >
+                                                  <div className="bg-white border border-gray-300 rounded shadow-lg">
+                                                    <div className="p-2 text-black flex flex-col">
+                                                      <button
+                                                        className="px-3 py-2 mb-1 hover:bg-[#e7f8ee]"
+                                                        onClick={
+                                                          EditCommentMode
+                                                        }
+                                                      >
+                                                        Edit Comment
+                                                      </button>
+                                                      <button
+                                                        className="px-3 py-2 hover:bg-[#e7f8ee]"
+                                                        onClick={() => {
+                                                          // DeleteComment(
+                                                          //   item?.comment.id
+                                                          // );
+                                                          setIdDelete(
+                                                            item?.comment.id
+                                                          );
+                                                          setIsConfirmationModalOpen(
+                                                            true
+                                                          );
+                                                        }}
+                                                      >
+                                                        Delete Comment
+                                                      </button>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              )}
+                                          </button>
+                                        )}
+                                      </div>
+                                    </div>
+                                    <div className="py-5">
+                                      {isEditing &&
+                                      item?.comment.id === idDropDown ? (
+                                        <div>
+                                          <TextArea
+                                            placeholder="Edit Comment"
+                                            autoSize={{
+                                              minRows: 7,
+                                              maxRows: 15,
+                                            }}
+                                            className="w-full"
+                                            defaultValue={
+                                              item?.comment.comment1
+                                            }
+                                            onChange={(e) =>
+                                              setEditText(e.target.value)
+                                            }
+                                          />
+                                          <div className="py-5 flex justify-end">
+                                            <button
+                                              className="border border-[#309255] px-[35px] mx-1 py-2 rounded-lg hover:border-red-500"
+                                              onClick={() => {
+                                                setIsEditing(false);
+                                              }}
+                                            >
+                                              Cancel
+                                            </button>
+                                            <button
+                                              className="border border-[#309255] px-[35px] mx-1 py-2 rounded-lg text-[#309255] hover:bg-[#309255] hover:text-[#fff]"
+                                              onClick={() => {
+                                                EditComment(item.comment);
+                                              }}
+                                            >
+                                              Save
+                                            </button>
+                                          </div>
+                                        </div>
+                                      ) : (
+                                        <p>{item?.comment.comment1}</p>
+                                      )}
+                                    </div>
+                                    {isAnswer &&
+                                      item?.comment.id === idDropDown && (
+                                        <div className="py-7 px-5 ml-[110px] border-t border-[#30925533]">
+                                          <div className="flex">
+                                            <img
+                                              alt="CommentImg"
+                                              src={userData?.profilePictureUrl}
+                                              className="w-[70px] h-[70px] rounded-full"
+                                            />
+                                            <div className="my-auto pl-5">
+                                              <p className="font-bold text-xl">
+                                                {userData?.fullName}
+                                              </p>
+                                            </div>
+                                          </div>
+                                          <div className="pt-5">
+                                            <TextArea
+                                              placeholder="Post Comment"
+                                              autoSize={{
+                                                minRows: 7,
+                                                maxRows: 15,
+                                              }}
+                                              className="w-full"
+                                              value={replyComment}
+                                              // defaultValue={item?.comment.comment1}
+                                              onChange={(e) =>
+                                                setReplyComment(e.target.value)
+                                              }
+                                            />
+                                          </div>
+                                          <div className="pt-5 flex justify-end">
+                                            <button
+                                              className="border border-[#309255] px-[35px] mx-1 py-2 rounded-lg hover:border-red-500"
+                                              onClick={() => {
+                                                setIsAnswer(false);
+                                                setReplyComment("");
+                                              }}
+                                            >
+                                              Cancel
+                                            </button>
+                                            <button
+                                              className="border border-[#309255] px-[35px] mx-1 py-2 rounded-lg text-[#309255] hover:bg-[#309255] hover:text-[#fff]"
+                                              onClick={() => {
+                                                ReplyComment(item.comment.id);
+                                              }}
+                                            >
+                                              Reply
+                                            </button>
+                                          </div>
+                                        </div>
+                                      )}
+                                    {item.reply.map((replyItem, replyIndex) => (
+                                      <div
+                                        className="py-7 px-5 ml-[110px] border-t border-[#30925533]"
+                                        key={replyIndex}
+                                      >
+                                        <div className="flex">
+                                          <img
+                                            alt="CommentImg"
+                                            src={replyItem.user.userImage}
+                                            className="w-[70px] h-[70px] rounded-full"
+                                          />
+
+                                          <div className="my-auto pl-5">
+                                            {replyItem.user && (
+                                              <div>
+                                                <p className="font-bold text-xl">
+                                                  {replyItem.user.userName}
+                                                </p>
+                                                <p className="font-light text-[#8e9298]">
+                                                  {moment(
+                                                    replyItem?.comment
+                                                      .commentTime
+                                                  ).format(
+                                                    "DD/MM/YYYY HH:mm:ss"
+                                                  )}
+                                                </p>
+                                              </div>
+                                            )}
+                                          </div>
+                                          <div className="flex ml-auto">
+                                            {replyItem?.user.userId ===
+                                              userData?.id && (
+                                              <button
+                                                className="w-full flex my-auto ml-2 border border-[#30925533] p-2 rounded-lg hover:text-[#000] hover:bg-[#30925533]"
+                                                onClick={() => {
+                                                  toggleDropdown(
+                                                    replyItem?.comment.id
+                                                  );
+                                                }}
+                                              >
+                                                <VscEllipsis />
+                                                {isDropdownOpen &&
+                                                  replyItem?.comment.id ===
+                                                    idDropDown && (
+                                                    <div
+                                                      id="dropdown-menu"
+                                                      className="modal-overlay absolute mt-[30px] z-50"
+                                                    >
+                                                      <div className="bg-white border border-gray-300 rounded shadow-lg">
+                                                        <div className="p-2 text-black flex flex-col">
+                                                          <button
+                                                            className="px-3 py-2 mb-1 hover:bg-[#e7f8ee]"
+                                                            onClick={
+                                                              EditCommentMode
+                                                            }
+                                                          >
+                                                            Edit Comment
+                                                          </button>
+                                                          <button
+                                                            className="px-3 py-2 hover:bg-[#e7f8ee]"
+                                                            onClick={() => {
+                                                              // DeleteComment(
+                                                              //   replyItem
+                                                              //     ?.comment.id
+                                                              // );
+                                                              setIdDelete(
+                                                                replyItem
+                                                                  ?.comment.id
+                                                              );
+                                                              setIsConfirmationModalOpen(
+                                                                true
+                                                              );
+                                                            }}
+                                                          >
+                                                            Delete Comment
+                                                          </button>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                  )}
+                                              </button>
+                                            )}
+                                          </div>
+                                        </div>
+                                        <div className="py-5">
+                                          {isEditing &&
+                                          replyItem?.comment.id ===
+                                            idDropDown ? (
+                                            <div>
+                                              <TextArea
+                                                placeholder="Edit Comment"
+                                                autoSize={{
+                                                  minRows: 7,
+                                                  maxRows: 15,
+                                                }}
+                                                className="w-full"
+                                                defaultValue={
+                                                  replyItem?.comment.comment1
+                                                }
+                                                onChange={(e) =>
+                                                  setEditText(e.target.value)
+                                                }
+                                              />
+                                              <div className="py-5 flex justify-end">
+                                                <button
+                                                  className="border border-[#309255] px-[35px] mx-1 py-2 rounded-lg hover:border-red-500"
+                                                  onClick={() => {
+                                                    setIsEditing(false);
+                                                  }}
+                                                >
+                                                  Cancel
+                                                </button>
+                                                <button
+                                                  className="border border-[#309255] px-[35px] mx-1 py-2 rounded-lg text-[#309255] hover:bg-[#309255] hover:text-[#fff]"
+                                                  onClick={() => {
+                                                    EditComment(
+                                                      replyItem.comment
+                                                    );
+                                                  }}
+                                                >
+                                                  Save
+                                                </button>
+                                              </div>
+                                            </div>
+                                          ) : (
+                                            <p> {replyItem.comment.comment1}</p>
+                                          )}
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                ))}
+                              {/* <div className="border-t border-[#30925533]">
+                                <div className="py-7 px-5  mt-8">
+                                  <button className="text-[18px] text-[#309255] border border-[#309255] w-full py-2 rounded-lg hover:text-[#fff] hover:bg-[#309255] bg-[#d6e9dd] ">
+                                    Load more 22 answer
+                                  </button>
+                                </div>
+                              </div> */}
+                              <Modal
+                                destroyOnClose={true}
+                                title={
+                                  <div className="text-lg">
+                                    Are you sure to delete this comment
+                                  </div>
+                                }
+                                open={isConfirmationModalOpen}
+                                width="35%"
+                                onCancel={handleCancel}
+                                footer={false}
+                                style={{
+                                  top: "30%",
+                                }}
+                              >
+                                <Form
+                                  autoComplete="off"
+                                  form={form}
+                                  labelCol={{ span: 4 }}
+                                  wrapperCol={{ span: 16 }}
+                                  layout="horizontal"
+                                  className="mt-5"
+                                  style={{ width: "100%" }}
+                                  onFinish={() => {
+                                    DeleteComment(idDelete);
+                                    setIsConfirmationModalOpen(false);
+                                    setIdDelete(0);
+                                  }}
+                                >
+                                  <Space className="justify-end w-full">
+                                    <Form.Item className="mb-0">
+                                      <Space>
+                                        <Button
+                                          className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                                          onClick={handleCancel}
+                                          style={{
+                                            border: "2px solid #E0E0E0",
+                                            color: "black",
+                                          }}
+                                        >
+                                          Cancel
+                                        </Button>
+                                        <Button
+                                          className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                                          htmlType="submit"
+                                          style={{
+                                            border: "2px solid #4caf50",
+                                            color: "#fff",
+                                          }}
+                                        >
+                                          Confirm
+                                        </Button>
+                                      </Space>
+                                    </Form.Item>
+                                  </Space>
+                                </Form>
+                              </Modal>
+                            </div>
+                          )}
                         </div>
                       </div>
                     ) : (
@@ -761,17 +1385,6 @@ export default function AfterEnroll({ params }: any) {
                                 Lectures
                               </button>
                             </li>
-                            {/* <li
-                    className={`cursor-pointer rounded-md ${
-                      activeTab === "#"
-                        ? " text-[#fff] bg-[#309255]"
-                        : "bg-[#fff] "
-                    }`}
-                  >
-                    <button className="w-28 h-14 px-[15px] text-center text-sm font-medium  border-opacity-20 rounded-md hover:border-[#309255] hover:text-[#fff] hover:bg-[#309255]">
-                      Reviews
-                    </button>
-                  </li> */}
                           </ul>
                         </div>
                         {activeTab === "tab1" && (
@@ -779,13 +1392,6 @@ export default function AfterEnroll({ params }: any) {
                             <div className="faq-wrapper">
                               <div className="single-faq-item">
                                 <div className="grid cols-2 lg:grid-cols-12 border-[#dff0e6] border border-solid rounded-lg px-[70px] pb-[35px] mt-5">
-                                  {/* <div className="lg:col-span-4 px-[15px]">
-                          <div className="">
-                            <h4 className="text-[25px] px-[15px] pt-5 text-[#212832]">
-                              Details
-                            </h4>
-                          </div>
-                        </div> */}
                                   <div className="lg:col-span-12">
                                     <div className="text-[15px] font-medium mt-[25px] px-[15px]">
                                       <p className="mb-4 leading-loose">
@@ -799,7 +1405,7 @@ export default function AfterEnroll({ params }: any) {
                                                 <tbody>
                                                   <tr className="border-b border-b-[#e7f8ee]">
                                                     <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-medium">
-                                                      Instructor
+                                                      Mentor
                                                     </td>
                                                     <td className="whitespace-nowrap px-6 py-4">
                                                       :
@@ -910,8 +1516,10 @@ export default function AfterEnroll({ params }: any) {
                             : ""
                         }`}
                         onClick={() => {
+                          setMaxTime(0);
                           changeVideoSource(item, index);
                           setPDF(item.contentType);
+                          consoleLogLectureId(item.id);
                         }}
                       >
                         <div className="flex">
@@ -948,12 +1556,12 @@ export default function AfterEnroll({ params }: any) {
                       </button>
                     );
                   })}
-                  <div className="pl-10 py-2 pr-[30px] bg-[#dff0e6] flex">
+                  {/* <div className="pl-10 py-2 pr-[30px] bg-[#dff0e6] flex">
                     <p className=" py-1">
                       Time Spent: {formatTime(timeSpent?.timeSpent)}
                     </p>
-                  </div>
-                  <div className="pl-10 py-2 pr-[30px] bg-[#dff0e6] flex">
+                  </div> */}
+                  <div className="pl-10 py-2 pr-[30px] bg-[#dff0e6] flex flex-end">
                     <button
                       className="border-2 border-[#309255] px-5 py-1 rounded-lg hover:bg-[#309255] active:bg-[#75c989] hover:text-white flex"
                       onClick={handleClick}
@@ -961,12 +1569,10 @@ export default function AfterEnroll({ params }: any) {
                       {!(isComplete && testVideo.length + 1 === learned) && (
                         <FaLock className="my-auto" />
                       )}{" "}
-                      <span>Test</span>
+                      <span>Practice Test</span>
                     </button>
 
-                    <p className="ml-auto my-auto">
-                      Score: {performance?.score}
-                    </p>
+                    {/* <p className="ml-auto my-auto">Score: {score}</p> */}
                   </div>
                 </nav>
               </div>

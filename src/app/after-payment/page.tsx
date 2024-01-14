@@ -27,7 +27,7 @@ const AfterPayment = () => {
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(true);
   axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
-  console.log("jwtToken", jwtToken);
+
   const [urlParams, setUrlParams] = useState<URLSearchParams | null>(null);
   const [payment, setPayment] = useState<Payment>();
   const [courseId, setCourseId] = useState("");
@@ -47,7 +47,7 @@ const AfterPayment = () => {
       const fetchData = async () => {
         try {
           const responseData = await http.get(
-            `https://learnconnectapitest.azurewebsites.net/api/payment-transaction/query-vnpay-transaction?vnp_TxnRef=${vnp_TxnRef}&vnp_PayDate=${vnp_PayDate}`
+            `https://learnconnectserver.azurewebsites.net/api/payment-transaction/query-vnpay-transaction?vnp_TxnRef=${vnp_TxnRef}&vnp_PayDate=${vnp_PayDate}`
           );
           setPayment(responseData?.data.paymentTransaction);
           setCourseId(responseData.data.courseId);
@@ -83,7 +83,7 @@ const AfterPayment = () => {
           }}
         >
           <div>
-            <Breadcrumb className="font-semibold text-3xl py-5 px-64 flex-auto">
+            <Breadcrumb className="font-semibold text-2xl py-5 px-64 flex-auto">
               <Breadcrumb.Item>
                 <button onClick={breadcrumbsHome}>Home</button>
               </Breadcrumb.Item>

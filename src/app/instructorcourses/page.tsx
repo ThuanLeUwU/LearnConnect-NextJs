@@ -56,7 +56,7 @@ export type Category = {
 
 const InstructorCourse = () => {
   const router = useRouter();
-  const { id, user, role, userData } = UserAuth();
+  const { id, user, role, userData, jwtToken } = UserAuth();
   useEffect(() => {
     if (role === 0) {
       router.push(`/user-manage`);
@@ -74,12 +74,9 @@ const InstructorCourse = () => {
     //   router.push(`/`);
     // }
   });
-  // getMessageToken();
-  // console.log("id", id);
-  // console.log("id", user);
+
   const [visible, setVisible] = useState(false);
 
-  // console.log("set", listCourseInstructor);
   const {
     loading,
     listCourseInstructor,
@@ -95,24 +92,26 @@ const InstructorCourse = () => {
       title: "Courses",
       href: "/instructorcourses",
     },
-    // {
-    //   image: "/menu-icon/icon-2.png",
-    //   href: "/dashboard",
-    // },
+    {
+      image: "/menu-icon/file-edit.png",
+      title: "Requests",
+      href: "/request-history",
+    },
     {
       image: "/menu-icon/feedback-review.png",
       title: "Reviews",
       href: "/review-mentor",
     },
+
     {
-      image: "/menu-icon/money-check-edit.png",
-      title: "Revenues",
-      href: "/revenue",
+      image: "/menu-icon/receipt.png",
+      title: "Transaction History",
+      href: "/order-history",
     },
     {
-      image: "/menu-icon/file-edit.png",
-      title: "Requests",
-      href: "/request-history",
+      image: "/menu-icon/money-check-edit.png",
+      title: "Statistics",
+      href: "/revenue",
     },
   ];
 
@@ -130,7 +129,7 @@ const InstructorCourse = () => {
     } else if (status === 1) {
       return <p style={{ color: "grey" }}>Pending</p>;
     } else if (status === 2) {
-      return <p style={{ color: "#b8ba5a" }}>Reject</p>;
+      return <p style={{ color: "orange" }}>Reject</p>;
     } else if (status === 3) {
       return <p style={{ color: "red" }}>Banned</p>;
     }
@@ -172,7 +171,7 @@ const InstructorCourse = () => {
       formData.append("shortDescription", data.shortDes);
       formData.append("price", data.price);
       formData.append("contentLength", data.length);
-      formData.append("lectureCount", data.lecture);
+      formData.append("lectureCount", "0");
       formData.append("specializationId", selected.toString());
       if (formDataImage !== undefined) {
         formData.append("courseImage", formDataImage);
@@ -226,9 +225,9 @@ const InstructorCourse = () => {
     if (!isJpgOrPng) {
       toast.error("You can only upload JPG/PNG file!");
     }
-    const isLt20M = file.size / 1024 / 1024 < 20;
+    const isLt20M = file.size / 1024 / 1024 < 5;
     if (!isLt20M) {
-      toast.error("Image must smaller than 20MB!");
+      toast.error("Image must smaller than 5MB!");
     }
     return isJpgOrPng && isLt20M;
   };
@@ -236,6 +235,8 @@ const InstructorCourse = () => {
   //List category
   // const [selected, setSelected] = useState(null);
   const [selected, setSelected] = useState<number>(0);
+  console.log("Token Mentor", jwtToken);
+
   const { Option } = Select;
   const [listCategory, setListCategory] = useState<Specialize[]>([]);
   useEffect(() => {
@@ -260,13 +261,9 @@ const InstructorCourse = () => {
   const [updateModal, setUpdateModal] = useState(false);
   const [course, setCourse] = useState<Course>();
 
-  // console.log("course,", course);
-  // const [previousCate, setPreviousCate] = useState(course?.categoryId);
   const [updateCate, setUpdateCate] = useState(course?.specializationId);
-  // console.log("catebefore", course?.categoryId);
-  // console.log("update", updateCate);
+
   const [updateImage, setUpdateImage] = useState(course?.imageUrl);
-  // const {preivousImage} = useState(course?.imageUrl);
 
   const showUpdateModal = (data: any) => {
     setUpdateModal(true);
@@ -290,7 +287,6 @@ const InstructorCourse = () => {
     );
     formData.append("contentLength", data.length || course?.contentLength);
     formData.append("price", data.price || course?.price);
-    // console.log("price", data.price);
     formData.append("lectureCount", data.lecture || course?.lectureCount);
     formData.append("specializationId", selected.toString());
     if (formDataImage !== undefined) {
@@ -320,7 +316,7 @@ const InstructorCourse = () => {
   const handleDelete = async (data: any) => {
     try {
       await axios.put(
-        `https://learnconnectapitest.azurewebsites.net/api/course/update-course-status?courseId=${data.id}&status=1`,
+        `https://learnconnectserver.azurewebsites.net/api/course/update-course-status?courseId=${data.id}&status=1`,
         {
           headers: {
             "Content-Type": "multipart/form-data",
@@ -350,6 +346,9 @@ const InstructorCourse = () => {
   };
 
   // if (!id) return <Spin size="large" className="flex justify-center" />;
+  const routerCreateNewCourse = () => {
+    router.push("/instructorcourses/new-course");
+  };
 
   return (
     <>
@@ -380,7 +379,7 @@ const InstructorCourse = () => {
             <div className={`${InstructorCourseStyle.course_tab} bg-[#e7f8ee]`}>
               <Breadcrumb>
                 <Breadcrumb.Item>
-                  <div className="text-start font-semibold text-4xl my-5 px-4">
+                  <div className="text-start font-semibold text-2xl my-5 px-4">
                     Courses
                   </div>
                 </Breadcrumb.Item>
@@ -389,15 +388,18 @@ const InstructorCourse = () => {
               <div className={`${InstructorCourseStyle.course_tab_btn}`}>
                 <Button
                   type="default"
-                  className={`${InstructorCourseStyle.create_btn} z-10`}
-                  onClick={showModal}
+                  className={`${InstructorCourseStyle.create_btn}`}
+                  // onClick={showModal}
+                  onClick={routerCreateNewCourse}
                 >
                   New Course
                 </Button>
               </div>
             </div>
             {listCourseInstructor.length === 0 ? (
-              <Empty />
+              <div className="py-5">
+                <Empty />
+              </div>
             ) : (
               <>
                 {loading ? (
@@ -414,7 +416,12 @@ const InstructorCourse = () => {
                           <div
                             className={`${InstructorCourseStyle.course_item} `}
                           >
-                            <div className="flex">
+                            <div
+                              className="flex"
+                              onClick={() => {
+                                handleClick(item);
+                              }}
+                            >
                               <div>
                                 <button
                                   onClick={() => {
@@ -492,7 +499,7 @@ const InstructorCourse = () => {
                                 className={`${InstructorCourseStyle.course_tracker_4}`}
                               >
                                 <p className="flex justify-center">Action </p>
-                                <span className="flex  gap-2">
+                                <span className="flex gap-2 z-50">
                                   <Button
                                     // type="primary"
                                     style={{
@@ -501,25 +508,12 @@ const InstructorCourse = () => {
                                     }}
                                     onClick={() => {
                                       showUpdateModal(item);
-                                      // console.log("t nè", user);
                                     }}
                                   >
                                     Update
                                   </Button>
-                                  {/* <Button
-                                    danger
-                                    type="primary"
-                                    style={{ color: "black" }}
-                                    onClick={() => handleClickOpen(item)}
-                                  >
-                                    Delete
-                                  </Button> */}
                                 </span>
                               </div>
-                              {/* <div>
-                      <p>Status</p>
-                      <span>{displayActive(item.status)}</span>
-                    </div> */}
                             </div>
                           </div>
                         </div>
@@ -573,20 +567,27 @@ const InstructorCourse = () => {
                 <Upload
                   accept="image/png, image/jpeg"
                   onChange={handleChange}
-                  action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
+                  action="https://learnconnectserver.azurewebsites.net/api/Upload/image"
                 >
                   <Button>Upload</Button>
                 </Upload>
                 {/* <span>{errorMassage}</span> */}
               </div>
               <Form.Item
-                rules={[{ required: true, message: "Please input Name!" }]}
+                rules={[
+                  { required: true, message: "Please input Name!" },
+                  {
+                    min: 6,
+                    max: 150,
+                    message: "Name must be between 6 and 150 characters",
+                  },
+                ]}
                 label="Name"
                 name="name"
               >
                 <Input placeholder="Name Course" />
               </Form.Item>
-              <Form.Item label="Specialize">
+              <Form.Item label="Specialization">
                 <Select onChange={handleChangeCate}>
                   {listCategory.map((option) => {
                     return (
@@ -600,8 +601,9 @@ const InstructorCourse = () => {
               <Form.Item
                 rules={[
                   { required: true, message: "Please estimate the time!" },
+                  { type: "number", min: 10, message: "At least 10 minutes" },
                 ]}
-                label="Length(mins)"
+                label="Length (mins)"
                 name="length"
               >
                 <InputNumber
@@ -617,25 +619,18 @@ const InstructorCourse = () => {
                 rules={[
                   {
                     required: true,
-                    message: "Please estimate number of lectures!",
-                  },
-                ]}
-                label="Lectures"
-                name="lecture"
-              >
-                <InputNumber className="w-[200px]" min={0} controls={false} />
-              </Form.Item>
-              <Form.Item
-                rules={[
-                  {
-                    required: true,
                     message: "Please Input Price",
                   },
                 ]}
                 label="Price(VND):"
                 name="price"
               >
-                <InputNumber style={{ width: 200 }} min={0} controls={false} />
+                <InputNumber
+                  placeholder="Input Price!"
+                  style={{ width: 200 }}
+                  min={0}
+                  controls={false}
+                />
               </Form.Item>
               <Form.Item
                 rules={[
@@ -647,10 +642,13 @@ const InstructorCourse = () => {
                 label="Short Description"
                 name="shortDes"
               >
-                <Input placeholder="Input Some Short Description" />
+                <Input.TextArea
+                  rows={2}
+                  placeholder="Input Some Short Description"
+                />
               </Form.Item>
               <Form.Item label="Description" name="description">
-                <Input.TextArea rows={4} />
+                <Input.TextArea rows={4} placeholder="Input More Description" />
               </Form.Item>
               <Space className="justify-end w-full">
                 <Form.Item className="mb-0">
@@ -723,7 +721,7 @@ const InstructorCourse = () => {
                   onChange={handleChange}
                   beforeUpload={beforeUpload}
                   // headers={{ Authorization: authorization }}
-                  action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
+                  action="https://learnconnectserver.azurewebsites.net/api/Upload/image"
                 >
                   <Button>Upload</Button>
                 </Upload>
@@ -759,14 +757,6 @@ const InstructorCourse = () => {
                   controls={false}
                   // formatter={(value) => `${value} mins`}
                   // parser={(value) => value!.replace("mins", "")}
-                />
-              </Form.Item>
-              <Form.Item label="Lectures" name="lecture">
-                <InputNumber
-                  className="w-[200px]"
-                  min={0}
-                  controls={false}
-                  defaultValue={course?.lectureCount}
                 />
               </Form.Item>
               <Form.Item label="Price(VND):" name="price">
@@ -815,45 +805,6 @@ const InstructorCourse = () => {
               </Space>
             </Form>
           </Modal>
-
-          {/* Dialog */}
-          {/* <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-describedby="alert-dialog-slide-description"
-      >
-        <DialogTitle
-          sx={{ backgroundColor: "#ff0000", fontSize: "20px", color: "white" }}
-        >
-          {" "}
-          WARNING!!!{" "}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            <Typography>
-              Do you want to Delete {`${course?.name}`} course?
-            </Typography>
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Typography
-            onClick={handleClose}
-            sx={{
-              marginRight: "12px",
-              cursor: "pointer",
-              ":hover": {
-                textDecoration: "underline",
-              },
-            }}
-          >
-            cancel
-          </Typography>
-
-          <Button danger onClick={() => handleDelete(course)} type="primary">
-            Remove
-          </Button>
-        </DialogActions>
-      </Dialog> */}
 
           <Modal
             destroyOnClose={true}

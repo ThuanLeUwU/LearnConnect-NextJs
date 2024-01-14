@@ -33,6 +33,7 @@ export type Course = {
   note: string;
   mentorName: string;
   mentorId: number;
+  mentorUserId: number;
   mentorProfilePictureUrl: string;
   totalRatingCount: number;
   enrolled: boolean;
@@ -108,7 +109,7 @@ const Courses = ({
     if (isLiked) {
       http
         .delete(
-          `https://learnconnectapitest.azurewebsites.net/api/favorite-course/un-set-favorite?userId=${userData?.id}&courseId=${id}`
+          `https://learnconnectserver.azurewebsites.net/api/favorite-course/un-set-favorite?userId=${userData?.id}&courseId=${id}`
         )
         .then((response) => {
           setTimeout(() => {
@@ -122,7 +123,7 @@ const Courses = ({
     } else {
       http
         .post(
-          "https://learnconnectapitest.azurewebsites.net/api/favorite-course",
+          "https://learnconnectserver.azurewebsites.net/api/favorite-course",
           {
             id: 0,
             favoriteCourseId: id,
@@ -133,10 +134,8 @@ const Courses = ({
           setTimeout(() => {
             toast.success("Added to favorites successful");
           });
-          // console.log("Post request success: ", response.data);
         })
         .catch((error) => {
-          // toast.error(error.response.data);
           console.error("Error making POST request: ", error);
         });
     }
@@ -177,7 +176,7 @@ const Courses = ({
             </div>
             <div className="author-name">
               <div className="min-h-[60px]">
-                <button className="font-bold" onClick={handleClick}>
+                <button className="font-bold text-left" onClick={handleClick}>
                   {name}
                 </button>
                 {/* <a className="font-bold" onClick={handleClick}>

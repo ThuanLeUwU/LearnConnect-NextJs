@@ -91,7 +91,7 @@ interface verificationDocuments {
 
 const Reviews = () => {
   const { role, userData, jwtToken } = UserAuth();
-  console.log("jwtToken mentor", jwtToken);
+  // console.log("jwtToken mentor", jwtToken);
   const router = useRouter();
   useEffect(() => {
     if (role === 0) {
@@ -138,24 +138,26 @@ const Reviews = () => {
       title: "Courses",
       href: "/instructorcourses",
     },
-    // {
-    //   image: "/menu-icon/icon-2.png",
-    //   href: "/dashboard",
-    // },
+    {
+      image: "/menu-icon/file-edit.png",
+      title: "Requests",
+      href: "/request-history",
+    },
     {
       image: "/menu-icon/feedback-review.png",
       title: "Reviews",
       href: "/review-mentor",
     },
+
     {
-      image: "/menu-icon/money-check-edit.png",
-      title: "Revenues",
-      href: "/revenue",
+      image: "/menu-icon/receipt.png",
+      title: "Transaction History",
+      href: "/order-history",
     },
     {
-      image: "/menu-icon/file-edit.png",
-      title: "Requests",
-      href: "/request-history",
+      image: "/menu-icon/money-check-edit.png",
+      title: "Statistics",
+      href: "/revenue",
     },
   ];
 
@@ -190,7 +192,7 @@ const Reviews = () => {
     const fetchMajor = async () => {
       try {
         const response = await axios.get(
-          `https://learnconnectapitest.azurewebsites.net/api/major/get-majors-not-request-yet/${userData?.id}`
+          `https://learnconnectserver.azurewebsites.net/api/major/get-majors-not-request-yet/${userData?.id}`
         );
         setMajor(response.data);
       } catch (error) {
@@ -205,7 +207,7 @@ const Reviews = () => {
       const fetchSpecializations = async () => {
         try {
           const response = await axios.get(
-            `https://learnconnectapitest.azurewebsites.net/api/specialization-of-mentor/get-specializations-not-request-yet/${userData?.id}/${selectedMajor}`
+            `https://learnconnectserver.azurewebsites.net/api/specialization-of-mentor/get-specializations-not-request-yet/${userData?.id}/${selectedMajor}`
           );
           setSpecialization(response.data);
         } catch (error) {
@@ -226,9 +228,9 @@ const Reviews = () => {
     if (!isJpgOrPng) {
       toast.error("You can only upload JPG/PNG file!");
     }
-    const isLt2M = file.size / 1024 / 1024 < 2;
+    const isLt2M = file.size / 1024 / 1024 < 5;
     if (!isLt2M) {
-      toast.error("Image must smaller than 2MB!");
+      toast.error("Image must smaller than 5MB!");
     }
     return isJpgOrPng && isLt2M;
   };
@@ -246,10 +248,10 @@ const Reviews = () => {
       token = localStorage.getItem("token");
       try {
         const responseData = await http.get<MentorData[]>(
-          `https://learnconnectapitest.azurewebsites.net/api/mentor/specializations-request/${userData?.id}/${selectedType}`
+          `https://learnconnectserver.azurewebsites.net/api/mentor/specializations-request/${userData?.id}/${selectedType}`
         );
         setMentor(responseData?.data);
-        console.log("mentor", mentor);
+        // console.log("mentor", mentor);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -276,7 +278,7 @@ const Reviews = () => {
 
     try {
       await axios.post(
-        `https://learnconnectapitest.azurewebsites.net/api/mentor/add-specialization-by-mentor?userId=${userData?.id}&specializationId=${specialization}`,
+        `https://learnconnectserver.azurewebsites.net/api/mentor/add-specialization-by-mentor?userId=${userData?.id}&specializationId=${specialization}`,
         formData,
         {
           headers: {
@@ -351,6 +353,18 @@ const Reviews = () => {
   const closeImageModal = () => {
     setLargerImageSrc([]);
     setIsImageModalOpen(false);
+  };
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedContent, setSelectedContent] = useState("");
+
+  const showContentModal = (content: any) => {
+    setSelectedContent(content);
+    setModalVisible(true);
+  };
+
+  const handleContentCancel = () => {
+    setModalVisible(false);
   };
 
   // if (!userData) return <Spin size="large" className="flex justify-center" />;
@@ -445,31 +459,37 @@ const Reviews = () => {
                   rules={[
                     { required: true, message: "Please input Description" },
                   ]}
-                  label="Description"
+                  label="Experience"
                   name="reason"
                   labelAlign="left"
                 >
-                  <Input placeholder="Input Degree, Diploma, Certificate, Qualification" />
+                  <Input.TextArea rows={3} placeholder="Input Experiment" />
                 </Form.Item>
-                <Form.Item
+                {/* <Form.Item
                   rules={[{ required: true, message: "Please input Document" }]}
                   label="Document"
                   name="DescriptionDocument"
                   labelAlign="left"
                 >
                   <Input placeholder="Input Degree, Diploma, Certificate, Qualification" />
-                </Form.Item>
+                </Form.Item> */}
                 <Form.Item
                   label="Image of ID Document"
                   name="verificationDocument"
                   getValueFromEvent={normFile}
                   labelAlign="left"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please input image of ID Document",
+                    },
+                  ]}
                 >
                   <Upload
                     accept="image/png, image/jpeg"
                     onChange={handleChange}
                     beforeUpload={beforeUpload}
-                    action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
+                    action="https://learnconnectserver.azurewebsites.net/api/Upload/image"
                     listType="picture-card"
                   >
                     Document
@@ -498,7 +518,7 @@ const Reviews = () => {
               >
                 <Breadcrumb>
                   <Breadcrumb.Item>
-                    <div className="text-start font-semibold text-4xl my-5 px-4">
+                    <div className="text-start font-semibold text-2xl my-5 px-4">
                       Request Histories
                     </div>
                   </Breadcrumb.Item>
@@ -600,7 +620,7 @@ const Reviews = () => {
                                             Specialization
                                           </TableCell>
                                           <TableCell className="w-[600px] text-[14px]">
-                                            Description
+                                            Experience
                                           </TableCell>
                                           <TableCell className="text-[14px] w-[200px]">
                                             Image of Document
@@ -660,11 +680,32 @@ const Reviews = () => {
                                                 </TableCell>
                                                 <TableCell>
                                                   <p className="ml-2 text-[20px]">
-                                                    {
+                                                    {mentorData
+                                                      .specializationOfMentor
+                                                      .description.length >
+                                                    200 ? (
+                                                      <>
+                                                        <a
+                                                          type="link"
+                                                          onClick={() =>
+                                                            showContentModal(
+                                                              mentorData
+                                                                .specializationOfMentor
+                                                                .description
+                                                            )
+                                                          }
+                                                        >
+                                                          {`${mentorData.specializationOfMentor.description.slice(
+                                                            0,
+                                                            200
+                                                          )}...`}
+                                                        </a>
+                                                      </>
+                                                    ) : (
                                                       mentorData
                                                         .specializationOfMentor
                                                         .description
-                                                    }
+                                                    )}
                                                   </p>
                                                 </TableCell>
                                                 <TableCell>
@@ -775,7 +816,7 @@ const Reviews = () => {
                                             Specialization
                                           </TableCell>
                                           <TableCell className="w-[600px] text-[14px]">
-                                            Description
+                                            Experience
                                           </TableCell>
                                           <TableCell className="text-[14px] w-[200px]">
                                             Image of Document
@@ -844,11 +885,32 @@ const Reviews = () => {
                                                 </TableCell>
                                                 <TableCell>
                                                   <p className="ml-2 text-[20px]">
-                                                    {
+                                                    {mentorData
+                                                      .specializationOfMentor
+                                                      .description.length >
+                                                    200 ? (
+                                                      <>
+                                                        <a
+                                                          type="link"
+                                                          onClick={() =>
+                                                            showContentModal(
+                                                              mentorData
+                                                                .specializationOfMentor
+                                                                .description
+                                                            )
+                                                          }
+                                                        >
+                                                          {`${mentorData.specializationOfMentor.description.slice(
+                                                            0,
+                                                            200
+                                                          )}...`}
+                                                        </a>
+                                                      </>
+                                                    ) : (
                                                       mentorData
                                                         .specializationOfMentor
                                                         .description
-                                                    }
+                                                    )}
                                                   </p>
                                                 </TableCell>
                                                 <TableCell>
@@ -982,7 +1044,7 @@ const Reviews = () => {
                                             Specialization
                                           </TableCell>
                                           <TableCell className="w-[600px] text-[14px]">
-                                            Description
+                                            Experience
                                           </TableCell>
                                           <TableCell className="text-[14px] w-[200px]">
                                             Image of Document
@@ -1051,11 +1113,32 @@ const Reviews = () => {
                                                 </TableCell>
                                                 <TableCell>
                                                   <p className="ml-2 text-[20px]">
-                                                    {
+                                                    {mentorData
+                                                      .specializationOfMentor
+                                                      .description.length >
+                                                    200 ? (
+                                                      <>
+                                                        <a
+                                                          type="link"
+                                                          onClick={() =>
+                                                            showContentModal(
+                                                              mentorData
+                                                                .specializationOfMentor
+                                                                .description
+                                                            )
+                                                          }
+                                                        >
+                                                          {`${mentorData.specializationOfMentor.description.slice(
+                                                            0,
+                                                            200
+                                                          )}...`}
+                                                        </a>
+                                                      </>
+                                                    ) : (
                                                       mentorData
                                                         .specializationOfMentor
                                                         .description
-                                                    }
+                                                    )}
                                                   </p>
                                                 </TableCell>
                                                 <TableCell>
@@ -1130,6 +1213,17 @@ const Reviews = () => {
                 </div>
               )}
             </div>
+            <Modal
+              title="Details"
+              open={modalVisible}
+              onCancel={handleContentCancel}
+              footer={null}
+              style={{
+                top: "30%",
+              }}
+            >
+              <p>{selectedContent}</p>
+            </Modal>
           </div>
         </div>
       )}

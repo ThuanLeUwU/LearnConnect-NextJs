@@ -7,6 +7,7 @@ import { Breadcrumb, Spin, Table, Space, Form, Modal, Button } from "antd";
 import { Rating } from "@mui/material";
 import { toast } from "sonner";
 import { AlignType } from "react-bootstrap/esm/types";
+import moment from "moment";
 
 export type Rating = {
   ratingInfo: any;
@@ -49,7 +50,7 @@ const StaffRatingTable = () => {
       token = localStorage.getItem("token");
       try {
         const responseData = await http.get(
-          `https://learnconnectapitest.azurewebsites.net/api/rating/allListRatings?ratingType=${selectedType}`
+          `https://learnconnectserver.azurewebsites.net/api/rating/allListRatings?ratingType=${selectedType}`
         );
         setRating(responseData?.data);
       } catch (error) {
@@ -67,7 +68,7 @@ const StaffRatingTable = () => {
   const handleRatingStatusUpdate = async (id, status) => {
     try {
       await axios.put(
-        `https://learnconnectapitest.azurewebsites.net/api/rating/update-rating-status?id=${id}&status=${status}`
+        `https://learnconnectserver.azurewebsites.net/api/rating/update-rating-status?id=${id}&status=${status}`
       );
       fetchData();
       setTimeout(() => {
@@ -84,7 +85,7 @@ const StaffRatingTable = () => {
     if (confirmed) {
       try {
         await axios.put(
-          `https://learnconnectapitest.azurewebsites.net/api/rating/update-rating-status?id=${selectedRatingId}&status=0`
+          `https://learnconnectserver.azurewebsites.net/api/rating/update-rating-status?id=${selectedRatingId}&status=0`
         );
         fetchData();
         setTimeout(() => {
@@ -135,10 +136,8 @@ const StaffRatingTable = () => {
       width: 150,
 
       render: (ratingInfo) => (
-        <div>
-          {new Date(ratingInfo.timeStamp).toLocaleDateString()}
-          <br />
-          {new Date(ratingInfo.timeStamp).toLocaleTimeString()}
+        <div className="text-[16px]">
+          {moment(ratingInfo.timeStamp).locale("en").format("LLL")}{" "}
         </div>
       ),
       sorter: (a, b) => {
@@ -229,11 +228,6 @@ const StaffRatingTable = () => {
       render: (ratingInfo) => (
         <p className="text-[16px]">{ratingInfo.comment}</p>
       ),
-      sorter: (a, b) => {
-        const descriptionA = a.ratingInfo.comment || ""; // Handle null or undefined values
-        const descriptionB = b.ratingInfo.comment || "";
-        return descriptionA.localeCompare(descriptionB);
-      },
     },
     {
       title: "Action",
@@ -268,7 +262,7 @@ const StaffRatingTable = () => {
       <div className="flex justify-between items-center px-5 bg-[#e7f8ee] mb-5">
         <Breadcrumb>
           <Breadcrumb.Item>
-            <div className="text-start font-semibold text-4xl my-5 px-4">
+            <div className="text-start font-semibold text-2xl my-5 px-4">
               Ratings
             </div>
           </Breadcrumb.Item>

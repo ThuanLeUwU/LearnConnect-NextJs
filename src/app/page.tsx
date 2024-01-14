@@ -42,7 +42,6 @@ export default function Home() {
 
   const { loading, courses, totalPages, currentPage, setCurrentPage } =
     useDataHomeFetcher();
-  console.log("user token", jwtToken);
   return (
     <>
       <div className="bg-[#e7f8ee]">
@@ -54,13 +53,6 @@ export default function Home() {
           }}
         >
           <div className="px-20">
-            <div className="-translate-y-10">
-              <img
-                className="animation-round "
-                src="/images/shape-8.png"
-                alt="Shape"
-              ></img>
-            </div>
             <h4 className="text-[#309255] font-medium text-lg mb-5">
               Start your favourite course
             </h4>
@@ -73,7 +65,7 @@ export default function Home() {
               electronic typesetting.
             </p> */}
             <button
-              className="mt-7 text-white text-2xl border-2 py-4 px-6 rounded-xl bg-[#309255]"
+              className="mt-7 hover:text-white hover:bg-[#309255] text-2xl border-2 py-4 px-6 rounded-xl bg-[#fff] border-[#309255]"
               onClick={handleRouter}
             >
               Start A Course
@@ -119,7 +111,7 @@ export default function Home() {
         )}
         <div className="flex items-center justify-center mt-10">
           <button
-            className="bg-[#309255] hover:bg-black text-white font-bold py-3 px-6 rounded-lg text-xl"
+            className="bg-[#fff] border-2 border-[#309255] text-black hover:bg-[#309255] hover:text-white font-bold py-3 px-6 rounded-lg text-xl"
             onClick={() => {
               handleRouter();
             }}

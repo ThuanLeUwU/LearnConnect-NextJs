@@ -61,7 +61,7 @@ const MajorSepcialize = () => {
     // Gọi API để lấy danh sách người dùng
     http
       .get(
-        `https://learnconnectapitest.azurewebsites.net/api/specialization/by-major/${majorId}`
+        `https://learnconnectserver.azurewebsites.net/api/specialization/by-major/${majorId}`
       )
       .then((response) => {
         setSpecializations(response.data);
@@ -76,7 +76,7 @@ const MajorSepcialize = () => {
   useEffect(() => {
     // Gọi API để lấy danh sách người dùng
     http
-      .get(`https://learnconnectapitest.azurewebsites.net/api/major`)
+      .get(`https://learnconnectserver.azurewebsites.net/api/major`)
       .then((response) => {
         setMajors(response.data);
         setLoading(false);
@@ -127,13 +127,13 @@ const MajorSepcialize = () => {
       ),
     },
     {
-      title: <div className="flex justify-center">Action</div>,
+      title: <div>Action</div>,
       key: "actions",
       width: 200,
       render: (text, record) => (
         <Space>
           <Button onClick={() => handleUpdateMajor(record)}>Update</Button>
-          {record.isActive === true ? (
+          {/* {record.isActive === true ? (
             <button
               className="bg-white text-black border rounded-md border-red-500 hover:bg-red-500 hover:text-white transition duration-300 px-2 py-1"
               onClick={() => {
@@ -149,9 +149,9 @@ const MajorSepcialize = () => {
             >
               Enable
             </button>
-          )}
+          )} */}
 
-          <button
+          {/* <button
             // className="flex items-end"
             style={{
               backgroundColor: "red",
@@ -165,7 +165,7 @@ const MajorSepcialize = () => {
             }}
           >
             <DeleteOutlined className="item-center flex justify-center" />
-          </button>
+          </button> */}
           {/* <Button danger>Delete</Button> */}
         </Space>
       ),
@@ -208,13 +208,13 @@ const MajorSepcialize = () => {
       ),
     },
     {
-      title: <div className="flex justify-center">Action</div>,
+      title: <div>Action</div>,
       key: "actions",
       width: 200,
       render: (text, record) => (
         <Space>
           <Button onClick={() => handleUpdateSpecialize(record)}>Update</Button>
-          {record.isActive === true ? (
+          {/* {record.isActive === true ? (
             // <Button danger onClick={() => handleDisableMajor(record)}>
             //   Disable
             // </Button>
@@ -232,8 +232,8 @@ const MajorSepcialize = () => {
             >
               Enable
             </button>
-          )}
-          <button
+          )} */}
+          {/* <button
             // className="flex items-end"\
             onClick={() => handleDeleteSpecializeModal(record)}
             style={{
@@ -245,7 +245,7 @@ const MajorSepcialize = () => {
             }}
           >
             <DeleteOutlined className="item-center flex justify-center" />
-          </button>
+          </button> */}
           {/* <Button danger>Delete</Button> */}
         </Space>
       ),
@@ -260,7 +260,7 @@ const MajorSepcialize = () => {
     try {
       http
         .post(
-          "https://learnconnectapitest.azurewebsites.net/api/major",
+          "https://learnconnectserver.azurewebsites.net/api/major",
           {
             name: data.name,
             description: data.description,
@@ -276,7 +276,7 @@ const MajorSepcialize = () => {
           setFormCreateMajor(false);
           form.resetFields();
           http
-            .get(`https://learnconnectapitest.azurewebsites.net/api/major`)
+            .get(`https://learnconnectserver.azurewebsites.net/api/major`)
             .then((response) => {
               setMajors(response.data);
               setLoading(false);
@@ -293,7 +293,7 @@ const MajorSepcialize = () => {
 
   const handleUpdateMajor = (data: any) => {
     setFormUpdateMajor(true);
-    console.log("data", data);
+    // console.log("data", data);
     setMajor(data);
   };
 
@@ -301,7 +301,7 @@ const MajorSepcialize = () => {
     try {
       http
         .put(
-          `https://learnconnectapitest.azurewebsites.net/api/major/${majorId}`,
+          `https://learnconnectserver.azurewebsites.net/api/major/${majorId}`,
           {
             name: data.name || major?.name,
             description: data.description || major?.description,
@@ -317,7 +317,7 @@ const MajorSepcialize = () => {
           setFormUpdateMajor(false);
           form.resetFields();
           http
-            .get(`https://learnconnectapitest.azurewebsites.net/api/major`)
+            .get(`https://learnconnectserver.azurewebsites.net/api/major`)
             .then((response) => {
               setMajors(response.data);
               setLoading(false);
@@ -343,13 +343,13 @@ const MajorSepcialize = () => {
     try {
       http
         .put(
-          `https://learnconnectapitest.azurewebsites.net/api/major/update-major-status?MajorId=${majorId}&status=0`
+          `https://learnconnectserver.azurewebsites.net/api/major/update-major-status?MajorId=${majorId}&status=0`
         )
         .then(() => {
           toast.success("Disable Major Successfully!!!");
           setDisableMajorModal(false);
           http
-            .get(`https://learnconnectapitest.azurewebsites.net/api/major`)
+            .get(`https://learnconnectserver.azurewebsites.net/api/major`)
             .then((response) => {
               setMajors(response.data);
               setLoading(false);
@@ -375,13 +375,13 @@ const MajorSepcialize = () => {
     try {
       http
         .put(
-          `https://learnconnectapitest.azurewebsites.net/api/major/update-major-status?MajorId=${majorId}&status=1`
+          `https://learnconnectserver.azurewebsites.net/api/major/update-major-status?MajorId=${majorId}&status=1`
         )
         .then(() => {
           toast.success("Enable Major Successfully!!!");
           setEnableMajorModal(false);
           http
-            .get(`https://learnconnectapitest.azurewebsites.net/api/major`)
+            .get(`https://learnconnectserver.azurewebsites.net/api/major`)
             .then((response) => {
               setMajors(response.data);
               setLoading(false);
@@ -407,14 +407,14 @@ const MajorSepcialize = () => {
     try {
       http
         .delete(
-          `https://learnconnectapitest.azurewebsites.net/api/major/${data.id}`
+          `https://learnconnectserver.azurewebsites.net/api/major/${data.id}`
         )
         .then(() => {
           toast.success("Delete Major Successfully!!!");
           setDeleteMajorModal(false);
           setTableSpecialize(false);
           http
-            .get(`https://learnconnectapitest.azurewebsites.net/api/major`)
+            .get(`https://learnconnectserver.azurewebsites.net/api/major`)
             .then((response) => {
               setMajors(response.data);
               setLoading(false);
@@ -437,7 +437,7 @@ const MajorSepcialize = () => {
     try {
       http
         .post(
-          "https://learnconnectapitest.azurewebsites.net/api/specialization",
+          "https://learnconnectserver.azurewebsites.net/api/specialization",
           {
             majorId: majorId,
             name: data.name,
@@ -455,7 +455,7 @@ const MajorSepcialize = () => {
           form.resetFields();
           http
             .get(
-              `https://learnconnectapitest.azurewebsites.net/api/specialization/by-major/${majorId}`
+              `https://learnconnectserver.azurewebsites.net/api/specialization/by-major/${majorId}`
             )
             .then((response) => {
               setSpecializations(response.data);
@@ -475,7 +475,7 @@ const MajorSepcialize = () => {
     setFormUpdateSpecialize(true);
     setSpecialization(data);
     setSpecializeId(data.id);
-    console.log("t", data);
+    // console.log("t", data);
   };
 
   const handleUpdateSpecializeClick = (data: any) => {
@@ -484,7 +484,7 @@ const MajorSepcialize = () => {
     try {
       http
         .put(
-          `https://learnconnectapitest.azurewebsites.net/api/specialization/${specializeId}`,
+          `https://learnconnectserver.azurewebsites.net/api/specialization/${specializeId}`,
           {
             majordId: majorId,
             name: data.name || specialization?.name,
@@ -502,7 +502,7 @@ const MajorSepcialize = () => {
           form.resetFields();
           http
             .get(
-              `https://learnconnectapitest.azurewebsites.net/api/specialization/by-major/${majorId}`
+              `https://learnconnectserver.azurewebsites.net/api/specialization/by-major/${majorId}`
             )
             .then((response) => {
               setSpecializations(response.data);
@@ -531,14 +531,14 @@ const MajorSepcialize = () => {
     try {
       http
         .put(
-          `https://learnconnectapitest.azurewebsites.net/api/specialization/update-specialization-status?specializationId=${specializeId}&status=0`
+          `https://learnconnectserver.azurewebsites.net/api/specialization/update-specialization-status?specializationId=${specializeId}&status=0`
         )
         .then(() => {
           toast.success("Disable Specialization Successfully!!!");
           setDisableSpecializeModal(false);
           http
             .get(
-              `https://learnconnectapitest.azurewebsites.net/api/specialization/by-major/${majorId}`
+              `https://learnconnectserver.azurewebsites.net/api/specialization/by-major/${majorId}`
             )
             .then((response) => {
               setSpecializations(response.data);
@@ -565,14 +565,14 @@ const MajorSepcialize = () => {
     try {
       http
         .put(
-          `https://learnconnectapitest.azurewebsites.net/api/specialization/update-specialization-status?specializationId=${specializeId}&status=1`
+          `https://learnconnectserver.azurewebsites.net/api/specialization/update-specialization-status?specializationId=${specializeId}&status=1`
         )
         .then(() => {
           toast.success("Enable Specialization Successfully!!!");
           setEnableSpecializeModal(false);
           http
             .get(
-              `https://learnconnectapitest.azurewebsites.net/api/specialization/by-major/${majorId}`
+              `https://learnconnectserver.azurewebsites.net/api/specialization/by-major/${majorId}`
             )
             .then((response) => {
               setSpecializations(response.data);
@@ -599,7 +599,7 @@ const MajorSepcialize = () => {
     try {
       http
         .delete(
-          `https://learnconnectapitest.azurewebsites.net/api/specialization/${data.id}`
+          `https://learnconnectserver.azurewebsites.net/api/specialization/${data.id}`
         )
         .then(() => {
           toast.success("Delete Specialization Successfully!!!");
@@ -607,7 +607,7 @@ const MajorSepcialize = () => {
           setDeleteSpecializeModal(false);
           http
             .get(
-              `https://learnconnectapitest.azurewebsites.net/api/specialization/by-major/${majorId}`
+              `https://learnconnectserver.azurewebsites.net/api/specialization/by-major/${majorId}`
             )
             .then((response) => {
               setSpecializations(response.data);
@@ -659,8 +659,9 @@ const MajorSepcialize = () => {
             page2={"/staff-page/staff-rating"}
             page3={"/staff-page/staff-report"}
             page4={"/staff-page/moderation"}
-            page5={"#"}
+            page5={"/staff-page/list-major"}
             page6={"/staff-page/staff-revenue"}
+            page7={"/staff-page/staff-transaction"}
           />
           {/* <StaffRatingTable />
            */}
@@ -669,7 +670,7 @@ const MajorSepcialize = () => {
               <div className="flex justify-between items-center px-5 bg-[#e7f8ee] mb-5">
                 <Breadcrumb>
                   <Breadcrumb.Item>
-                    <div className="text-start font-semibold text-4xl my-5 px-4">
+                    <div className="text-start font-semibold text-2xl my-5 px-4">
                       Majors
                     </div>
                   </Breadcrumb.Item>
@@ -769,7 +770,7 @@ const MajorSepcialize = () => {
                   },
                 ]}
               >
-                <Input />
+                <Input placeholder="Input Major Name" />
               </Form.Item>
               <Form.Item
                 name="description"
@@ -781,7 +782,7 @@ const MajorSepcialize = () => {
                   },
                 ]}
               >
-                <Input />
+                <Input.TextArea rows={2} placeholder="Input Description" />
               </Form.Item>
               <div className="flex gap-5 justify-end">
                 {/* Thêm các trường dữ liệu khác cần thiết vào đây */}
@@ -1064,7 +1065,7 @@ const MajorSepcialize = () => {
                   },
                 ]}
               >
-                <Input />
+                <Input.TextArea rows={2} />
               </Form.Item>
               <div className="flex gap-5 justify-end">
                 {/* Thêm các trường dữ liệu khác cần thiết vào đây */}

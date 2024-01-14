@@ -2,19 +2,18 @@ import { UserAuth } from "@/app/context/AuthContext";
 import axios from "axios";
 import { useState, useEffect } from "react";
 export type Transaction = {
-  paymentTransaction: {
-    id: string | number;
-    total: number;
-    transactionId: number;
-    transactionError: string;
-    createDate: string;
-    successDate: string;
-    paymentUrl: string;
-    status: number;
-    userId: number;
-    courseName: string;
-    courseId: number;
-  };
+  paymentTransactions: any;
+  id: string | number;
+  total: number;
+  transactionId: number;
+  transactionError: string;
+  createDate: string;
+  successDate: string;
+  paymentUrl: string;
+  status: number;
+  userId: number;
+  courseName: string;
+  courseId: number;
 };
 const useDataPaymentFetcher = () => {
   const { id } = UserAuth();
@@ -22,7 +21,7 @@ const useDataPaymentFetcher = () => {
   const [transaction, setTransaction] = useState<Transaction[]>([]);
   // console.log("my transaction", transaction);
 
-  const API_URL = `https://learnconnectapitest.azurewebsites.net/api/payment-transaction/by-user/`;
+  const API_URL = `https://learnconnectserver.azurewebsites.net/api/payment-transaction/by-user/`;
   const pagesize = 6;
   const [totalPages, setTotalPages] = useState(10);
   const [loading, setLoading] = useState(true);

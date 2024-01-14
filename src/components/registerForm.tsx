@@ -12,6 +12,7 @@ import {
   message,
   DatePicker,
   Tabs,
+  Empty,
 } from "antd";
 import { useForm } from "antd/es/form/Form";
 import axios from "axios";
@@ -69,9 +70,16 @@ interface Bank {
   logo: string;
 }
 
+interface ScanImage {
+  fullName: string;
+  cardId: string;
+  createDate: string;
+}
+
 export const RegisterForm = () => {
   const router = useRouter();
-  const { role } = UserAuth();
+  const { role, requestBecomeMentor } = UserAuth();
+  console.log("requestBecomeMentor", requestBecomeMentor);
   useEffect(() => {
     if (role === 0) {
       router.push(`/user-manage`);
@@ -97,7 +105,9 @@ export const RegisterForm = () => {
   const [identifyData, setIdentifyData] = useState();
 
   const [backImage, setBackImage] = useState<string>();
+  // console.log("back", backImage);
   const [BackData, setBackData] = useState();
+  // console.log("back", BackData);
 
   const [documentImage, setDocumentImage] = useState<string>();
   const [DocumentData, setDocumentData] = useState();
@@ -142,18 +152,45 @@ export const RegisterForm = () => {
     }
     setFileList(info.fileList);
   };
+  const [scanId, setScanId] = useState<ScanImage>();
+
+  const [scanImage, setScanImage] = useState();
+  console.log("backne", scanImage);
+
   const handleChangeBackImg = (info: any) => {
     if (info.file.status === "uploading") {
       return;
     }
     if (info.file.status === "done") {
+      setScanImage(info.file.response);
       setBackData(info.file.originFileObj);
       getBase64(info.file.originFileObj, (url) => {
         setBackImage(url);
       });
     }
+    // console.log("backne", info.file.response);
     setFileList1(info.fileList);
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.post(
+          `https://learnconnectserver.azurewebsites.net/api/verification-document/scan-image`,
+          scanImage,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        setScanId(response.data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+    fetchData();
+  }, [scanImage]);
 
   const handleChangeDocumentData = (info: any) => {
     if (info.file.status === "uploading") {
@@ -183,9 +220,9 @@ export const RegisterForm = () => {
     if (!isJpgOrPng) {
       toast.error("You can only upload JPG/PNG file!");
     }
-    const isLt2M = file.size / 1024 / 1024 < 2;
+    const isLt2M = file.size / 1024 / 1024 < 5;
     if (!isLt2M) {
-      toast.error("Image must smaller than 2MB!");
+      toast.error("Image must smaller than 5MB!");
     }
     return isJpgOrPng && isLt2M;
   };
@@ -205,16 +242,30 @@ export const RegisterForm = () => {
     const formData = new FormData();
     const {
       description,
-      CardFront,
-      IssueDate,
       BankNumber,
+      // CardFront,
+      // IssueDate,
       BankName,
       major,
       specialization,
       reason,
     } = values;
-    formData.append("identityCardFrontDescription", CardFront);
-    formData.append("identityCardBackDescription", IssueDate);
+
+    if (scanId?.cardId !== undefined) {
+      formData.append("identityCardFrontDescription", scanId?.cardId);
+    } else {
+      toast.error("Please check Image front of ID Card.");
+      return;
+    }
+    // formData.append("identityCardFrontDescription", CardFront);
+
+    if (scanId?.createDate !== undefined) {
+      formData.append("identityCardBackDescription", scanId?.createDate);
+    } else {
+      toast.error("Please check Image Back of ID Card");
+      return;
+    }
+    // formData.append("identityCardBackDescription", IssueDate);
     if (identifyData !== undefined) {
       formData.append("identityCardFrontUrl", identifyData);
     }
@@ -230,7 +281,11 @@ export const RegisterForm = () => {
       formData.append("verificationDocument", DocumentData);
     }
     try {
-      const url = `https://learnconnectapitest.azurewebsites.net/api/mentor/become-a-mentor?userId=${id}&specializationId=${specialization}&description=${description}&reason=${reason}&accountNumber=${BankNumber}&bankName=${BankName}`;
+      if (!values.description || !values.BankName || !values.BankNumber) {
+        toast.error("Please fill in all required fields.");
+        return;
+      }
+      const url = `https://learnconnectserver.azurewebsites.net/api/mentor/become-a-mentor?userId=${id}&specializationId=${specialization}&description=${description}&reason=${reason}&accountNumber=${BankNumber}&bankName=${BankName}`;
       await axios
         .post(url, formData, {
           headers: {
@@ -253,7 +308,7 @@ export const RegisterForm = () => {
     const fetchMajor = async () => {
       try {
         const response = await axios.get(
-          "https://learnconnectapitest.azurewebsites.net/api/major"
+          "https://learnconnectserver.azurewebsites.net/api/major"
         );
         setMajor(response.data);
       } catch (error) {
@@ -273,7 +328,7 @@ export const RegisterForm = () => {
       const fetchSpecializations = async () => {
         try {
           const response = await axios.get(
-            `https://learnconnectapitest.azurewebsites.net/api/specialization/by-major/${selectedMajor}`
+            `https://learnconnectserver.azurewebsites.net/api/specialization/by-major/${selectedMajor}`
           );
           setSpecialization(response.data);
         } catch (error) {
@@ -309,361 +364,353 @@ export const RegisterForm = () => {
 
   return (
     <div className="">
-      <div className="container border border-[#309255] my-3 rounded-lg mt-3">
-        <Form
-          autoComplete="off"
-          form={form}
-          labelCol={{ span: 4, offset: 3 }}
-          wrapperCol={{ span: 14 }}
-          layout="horizontal"
-          // onFinish={handleSubmit}
-          className="mx-[30px] pt-3"
-        >
-          <Tabs
-            activeKey={currentTab}
-            onChange={handleTabChange}
-            className="min-h-[700px]"
+      {requestBecomeMentor ? (
+        <div className="text-center text-2xl mt-8 items-center justify-center min-h-[700px]">
+          <Empty description={false} />
+          You already submitted become mentor request form.
+        </div>
+      ) : (
+        <div className="container border border-[#309255] my-3 rounded-lg mt-3">
+          <Form
+            autoComplete="off"
+            form={form}
+            labelCol={{ span: 4, offset: 3 }}
+            wrapperCol={{ span: 14 }}
+            layout="horizontal"
+            className="mx-[30px] pt-3"
           >
-            <TabPane tab="Identity Verification" key="1">
-              <Form
-                autoComplete="off"
-                form={form}
-                labelCol={{ span: 4, offset: 3 }}
-                wrapperCol={{ span: 14 }}
-                layout="horizontal"
-                // onFinish={handleSubmit}
-                className="mx-[30px] pt-3"
-              >
-                <Form.Item
-                  label="Full Name"
-                  name="disable"
-                  className=""
-                  labelAlign="left"
+            <Tabs
+              activeKey={currentTab}
+              onChange={handleTabChange}
+              className="min-h-[700px]"
+            >
+              <TabPane tab="Identity Verification" key="1">
+                <Form
+                  autoComplete="off"
+                  form={form}
+                  labelCol={{ span: 4, offset: 3 }}
+                  wrapperCol={{ span: 14 }}
+                  layout="horizontal"
+                  className="mx-[30px] pt-3"
                 >
-                  {userData?.fullName}
-                </Form.Item>
-                <Form.Item label="Email" labelAlign="left">
-                  {userData?.email}
-                </Form.Item>
-                <Form.Item
-                  rules={[
-                    { required: true, message: "Please input Description" },
-                  ]}
-                  label="Introduction"
-                  name="description"
-                  className=""
-                  labelAlign="left"
-                >
-                  <TextArea
-                    placeholder="Input Introduction"
-                    autoSize={{ minRows: 5, maxRows: 6 }}
-                  />
-                </Form.Item>
-                <Form.Item
-                  rules={[
-                    { required: true, message: "Please input Identify Number" },
-                    {
-                      pattern: /^[0-9]{12,12}$/,
-                      message: "Identity Number must be exactly 12 digits",
-                    },
-                  ]}
-                  label="Identity Number"
-                  name="CardFront"
-                  labelAlign="left"
-                >
-                  <Input type="number" placeholder="Input Identity Number" />
-                </Form.Item>
+                  <Form.Item
+                    label="Full Name"
+                    name="disable"
+                    className=""
+                    labelAlign="left"
+                  >
+                    {userData?.fullName}
+                  </Form.Item>
+                  <Form.Item label="Email" labelAlign="left">
+                    {userData?.email}
+                  </Form.Item>
+                  <Form.Item
+                    rules={[
+                      { required: true, message: "Please input Description" },
+                    ]}
+                    label="Introduction"
+                    name="description"
+                    className=""
+                    labelAlign="left"
+                  >
+                    <TextArea
+                      placeholder="Input Introduction"
+                      autoSize={{ minRows: 5, maxRows: 6 }}
+                    />
+                  </Form.Item>
 
-                <Form.Item
-                  rules={[
-                    { required: true, message: "Please input Issue Date" },
-                  ]}
-                  label="Issue Date"
-                  name="IssueDate"
-                  labelAlign="left"
-                >
-                  <DatePicker
-                    style={{ width: "100%" }}
-                    disabledDate={(current) =>
-                      current && current > moment().endOf("day")
-                    }
-                  />
-                </Form.Item>
-                <Form.Item
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please input image front ID card",
-                    },
-                  ]}
-                  label="Image front of ID Card"
-                  getValueFromEvent={normFile}
-                  labelAlign="left"
-                  name="FontCardImage"
-                  className="w-full"
-                >
-                  <Upload
-                    accept="image/png, image/jpeg"
-                    onChange={handleChange}
-                    beforeUpload={beforeUpload}
-                    action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
-                    listType="picture-card"
-                    maxCount={1}
+                  <Form.Item
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input image front ID card",
+                      },
+                    ]}
+                    label="Image front of ID Card"
+                    getValueFromEvent={normFile}
+                    labelAlign="left"
+                    name="FontCardImage"
+                    className="w-full"
                   >
-                    {uploadButtonContent}
-                  </Upload>
-                </Form.Item>
-                <Form.Item
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please input image back ID card",
-                    },
-                  ]}
-                  label="Image back of ID Card"
-                  getValueFromEvent={normFile}
-                  labelAlign="left"
-                  name="CardBack"
-                >
-                  <Upload
-                    accept="image/png, image/jpeg"
-                    onChange={handleChangeBackImg}
-                    beforeUpload={beforeUpload}
-                    action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
-                    listType="picture-card"
-                    maxCount={1}
+                    <Upload
+                      accept="image/png, image/jpeg"
+                      onChange={handleChange}
+                      beforeUpload={beforeUpload}
+                      action="https://learnconnectserver.azurewebsites.net/api/Upload/image"
+                      listType="picture-card"
+                      maxCount={1}
+                    >
+                      {uploadButtonContent}
+                    </Upload>
+                  </Form.Item>
+                  <Form.Item
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input image back ID card",
+                      },
+                    ]}
+                    label="Image back of ID Card"
+                    getValueFromEvent={normFile}
+                    labelAlign="left"
+                    name="CardBack"
                   >
-                    {uploadButtonBackContent}
-                  </Upload>
-                </Form.Item>
-              </Form>
-            </TabPane>
-            <TabPane tab="Payment Information" key="2">
-              <Form
-                autoComplete="off"
-                form={form}
-                labelCol={{ span: 4, offset: 3 }}
-                wrapperCol={{ span: 14 }}
-                layout="horizontal"
-                // onFinish={handleSubmit}
-                className="mx-[30px] pt-3"
-              >
-                <Form.Item
-                  name="BankName"
-                  label="Email Address(PayPal)"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please Input Email Address(PayPal)",
-                    },
-                  ]}
-                  labelAlign="left"
-                >
-                  {/* <Select placeholder="Select a bank">
-                  {banks.map((bank) => (
-                    <Select.Option key={bank.id} value={bank.shortName}>
-                      <div className="flex items-center">
-                        <img
-                          src={bank.logo}
-                          alt="logoBank"
-                          className="w-[80px] h-[30px]"
-                        />{" "}
-                        {bank.name}({bank.code})
-                      </div>
-                    </Select.Option>
-                  ))}
-                </Select> */}
-                  <Input
-                    type="email"
-                    placeholder="Input Email Address(PayPal)"
-                  />
-                </Form.Item>
-                <Form.Item
-                  rules={[
-                    { required: true, message: "Please input PayPal ID" },
-                    {
-                      pattern: /^[0-9]{13,16}$/,
-                      message:
-                        "PayPal ID must be a numeric value between 13 and 16 digits",
-                    },
-                  ]}
-                  label="PayPal ID"
-                  name="BankNumber"
-                  labelAlign="left"
-                >
-                  <Input type="number" placeholder="Input PayPal ID" />
-                </Form.Item>
-              </Form>
-            </TabPane>
-            <TabPane tab="Choose Your Specialization" key="3">
-              <Form
-                autoComplete="off"
-                form={form}
-                labelCol={{ span: 4, offset: 3 }}
-                wrapperCol={{ span: 14 }}
-                layout="horizontal"
-                // onFinish={handleSubmit}
-                className="mx-[30px] pt-3"
-              >
-                <Form.Item
-                  label="Major"
-                  name="major"
-                  rules={[
-                    { required: true, message: "Please select a major!" },
-                  ]}
-                  className="text-start"
-                  labelAlign="left"
-                >
-                  <Select
-                    onChange={(value) => setSelectedMajor(value)}
-                    placeholder="Select major"
+                    <Upload
+                      accept="image/png, image/jpeg"
+                      onChange={handleChangeBackImg}
+                      beforeUpload={beforeUpload}
+                      action="https://learnconnectserver.azurewebsites.net/api/Upload/image"
+                      listType="picture-card"
+                      maxCount={1}
+                    >
+                      {uploadButtonBackContent}
+                    </Upload>
+                  </Form.Item>
+                  <Form.Item
+                    // rules={[
+                    //   {
+                    //     required: true,
+                    //     message: "Please input Identify Number",
+                    //   },
+                    //   {
+                    //     pattern: /^[0-9]{12,12}$/,
+                    //     message: "Identity Number must be exactly 12 digits",
+                    //   },
+                    // ]}
+                    label="Identity Number"
+                    // name="CardFront"
+                    labelAlign="left"
                   >
-                    {major.map((major) => (
-                      <Option key={major.id} value={major.id}>
-                        {major.name}
-                      </Option>
-                    ))}
-                  </Select>
-                </Form.Item>
-                <Form.Item
-                  label="Specialization"
-                  name="specialization"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please select a specialization!",
-                    },
-                  ]}
-                  className="text-start"
-                  labelAlign="left"
-                >
-                  <Select placeholder="Select specialization">
-                    {specialization.map((specialization) => (
-                      <Option key={specialization.id} value={specialization.id}>
-                        {specialization.name}
-                      </Option>
-                    ))}
-                  </Select>
-                </Form.Item>
-                <Form.Item
-                  rules={[
-                    { required: true, message: "Please input Experience" },
-                  ]}
-                  label="Experience"
-                  name="reason"
-                  className=""
-                  labelAlign="left"
-                >
-                  <TextArea
-                    placeholder="Input your Experience"
-                    autoSize={{ minRows: 5, maxRows: 6 }}
-                  />
-                </Form.Item>
-                <Form.Item
-                  label="Image of ID Document"
-                  name="alo"
-                  getValueFromEvent={normFile}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please input Image of ID Document",
-                    },
-                  ]}
-                  labelAlign="left"
-                >
-                  <Upload
-                    accept="image/png, image/jpeg"
-                    onChange={handleChangeDocumentData}
-                    beforeUpload={beforeUpload}
-                    action="https://learnconnectapitest.azurewebsites.net/api/Upload/image"
-                    listType="picture-card"
-                    maxCount={1}
-                  >
-                    {uploadButtonDocumentContent}
-                  </Upload>
-                </Form.Item>
-              </Form>
-            </TabPane>
-          </Tabs>
+                    <Input
+                      disabled
+                      type="number"
+                      // placeholder="Input Identity Number"
+                      value={scanId?.cardId}
+                    />
+                  </Form.Item>
 
-          <div className="flex justify-center py-2">
-            {currentTab !== "1" && (
-              <Button
-                onClick={() =>
-                  handleTabChange((parseInt(currentTab) - 1).toString())
-                }
-                style={{
-                  border: "2px solid #E0E0E0",
-                  color: "black",
-                }}
-                className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1 mx-5"
-              >
-                Previous
-              </Button>
-            )}
-            {currentTab !== "3" && (
-              <Button
-                onClick={() =>
-                  handleTabChange((parseInt(currentTab) + 1).toString())
-                }
-                style={{
-                  border: "2px solid #4caf50 ",
-                  color: "#fff",
-                }}
-                className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1 mx-5"
-              >
-                Next
-              </Button>
-            )}
-            {currentTab === "3" && (
-              <FormItem>
-                {/* <Button
-                  onClick={handleCancel}
+                  <Form.Item
+                    // rules={[
+                    //   { required: true, message: "Please input Issue Date" },
+                    // ]}
+                    label="Issue Date"
+                    // name="IssueDate"
+                    labelAlign="left"
+                  >
+                    {/* <DatePicker
+                      style={{ width: "100%" }}
+                      disabledDate={(current) =>
+                        current && current > moment().endOf("day")
+                      }
+                    /> */}
+                    <Input
+                      disabled
+                      // type="number"
+                      // placeholder="Input Identity Number"
+                      value={scanId?.createDate}
+                    />
+                  </Form.Item>
+                </Form>
+              </TabPane>
+              <TabPane tab="Payment Information" key="2">
+                <Form
+                  autoComplete="off"
+                  form={form}
+                  labelCol={{ span: 4, offset: 3 }}
+                  wrapperCol={{ span: 14 }}
+                  layout="horizontal"
+                  className="mx-[30px] pt-3"
+                >
+                  <Form.Item
+                    name="BankName"
+                    label="Email Address(PayPal)"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please Input Email Address(PayPal)",
+                      },
+                    ]}
+                    labelAlign="left"
+                  >
+                    <Input
+                      type="email"
+                      placeholder="Input Email Address(PayPal)"
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    rules={[
+                      { required: true, message: "Please input PayPal ID" },
+                      {
+                        pattern: /^[0-9]{13,16}$/,
+                        message:
+                          "PayPal ID must be a numeric value between 13 and 16 digits",
+                      },
+                    ]}
+                    label="PayPal ID"
+                    name="BankNumber"
+                    labelAlign="left"
+                  >
+                    <Input type="number" placeholder="Input PayPal ID" />
+                  </Form.Item>
+                </Form>
+              </TabPane>
+              <TabPane tab="Choose Your Specialization" key="3">
+                <Form
+                  autoComplete="off"
+                  form={form}
+                  labelCol={{ span: 4, offset: 3 }}
+                  wrapperCol={{ span: 14 }}
+                  layout="horizontal"
+                  className="mx-[30px] pt-3"
+                >
+                  <Form.Item
+                    label="Major"
+                    name="major"
+                    rules={[
+                      { required: true, message: "Please select a major!" },
+                    ]}
+                    className="text-start"
+                    labelAlign="left"
+                  >
+                    <Select
+                      onChange={(value) => setSelectedMajor(value)}
+                      placeholder="Select major"
+                    >
+                      {major.map((major) => (
+                        <Option key={major.id} value={major.id}>
+                          {major.name}
+                        </Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
+                  <Form.Item
+                    label="Specialization"
+                    name="specialization"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please select a specialization!",
+                      },
+                    ]}
+                    className="text-start"
+                    labelAlign="left"
+                  >
+                    <Select placeholder="Select specialization">
+                      {specialization.map((specialization) => (
+                        <Option
+                          key={specialization.id}
+                          value={specialization.id}
+                        >
+                          {specialization.name}
+                        </Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
+                  <Form.Item
+                    rules={[
+                      { required: true, message: "Please input Experience" },
+                    ]}
+                    label="Experience"
+                    name="reason"
+                    className=""
+                    labelAlign="left"
+                  >
+                    <TextArea
+                      placeholder="Input your Experience"
+                      autoSize={{ minRows: 5, maxRows: 6 }}
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    label="Image of ID Document"
+                    name="alo"
+                    getValueFromEvent={normFile}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input Image of ID Document",
+                      },
+                    ]}
+                    labelAlign="left"
+                  >
+                    <Upload
+                      accept="image/png, image/jpeg"
+                      onChange={handleChangeDocumentData}
+                      beforeUpload={beforeUpload}
+                      action="https://learnconnectserver.azurewebsites.net/api/Upload/image"
+                      listType="picture-card"
+                      maxCount={1}
+                    >
+                      {uploadButtonDocumentContent}
+                    </Upload>
+                  </Form.Item>
+                </Form>
+              </TabPane>
+            </Tabs>
+
+            <div className="flex justify-center py-2">
+              {currentTab !== "1" && (
+                <Button
+                  onClick={() =>
+                    handleTabChange((parseInt(currentTab) - 1).toString())
+                  }
                   style={{
                     border: "2px solid #E0E0E0",
                     color: "black",
                   }}
                   className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1 mx-5"
                 >
-                  Cancel
-                </Button> */}
-                {/* <button
-                  type="submit"
-                  className="text-white text-lg w-1/3 mb-3 mt-2 bg-[#309255] rounded-lg py-2 mx-5 hover:bg-[#309256d6]"
-                >
-                  Send
-                </button> */}
+                  Previous
+                </Button>
+              )}
+              {currentTab !== "3" && (
                 <Button
-                  onClick={() => {
-                    const formValues = form.getFieldsValue();
-                    const requiredFields = ["CardFront", "IssueDate"];
-                    const isFormValid = requiredFields.every(
-                      (field) =>
-                        formValues[field] !== undefined &&
-                        formValues[field] !== null &&
-                        formValues[field] !== ""
-                    );
-
-                    if (isFormValid) {
-                      handleSubmit(formValues);
-                    } else {
-                      toast.info("Please fill in all required fields.");
-                    }
-                  }}
-                  // htmlType="submit"
+                  onClick={() =>
+                    handleTabChange((parseInt(currentTab) + 1).toString())
+                  }
                   style={{
-                    border: "2px solid #4caf50",
+                    border: "2px solid #4caf50 ",
                     color: "#fff",
                   }}
                   className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1 mx-5"
                 >
-                  Submit
+                  Next
                 </Button>
-              </FormItem>
-            )}
-          </div>
-        </Form>
-      </div>
+              )}
+              {currentTab === "3" && (
+                <FormItem>
+                  <Button
+                    onClick={() => {
+                      const formValues = form.getFieldsValue();
+                      // const requiredFields = ["CardFront", "IssueDate"];
+                      // // const requiredFields = [];
+                      // const isFormValid = requiredFields.every(
+                      //   (field) =>
+                      //     formValues[field] !== undefined &&
+                      //     formValues[field] !== null &&
+                      //     formValues[field] !== ""
+                      // );
+
+                      // if (isFormValid) {
+                      handleSubmit(formValues);
+                      // } else {
+                      //   toast.info("Please fill in all required fields.");
+                      // }
+                    }}
+                    // htmlType="submit"
+                    style={{
+                      border: "2px solid #4caf50",
+                      color: "#fff",
+                    }}
+                    className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1 mx-5"
+                  >
+                    Submit
+                  </Button>
+                </FormItem>
+              )}
+            </div>
+          </Form>
+        </div>
+      )}
     </div>
   );
 };

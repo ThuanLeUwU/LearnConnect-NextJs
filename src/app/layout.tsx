@@ -30,6 +30,7 @@ export default function RootLayout({
             {children}
           </div>
           <Footer />
+          {/* <Notification /> */}
         </AuthContextProvider>
       </body>
     </html>

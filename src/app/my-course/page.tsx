@@ -35,8 +35,6 @@ export default function MyCourse() {
 
   const { jwtToken, id } = UserAuth();
   axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
-  // console.log("jwtToken", jwtToken);
-  // console.log("user id: ", id);
   const breadcrumbsHome = () => {
     router.push("/");
   };
@@ -57,7 +55,7 @@ export default function MyCourse() {
               }}
             >
               <div>
-                <Breadcrumb className="font-semibold text-3xl py-5 px-64 flex-auto">
+                <Breadcrumb className="font-semibold text-2xl py-5 px-64 flex-auto">
                   <Breadcrumb.Item>
                     <button onClick={breadcrumbsHome}>Home</button>
                   </Breadcrumb.Item>

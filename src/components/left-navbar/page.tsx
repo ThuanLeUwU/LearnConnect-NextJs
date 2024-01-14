@@ -4,13 +4,23 @@ import InstructorCourseStyle from "./styles.module.scss";
 import { Tooltip } from "antd";
 import { useState } from "react";
 
-const LeftNavbar = ({ page1, page2, page3, page4, page5, page6 }) => {
-  const [activeMenu, setActiveMenu] = useState<number>();
+const LeftNavbar = ({ page1, page2, page3, page4, page5, page6, page7 }) => {
+  const [activeMenuItem, setActiveMenuItem] = useState<number>(0);
+  const handleMenuItemClick = (index) => {
+    // Cập nhật trạng thái khi một menu item được chọn
+    console.log("v", index);
+    setActiveMenuItem(index);
+  };
   const menuItem = [
     {
       image: "/menu-icon/form.png",
       title: "Specialize Request",
       href: `${page1}`,
+    },
+    {
+      image: "/menu-icon/course.png",
+      title: "Courses",
+      href: `${page4}`,
     },
     {
       image: "/menu-icon/star.png",
@@ -23,18 +33,18 @@ const LeftNavbar = ({ page1, page2, page3, page4, page5, page6 }) => {
       href: `${page3}`,
     },
     {
-      image: "/menu-icon/course.png",
-      title: "Courses",
-      href: `${page4}`,
-    },
-    {
       image: "/menu-icon/book-bookmark.png",
-      title: "Major&Specialize",
+      title: "Major&Specialization",
       href: `${page5}`,
     },
     {
+      image: "/menu-icon/receipt.png",
+      title: "Transaction History",
+      href: `${page7}`,
+    },
+    {
       image: "/menu-icon/stats.png",
-      title: "Revenue",
+      title: "Statistics",
       href: `${page6}`,
     },
   ];
@@ -48,6 +58,7 @@ const LeftNavbar = ({ page1, page2, page3, page4, page5, page6 }) => {
               <Link
                 href={item.href}
                 className={`${InstructorCourseStyle.sidebar_active} mt-5`}
+                // onClick={() => handleMenuItemClick(index)}
               >
                 <img src={item.image} alt={`icon-${index + 1}`} />
 

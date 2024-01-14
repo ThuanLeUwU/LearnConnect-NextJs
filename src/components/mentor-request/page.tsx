@@ -11,12 +11,14 @@ import {
   Button as ButtonAntd,
   Breadcrumb,
   Input,
+  Tag,
 } from "antd";
 
 import Button from "@mui/material/Button";
 import { toast } from "sonner";
 import { Spin } from "antd";
 import { UserAuth } from "@/app/context/AuthContext";
+import moment from "moment";
 
 export type specializationOfMentor = {
   name: string;
@@ -130,7 +132,7 @@ const MentorRequest = () => {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        `https://learnconnectapitest.azurewebsites.net/api/specialization-of-mentor/get-all-specializations-and-mentors?requestType=${selectedType}`,
+        `https://learnconnectserver.azurewebsites.net/api/specialization-of-mentor/get-all-specializations-and-mentors?requestType=${selectedType}`,
         {
           params: {
             page: page + 1,
@@ -180,7 +182,7 @@ const MentorRequest = () => {
     try {
       const reason = rejectReason || "Your request is Approved";
       await axios.post(
-        `https://learnconnectapitest.azurewebsites.net/api/mentor/process-mentor-request?staffUserId=${userData?.id}&mentorUserId=${mentorUserId}&specializationId=${specializationId}&acceptRequest=true&rejectReason=${reason}`
+        `https://learnconnectserver.azurewebsites.net/api/mentor/process-mentor-request?staffUserId=${userData?.id}&mentorUserId=${mentorUserId}&specializationId=${specializationId}&acceptRequest=true&rejectReason=${reason}`
       );
       fetchData();
       toast.success("Mentor request approved successfully");
@@ -198,7 +200,7 @@ const MentorRequest = () => {
     try {
       const reason = rejectReason || "Your request is Not Approve";
       await axios.post(
-        `https://learnconnectapitest.azurewebsites.net/api/mentor/process-mentor-request?staffUserId=${userData?.id}&mentorUserId=${mentorUserId}&specializationId=${specializationId}&acceptRequest=false&rejectReason=${reason}`
+        `https://learnconnectserver.azurewebsites.net/api/mentor/process-mentor-request?staffUserId=${userData?.id}&mentorUserId=${mentorUserId}&specializationId=${specializationId}&acceptRequest=false&rejectReason=${reason}`
       );
       fetchData();
       toast.success("Mentor request rejected successfully");
@@ -217,7 +219,7 @@ const MentorRequest = () => {
       case 0:
         return "green";
       case 1:
-        return "black";
+        return "gray";
       case 2:
         return "red";
       default:
@@ -265,10 +267,11 @@ const MentorRequest = () => {
     } else {
       handleRejectConfirmation(
         confirmationData.mentorUserId,
-        rejectReason, // Pass reject reason to the function
+        rejectReason,
         confirmationData.specializationId
       );
     }
+    form.resetFields();
     setConfirmationData({
       isOpen: false,
       actionType: "",
@@ -296,7 +299,7 @@ const MentorRequest = () => {
       title: "Create Date",
       dataIndex: "specializationOfMentor",
       key: "verificationDate",
-      width: 150,
+      width: 180,
       sorter: (a, b) => {
         const dateA = new Date(
           a.specializationOfMentor.verificationDate
@@ -307,14 +310,10 @@ const MentorRequest = () => {
         return dateA - dateB;
       },
       render: (specializationOfMentor, record) => (
-        <div>
-          {new Date(
-            specializationOfMentor.verificationDate
-          ).toLocaleDateString()}{" "}
-          <br />
-          {new Date(
-            specializationOfMentor.verificationDate
-          ).toLocaleTimeString()}
+        <div className="text-[16px]">
+          {moment(specializationOfMentor.verificationDate)
+            .locale("en")
+            .format("LLL")}{" "}
         </div>
       ),
     },
@@ -324,7 +323,7 @@ const MentorRequest = () => {
       key: "name",
       width: 200,
       sorter: (a, b) => {
-        const nameA = a.user.name.toUpperCase(); // Convert names to uppercase for case-insensitive sorting
+        const nameA = a.user.name.toUpperCase();
         const nameB = b.user.name.toUpperCase();
         return nameA.localeCompare(nameB);
       },
@@ -342,16 +341,24 @@ const MentorRequest = () => {
       render: (user) => <p className="text-[16px]">{user.email}</p>,
     },
     {
-      title: "Description",
-      dataIndex: "mentor",
+      title: selectedType === "mentor" ? "Description" : "Experience",
+      dataIndex:
+        selectedType === "mentor" ? "mentor" : "specializationOfMentor",
       key: "description",
       width: 600,
-      sorter: (a, b) => {
-        const descriptionA = a.mentor.description.toUpperCase();
-        const descriptionB = b.mentor.description.toUpperCase();
-        return descriptionA.localeCompare(descriptionB);
-      },
-      render: (mentor) => <p className="text-[16px]">{mentor.description}</p>,
+      render: (text, record) => (
+        <>
+          {text.description.length > 100 ? (
+            <>
+              <a type="link" onClick={() => showContentModal(text.description)}>
+                {`${text.description.slice(0, 100)}...`}
+              </a>
+            </>
+          ) : (
+            text.description
+          )}
+        </>
+      ),
     },
     {
       title: "Specialization",
@@ -374,20 +381,24 @@ const MentorRequest = () => {
         a.specializationOfMentor.status - b.specializationOfMentor.status,
 
       render: (specializationOfMentor) => (
-        <span style={{ color: getStatusColor(specializationOfMentor.status) }}>
+        // <span
+        //   className="text-[16px]"
+        //   style={{ color: getStatusColor(specializationOfMentor.status) }}
+        // >
+        //   {getStatusText(specializationOfMentor.status)}
+        // </span>
+        <Tag
+          color={getStatusColor(specializationOfMentor.status)}
+          style={{ fontSize: "16px", width: "80px", textAlign: "center" }}
+        >
           {getStatusText(specializationOfMentor.status)}
-        </span>
+        </Tag>
       ),
     },
     {
       title: "Note",
       dataIndex: "specializationOfMentor",
       key: "note",
-      sorter: (a, b) => {
-        const noteA = (a.specializationOfMentor.note || "").toUpperCase();
-        const noteB = (b.specializationOfMentor.note || "").toUpperCase();
-        return noteA.localeCompare(noteB);
-      },
       render: (specializationOfMentor) => (
         <p className="text-[16px]">{specializationOfMentor.note}</p>
       ),
@@ -443,13 +454,25 @@ const MentorRequest = () => {
     },
   ];
 
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedContent, setSelectedContent] = useState("");
+
+  const showContentModal = (content: any) => {
+    setSelectedContent(content);
+    setModalVisible(true);
+  };
+
+  const handleCancel = () => {
+    setModalVisible(false);
+  };
+
   return (
     <>
       <div className="w-full mt-4">
         <div className="flex justify-between items-center px-5 bg-[#e7f8ee] mb-5">
           <Breadcrumb>
             <Breadcrumb.Item>
-              <div className="text-start font-semibold text-4xl my-5 px-4">
+              <div className="text-start font-semibold text-2xl my-5 px-4">
                 Requests
               </div>
             </Breadcrumb.Item>
@@ -526,18 +549,17 @@ const MentorRequest = () => {
                           <div className="pt-5" key={doc.id}>
                             {index === 0 && (
                               <div className="flex">
-                                <p className="text-xl">Font ID Image: </p>
-                                <p className="text-xl font-bold">
-                                  {doc.description}
+                                <p className="text-xl">
+                                  Identify Number: {doc.description}
                                 </p>
                               </div>
                             )}
                             {index === 1 && (
                               <div className="flex">
-                                <p className="text-xl">Back ID Image:</p>
-                                <p className="text-xl font-bold">
-                                  {formatDate(doc.description)}
+                                <p className="text-xl">
+                                  Issue Date: {formatDate(doc.description)}
                                 </p>
+                                <p className="text-xl font-bold"></p>
                               </div>
                             )}
                             <img
@@ -551,10 +573,10 @@ const MentorRequest = () => {
                           <div className="pt-5" key={doc.id}>
                             {
                               <div className="flex">
-                                <p className="text-xl">Specialization: </p>
-                                <p className="text-xl font-bold">
-                                  {doc.description}
+                                <p className="text-xl">
+                                  Experience: {doc.description}
                                 </p>
+                                <p className="text-xl font-bold"></p>
                                 {/* <p className="text-xl font-bold">
                                   {formatDate(doc.description)}
                                 </p> */}
@@ -587,7 +609,10 @@ const MentorRequest = () => {
                 }
                 open={isConfirmationModalOpen}
                 width="35%"
-                onCancel={handleCancelBan}
+                onCancel={() => {
+                  handleCancelBan();
+                  form.resetFields();
+                }}
                 footer={false}
                 style={{
                   top: "30%",
@@ -604,19 +629,16 @@ const MentorRequest = () => {
                   onFinish={(values) => handleConfirmBan(values.rejectReason)}
                 >
                   <Form.Item
-                    label="Reject Reason"
+                    label="Reason"
                     name="rejectReason"
                     rules={[
                       {
                         required: false,
-                        message: "Please provide a reject reason!",
+                        message: "Please provide a reason!",
                       },
                     ]}
                   >
-                    <Input.TextArea
-                      placeholder="Enter reject reason..."
-                      rows={4}
-                    />
+                    <Input.TextArea placeholder="Enter reason..." rows={4} />
                   </Form.Item>
                   <Space className="justify-end w-full">
                     <Form.Item className="mb-0">
@@ -694,9 +716,9 @@ const MentorRequest = () => {
                             key={doc.id}
                             className="w-full mx-auto overflow-hidden p-8"
                           >
-                            <p className="text-xl mb-5">
+                            {/* <p className="text-xl mb-5">
                               Specialization: {doc.description}
-                            </p>
+                            </p> */}
                             <div className="max-h-[600px] overflow-y-auto">
                               <img
                                 src={doc.documentUrl}
@@ -720,7 +742,7 @@ const MentorRequest = () => {
                 destroyOnClose={true}
                 title={
                   <div className="text-lg">
-                    Are you sure you want to ban this course ?
+                    Do you want to perform {action} action?
                   </div>
                 }
                 open={isConfirmationModalOpen}
@@ -742,19 +764,16 @@ const MentorRequest = () => {
                   onFinish={(values) => handleConfirmBan(values.rejectReason)}
                 >
                   <Form.Item
-                    label="Reject Reason"
+                    label="Reason"
                     name="rejectReason"
                     rules={[
                       {
                         required: false,
-                        message: "Please provide a reject reason!",
+                        message: "Please provide a reason!",
                       },
                     ]}
                   >
-                    <Input.TextArea
-                      placeholder="Enter reject reason..."
-                      rows={4}
-                    />
+                    <Input.TextArea placeholder="Enter reason..." rows={4} />
                   </Form.Item>
                   <Space className="justify-end w-full">
                     <Form.Item className="mb-0">
@@ -787,6 +806,17 @@ const MentorRequest = () => {
             </div>
           )}
         </div>
+        <ModalAntd
+          title="Details"
+          open={modalVisible}
+          onCancel={handleCancel}
+          footer={null}
+          style={{
+            top: "30%",
+          }}
+        >
+          <p>{selectedContent}</p>
+        </ModalAntd>
       </div>
     </>
   );

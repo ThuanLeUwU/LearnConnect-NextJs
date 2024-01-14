@@ -44,7 +44,6 @@ export default function ListCourse() {
   const [minPrice, setMinPrice] = useState<any>("");
   const [maxPrice, setMaxPrice] = useState<any>("");
   const [rate, setRate] = useState<any>("");
-  console.log("rate", rate);
   const [specialized, setSpecialized] = useState<Category[]>([]);
   const [filterBySpecialized, setFilterBySpecialized] = useState<any>("");
   const [priceOption, setPriceOption] = useState("");
@@ -72,7 +71,7 @@ export default function ListCourse() {
   useEffect(() => {
     try {
       http
-        .get("https://learnconnectapitest.azurewebsites.net/api/specialization")
+        .get("https://learnconnectserver.azurewebsites.net/api/specialization")
         .then((response) => {
           setSpecialized(response.data);
         });
@@ -167,7 +166,7 @@ export default function ListCourse() {
           }}
         >
           <div>
-            <Breadcrumb className="font-semibold text-3xl py-5 px-64 flex-auto">
+            <Breadcrumb className="font-semibold text-2xl py-5 px-64 flex-auto">
               <Breadcrumb.Item>
                 <button onClick={breadcrumbsHome}>Home</button>
               </Breadcrumb.Item>
@@ -208,7 +207,7 @@ export default function ListCourse() {
                   </Option>
                 ))}
               </Select>
-              <span>Specialize: </span>
+              <span>Specialization: </span>
               <Select
                 defaultValue=""
                 onChange={handleFilterSpecialized}

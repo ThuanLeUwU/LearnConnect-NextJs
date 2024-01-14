@@ -7,7 +7,7 @@ import axios from "axios";
 import { Breadcrumb, Spin, Tooltip } from "antd";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { UserAuth } from "../context/AuthContext";
+import { UserAuth, UserRole } from "../context/AuthContext";
 
 const Transaction = () => {
   const router = useRouter();
@@ -34,8 +34,25 @@ const Transaction = () => {
   const { jwtToken } = UserAuth();
   axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
 
+  console.log("Tao nè", transaction);
+
   const breadcrumbsHome = () => {
-    router.push("/");
+    switch (role) {
+      case UserRole.Student:
+        router.push("/");
+        break;
+      case UserRole.Mentor:
+        router.push("/instructorcourses");
+        break;
+      case UserRole.Staff:
+        router.push("/staff-page");
+        break;
+      case UserRole.Admin:
+        router.push("/user-manage");
+        break;
+      default:
+        break;
+    }
   };
 
   return (
@@ -48,7 +65,7 @@ const Transaction = () => {
           }}
         >
           <div>
-            <Breadcrumb className="font-semibold text-3xl py-5 px-64 flex-auto">
+            <Breadcrumb className="font-semibold text-2xl py-5 px-64 flex-auto">
               <Breadcrumb.Item>
                 <button onClick={breadcrumbsHome}>Home</button>
               </Breadcrumb.Item>
@@ -82,7 +99,7 @@ const Transaction = () => {
                   <th className="px-4 py-2">Course Name</th>
                   <th className="px-4 py-2">Total</th>
                   <th className="px-4 py-2">Status</th>
-                  <th className="px-2 py-2">Transaction ID</th>
+                  <th className="px-2 py-2">Transaction Code</th>
                   <th className="px-4 py-2">Create Date</th>
                   <th className="px-4 py-2">Success Date</th>
                 </tr>
@@ -94,29 +111,26 @@ const Transaction = () => {
                     className={index % 2 === 0 ? "bg-[#e7f8ee]" : ""}
                   >
                     <td className="border px-4 py-3 font-bold">
-                      {item.paymentTransaction.courseName}
+                      {item.courseName}
                     </td>
                     <td className="border px-4 py-3 relative font-bold w-[175px]">
-                      {item.paymentTransaction.total &&
-                        item.paymentTransaction.total.toLocaleString()}{" "}
+                      {item.total && item.total.toLocaleString()}{" "}
                       <span className="absolute right-4 text-gray-500 font-bold">
                         VND
                       </span>
                     </td>
                     <td className={`border px-4 py-3 text-center font-bold`}>
-                      {item.paymentTransaction.status === 0 ? (
+                      {item.status === 0 ? (
                         <div className="border border-[#309255] p-1 rounded-lg text-[#309255]">
                           Success
                         </div>
-                      ) : item.paymentTransaction.status === 1 ? (
-                        <Tooltip
-                          title={item.paymentTransaction.transactionError}
-                        >
+                      ) : item.status === 1 ? (
+                        <Tooltip title={item.transactionError}>
                           <button className="border border-red-400 p-1 rounded-lg text-red-400 px-3">
                             Error
                           </button>
                         </Tooltip>
-                      ) : item.paymentTransaction.status === 2 ? (
+                      ) : item.status === 2 ? (
                         <div className="border border-yellow-400 p-1 rounded-lg text-yellow-400">
                           Pending
                         </div>
@@ -125,45 +139,53 @@ const Transaction = () => {
                       )}
                     </td>
                     <td className="border px-4 py-3 text-center font-bold">
-                      {item.paymentTransaction.transactionId}
+                      {item.transactionId === null ? (
+                        <>-</>
+                      ) : (
+                        item.transactionId
+                      )}
                     </td>
                     <td className="border px-4 py-3 text-center font-bold">
                       <div>
-                        {item.paymentTransaction.createDate
-                          ? new Date(
-                              item.paymentTransaction.createDate
-                            ).toLocaleDateString("en-GB", {
-                              day: "numeric",
-                              month: "long",
-                              year: "numeric",
-                            })
+                        {item.createDate
+                          ? new Date(item.createDate).toLocaleDateString(
+                              "en-GB",
+                              {
+                                day: "numeric",
+                                month: "long",
+                                year: "numeric",
+                              }
+                            )
                           : ""}
                       </div>
                       <div>
-                        {item.paymentTransaction.createDate
-                          ? new Date(
-                              item.paymentTransaction.createDate
-                            ).toLocaleTimeString("en-US")
+                        {item.createDate
+                          ? new Date(item.createDate).toLocaleTimeString(
+                              "en-US"
+                            )
                           : ""}
                       </div>
                     </td>
                     <td className="border px-4 py-3 text-center font-bold">
                       <div>
-                        {item.paymentTransaction.successDate
-                          ? new Date(
-                              item.paymentTransaction.successDate
-                            ).toLocaleDateString("en-GB", {
+                        {item.successDate ? (
+                          new Date(item.successDate).toLocaleDateString(
+                            "en-GB",
+                            {
                               day: "numeric",
                               month: "long",
                               year: "numeric",
-                            })
-                          : ""}
+                            }
+                          )
+                        ) : (
+                          <>-</>
+                        )}
                       </div>
                       <div>
-                        {item.paymentTransaction.successDate
-                          ? new Date(
-                              item.paymentTransaction.successDate
-                            ).toLocaleTimeString("en-US")
+                        {item.successDate
+                          ? new Date(item.successDate).toLocaleTimeString(
+                              "en-US"
+                            )
                           : ""}
                       </div>
                     </td>

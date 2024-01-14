@@ -45,10 +45,10 @@ const useDataFetcher = (
   const [courseFilter, setCourseFilter] = useState<CourseItem[]>([]);
   const router = useRouter();
   // const [searchQuery, setSearchQuery] = useState("");
-  let API_URL = `https://learnconnectapitest.azurewebsites.net/api/course/courses-with-favorite-and-filter?userId=${id}&currentPage=`;
+  let API_URL = `https://learnconnectserver.azurewebsites.net/api/course/courses-with-favorite-and-filter?userId=${id}&currentPage=`;
 
   if (!id) {
-    API_URL = `https://learnconnectapitest.azurewebsites.net/api/course/get-courses-paging-with-filter?currentPage=`;
+    API_URL = `https://learnconnectserver.azurewebsites.net/api/course/get-courses-paging-with-filter?currentPage=`;
   }
 
   const pagesize = 6;

@@ -1,6 +1,6 @@
 "use client";
 import { Payment } from "@/components/payment";
-import { Breadcrumb, Menu, Modal } from "antd";
+import { Breadcrumb, Checkbox, Menu, Modal, message } from "antd";
 import Link from "next/link";
 import React, { useState, useEffect, ReactNode } from "react";
 import axios from "axios";
@@ -59,14 +59,14 @@ export default function CourseDetailPage({ params }: any) {
   const [averageRating, setAverageRating] = useState(0);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const idUser = id;
-  console.log("id user is", idUser);
-  console.log("id course is", idCourse);
+  const [isRefundPolicyChecked, setIsRefundPolicyChecked] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
-      let url = `https://learnconnectapitest.azurewebsites.net/api/course/user/${idUser}/course/${idCourse}`;
+      // let url = `https://learnconnectserver.azurewebsites.net/api/course/user/${idUser}/course/${idCourse}`;
+      let url = `https://learnconnectserver.azurewebsites.net/api/course/${idCourse}?userId=${idUser}`;
       if (!idUser) {
-        url = `https://learnconnectapitest.azurewebsites.net/api/course/${idCourse}`;
+        url = `https://learnconnectserver.azurewebsites.net/api/course/${idCourse}`;
       }
       const responseData = await http.get(url);
       setCourses(responseData?.data);
@@ -77,7 +77,7 @@ export default function CourseDetailPage({ params }: any) {
   useEffect(() => {
     const fetchData = async () => {
       const responseData = await http.get(
-        `https://learnconnectapitest.azurewebsites.net/api/lecture/by-course/${idCourse}`
+        `https://learnconnectserver.azurewebsites.net/api/lecture/by-course/${idCourse}`
       );
       setLectures(responseData?.data);
     };
@@ -86,8 +86,14 @@ export default function CourseDetailPage({ params }: any) {
   }, []);
 
   const handlePushMentor = () => {
-    if (courses && courses.mentorId) {
-      router.push(`/profile-mentor/${courses.mentorId}`);
+    if (userData) {
+      if (courses && courses.mentorUserId) {
+        router.push(`/profile-mentor/${courses.mentorUserId}`);
+      }
+    } else {
+      if (courses && courses.mentorId) {
+        router.push(`/profile-mentor/${courses.mentorId}`);
+      }
     }
   };
 
@@ -110,17 +116,12 @@ export default function CourseDetailPage({ params }: any) {
     courseId: any,
     returnUrl: string | number | boolean
   ) => {
-    const url = `https://learnconnectapitest.azurewebsites.net/api/enrollment/Enroll?userId=${userId}&courseId=${courseId}&returnUrl=${encodeURIComponent(
+    const url = `https://learnconnectserver.azurewebsites.net/api/enrollment/Enroll?userId=${userId}&courseId=${courseId}&returnUrl=${encodeURIComponent(
       returnUrl
     )}`;
 
     try {
       const response = await http.post(url);
-      // console.log("Response from API:", response.data);
-      // console.log("url", url);
-      // const responseDataPayment = await axios.get(response.data);
-      // console.log("responseDataPayment", responseDataPayment.data);
-
       if (response.data) {
         const newTab = window.open(response.data, "_blank");
         if (newTab) {
@@ -132,19 +133,13 @@ export default function CourseDetailPage({ params }: any) {
         router.push(`/my-course/${courseId}`);
       }
     } catch (error) {
-      console.error("Error occurred:", error);
+      toast.error(error.response.data);
     }
   };
 
   const handleClickGotoCourse = () => {
     router.push(`/my-course/${idCourse}`);
     // setIsModalVisible(false);
-  };
-
-  // const items: MenuProps
-
-  const onShow = (e) => {
-    console.log("click ", e);
   };
 
   const breadcrumbsHome = () => {
@@ -163,7 +158,7 @@ export default function CourseDetailPage({ params }: any) {
           }}
         >
           <div>
-            <Breadcrumb className="font-semibold text-3xl py-5 px-64 flex-auto">
+            <Breadcrumb className="font-semibold text-2xl py-5 px-64 flex-auto">
               <Breadcrumb.Item>
                 <button onClick={breadcrumbsHome}>Home</button>
               </Breadcrumb.Item>
@@ -491,7 +486,7 @@ export default function CourseDetailPage({ params }: any) {
                       <li className="border-b border-solid border-[#d1e6d9] py-3.5">
                         <i className="icofont-man-in-glasses"></i>{" "}
                         <strong className="text-[#212832] text-base font-medium">
-                          Instructor
+                          Mentor
                         </strong>{" "}
                         <span className="text-[#52565b] float-right text-base font-normal">
                           {courses?.mentorName}
@@ -563,25 +558,33 @@ export default function CourseDetailPage({ params }: any) {
                     <Modal
                       title="Your Order Preview"
                       visible={isModalVisible}
-                      onOk={() => {
-                        payment(
+                      onOk={async () => {
+                        // Check if the user has checked the checkbox
+                        if (!isRefundPolicyChecked) {
+                          // Show an error message or handle it appropriately
+                          message.error(
+                            "Please acknowledge the refund policy."
+                          );
+                          return;
+                        }
+
+                        // Proceed with payment and close the modal
+                        await payment(
                           idUser,
                           idCourse,
                           "https://learnconnect.vercel.app/after-payment"
-                          // "http://localhost:3000/after-payment"
                         );
-                        // console.log("Enrollment confirmed");
                         setIsModalVisible(false);
                       }}
                       onCancel={() => {
-                        // console.log("Enrollment canceled");
                         setIsModalVisible(false);
                       }}
                       okButtonProps={{
                         style: { backgroundColor: "#309255" },
+                        disabled: !isRefundPolicyChecked, // Disable the button if the checkbox is not checked
                       }}
                     >
-                      <div className="pr-[34px]">
+                      <div className="pr-[0px]">
                         <img
                           src={courses?.imageUrl}
                           alt="course-detail"
@@ -592,7 +595,7 @@ export default function CourseDetailPage({ params }: any) {
                           <span className="font-bold">{courses?.name}</span>
                         </h3>
                         <h3 className="mt-2">
-                          Instructor Name:{" "}
+                          Mentor Name:{" "}
                           <span className="font-bold">
                             {courses?.mentorName}
                           </span>
@@ -604,6 +607,15 @@ export default function CourseDetailPage({ params }: any) {
                           </span>{" "}
                           VND
                         </h3>
+                        <Checkbox
+                          className="mt-3"
+                          onChange={(e) =>
+                            setIsRefundPolicyChecked(e.target.checked)
+                          }
+                        >
+                          I acknowledge that the platform will not issue refunds
+                          of any kind.
+                        </Checkbox>
                       </div>
                     </Modal>
                   </div>

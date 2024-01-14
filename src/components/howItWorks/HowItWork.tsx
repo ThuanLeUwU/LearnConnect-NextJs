@@ -16,6 +16,7 @@ export type TopMentor = {
   mentorName: string;
   mentorImage: string;
   averageRating: number;
+  mentorUserId: number;
 };
 
 const HowItWork = () => {
@@ -25,14 +26,13 @@ const HowItWork = () => {
 
   const onClickMentor = (data) => {
     // console.log("tao nè", data);
-    router.push(`/profile-mentor/${data.mentorInfo.mentorId}`);
+    router.push(`/profile-mentor/${data.mentorInfo.mentorUserId}`);
   };
 
-  console.log("top", topMentors);
   useEffect(() => {
     const fetchData = async () => {
       const responseData = await http.get(
-        `https://learnconnectapitest.azurewebsites.net/api/mentor/top-3-mentors`
+        `https://learnconnectserver.azurewebsites.net/api/mentor/top-3-mentors`
       );
       setTopMentors(responseData.data);
       // const sortedMentors = responseData.data.sort(
@@ -64,7 +64,6 @@ const HowItWork = () => {
       <div className="container">
         <>
           <div className="section-title shape-03 text-center">
-            <h5 className="sub-title">Over 1,235+ Course</h5>
             <h2 className="main-title">
               Top 3 Mentors has <span> Highest Rating </span>
             </h2>
@@ -82,6 +81,7 @@ const HowItWork = () => {
                       src={item.mentorInfo.mentorImage}
                       // className="w-[100px] "
                       size={120}
+                      className="border-[#e7f8ee] border "
                     />
                   </button>
                   <div className="flex flex-col items-center">

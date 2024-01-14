@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 
 const ModerationContent = () => {
   const [courses, setCourses] = useState<Course[]>([]);
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(1);
   // console.log("hhhhha", activeTab);
   const handleTabClick = (tabName: number) => {
     setActiveTab(tabName);
@@ -51,9 +51,10 @@ const ModerationContent = () => {
             page1={"/staff-page"}
             page2={"/staff-page/staff-rating"}
             page3={"/staff-page/staff-report"}
-            page4={"#"}
+            page4={"/staff-page/moderation"}
             page5={"/staff-page/list-major"}
             page6={"/staff-page/staff-revenue"}
+            page7={"/staff-page/staff-transaction"}
           />
           {/* <StaffRatingTable />
            */}
@@ -61,7 +62,7 @@ const ModerationContent = () => {
             <div className="flex justify-between items-center px-5 bg-[#e7f8ee] mb-5">
               <Breadcrumb>
                 <Breadcrumb.Item>
-                  <div className="text-start font-semibold text-4xl my-5 px-4">
+                  <div className="text-start font-semibold text-2xl my-5 px-4">
                     Courses
                   </div>
                 </Breadcrumb.Item>
@@ -69,16 +70,6 @@ const ModerationContent = () => {
             </div>
             <div className="flex justify-evenly py-4 rounded-md mb-5">
               <ul className="tabs flex space-x-24">
-                <li
-                  className={`cursor-pointer rounded-md shadow-[5px_5px_20px_10px_rgba(0,0,0,0.15)] ${
-                    activeTab === 0 ? "bg-[#309255] text-white" : "bg-white"
-                  }`}
-                  onClick={() => handleTabClick(0)}
-                >
-                  <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#309255]">
-                    Active
-                  </button>
-                </li>
                 <li
                   className={`cursor-pointer rounded-md shadow-[5px_5px_20px_10px_rgba(0,0,0,0.15)] ${
                     activeTab === 1 ? "bg-gray-500 text-white" : "bg-white"
@@ -91,11 +82,21 @@ const ModerationContent = () => {
                 </li>
                 <li
                   className={`cursor-pointer rounded-md shadow-[5px_5px_20px_10px_rgba(0,0,0,0.15)] ${
+                    activeTab === 0 ? "bg-[#309255] text-white" : "bg-white"
+                  }`}
+                  onClick={() => handleTabClick(0)}
+                >
+                  <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#309255]">
+                    Active
+                  </button>
+                </li>
+                <li
+                  className={`cursor-pointer rounded-md shadow-[5px_5px_20px_10px_rgba(0,0,0,0.15)] ${
                     activeTab === 2 ? "bg-[#ffa04e] text-white" : "bg-white"
                   }`}
                   onClick={() => handleTabClick(2)}
                 >
-                  <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-[#ffa04e]">
+                  <button className="w-32 h-11 text-center text-base font-medium border border-solid border-[#30925533] border-opacity-20 rounded-md hover:bg-orange-400">
                     Reject
                   </button>
                 </li>
@@ -128,69 +129,36 @@ const ModerationContent = () => {
                 <div className="flex flex-col gap-5 mx-5">
                   {listCourseModeration.map((item) => (
                     <>
-                      <div className="rounded-lg border-solid border-2 flex flex-row justify-between p-5 gap-5 hover:border-[#48b544] shadow-[10px_10px_20px_10px_rgba(0,0,0,0.15)] m-3">
-                        <div className="">
+                      <button
+                        onClick={() => {
+                          DetailContent(item.id);
+                        }}
+                        className="flex rounded-lg border-solid border-2 justify-between items-center p-5 gap-5 hover:border-[#48b544] shadow-[10px_10px_20px_10px_rgba(0,0,0,0.15)] m-3 text-lg text-left"
+                      >
+                        <div className="w-1/12 font-bold border-gray-300 break-all">
                           <img
                             src={item.imageUrl}
                             className="h-[120px] w-[120px] rounded-lg"
                           />
                         </div>
-                        <button
-                          onClick={() => {
-                            DetailContent(item.id);
-                          }}
-                          className="w-[400px] font-semibold text-xl text-left flex items-start"
-                        >
+                        <div className="w-4/12 bg-white p-4 font-semibold text-xl">
                           {item.name}
-                        </button>
-                        <div className="items-center flex font-semibold">
+                        </div>
+                        <div className="w-2/12 bg-white p-4">
                           {item.mentorName}
                         </div>
-                        <div className="items-center flex font-semibold">
+                        <div className="w-2/12 bg-white p-4">
                           {item.specializationName}
                         </div>
-                        <div className="items-center flex">
-                          {item.status === 0 && (
-                            <Tag
-                              color="#389E0D"
-                              style={{ border: "2px solid #389E0D" }}
-                            >
-                              Active
-                            </Tag>
-                          )}
-                          {item.status === 1 && (
-                            <Tag
-                              color="grey"
-                              style={{ border: "2px solid grey" }}
-                            >
-                              Pending
-                            </Tag>
-                          )}
+                        <div className="w-1/12 bg-white p-4">
+                          {item.status === 0 && <Tag color="green">Active</Tag>}
+                          {item.status === 1 && <Tag color="gray">Pending</Tag>}
                           {item.status === 2 && (
-                            <Tag
-                              color="#FFA04E"
-                              style={{ border: "2px solid rbg(255,160,78)" }}
-                            >
-                              Reject
-                            </Tag>
+                            <Tag color="orange">Reject</Tag>
                           )}
-                          {item.status === 3 && (
-                            <Tag
-                              color="#cf1322"
-                              style={{ border: "2px solid #cf1322" }}
-                            >
-                              Banned
-                            </Tag>
-                          )}
+                          {item.status === 3 && <Tag color="red">Banned</Tag>}
                         </div>
-                        <div className="flex flex-col justify-center items-center">
-                          <div>
-                            {item.createDate
-                              ? new Date(item.createDate).toLocaleTimeString(
-                                  "en-US"
-                                )
-                              : ""}{" "}
-                          </div>
+                        <div className="w-2/12 bg-white p-4 flex flex-col justify-center items-center">
                           <div>
                             {item.createDate
                               ? new Date(item.createDate).toLocaleDateString(
@@ -203,8 +171,15 @@ const ModerationContent = () => {
                                 )
                               : ""}{" "}
                           </div>
+                          <div>
+                            {item.createDate
+                              ? new Date(item.createDate).toLocaleTimeString(
+                                  "en-US"
+                                )
+                              : ""}{" "}
+                          </div>
                         </div>
-                      </div>
+                      </button>
                     </>
                   ))}
                 </div>

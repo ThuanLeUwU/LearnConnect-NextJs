@@ -7,11 +7,12 @@ import {
   useState,
 } from "react";
 import ".././globals.css";
-import { UserAuth } from "../context/AuthContext";
+import { UserAuth, UserRole } from "../context/AuthContext";
 import axios from "axios";
-import { Breadcrumb, Modal, message } from "antd";
+import { Breadcrumb, Input, Modal, Select, message } from "antd";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { http } from "@/api/http";
 
 export type User = {
   id: string | number;
@@ -47,6 +48,7 @@ export default function EditProfile() {
   });
   const { id, userData, refetchUser, jwtToken } = UserAuth();
   axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
+  // console.log("UserData", userData);
   const [fullName, setFullName] = useState(userData?.fullName);
   const [gender, setGender] = useState(userData?.gender || 0);
   const [phoneNumber, setPhoneNumber] = useState(userData?.phoneNumber || "");
@@ -60,6 +62,10 @@ export default function EditProfile() {
   const [profilePictureUrl, setProfilePictureUrl] = useState(
     userData?.profilePictureUrl || ""
   );
+  const [paypalId, setPaypalId] = useState("");
+  const [paypalAddress, setPaypalAddress] = useState("");
+  const [paypalId1, setPaypalId1] = useState("");
+  const [paypalAddress1, setPaypalAddress1] = useState("");
   const [isSuccessModalVisible, setIsSuccessModalVisible] = useState(false);
   const [isErrorModalVisible, setIsErrorModalVisible] = useState(false);
 
@@ -81,12 +87,35 @@ export default function EditProfile() {
   //   setFullName(e.target.value);
   // };
 
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await http.get(
+          `https://learnconnectserver.azurewebsites.net/api/mentor/get-info/${userData?.id}`
+        );
+        setPaypalId1(response.data.mentor.paypalId);
+        setPaypalAddress1(response.data.mentor.paypalAddress);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+    fetchUserData();
+  }, []);
+
   const handleGenderChange = (e: ChangeEvent<HTMLSelectElement>) => {
     setGender(parseInt(e.target.value));
   };
 
   const handlePhoneNumberChange = (e: ChangeEvent<HTMLInputElement>) => {
     setPhoneNumber(e.target.value);
+  };
+
+  const handlePayPalIdChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setPaypalId(e.target.value);
+  };
+
+  const handlePayPalAddressChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setPaypalAddress(e.target.value);
   };
 
   const handleBioDescriptionChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -103,6 +132,8 @@ export default function EditProfile() {
       setGender(parsedData.gender);
       setPhoneNumber(parsedData.phoneNumber);
       setBioDescription(parsedData.bioDescription);
+      setPaypalId(parsedData.paypalId);
+      setPaypalAddress(parsedData.paypalAddress);
     }
   }, []);
 
@@ -115,6 +146,8 @@ export default function EditProfile() {
       gender,
       phoneNumber,
       bioDescription,
+      paypalId,
+      paypalAddress,
     };
     localStorage.setItem("editProfileData", JSON.stringify(dataToSave));
   }, [
@@ -125,6 +158,8 @@ export default function EditProfile() {
     gender,
     phoneNumber,
     bioDescription,
+    paypalId,
+    paypalAddress,
   ]);
 
   useEffect(() => {
@@ -132,6 +167,72 @@ export default function EditProfile() {
       localStorage.removeItem("editProfileData");
     };
   }, []);
+
+  // const handleSubmit = (e: FormEvent) => {
+  //   e.preventDefault();
+  //   if (!fullName || !phoneNumber || !bioDescription) {
+  //     toast.error("Please Fill In All Required Fields.");
+  //     return;
+  //   }
+  //   if (phoneNumber.length !== 10) {
+  //     toast.error("Phone Number Must Be 10 Digits.");
+  //     return;
+  //   }
+  //   const updatedUserData = {
+  //     id: id,
+  //     password: password,
+  //     email: email,
+  //     role: roleUser,
+  //     fullName: fullName,
+  //     phoneNumber: phoneNumber,
+  //     gender: gender || 3,
+  //     bioDescription: bioDescription,
+  //     profilePictureUrl: profilePictureUrl,
+  //     status: status,
+  //     paypalId: paypalId,
+  //     paypalAddress: paypalAddress,
+  //   };
+  //   console.log("usder data:", updatedUserData);
+  //   axios
+  //     .put(
+  //       `https://learnconnectserver.azurewebsites.net/api/user/${id}`,
+  //       updatedUserData
+  //     )
+  //     .then((response) => {
+  //       refetchUser();
+  //       setTimeout(() => {
+  //         toast.success("Edit Successfully!!!");
+  //       });
+  //       if (userData?.role === 2) {
+  //         router.push(`/profile-mentor/${id}`);
+  //       } else {
+  //         router.push(`/profile`);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       setTimeout(() => {
+  //         toast.error("Edit Unsuccessfully!!!");
+  //       });
+  //       if (userData?.role === 2) {
+  //         router.push(`/profile-mentor/${id}`);
+  //       } else {
+  //         router.push(`/profile`);
+  //       }
+  //       if (error.response) {
+  //         console.error("Server responded with an error:", error.response.data);
+  //         console.error("Status code:", error.response.status);
+  //         console.error("Request config:", error.response.config);
+  //       } else if (error.request) {
+  //         console.error(
+  //           "Request was made but no response was received:",
+  //           error.request
+  //         );
+  //       } else {
+  //         console.error("Error setting up the request:", error.message);
+  //       }
+  //       console.error("Error updating profile:", error);
+  //     });
+  // };
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -143,36 +244,44 @@ export default function EditProfile() {
       toast.error("Phone Number Must Be 10 Digits.");
       return;
     }
-    const updatedUserData = {
-      id: id,
-      password: password,
-      email: email,
-      role: roleUser,
-      fullName: fullName,
-      phoneNumber: phoneNumber,
-      gender: gender || 3,
-      bioDescription: bioDescription,
-      profilePictureUrl: profilePictureUrl,
-      status: status,
-    };
-    // console.log("usder data:", updatedUserData);
+    const formData = new FormData();
+    formData.append("gender", gender.toString());
+    formData.append("phoneNumber", phoneNumber.toString());
+    formData.append("biography", bioDescription);
+    formData.append("paypalId", paypalId.toString() || paypalId1.toString());
+    formData.append("paypalAddress", paypalAddress || paypalAddress1);
+
     axios
       .put(
-        `https://learnconnectapitest.azurewebsites.net/api/user/${id}`,
-        updatedUserData
+        `https://learnconnectserver.azurewebsites.net/api/user/update-info-user?id=${id}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       )
       .then((response) => {
         refetchUser();
         setTimeout(() => {
           toast.success("Edit Successfully!!!");
         });
-        router.push("/profile");
+        if (userData?.role === 2) {
+          router.push(`/profile-mentor/${id}`);
+        } else {
+          router.push(`/profile`);
+        }
       })
       .catch((error) => {
         setTimeout(() => {
           toast.error("Edit Unsuccessfully!!!");
+          // toast.error(error.response.data);
         });
-        router.push("/profile");
+        if (userData?.role === 2) {
+          router.push(`/profile-mentor/${id}`);
+        } else {
+          router.push(`/profile`);
+        }
         if (error.response) {
           console.error("Server responded with an error:", error.response.data);
           console.error("Status code:", error.response.status);
@@ -189,10 +298,29 @@ export default function EditProfile() {
       });
   };
   const breadcrumbsHome = () => {
-    router.push("/");
+    switch (role) {
+      case UserRole.Student:
+        router.push("/");
+        break;
+      case UserRole.Mentor:
+        router.push("/instructorcourses");
+        break;
+      case UserRole.Staff:
+        router.push("/staff-page");
+        break;
+      case UserRole.Admin:
+        router.push("/user-manage");
+        break;
+      default:
+        break;
+    }
   };
   const breadcrumbsProfile = () => {
-    router.push("/profile");
+    if (userData?.role === 2) {
+      router.push(`/profile-mentor/${id}`);
+    } else {
+      router.push(`/profile`);
+    }
   };
 
   return (
@@ -205,7 +333,7 @@ export default function EditProfile() {
           }}
         >
           <div>
-            <Breadcrumb className="font-semibold text-3xl py-5 px-64 flex-auto">
+            <Breadcrumb className="font-semibold text-2xl py-5 px-64 flex-auto">
               <Breadcrumb.Item>
                 <button onClick={breadcrumbsHome}>Home</button>
               </Breadcrumb.Item>
@@ -228,25 +356,8 @@ export default function EditProfile() {
       <div className="container">
         <div className="bg-[#fff]">
           <div className="container mx-auto max-w-screen-lg py-20">
-            <div className="pt-6 px-10 pb-16 border border-solid border-opacity-20 border-[#30925533] rounded-lg">
+            <div className="pt-6 px-10 pb-16 border border-solid border-opacity-20 border-[#30925533] rounded-lg shadow-lg">
               <form onSubmit={handleSubmit}>
-                {/* <div className="mb-6">
-                <label
-                  htmlFor="first_name"
-                  className="block mb-2 text-base font-medium text-[#000]"
-                >
-                  Full Name
-                </label>
-                <input
-                  type="text"
-                  id="first_name"
-                  value={fullName}
-                  onChange={handleFullNameChange}
-                  className="bg-[#fff] border border-[#30925533] text-[#000] text-base rounded-lg block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-[#309255]"
-                  placeholder="Your Name"
-                  required
-                />
-              </div> */}
                 <div className="mb-6">
                   <label
                     htmlFor="gender"
@@ -300,6 +411,44 @@ export default function EditProfile() {
                     required
                   />
                 </div>
+                {userData?.role === 2 && (
+                  <>
+                    <div className="mb-6">
+                      <label
+                        htmlFor="paypalId"
+                        className="block mb-2 text-base font-medium text-[#000]"
+                      >
+                        PayPal ID
+                      </label>
+                      <input
+                        type="number"
+                        id="paypalId"
+                        defaultValue={paypalId1}
+                        onChange={handlePayPalIdChange}
+                        className="bg-[#fff] border border-[#30925533] text-[#000] text-base rounded-lg block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-[#309255]"
+                        placeholder="Your Paypal ID"
+                        required
+                      />
+                    </div>
+                    <div className="mb-6">
+                      <label
+                        htmlFor="paypalAddress"
+                        className="block mb-2 text-base font-medium text-[#000]"
+                      >
+                        Paypal Address:
+                      </label>
+                      <input
+                        id="paypalAddress"
+                        defaultValue={paypalAddress1}
+                        onChange={handlePayPalAddressChange}
+                        className="bg-[#fff] border border-[#30925533] text-[#000] text-base rounded-lg block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-[#309255]"
+                        placeholder="Your Email Paypal Address"
+                        required
+                      />
+                    </div>
+                  </>
+                )}
+
                 <button
                   type="submit"
                   className="bg-[#309255] text-[18px] px-[35px] py-[15px] mt-[15px] rounded-lg text-[#fff] hover:bg-[#000] transition-all duration-300 ease-in-out delay-0"

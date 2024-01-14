@@ -3,7 +3,7 @@ import Image from "next/image";
 import headerStyles from "./styles/styles.module.scss";
 import "../app/./globals.css";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { UserAuth, UserRole } from "@/app/context/AuthContext";
 import { RegisterForm } from "@/components/registerForm";
 import { Empty, Modal, Space, Button as ButtonAntd } from "antd";
@@ -22,6 +22,8 @@ export type Notification = {
   isRead: boolean;
   timeStamp: string;
   userId: number;
+  notification: any;
+  countUnRead: any;
 };
 const Header = () => {
   const [click, setClick] = useState(false);
@@ -33,6 +35,9 @@ const Header = () => {
   const [notificationContent, setNotificationContent] = useState<
     Notification[]
   >([]);
+  const [notiUnread, setNotiUnread] = useState<number>(0);
+  const refNoti = useRef(notiUnread);
+
   const [form] = Form.useForm();
 
   const [isLogin, setIsLogin] = useState(false);
@@ -109,19 +114,55 @@ const Header = () => {
     }
   };
 
+  // const [previousNotificationLength, setPreviousNotificationLength] =
+  //   useState<number>(0);
+  // console.log("hmmssmss", previousNotificationLength);
+  // const [NotificationLength, setNotificationLength] = useState<number>(0);
+
+  const fetchNotificationData = () => {
+    http
+      .get(`/notification/byUserId/${id}`)
+      .then((response) => {
+        setNotificationContent(response.data[0].notification);
+        if (response.data[0].countUnRead > refNoti.current) {
+          toast.info("You have new notification!");
+          setNotiUnread(response.data[0].countUnRead);
+          refNoti.current = response.data[0].countUnRead;
+        }
+        setNotiUnread(response.data[0].countUnRead);
+      })
+      .catch((err) => console.error(err));
+
+    // setNotiUnread(response.data[0].countUnRead);
+
+    // setNotificationLength(response.data[0].notification.length);
+  };
+
   useEffect(() => {
-    const fetchNotificationData = async () => {
-      try {
-        const response = await http.get(`/notification/byUserId/${id}`);
-        setNotificationContent(response.data);
-      } catch (error) {
-        console.error("Error fetching Notification Data:", error);
-      }
-    };
     if (id) {
       fetchNotificationData();
+      // const intervalId = setInterval(() => {
+      //   fetchNotificationData();
+      //   // checkNotificationLengthChange();
+      // }, 3000);
+
+      // // Clear interval khi component unmount
+      // return () => clearInterval(intervalId);
     }
-  }, [id]);
+  }, [id, userData]);
+
+  // const checkNotificationLengthChange = () => {
+  //   console.log("hmmm", notificationContent.length);
+
+  //   // Kiểm tra xem độ dài thông báo đã thay đổi hay không
+  //   if (notificationContent.length !== previousNotificationLength) {
+  //     // console.log("hmmmssss", previousNotificationLength);
+  //     // Thông báo sự thay đổi bằng toast
+  //     toast.success("Có thông báo mới!");
+  //     // Cập nhật giá trị độ dài thông báo
+  //     setPreviousNotificationLength(notificationContent.length);
+  //   }
+  // };
 
   const handleClickOutside = (event: MouseEvent) => {
     const dropdown = document.getElementById("dropdown-menu");
@@ -185,7 +226,7 @@ const Header = () => {
     formData.append("password", data.password);
     try {
       await http.post(
-        `https://learnconnectapitest.azurewebsites.net/api/user/create-account-staff`,
+        `https://learnconnectserver.azurewebsites.net/api/user/create-account-staff`,
         formData,
         {
           headers: {
@@ -226,7 +267,7 @@ const Header = () => {
               {userData?.role === 2 ? (
                 <button
                   onClick={handleSwitchRole}
-                  className="text-white border border-solid border-[#309255] shadow-lg border-opacity-20 rounded-lg bg-[#309255] py-1 px-3"
+                  className="text-black border-2 border-[#309255] shadow-lg hover:text-white hover:bg-[#309255] rounded-lg bg-[#fff] py-1 px-3"
                 >
                   Switch role {role === 3 ? "mentor" : "student"}
                 </button>
@@ -235,7 +276,7 @@ const Header = () => {
               )}
               {userData?.role === 0 ? (
                 <button
-                  className="text-white border border-solid border-[#309255] border-opacity-20 rounded-lg bg-[#309255] py-1 px-3"
+                  className="text-black border-2 border-[#309255] shadow-lg hover:text-white hover:bg-[#309255] rounded-lg bg-[#fff] py-1 px-3"
                   onClick={showModal}
                 >
                   Create Account for staff
@@ -245,7 +286,7 @@ const Header = () => {
               )}
               <Modal
                 title="Create Account for Staff"
-                visible={isModalVisible}
+                open={isModalVisible}
                 onCancel={() => setIsModalVisible(false)}
                 footer={false}
               >
@@ -348,7 +389,24 @@ const Header = () => {
                 </Form>
               </Modal>
               <li className={`${headerStyles.header_notification}`}>
-                <button onClick={toggleDropdownNotification}>
+                <button
+                  onClick={toggleDropdownNotification}
+                  className="relative"
+                >
+                  {notiUnread !== 0 && (
+                    <>
+                      {notiUnread <= 9 ? (
+                        <div className="absolute top-0 right-0 bg-red-500 w-5 h-5 text-white rounded-full text-[12px] px-1 flex items-center justify-center">
+                          {notiUnread}
+                        </div>
+                      ) : (
+                        <div className="absolute top-0 right-0 bg-red-500 w-5 h-5 text-white rounded-full text-[10px] px-1 flex items-center justify-center">
+                          {/* {notiUnread?.countUnRead} */} 9+
+                        </div>
+                      )}
+                    </>
+                  )}
+
                   <AiFillBell />
                 </button>
                 {notification && (
@@ -361,7 +419,7 @@ const Header = () => {
                         {notificationContent.slice(0, 7).map((item) => {
                           const date = new Date(item.timeStamp);
                           const now = Date.now();
-                          const tmp = (now - date.getTime()) / 1000;
+                          const tmp = Math.round((now - date.getTime()) / 1000);
 
                           let timeString = `${tmp} second${
                             tmp > 1 ? "s" : ""
@@ -375,7 +433,7 @@ const Header = () => {
                               Math.floor(tmp / 86400) > 1 ? "s" : ""
                             } ago`;
                           } else if (tmp > 3600) {
-                            timeString = `${Math.floor(tmp / 3600)} hours${
+                            timeString = `${Math.floor(tmp / 3600)} hour${
                               Math.floor(tmp / 3600) > 1 ? "s" : ""
                             } ago`;
                           } else if (tmp > 60) {
@@ -459,7 +517,11 @@ const Header = () => {
                         <>
                           <li>
                             <Link
-                              href="/profile"
+                              href={
+                                userData?.role === 2
+                                  ? `/profile-mentor/${userData?.id}`
+                                  : "/profile"
+                              }
                               className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-tl-lg rounded-tr-lg hover:rounded-bl-lg hover:rounded-br-lg"
                               onClick={closeDropdown}
                             >
@@ -472,7 +534,16 @@ const Header = () => {
                               className="block px-4 py-2 text-sm text-gray-700  hover:bg-gray-100 rounded-tl-lg rounded-tr-lg hover:rounded-bl-lg hover:rounded-br-lg"
                               onClick={closeDropdown}
                             >
-                              Transactions
+                              Transaction History
+                            </Link>
+                          </li>
+                          <li>
+                            <Link
+                              href="/progress"
+                              className="block px-4 py-2 text-sm text-gray-700  hover:bg-gray-100 rounded-tl-lg rounded-tr-lg hover:rounded-bl-lg hover:rounded-br-lg"
+                              onClick={closeDropdown}
+                            >
+                              Progress
                             </Link>
                           </li>
                         </>
@@ -626,12 +697,12 @@ const Header = () => {
                         </li>
                         <li
                           className={`${
-                            activeTab === "favorites" &&
+                            activeTab === "schedule" &&
                             "border-b-4 border-[#309255]"
                           }`}
                         >
-                          <button onClick={() => handleTabChange("favorites")}>
-                            My Favorites
+                          <button onClick={() => handleTabChange("schedule")}>
+                            My Schedule
                           </button>
                         </li>
                         <li
@@ -651,7 +722,7 @@ const Header = () => {
 
                     <div>
                       {userData?.role == 3 ? (
-                        <div className={`${headerStyles.regis_btn}`}>
+                        <div className="border-2 border-[#309255] px-2 py-1 rounded-lg bg-[#fff] hover:bg-[#309255] hover:text-white mr-5">
                           <Button onClick={handleClickBecomeMentor}>
                             Become a Mentor
                           </Button>

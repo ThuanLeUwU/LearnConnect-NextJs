@@ -159,6 +159,32 @@
   transition: all 0.3s ease 0s;
 }
 
+.sidebar_item {
+  background-color: #3c9d60;
+  border-color: #3c9d60;
+
+  &::before {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+.sidebar_item::before {
+  position: absolute;
+  content: "";
+  width: 4px;
+  height: 25px;
+  background-color: #fff;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  top: 50%;
+  left: -24px;
+  transform: translateY(-50%);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease 0s;
+}
+
 .body_container {
   padding: 0 15px;
 }

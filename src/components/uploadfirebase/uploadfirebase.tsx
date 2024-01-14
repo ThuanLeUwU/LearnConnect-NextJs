@@ -4,6 +4,7 @@ import { ref, uploadBytesResumable, getDownloadURL } from "@firebase/storage";
 import { initializeApp } from "firebase/app";
 import { getStorage } from "@firebase/storage";
 import { app } from "../../app/firebase";
+import { toast } from "sonner";
 
 // const firebaseConfig = {
 //     apiKey: "AIzaSyCEfLC8QnGWe2r0qAVTNatJqDK7ezZcICk",
@@ -28,9 +29,27 @@ const UploadFirebase = ({
   const [progress, setProgress] = useState(0);
 
   const handleFileChange = (e) => {
-    if (e.target.files[0]) {
-      handleUpload(e.target.files[0]);
+    const selectedFile = e.target.files[0];
+
+    // Check if a file is selected
+    if (selectedFile) {
+      // Check if the file size is within the allowed limit (300MB)
+      const maxSizeInBytes = 200 * 1024 * 1024; // 300MB
+
+      if (selectedFile.size <= maxSizeInBytes) {
+        // File size is within the limit, proceed with the upload
+        handleUpload(selectedFile);
+      } else {
+        // File size exceeds the limit, handle accordingly (display an error, etc.)
+        toast.error("File size exceeds the limit (200MB).");
+        // You may want to reset the file input or show an error message to the user
+        // For now, I'm just resetting the input value to clear the selected file
+        e.target.value = null;
+      }
     }
+    // if (e.target.files[0]) {
+    //   handleUpload(e.target.files[0]);
+    // }
   };
 
   const handleUpload = (video) => {
@@ -54,6 +73,7 @@ const UploadFirebase = ({
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
             // console.log("File available at", downloadURL);
             returnUrl(downloadURL);
+            setProgress(0);
           });
         }
       );
@@ -64,13 +84,14 @@ const UploadFirebase = ({
     <div>
       <label
         htmlFor="fileInput"
-        className="ant-btn css-dev-only-do-not-override-pr0fja ant-btn-default"
+        className="border-2 rounded-md px-3 py-1 hover:border-[#309255] hover:border-1 "
       >
         <input
           type="file"
           id="fileInput"
           onChange={handleFileChange}
           style={{ display: "none" }}
+          accept="video/*"
         />
         <span>Upload</span>
       </label>

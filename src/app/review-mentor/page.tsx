@@ -51,24 +51,26 @@ const Reviews = () => {
       title: "Courses",
       href: "/instructorcourses",
     },
-    // {
-    //   image: "/menu-icon/icon-2.png",
-    //   href: "/dashboard",
-    // },
+    {
+      image: "/menu-icon/file-edit.png",
+      title: "Requests",
+      href: "/request-history",
+    },
     {
       image: "/menu-icon/feedback-review.png",
       title: "Reviews",
       href: "/review-mentor",
     },
+
     {
-      image: "/menu-icon/money-check-edit.png",
-      title: "Revenues",
-      href: "/revenue",
+      image: "/menu-icon/receipt.png",
+      title: "Transaction History",
+      href: "/order-history",
     },
     {
-      image: "/menu-icon/file-edit.png",
-      title: "Requests",
-      href: "/request-history",
+      image: "/menu-icon/money-check-edit.png",
+      title: "Statistic",
+      href: "/revenue",
     },
   ];
 
@@ -96,7 +98,7 @@ const Reviews = () => {
           <Spin size="large" />
         </div>
       ) : (
-        <div className={`${InstructorCourseStyle.content_wrapper}`}>
+        <div className={`${InstructorCourseStyle.content_wrapper} `}>
           <div className={`${InstructorCourseStyle.sidebar_wrapper}`}>
             <div className={`${InstructorCourseStyle.sidebar_list}`}>
               {menuItem.map((item, index) => {
@@ -126,8 +128,8 @@ const Reviews = () => {
               >
                 <Breadcrumb>
                   <Breadcrumb.Item>
-                    <div className="text-start font-semibold text-4xl my-5 px-4">
-                      Ratings About Me
+                    <div className="text-start font-semibold text-2xl my-5 px-4">
+                      Reviews About Me
                     </div>
                   </Breadcrumb.Item>
                 </Breadcrumb>
