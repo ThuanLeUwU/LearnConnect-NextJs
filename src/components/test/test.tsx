@@ -387,17 +387,20 @@ const Quiz = (props) => {
       title: "Score",
       dataIndex: "score",
       key: "score",
-      render: (text, record) => (
-        <span>
-          {
-            resultAllTest.find((score) => score.testId === record.test.id)
-              ?.score
-          }
-        </span>
-      ),
+      render: (text, record) => {
+        const score = resultAllTest.find(
+          (score) => score.testId === record.test.id
+        )?.score;
+
+        if (score !== undefined && score !== null) {
+          return <span>{score}/100</span>;
+        } else {
+          return <span>-</span>;
+        }
+      },
     },
     {
-      title: "Last Submit",
+      title: "Last Submitted",
       dataIndex: "timeSubmit",
       key: "timeSubmit",
       render: (text, record) => {
@@ -412,6 +415,34 @@ const Quiz = (props) => {
               : "Not submitted"}
           </span>
         );
+      },
+    },
+    {
+      title: "Time",
+      dataIndex: "timeSpent",
+      key: "timeSpent",
+      render: (text, record) => {
+        const timeSpent: number | undefined = Number(
+          resultAllTest.find((time) => time.testId === record.test.id)
+            ?.timeSpent
+        );
+
+        if (timeSpent) {
+          const secondsDifference = Math.floor(timeSpent / 1000);
+
+          if (secondsDifference < 60) {
+            // If less than 60 seconds, display only seconds
+            return <span>{`${secondsDifference}s`}</span>;
+          } else {
+            // If 60 seconds or more, display minutes and seconds
+            const minutes = Math.floor(secondsDifference / 60);
+            const remainingSeconds = secondsDifference % 60;
+
+            return <span>{`${minutes}m ${remainingSeconds}s`}</span>;
+          }
+        } else {
+          return <span>-</span>;
+        }
       },
     },
     {

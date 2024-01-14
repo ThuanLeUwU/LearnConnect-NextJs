@@ -47,8 +47,8 @@ const StudyProgress = () => {
     //   router.push(`/`);
     // }
   });
-  const { loading, transaction, totalPages, currentPage, setCurrentPage } =
-    useDataPaymentFetcher();
+  const [loading, setLoading] = useState(true);
+
   const { jwtToken } = UserAuth();
   axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
 
@@ -64,6 +64,7 @@ const StudyProgress = () => {
         );
         setProgress(responseData.data);
         setDetailProgress(responseData.data.courseInfo);
+        setLoading(false);
       } catch (err) {
         console.log(err);
       }
@@ -132,13 +133,13 @@ const StudyProgress = () => {
       ),
       sortDirections: ["ascend", "descend"] as SortOrder[],
     },
-    {
-      title: "Score",
-      dataIndex: "grade",
-      key: "grade",
-      sorter: (a, b) => a.grade - b.grade,
-      sortDirections: ["ascend", "descend"] as SortOrder[],
-    },
+    // {
+    //   title: "Score",
+    //   dataIndex: "grade",
+    //   key: "grade",
+    //   sorter: (a, b) => a.grade - b.grade,
+    //   sortDirections: ["ascend", "descend"] as SortOrder[],
+    // },
     {
       title: "Enroll Date",
       dataIndex: "startDate",

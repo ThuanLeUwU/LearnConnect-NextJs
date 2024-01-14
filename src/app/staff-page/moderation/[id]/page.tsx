@@ -460,9 +460,11 @@ const DetailsContent = ({ params }: any) => {
   const [activeTab, setActiveTab] = useState("tab1");
   const handleTabClick = (tabName: string) => {
     setActiveTab(tabName);
+    setShowTest(false);
   };
 
   const [listQuestion, setListQuestion] = useState<Test[]>([]);
+  // console.log("Tao nefff", listQuestion);
   const [allQuestions, setAllQuestions] = useState<Test[]>([]);
   const [idTest, setIdTest] = useState<Test>();
   const [testStatus, setTestStatus] = useState<number>(0);
@@ -503,6 +505,7 @@ const DetailsContent = ({ params }: any) => {
           http
             .get(`/test/get-tests-by-course?courseId=${idCourse}`)
             .then((response) => {
+              setShowTest(false);
               setListQuestion(response.data);
               setAllQuestions(response.data[0].questions);
               setIdTest(response.data[0].test.id);
@@ -537,6 +540,7 @@ const DetailsContent = ({ params }: any) => {
           http
             .get(`/test/get-tests-by-course?courseId=${idCourse}`)
             .then((response) => {
+              setShowTest(false);
               setListQuestion(response.data);
               setAllQuestions(response.data[0].questions);
               setIdTest(response.data[0].test.id);
@@ -553,6 +557,127 @@ const DetailsContent = ({ params }: any) => {
       console.log(e);
     }
   };
+  const [oneTest, setOneTest] = useState<Test>();
+  const [showTest, setShowTest] = useState(false);
+
+  const handleShowTest = (record) => {
+    setShowTest(true);
+    // setSelectedTab(); // Start with the first test
+    setOneTest(record);
+    setIdTest(record.test.id);
+  };
+
+  const columns2 = [
+    {
+      title: "Title",
+      dataIndex: ["test", "title"],
+      key: "test.title",
+    },
+
+    {
+      title: "Total Questions",
+      dataIndex: ["test", "totalQuestion"],
+      key: "totalQuestion",
+      sorter: (a, b) => a.test.totalQuestion - b.test.totalQuestion,
+    },
+    {
+      title: "Create Date",
+      dataIndex: ["test", "createDate"],
+      key: "description",
+      render: (text, record) => (
+        <span>{moment(record.test.createDate).locale("en").format("LLL")}</span>
+      ),
+      sorter: (a, b) =>
+        moment(a.test.createDate).isBefore(b.test.createDate) ? -1 : 1,
+    },
+    {
+      title: "Status",
+      dataIndex: ["test", "status"],
+      key: "status",
+      render: (text, record) => getStatusText(record.test.status),
+      sorter: (a, b) => a.test.status - b.test.status,
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (text, record) => (
+        <Button onClick={() => handleShowTest(record)}>View Details</Button>
+      ),
+    },
+    // {
+    //   title: "Score",
+    //   dataIndex: "score",
+    //   key: "score",
+    //   render: (text, record) => {
+    //     const score = resultAllTest.find(
+    //       (score) => score.testId === record.test.id
+    //     )?.score;
+
+    //     if (score !== undefined && score !== null) {
+    //       return <span>{score}/100</span>;
+    //     } else {
+    //       return <span>-</span>;
+    //     }
+    //   },
+    // },
+    // {
+    //   title: "Last Submitted",
+    //   dataIndex: "timeSubmit",
+    //   key: "timeSubmit",
+    //   render: (text, record) => {
+    //     const timeSubmit = resultAllTest.find(
+    //       (timeSubmit) => timeSubmit.testId === record.test.id
+    //     )?.timeSubmit;
+
+    //     return (
+    //       <span>
+    //         {timeSubmit
+    //           ? format(new Date(timeSubmit), "dd/MM/yyyy HH:mm:ss")
+    //           : "Not submitted"}
+    //       </span>
+    //     );
+    //   },
+    // },
+    // {
+    //   title: "Action",
+    //   key: "action",
+    //   render: (text, record) => {
+    //     const testScore = resultAllTest.find(
+    //       (score) => score.testId === record.test.id
+    //     )?.score;
+
+    //     return (
+    //       <span>
+    //         {testScore !== undefined ? (
+    //           <>
+    //             {/* <Button onClick={() => handleDoAgain(record)}>
+    //               Try It Again
+    //             </Button> */}
+    //             <Button onClick={() => handleReviewQuiz(record)}>Review</Button>
+    //           </>
+    //         ) : (
+    //           <Button onClick={() => handleStartQuiz(record)}>
+    //             Start Quiz
+    //           </Button>
+    //         )}
+    //       </span>
+    //     );
+    //   },
+    // },
+    // {
+    //   title: "Action",
+    //   key: "action",
+    //   render: (text, record) => (
+    //     <span>
+    //       {/* {record.test.status === 0 ? ( */}
+    //       <Button onClick={() => handleStartQuiz(record)}>Start Quiz</Button>
+    //       {/* ) : ( */}
+    //       <Button onClick={() => handleReviewQuiz(record)}>Review</Button>
+    //       {/* )} */}
+    //     </span>
+    //   ),
+    // },
+  ];
 
   return (
     <>
@@ -780,56 +905,66 @@ const DetailsContent = ({ params }: any) => {
                       <Spin size="large" />
                     ) : (
                       <>
-                        {listQuestion.map((item) => (
-                          <div key={item.test.id} className="mb-4 mt-6">
+                        <Table
+                          dataSource={listQuestion}
+                          columns={columns2}
+                          className="shadow-[5px_15px_25px_10px_rgba(0,0,0,0.15)] mt-2 rounded-lg"
+                        />
+                        {showTest && (
+                          <div key={oneTest?.test.id} className="mb-4 mt-6">
                             <div className="flex flex-col">
                               <div className="flex flex-row justify-end">
                                 <Space>
-                                  {item.test.status === 1 &&
-                                    allQuestions.length !== 0 && (
-                                      <>
-                                        {" "}
-                                        <button
-                                          onClick={() => {
-                                            handleApproveTestModal(
-                                              item.test.id
-                                            );
-                                          }}
-                                          className="bg-white text-black border rounded-lg border-[#4caf50] hover:bg-[#4caf50] hover:text-white transition duration-300 px-3 py-1"
-                                        >
-                                          Approve
-                                        </button>
-                                      </>
-                                    )}
-                                  <button
-                                    onClick={() => {
-                                      handleRejectTestModal(item.test.id);
-                                    }}
-                                    className="bg-white text-black border rounded-lg border-[#ffa04e] hover:bg-[#ffa04e] hover:text-white transition duration-300 px-3 py-1"
-                                  >
-                                    Reject
-                                  </button>
+                                  {oneTest?.test.status === 1 && (
+                                    <>
+                                      {allQuestions.length !== 0 && (
+                                        <>
+                                          {" "}
+                                          <button
+                                            onClick={() => {
+                                              handleApproveTestModal(
+                                                oneTest?.test.id
+                                              );
+                                            }}
+                                            className="bg-white text-black border rounded-lg border-[#4caf50] hover:bg-[#4caf50] hover:text-white transition duration-300 px-3 py-1"
+                                          >
+                                            Approve
+                                          </button>
+                                        </>
+                                      )}{" "}
+                                      <button
+                                        onClick={() => {
+                                          handleRejectTestModal(
+                                            oneTest?.test.id
+                                          );
+                                        }}
+                                        className="bg-white text-black border rounded-lg border-[#ffa04e] hover:bg-[#ffa04e] hover:text-white transition duration-300 px-3 py-1"
+                                      >
+                                        Reject
+                                      </button>
+                                    </>
+                                  )}
                                 </Space>{" "}
                               </div>
                               <h3 className="text-xl font-semibold mt-2 text-center ">
                                 <div className=" flex flex-col items-center justify-center mb-2">
                                   <div className="flex flex-row justify-center items-center gap-2 ">
                                     <div className="text-3xl flex flex-col gap-2">
-                                      <div>{item.test.title} </div>
+                                      <div>{oneTest?.test.title} </div>
                                       <div className="flex justify-center items-center text-2xl">
-                                        {getStatusText(item.test.status)}
+                                        {getStatusText(oneTest?.test.status)}
                                       </div>
                                     </div>
                                   </div>
 
                                   <br />
-                                  <div> {item.test.description}</div>
+                                  <div> {oneTest?.test.description}</div>
                                 </div>
                               </h3>
                             </div>
 
                             {/* {item.questions.length == 0 ? <></> : <></>} */}
-                            {item.questions.map((q, index) => (
+                            {oneTest?.questions.map((q, index) => (
                               <div
                                 key={q.question.id}
                                 className="mb-2 my-8 p-4 border-2 rounded-lg border-gray-200 shadow-[10px_10px_20px_10px_rgba(0,0,0,0.15)] "
@@ -863,7 +998,7 @@ const DetailsContent = ({ params }: any) => {
                             ))}
                             <></>
                           </div>
-                        ))}
+                        )}
                       </>
                     )}
                   </>

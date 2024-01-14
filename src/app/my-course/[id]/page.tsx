@@ -372,21 +372,21 @@ export default function AfterEnroll({ params }: any) {
   };
 
   const [performance, setPerformance] = useState<Performance>();
-  useEffect(() => {
-    try {
-      const fetchData = async () => {
-        const responseData = await http.get(
-          `/learning-performance/user/${id}/course/${idCourse}`
-        );
-        setPerformance(responseData?.data);
-        setScore(responseData?.data.score);
-        // console.log("performance", performance);
-      };
-      fetchData();
-    } catch (err) {
-      console.error(err);
-    }
-  }, [score]);
+  // useEffect(() => {
+  //   try {
+  //     const fetchData = async () => {
+  //       const responseData = await http.get(
+  //         `/learning-performance/user/${id}/course/${idCourse}`
+  //       );
+  //       setPerformance(responseData?.data);
+  //       setScore(responseData?.data.score);
+  //       // console.log("performance", performance);
+  //     };
+  //     fetchData();
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // }, [score]);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const [maxTime, setMaxTime] = useState<number>(0); //truyen maxTime tu API response
