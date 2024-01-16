@@ -83,6 +83,7 @@ const OrderHistory = () => {
 
   const [eachCourse, setEachCourse] = useState<Revenue[]>([]);
   const [date, setDate] = useState<any>("");
+  const router = useRouter();
 
   useEffect(() => {
     try {
@@ -126,8 +127,6 @@ const OrderHistory = () => {
       href: "/revenue",
     },
   ];
-
-  const router = useRouter();
 
   const columns = [
     {
