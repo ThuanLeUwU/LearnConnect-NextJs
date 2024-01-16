@@ -32,7 +32,7 @@ const HowItWork = () => {
   useEffect(() => {
     const fetchData = async () => {
       const responseData = await http.get(
-        `https://learnconnectserver.azurewebsites.net/api/mentor/top-3-mentors`
+        `https://learnconnectapifpt.azurewebsites.net/api/mentor/top-3-mentors`
       );
       setTopMentors(responseData.data);
       // const sortedMentors = responseData.data.sort(

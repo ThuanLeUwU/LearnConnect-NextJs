@@ -109,7 +109,7 @@ const StaffRevenue = () => {
   const handleRePay = () => {
     try {
       http.post(
-        `https://learnconnectserver.azurewebsites.net/api/PayPal/pay-revenue?mentorId=${payToMentor}`,
+        `https://learnconnectapifpt.azurewebsites.net/api/PayPal/pay-revenue?mentorId=${payToMentor}`,
         {
           headers: {
             "Content-Type": "multipart/form-data",
@@ -120,7 +120,7 @@ const StaffRevenue = () => {
       //   toast.success("Payment Successfully !!!");
       //   http
       //     .get(
-      //       "https://learnconnectserver.azurewebsites.net/api/payment-transaction/aoumt-to-pay-of-mentors-today"
+      //       "https://learnconnectapifpt.azurewebsites.net/api/payment-transaction/aoumt-to-pay-of-mentors-today"
       //     )
       //     .then((res) => {
       //       setRevenueOneMentor(res.data);
@@ -187,7 +187,7 @@ const StaffRevenue = () => {
   //   try {
   //     http
   //       .get(
-  //         "https://learnconnectserver.azurewebsites.net/api/payment-transaction/aoumt-to-pay-of-mentors-today"
+  //         "https://learnconnectapifpt.azurewebsites.net/api/payment-transaction/aoumt-to-pay-of-mentors-today"
   //       )
   //       .then((res) => {
   //         setRevenueOneMentor(res.data);
@@ -395,7 +395,7 @@ const StaffRevenue = () => {
     try {
       http
         .get(
-          `https://learnconnectserver.azurewebsites.net/api/payment-transaction/statistic-staff?filterType=${
+          `https://learnconnectapifpt.azurewebsites.net/api/payment-transaction/statistic-staff?filterType=${
             selected2 === "Last Week" ? "week" : selected2
           }`
         )
@@ -497,7 +497,7 @@ const StaffRevenue = () => {
     try {
       http
         .get(
-          `https://learnconnectserver.azurewebsites.net/api/payment-transaction/statistic-staff?filterType=${
+          `https://learnconnectapifpt.azurewebsites.net/api/payment-transaction/statistic-staff?filterType=${
             selected3 === "Last Week" ? "week" : selected3
           }`
         )

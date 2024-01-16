@@ -19,6 +19,7 @@ import "moment/locale/vi";
 import dayjs from "dayjs";
 import Link from "next/link";
 import { Revenue } from "../revenue/page";
+import { useRouter } from "next/navigation";
 
 export type Transaction = {
   userBuy: string;
@@ -87,7 +88,7 @@ const OrderHistory = () => {
     try {
       http
         .get(
-          `https://learnconnectserver.azurewebsites.net/api/payment-transaction/transaction-history-mentor?mentorUserId=${id}&filterDate=${date}`
+          `https://learnconnectapifpt.azurewebsites.net/api/payment-transaction/transaction-history-mentor?mentorUserId=${id}&filterDate=${date}`
         )
         .then((res) => {
           setEachCourse(res.data); // Update to use the provided data directly
@@ -126,6 +127,8 @@ const OrderHistory = () => {
     },
   ];
 
+  const router = useRouter();
+
   const columns = [
     {
       title: "Date",
@@ -142,6 +145,14 @@ const OrderHistory = () => {
       key: "courseName",
       sorter: (a, b) => a.courseName.localeCompare(b.courseName),
       sortDirections: ["ascend", "descend"] as SortOrder[],
+      onCell: (record) => ({
+        onClick: () => {
+          const courseId = record.courseId;
+          if (courseId) {
+            router.push(`/instructorcourses/${courseId}`);
+          }
+        },
+      }),
     },
     {
       title: "User Enroll",
@@ -151,18 +162,9 @@ const OrderHistory = () => {
       sorter: (a, b) => a.userEnrroll.localeCompare(b.userEnrroll),
       sortDirections: ["ascend", "descend"] as SortOrder[],
     },
+
     {
-      title: "Amount",
-      dataIndex: "revenue",
-      key: "revenue",
-      width: 140,
-      sorter: (a, b) => a.revenue - b.revenue,
-      sortDirections: ["ascend", "descend"] as SortOrder[],
-      render: (revenue) =>
-        revenue === 0 ? <>Free</> : numberWithCommas(revenue),
-    },
-    {
-      title: "Course Fee",
+      title: "Course Price",
       dataIndex: "coursePrice",
       key: "coursePrice",
       width: 140,
@@ -182,13 +184,44 @@ const OrderHistory = () => {
         platformFee === 0 ? <>Free</> : numberWithCommas(platformFee),
     },
     {
-      title: "Transaction Code",
+      title: "Amount",
+      dataIndex: "revenue",
+      key: "revenue",
+      width: 140,
+      sorter: (a, b) => a.revenue - b.revenue,
+      sortDirections: ["ascend", "descend"] as SortOrder[],
+      render: (revenue) =>
+        revenue === 0 ? <>Free</> : numberWithCommas(revenue),
+    },
+    {
+      title: "PayPal Transaction Code",
       dataIndex: "transactionId",
       key: "transactionId",
       width: 200,
-      render: (text) => (text === null ? <>-</> : text),
+      sortDirections: ["ascend", "descend"] as SortOrder[],
+      render: (text) =>
+        text === null ? (
+          <>-</>
+        ) : (
+          <a
+            href={`https://www.sandbox.paypal.com/activity/masspay/${text}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {text}
+          </a>
+        ),
     },
-
+    {
+      title: "Enrollment ID",
+      dataIndex: "enrollmentId",
+      key: "enrollmentId",
+      width: 140,
+      sorter: (a, b) => a.enrollmentId - b.enrollmentId,
+      sortDirections: ["ascend", "descend"] as SortOrder[],
+      render: (enrollmentId) =>
+        enrollmentId === 0 ? <>Free</> : numberWithCommas(enrollmentId),
+    },
     {
       title: "Status",
       dataIndex: "status",
@@ -196,9 +229,17 @@ const OrderHistory = () => {
       width: 100,
       sorter: (a, b) => a.status - b.status,
       sortDirections: ["ascend", "descend"] as SortOrder[],
-      render: (status) => (
-        <Tag color={getStatusColor(status)}>{getStatusText(status)}</Tag>
-      ),
+      render: (status, record) => {
+        const formattedSuccessDate = record.successDate
+          ? moment(record.successDate).format("YYYY-MM-DD HH:mm:ss")
+          : null;
+
+        return (
+          <Tooltip title={formattedSuccessDate}>
+            <Tag color={getStatusColor(status)}>{getStatusText(status)}</Tag>
+          </Tooltip>
+        );
+      },
     },
     {
       title: "Note",

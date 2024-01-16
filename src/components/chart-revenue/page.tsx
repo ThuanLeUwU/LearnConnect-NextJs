@@ -67,7 +67,7 @@ const ChartRevenue = () => {
     try {
       http
         .get(
-          `https://learnconnectserver.azurewebsites.net/api/payment-transaction/statistic-revenue-mentor?mentorUserId=${id}&filterType=${
+          `https://learnconnectapifpt.azurewebsites.net/api/payment-transaction/statistic-revenue-mentor?mentorUserId=${id}&filterType=${
             selected2 === "Last Week" ? "week" : selected2
           }`
         )

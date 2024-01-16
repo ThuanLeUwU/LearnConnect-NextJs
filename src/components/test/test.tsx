@@ -12,7 +12,12 @@ import { Chart as ChartJs, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
 import { Breadcrumb, Spin } from "antd";
 import { Course } from "@/components/courses/courses";
-import { format } from "date-fns";
+import {
+  differenceInMilliseconds,
+  differenceInSeconds,
+  format,
+} from "date-fns";
+import { utcToZonedTime } from "date-fns-tz";
 
 ChartJs.register(ArcElement, Tooltip, Legend);
 
@@ -73,6 +78,7 @@ const Quiz = (props) => {
   const [resultAllTest, setResultAllTest] = useState<TestResult[]>([]);
 
   const [startTime, setStartTime] = useState<Date | null>(null);
+
   const [endTime, setEndTime] = useState<Date | null>(null);
 
   const [refresh, setRefresh] = useState<boolean>();
@@ -86,7 +92,7 @@ const Quiz = (props) => {
     try {
       http
         .get(
-          `https://learnconnectserver.azurewebsites.net/api/test-resutl/get-tests-result?userId=${userData?.id}&courseId=${idCourse}`
+          `https://learnconnectapifpt.azurewebsites.net/api/test-resutl/get-tests-result?userId=${userData?.id}&courseId=${idCourse}`
         )
         .then((res) => {
           setResultAllTest(res.data);
@@ -100,12 +106,12 @@ const Quiz = (props) => {
     const fetchQuestions = async () => {
       try {
         const response = await http.get(
-          `https://learnconnectserver.azurewebsites.net/api/test/get-tests-by-course?courseId=${idCourse}`
+          `https://learnconnectapifpt.azurewebsites.net/api/test/get-tests-by-course?courseId=${idCourse}`
         );
         setQuestionsTest(response.data);
 
         const userAnswersResponse = await http.get(
-          `https://learnconnectserver.azurewebsites.net/api/user-answer/get-list-answer-by-test?userId=${userData?.id}&testId=${idTest}`
+          `https://learnconnectapifpt.azurewebsites.net/api/user-answer/get-list-answer-by-test?userId=${userData?.id}&testId=${idTest}`
         );
         // console.log("userAnswersResponse", userAnswersResponse.data.length);
         if (userAnswersResponse.data.length !== 0) {
@@ -133,7 +139,7 @@ const Quiz = (props) => {
     try {
       http
         .get(
-          `https://learnconnectserver.azurewebsites.net/api/test/get-test-by-course?courseId=${idCourse}&testId=${idTest}`
+          `https://learnconnectapifpt.azurewebsites.net/api/test/get-test-by-course?courseId=${idCourse}&testId=${idTest}`
         )
         .then((res) => {
           setOneQuestionTest(res.data);
@@ -143,10 +149,26 @@ const Quiz = (props) => {
     }
   }, [idTest]);
 
+  const [oneTestDetails, setOneTestDetail] = useState<Test>();
+
+  useEffect(() => {
+    try {
+      http
+        .get(
+          `https://learnconnectapifpt.azurewebsites.net/api/test/get-test-by-course?courseId=${idCourse}&testId=${idTest}`
+        )
+        .then((res) => {
+          setOneTestDetail(res.data);
+        });
+    } catch (err) {
+      console.error(err);
+    }
+  }, [idTest]);
+
   const handleAnswerSelect = (answerId) => {
     if (!submitted) {
       setSelectedAnswers((prevAnswers) => {
-        const currentQuestion = questionsTest[0].questions.find((q) =>
+        const currentQuestion = oneQuestionTest[0].questions.find((q) =>
           q.answers.map((a) => a.id).includes(answerId)
         );
         console.log("updatedAnswers1", currentQuestion);
@@ -158,11 +180,24 @@ const Quiz = (props) => {
 
           console.log("updatedAnswers", updatedAnswers);
           return [...updatedAnswers, answerId];
+        } else if (currentQuestion?.question.questionType === 1) {
+          const isSelected = prevAnswers.includes(answerId);
+          if (isSelected) {
+            return prevAnswers.filter((id) => id !== answerId);
+          } else {
+            return [...prevAnswers, answerId];
+          }
         }
         return [...prevAnswers, answerId];
       });
     }
   };
+
+  const [duration, setDuration] = useState(0);
+  console.log("duration", duration);
+
+  console.log("bắt đầu", startTime);
+  console.log("Kết thúc", endTime);
 
   const handleSubmit = async (data) => {
     console.log("dapan", data);
@@ -191,12 +226,13 @@ const Quiz = (props) => {
       });
     });
 
-    const urlAPI = `https://learnconnectserver.azurewebsites.net/api/user-answer?userId=${userData?.id}&testId=${data}`;
+    const urlAPI = `https://learnconnectapifpt.azurewebsites.net/api/user-answer?userId=${userData?.id}&testId=${data}`;
 
     try {
-      await axios
-        .post(urlAPI, selectedAnswers)
-        .then((res) => setEndTime(new Date(res.data.timeSubmit)));
+      await axios.post(urlAPI, selectedAnswers).then((res) =>
+        // setEndTime(utcToZonedTime(new Date(res.data.timeSubmit), "UTC"))
+        setEndTime(new Date(res.data.timeSubmit))
+      );
       // console.log("User answers posted successfully:", response.data);
 
       setTimeout(() => {
@@ -221,15 +257,13 @@ const Quiz = (props) => {
     const formData = new FormData();
     formData.append("score", averageScore.toString());
     if (startTime && endTime) {
-      const timeSpentInSeconds = calculateTimeSpentInSeconds(
-        startTime,
-        endTime
-      );
-      formData.append("timeSpent", timeSpentInSeconds.toString());
+      const durationInSeconds = differenceInSeconds(endTime, startTime);
+      setDuration(durationInSeconds);
+      formData.append("timeSpent", durationInSeconds.toString());
       formData.append("timeSubmit", endTime.toString());
     }
 
-    const url = `https://learnconnectserver.azurewebsites.net/api/test-resutl?userId=${userData?.id}&testId=${data}`;
+    const url = `https://learnconnectapifpt.azurewebsites.net/api/test-resutl?userId=${userData?.id}&testId=${data}`;
     try {
       const response = await http.put(url, formData).then(() => {
         setShowTable(true);
@@ -311,7 +345,7 @@ const Quiz = (props) => {
     try {
       http
         .get(
-          `https://learnconnectserver.azurewebsites.net/api/course/${idCourse}`
+          `https://learnconnectapifpt.azurewebsites.net/api/course/${idCourse}`
         )
         .then((res) => {
           setOneCourse(res.data);

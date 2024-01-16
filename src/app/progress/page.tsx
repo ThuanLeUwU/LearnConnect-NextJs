@@ -60,7 +60,7 @@ const StudyProgress = () => {
     const fetchData = async () => {
       try {
         const responseData = await http.get(
-          `https://learnconnectserver.azurewebsites.net/api/learning-process/statistics-learning-process?userId=${id}`
+          `https://learnconnectapifpt.azurewebsites.net/api/learning-process/statistics-learning-process?userId=${id}`
         );
         setProgress(responseData.data);
         setDetailProgress(responseData.data.courseInfo);
@@ -120,7 +120,7 @@ const StudyProgress = () => {
 
           <div className="rating-progress-bar mt-2">
             <ProgressBar
-              completed={text}
+              completed={text !== null ? text : 0}
               bgColor="#309255"
               height="15px"
               width="60%"

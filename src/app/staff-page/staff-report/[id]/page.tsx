@@ -59,7 +59,7 @@ const StaffReportID = ({ params }: any) => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `https://learnconnectserver.azurewebsites.net/api/report/get-reports?targetId=${idCourse}&reportType=${target}`
+          `https://learnconnectapifpt.azurewebsites.net/api/report/get-reports?targetId=${idCourse}&reportType=${target}`
         );
         // console.log("API Response:", response.data);
         setReportData(response.data);
@@ -78,7 +78,7 @@ const StaffReportID = ({ params }: any) => {
       const fetchData = async () => {
         try {
           const response = await axios.get(
-            `https://learnconnectserver.azurewebsites.net/api/course/${idCourse}`
+            `https://learnconnectapifpt.azurewebsites.net/api/course/${idCourse}`
           );
           // console.log("API Response:", response.data);
           setCourse(response.data);
@@ -99,7 +99,7 @@ const StaffReportID = ({ params }: any) => {
       const fetchData = async () => {
         try {
           const response = await axios.get(
-            `https://learnconnectserver.azurewebsites.net/api/mentor/${idCourse}`
+            `https://learnconnectapifpt.azurewebsites.net/api/mentor/${idCourse}`
           );
           // console.log("API Response:", response.data);
           setMentor(response.data);
@@ -123,10 +123,10 @@ const StaffReportID = ({ params }: any) => {
       formData.append("status", "true");
       let apiUrl;
       if (target === "course") {
-        apiUrl = `https://learnconnectserver.azurewebsites.net/api/course/ban-course?courseId=${idCourse}`;
+        apiUrl = `https://learnconnectapifpt.azurewebsites.net/api/course/ban-course?courseId=${idCourse}`;
       }
       if (target === "mentor") {
-        apiUrl = `https://learnconnectserver.azurewebsites.net/api/mentor/ban-mentor?mentorUserId=${idCourse}`;
+        apiUrl = `https://learnconnectapifpt.azurewebsites.net/api/mentor/ban-mentor?mentorUserId=${idCourse}`;
       }
       const response = await axios.post(apiUrl, formData, {
         headers: {
