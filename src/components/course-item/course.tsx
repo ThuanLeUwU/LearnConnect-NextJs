@@ -105,7 +105,9 @@ const CourseItem = ({
 
             <div className="courses-rating">
               <p className="text-[#52565b] text-[14px]">
-                {percentComplete}% Complete
+                {percentComplete !== null
+                  ? `${percentComplete}% Complete`
+                  : "0% Complete"}
               </p>
 
               <div className="rating-progress-bar mt-2">

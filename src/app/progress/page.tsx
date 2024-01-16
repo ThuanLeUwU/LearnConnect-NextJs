@@ -120,7 +120,7 @@ const StudyProgress = () => {
 
           <div className="rating-progress-bar mt-2">
             <ProgressBar
-              completed={text}
+              completed={text !== null ? text : 0}
               bgColor="#309255"
               height="15px"
               width="60%"
