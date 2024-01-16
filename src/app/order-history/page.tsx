@@ -186,8 +186,6 @@ const OrderHistory = () => {
       dataIndex: "transactionId",
       key: "transactionId",
       width: 200,
-      sorter: (a, b) => a.transactionId - b.transactionId,
-      sortDirections: ["ascend", "descend"] as SortOrder[],
       render: (text) => (text === null ? <>-</> : text),
     },
 
