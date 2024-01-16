@@ -231,7 +231,7 @@ const Quiz = (props) => {
     try {
       await axios.post(urlAPI, selectedAnswers).then((res) =>
         // setEndTime(utcToZonedTime(new Date(res.data.timeSubmit), "UTC"))
-        setEndTime(new Date(res.data.timeSubmit))
+        setEndTime(new Date())
       );
       // console.log("User answers posted successfully:", response.data);
 
