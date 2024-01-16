@@ -109,7 +109,7 @@ const Courses = ({
     if (isLiked) {
       http
         .delete(
-          `https://learnconnectserver.azurewebsites.net/api/favorite-course/un-set-favorite?userId=${userData?.id}&courseId=${id}`
+          `https://learnconnectapifpt.azurewebsites.net/api/favorite-course/un-set-favorite?userId=${userData?.id}&courseId=${id}`
         )
         .then((response) => {
           setTimeout(() => {
@@ -123,7 +123,7 @@ const Courses = ({
     } else {
       http
         .post(
-          "https://learnconnectserver.azurewebsites.net/api/favorite-course",
+          "https://learnconnectapifpt.azurewebsites.net/api/favorite-course",
           {
             id: 0,
             favoriteCourseId: id,

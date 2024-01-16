@@ -210,7 +210,7 @@ export default function CreateCourse() {
   useEffect(() => {
     http
       .get(
-        `https://learnconnectserver.azurewebsites.net/api/course/get-course-by-mentor/mentorUserId/${id}/course/${courseId}`
+        `https://learnconnectapifpt.azurewebsites.net/api/course/get-course-by-mentor/mentorUserId/${id}/course/${courseId}`
       )
       .then((response) => {
         setCourse(response.data);
@@ -286,7 +286,7 @@ export default function CreateCourse() {
       try {
         http
           .post(
-            `https://learnconnectserver.azurewebsites.net/api/lecture/create-new-lecture?userId=${id}&courseId=${courseId}`,
+            `https://learnconnectapifpt.azurewebsites.net/api/lecture/create-new-lecture?userId=${id}&courseId=${courseId}`,
             formData,
             {
               headers: {
@@ -389,7 +389,7 @@ export default function CreateCourse() {
       // toast.info("Video is Moderating By")
       http
         .get(
-          `https://learnconnectserver.azurewebsites.net/api/lecture/by-course/${courseId}`
+          `https://learnconnectapifpt.azurewebsites.net/api/lecture/by-course/${courseId}`
         )
         .then((response) => {
           setLectures(response.data);
@@ -438,7 +438,7 @@ export default function CreateCourse() {
     try {
       http
         .post(
-          `https://learnconnectserver.azurewebsites.net/api/test/create-test?courseId=${courseId}`,
+          `https://learnconnectapifpt.azurewebsites.net/api/test/create-test?courseId=${courseId}`,
           formData,
           {
             headers: {
@@ -478,7 +478,7 @@ export default function CreateCourse() {
     try {
       http
         .post(
-          `https://learnconnectserver.azurewebsites.net/api/question/create-question?testId=${testId}`,
+          `https://learnconnectapifpt.azurewebsites.net/api/question/create-question?testId=${testId}`,
           formDataQ,
           {
             headers: {
@@ -521,7 +521,7 @@ export default function CreateCourse() {
     try {
       http
         .post(
-          `https://learnconnectserver.azurewebsites.net/api/answer/create-answer?questionId=${questionId}`,
+          `https://learnconnectapifpt.azurewebsites.net/api/answer/create-answer?questionId=${questionId}`,
           formData,
           {
             headers: {
@@ -712,7 +712,7 @@ export default function CreateCourse() {
                             <Upload
                               accept="image/png, image/jpeg"
                               onChange={handleChange}
-                              action="https://learnconnectserver.azurewebsites.net/api/Upload/image"
+                              action="https://learnconnectapifpt.azurewebsites.net/api/Upload/image"
                             >
                               <Button>Upload</Button>
                             </Upload>
@@ -798,7 +798,7 @@ export default function CreateCourse() {
                               <Upload
                                 accept="image/png, image/jpeg"
                                 onChange={handleChange}
-                                action="https://learnconnectserver.azurewebsites.net/api/Upload/image"
+                                action="https://learnconnectapifpt.azurewebsites.net/api/Upload/image"
                               >
                                 <Button>Upload</Button>
                               </Upload>
@@ -1130,7 +1130,7 @@ export default function CreateCourse() {
                                         // onChange={handleFileChange}
                                         // beforeUpload={beforeUpload}
                                         // headers={{ Authorization: authorization }}
-                                        action="https://learnconnectserver.azurewebsites.net/api/Upload/video"
+                                        action="https://learnconnectapifpt.azurewebsites.net/api/Upload/video"
                                       >
                                         <Button>Upload</Button>
                                       </Upload>

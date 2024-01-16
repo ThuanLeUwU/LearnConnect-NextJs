@@ -73,7 +73,7 @@ const StaffTransaction = () => {
       try {
         http
           .get(
-            `https://learnconnectserver.azurewebsites.net/api/payment-transaction/transaction-history-staff?filterDate=${date}&filterType=${activeTab}`
+            `https://learnconnectapifpt.azurewebsites.net/api/payment-transaction/transaction-history-staff?filterDate=${date}&filterType=${activeTab}`
           )
           .then((res) => {
             setTransaction(res.data);
@@ -367,7 +367,7 @@ const StaffTransaction = () => {
     try {
       http
         .post(
-          `https://learnconnectserver.azurewebsites.net/api/payment-transaction/re-pay?transactionId=${repayId}`,
+          `https://learnconnectapifpt.azurewebsites.net/api/payment-transaction/re-pay?transactionId=${repayId}`,
           {
             headers: {
               "Content-Type": "multipart/form-data",
@@ -378,7 +378,7 @@ const StaffTransaction = () => {
           setModalRepay(false);
           http
             .get(
-              `https://learnconnectserver.azurewebsites.net/api/payment-transaction/transaction-history-staff?filterDate=${date}&filterType=${activeTab}`
+              `https://learnconnectapifpt.azurewebsites.net/api/payment-transaction/transaction-history-staff?filterDate=${date}&filterType=${activeTab}`
             )
             .then((res) => {
               setTransaction(res.data);

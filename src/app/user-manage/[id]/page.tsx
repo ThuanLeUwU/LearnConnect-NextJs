@@ -82,7 +82,7 @@ export default function DetailUser({ params }: any) {
     if (userData) {
       const fetchData = async () => {
         const response = await axios.get(
-          `https://learnconnectserver.azurewebsites.net/api/user/${userId}`
+          `https://learnconnectapifpt.azurewebsites.net/api/user/${userId}`
         );
         // const headers = {
         //   'Authorization': 'Bearer ' + getCookie('accessToken')

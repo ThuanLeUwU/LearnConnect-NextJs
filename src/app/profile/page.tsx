@@ -113,8 +113,8 @@ export default function ProfileUser() {
     const fetchUserData = async () => {
       try {
         const response = await http.get(
-          // `https://learnconnectserver.azurewebsites.net/api/user/${id}`
-          `https://learnconnectserver.azurewebsites.net/api/mentor/get-info/${id}`
+          // `https://learnconnectapifpt.azurewebsites.net/api/user/${id}`
+          `https://learnconnectapifpt.azurewebsites.net/api/mentor/get-info/${id}`
         );
         SetDataUser(response.data);
         setAverageRating(response.data.mentor.averageRating);

@@ -50,7 +50,7 @@ const DetailsContent = ({ params }: any) => {
   useEffect(() => {
     http
       .get(
-        `https://learnconnectserver.azurewebsites.net/api/course/get-course-pending/${idCourse}`
+        `https://learnconnectapifpt.azurewebsites.net/api/course/get-course-pending/${idCourse}`
       )
       .then((response) => {
         setCourse(response.data);
@@ -79,7 +79,7 @@ const DetailsContent = ({ params }: any) => {
     const fetchData = async () => {
       try {
         const response = await http.get(
-          `https://learnconnectserver.azurewebsites.net/api/report/get-reports?targetId=${idCourse}&reportType=course`
+          `https://learnconnectapifpt.azurewebsites.net/api/report/get-reports?targetId=${idCourse}&reportType=course`
         );
         // console.log("API Response:", response.data);
         setReportData(response.data);
@@ -100,8 +100,8 @@ const DetailsContent = ({ params }: any) => {
     // Gọi API để lấy danh sách người dùng
     http
       .get(
-        `https://learnconnectserver.azurewebsites.net/api/lecture/by-course/${idCourse}`
-        // `https://learnconnectserver.azurewebsites.net/api/lecture/by-user-course?userId=8&courseId=${idCourse}`
+        `https://learnconnectapifpt.azurewebsites.net/api/lecture/by-course/${idCourse}`
+        // `https://learnconnectapifpt.azurewebsites.net/api/lecture/by-user-course?userId=8&courseId=${idCourse}`
       )
       .then((response) => {
         setLectures(response.data);
@@ -127,7 +127,7 @@ const DetailsContent = ({ params }: any) => {
     try {
       http
         .post(
-          `https://learnconnectserver.azurewebsites.net/api/lecture/process-lecture-request?lectureId=${lectureId}&acceptRequest=true`
+          `https://learnconnectapifpt.azurewebsites.net/api/lecture/process-lecture-request?lectureId=${lectureId}&acceptRequest=true`
         )
         .then(() => {
           {
@@ -160,7 +160,7 @@ const DetailsContent = ({ params }: any) => {
     try {
       http
         .post(
-          `https://learnconnectserver.azurewebsites.net/api/lecture/process-lecture-request?lectureId=${oneLecture?.id}&acceptRequest=false&note=${data.reason}`,
+          `https://learnconnectapifpt.azurewebsites.net/api/lecture/process-lecture-request?lectureId=${oneLecture?.id}&acceptRequest=false&note=${data.reason}`,
           {
             headers: {
               "Content-Type": "multipart/form-data",
@@ -208,7 +208,7 @@ const DetailsContent = ({ params }: any) => {
     try {
       http
         .post(
-          `https://learnconnectserver.azurewebsites.net/api/course/ban-course?courseId=${idCourse}`,
+          `https://learnconnectapifpt.azurewebsites.net/api/course/ban-course?courseId=${idCourse}`,
           formData,
           {
             headers: {
@@ -234,7 +234,7 @@ const DetailsContent = ({ params }: any) => {
     try {
       http
         .post(
-          `https://learnconnectserver.azurewebsites.net/api/course/ban-course?courseId=${idCourse}&status=false`
+          `https://learnconnectapifpt.azurewebsites.net/api/course/ban-course?courseId=${idCourse}&status=false`
         )
         .then(() => {
           handleModalCancel();
@@ -250,7 +250,7 @@ const DetailsContent = ({ params }: any) => {
     try {
       http
         .post(
-          `https://learnconnectserver.azurewebsites.net/api/course/process-course-request?courseId=${idCourse}&acceptRequest=true`
+          `https://learnconnectapifpt.azurewebsites.net/api/course/process-course-request?courseId=${idCourse}&acceptRequest=true`
         )
         .then(() => {
           {
@@ -275,7 +275,7 @@ const DetailsContent = ({ params }: any) => {
     try {
       http
         .post(
-          `https://learnconnectserver.azurewebsites.net/api/course/process-course-request?courseId=${idCourse}&acceptRequest=false&note=${data.reason}`
+          `https://learnconnectapifpt.azurewebsites.net/api/course/process-course-request?courseId=${idCourse}&acceptRequest=false&note=${data.reason}`
         )
         .then(() => {
           {
@@ -499,7 +499,7 @@ const DetailsContent = ({ params }: any) => {
     try {
       http
         .post(
-          `https://learnconnectserver.azurewebsites.net/api/test/process-test-request?testId=${testId}&acceptRequest=true`
+          `https://learnconnectapifpt.azurewebsites.net/api/test/process-test-request?testId=${testId}&acceptRequest=true`
         )
         .then(() => {
           http
@@ -534,7 +534,7 @@ const DetailsContent = ({ params }: any) => {
     try {
       http
         .post(
-          `https://learnconnectserver.azurewebsites.net/api/test/process-test-request?testId=${testId}&acceptRequest=false&note=${data.reason}`
+          `https://learnconnectapifpt.azurewebsites.net/api/test/process-test-request?testId=${testId}&acceptRequest=false&note=${data.reason}`
         )
         .then(() => {
           http

@@ -132,7 +132,7 @@ const MentorRequest = () => {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        `https://learnconnectserver.azurewebsites.net/api/specialization-of-mentor/get-all-specializations-and-mentors?requestType=${selectedType}`,
+        `https://learnconnectapifpt.azurewebsites.net/api/specialization-of-mentor/get-all-specializations-and-mentors?requestType=${selectedType}`,
         {
           params: {
             page: page + 1,
@@ -182,7 +182,7 @@ const MentorRequest = () => {
     try {
       const reason = rejectReason || "Your request is Approved";
       await axios.post(
-        `https://learnconnectserver.azurewebsites.net/api/mentor/process-mentor-request?staffUserId=${userData?.id}&mentorUserId=${mentorUserId}&specializationId=${specializationId}&acceptRequest=true&rejectReason=${reason}`
+        `https://learnconnectapifpt.azurewebsites.net/api/mentor/process-mentor-request?staffUserId=${userData?.id}&mentorUserId=${mentorUserId}&specializationId=${specializationId}&acceptRequest=true&rejectReason=${reason}`
       );
       fetchData();
       toast.success("Mentor request approved successfully");
@@ -200,7 +200,7 @@ const MentorRequest = () => {
     try {
       const reason = rejectReason || "Your request is Not Approve";
       await axios.post(
-        `https://learnconnectserver.azurewebsites.net/api/mentor/process-mentor-request?staffUserId=${userData?.id}&mentorUserId=${mentorUserId}&specializationId=${specializationId}&acceptRequest=false&rejectReason=${reason}`
+        `https://learnconnectapifpt.azurewebsites.net/api/mentor/process-mentor-request?staffUserId=${userData?.id}&mentorUserId=${mentorUserId}&specializationId=${specializationId}&acceptRequest=false&rejectReason=${reason}`
       );
       fetchData();
       toast.success("Mentor request rejected successfully");

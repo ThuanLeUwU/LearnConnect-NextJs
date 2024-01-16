@@ -12,7 +12,7 @@ const Footer = () => {
   // useEffect(() => {
   //   const fetchData = async () => {
   //     const responseData = await axios.get(
-  //       `https://learnconnectserver.azurewebsites.net/api/Category`
+  //       `https://learnconnectapifpt.azurewebsites.net/api/Category`
   //     );
   //     setCategory(responseData?.data);
   //   };

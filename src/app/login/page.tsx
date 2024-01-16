@@ -63,7 +63,7 @@ export default function LoginPage() {
     try {
       setLoading(true);
       const response = await http.post(
-        "https://learnconnectserver.azurewebsites.net/api/user/login-by-email",
+        "https://learnconnectapifpt.azurewebsites.net/api/user/login-by-email",
         { email: email, password: password },
         {
           headers: {
@@ -98,7 +98,7 @@ export default function LoginPage() {
         let userData;
         const fetchUser = async (userId: string) => {
           const responseUser = await axios.get(
-            `https://learnconnectserver.azurewebsites.net/api/user/${userId}`,
+            `https://learnconnectapifpt.azurewebsites.net/api/user/${userId}`,
             {
               headers: {
                 Authorization: `Bearer ${response}`,
