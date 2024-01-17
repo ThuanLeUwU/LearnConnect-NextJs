@@ -19,7 +19,7 @@ const useDataNotificationsFetcher = () => {
   // console.log("haha", notificationContent[0].notification);
 
   const API_URL = `
-https://learnconnectserver.azurewebsites.net/api/notification/byUserId-pagination/`;
+https://learnconnectapifpt.azurewebsites.net/api/notification/byUserId-pagination/`;
   const pagesize = 5;
   const [totalPages, setTotalPages] = useState(10);
   const [loading, setLoading] = useState(true);

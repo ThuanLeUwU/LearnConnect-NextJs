@@ -103,7 +103,7 @@ const LectureDetail = ({ params }: any) => {
       try {
         http
           .get(
-            `https://learnconnectserver.azurewebsites.net/api/lecture/by-course/${idCourse}/lecture/${LectureId}`
+            `https://learnconnectapifpt.azurewebsites.net/api/lecture/by-course/${idCourse}/lecture/${LectureId}`
           )
           .then((res) => {
             setLecture(res.data);
@@ -125,7 +125,7 @@ const LectureDetail = ({ params }: any) => {
       console.log(value);
       http
         .get(
-          `https://learnconnectserver.azurewebsites.net/api/course/get-course-by-mentor/mentorUserId/${id}/course/${value}`
+          `https://learnconnectapifpt.azurewebsites.net/api/course/get-course-by-mentor/mentorUserId/${id}/course/${value}`
         )
         .then((response) => {
           setCourse(response.data);
@@ -184,7 +184,7 @@ const LectureDetail = ({ params }: any) => {
       try {
         http
           .get(
-            `https://learnconnectserver.azurewebsites.net/api/Comment/get-comments-by-lectureId/${LectureId}`
+            `https://learnconnectapifpt.azurewebsites.net/api/Comment/get-comments-by-lectureId/${LectureId}`
           )
           .then((res) => {
             setComment(res?.data.reverse());
@@ -228,7 +228,7 @@ const LectureDetail = ({ params }: any) => {
     comment.comment1 = editText;
     await http
       .put(
-        `https://learnconnectserver.azurewebsites.net/api/comment/${comment.id}`,
+        `https://learnconnectapifpt.azurewebsites.net/api/comment/${comment.id}`,
         comment
       )
       .then(() => {
@@ -236,7 +236,7 @@ const LectureDetail = ({ params }: any) => {
         setIsEditing(false);
         http
           .get(
-            `https://learnconnectserver.azurewebsites.net/api/Comment/get-comments-by-lectureId/${LectureId}`
+            `https://learnconnectapifpt.azurewebsites.net/api/Comment/get-comments-by-lectureId/${LectureId}`
           )
           .then((res) => {
             setComment(res?.data.reverse());
@@ -254,7 +254,7 @@ const LectureDetail = ({ params }: any) => {
     formData.append("comment", replyComment);
     await http
       .post(
-        `https://learnconnectserver.azurewebsites.net/api/comment?userId=${userData?.id}&lectureId=${LectureId}&parentCommentId=${comment}`,
+        `https://learnconnectapifpt.azurewebsites.net/api/comment?userId=${userData?.id}&lectureId=${LectureId}&parentCommentId=${comment}`,
         formData
       )
       .then(() => {
@@ -263,7 +263,7 @@ const LectureDetail = ({ params }: any) => {
         setReplyComment("");
         http
           .get(
-            `https://learnconnectserver.azurewebsites.net/api/Comment/get-comments-by-lectureId/${LectureId}`
+            `https://learnconnectapifpt.azurewebsites.net/api/Comment/get-comments-by-lectureId/${LectureId}`
           )
           .then((res) => {
             setComment(res?.data.reverse());

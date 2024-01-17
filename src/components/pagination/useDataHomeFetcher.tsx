@@ -32,12 +32,12 @@ const useDataHomeFetcher = () => {
   const [courses, setCourses] = useState<CourseItem[]>([]);
   const { id } = UserAuth();
   let API_URL =
-    "https://learnconnectserver.azurewebsites.net/api/course/get-top-enrolled-courses";
+    "https://learnconnectapifpt.azurewebsites.net/api/course/get-top-enrolled-courses";
   if (id) {
-    API_URL = `https://learnconnectserver.azurewebsites.net/api/course/get-top-enrolled-courses?userId=${id}`;
+    API_URL = `https://learnconnectapifpt.azurewebsites.net/api/course/get-top-enrolled-courses?userId=${id}`;
   }
   // const API_URL =
-  //   "https://learnconnectserver.azurewebsites.net/api/course/get-top-enrolled-courses";
+  //   "https://learnconnectapifpt.azurewebsites.net/api/course/get-top-enrolled-courses";
   const pagesize = 6;
   const [totalPages, setTotalPages] = useState(10);
   const [loading, setLoading] = useState(true);

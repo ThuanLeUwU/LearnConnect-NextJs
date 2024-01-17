@@ -34,7 +34,7 @@ const SearchCourse = () => {
   const [courses, setCourses] = useState<CourseItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const API_URL =
-    "https://learnconnectserver.azurewebsites.net/api/course/search?searchQuery=";
+    "https://learnconnectapifpt.azurewebsites.net/api/course/search?searchQuery=";
   useEffect(() => {
     const url = window.location.href;
     const segments = url.split("/");

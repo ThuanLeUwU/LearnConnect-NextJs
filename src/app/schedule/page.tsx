@@ -91,7 +91,7 @@ const MyCourse = () => {
   const fetchDataSchedule = async () => {
     try {
       const response = await http.get(
-        `https://learnconnectserver.azurewebsites.net/api/schedule/get-by-userid?userId=${userData?.id}`
+        `https://learnconnectapifpt.azurewebsites.net/api/schedule/get-by-userid?userId=${userData?.id}`
       );
       setScheduleData(response.data);
       console.log("schedule data", response.data);
@@ -107,7 +107,7 @@ const MyCourse = () => {
   const handleSubmit = async (values: any) => {
     const { note, course, selectedDate } = values;
     try {
-      const url = `https://learnconnectserver.azurewebsites.net/api/schedule`;
+      const url = `https://learnconnectapifpt.azurewebsites.net/api/schedule`;
       await http
         .post(
           url,

@@ -186,7 +186,7 @@ export const AuthContextProvider: React.FC<AuthContextProps> = ({
           const fetchData = async () => {
             try {
               const responseData = await axios.post(
-                `https://learnconnectserver.azurewebsites.net/api/user/login`,
+                `https://learnconnectapifpt.azurewebsites.net/api/user/login`,
                 token,
                 {
                   headers: {
