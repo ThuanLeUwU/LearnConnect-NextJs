@@ -18,6 +18,7 @@ import {
   format,
 } from "date-fns";
 import { utcToZonedTime } from "date-fns-tz";
+import dayjs from "dayjs";
 
 ChartJs.register(ArcElement, Tooltip, Legend);
 
@@ -64,7 +65,6 @@ export type TestResult = {
 
 const Quiz = (props) => {
   const { idCourse, setScore, IdTest } = props;
-  //   console.log("idcourse1", idCourse);
   const [idTest, setIdTest] = useState<number>();
   const router = useRouter();
   const [questionsTest, setQuestionsTest] = useState<Test[]>([]);
@@ -77,12 +77,11 @@ const Quiz = (props) => {
   const [reviewQuiz, setReviewQuiz] = useState(false);
   const [resultAllTest, setResultAllTest] = useState<TestResult[]>([]);
 
-  const [startTime, setStartTime] = useState<Date | null>(null);
+  const [startTime, setStartTime] = useState<number>(0);
 
-  const [endTime, setEndTime] = useState<Date | null>(null);
+  const [endTime, setEndTime] = useState<number>(0);
 
   const [refresh, setRefresh] = useState<boolean>();
-  // console.log("submit", endTime);
 
   const handleCancel = () => {
     console.log("Modal has been canceled.");
@@ -113,17 +112,12 @@ const Quiz = (props) => {
         const userAnswersResponse = await http.get(
           `https://learnconnectapifpt.azurewebsites.net/api/user-answer/get-list-answer-by-test?userId=${userData?.id}&testId=${idTest}`
         );
-        // console.log("userAnswersResponse", userAnswersResponse.data.length);
         if (userAnswersResponse.data.length !== 0) {
-          // console.log(
-          //   "data",
-          //   userAnswersResponse.data[0].map((answer) => answer.answerId)
-          // );
           setTestResulted(true);
           setSelectedAnswers(
             userAnswersResponse.data[0].map((answer) => answer.answerId)
           );
-          console.log("dataaaa", selectedAnswers);
+
           setSubmitted(true);
         }
       } catch (error) {
@@ -171,14 +165,11 @@ const Quiz = (props) => {
         const currentQuestion = oneQuestionTest[0].questions.find((q) =>
           q.answers.map((a) => a.id).includes(answerId)
         );
-        console.log("updatedAnswers1", currentQuestion);
 
         if (currentQuestion?.question.questionType === 0) {
           const updatedAnswers = prevAnswers.filter(
             (id) => !currentQuestion?.answers.map((a) => a.id).includes(id)
           );
-
-          console.log("updatedAnswers", updatedAnswers);
           return [...updatedAnswers, answerId];
         } else if (currentQuestion?.question.questionType === 1) {
           const isSelected = prevAnswers.includes(answerId);
@@ -193,14 +184,9 @@ const Quiz = (props) => {
     }
   };
 
-  const [duration, setDuration] = useState(0);
-  console.log("duration", duration);
-
-  console.log("bắt đầu", startTime);
-  console.log("Kết thúc", endTime);
+  const [duration, setDuration] = useState<number>(0);
 
   const handleSubmit = async (data) => {
-    console.log("dapan", data);
     setSubmitted(true);
     setQuizStarted(false);
     // setReviewQuiz(true);
@@ -229,11 +215,9 @@ const Quiz = (props) => {
     const urlAPI = `https://learnconnectapifpt.azurewebsites.net/api/user-answer?userId=${userData?.id}&testId=${data}`;
 
     try {
-      await axios.post(urlAPI, selectedAnswers).then((res) =>
-        // setEndTime(utcToZonedTime(new Date(res.data.timeSubmit), "UTC"))
-        setEndTime(new Date(res.data.timeSubmit))
-      );
-      // console.log("User answers posted successfully:", response.data);
+      axios.post(urlAPI, selectedAnswers).then((res) => {
+        setEndTime(dayjs().valueOf());
+      });
 
       setTimeout(() => {
         toast.success("Save Answer successful");
@@ -253,19 +237,19 @@ const Quiz = (props) => {
     setScore(averageScore);
     const userId = userData?.id;
     const testId = data;
+    let timeSubmit = dayjs().valueOf();
+    const durationInSeconds = dayjs(timeSubmit).diff(startTime, "seconds");
+    setDuration(durationInSeconds);
 
     const formData = new FormData();
     formData.append("score", averageScore.toString());
-    if (startTime && endTime) {
-      const durationInSeconds = differenceInSeconds(endTime, startTime);
-      setDuration(durationInSeconds);
-      formData.append("timeSpent", durationInSeconds.toString());
-      formData.append("timeSubmit", endTime.toString());
-    }
+    formData.append("timeSpent", durationInSeconds.toString());
+    formData.append("timeSubmit", endTime.toString());
+    // }
 
     const url = `https://learnconnectapifpt.azurewebsites.net/api/test-resutl?userId=${userData?.id}&testId=${data}`;
     try {
-      const response = await http.put(url, formData).then(() => {
+      http.put(url, formData).then(() => {
         setShowTable(true);
         setRefresh(!refresh);
       });
@@ -308,20 +292,13 @@ const Quiz = (props) => {
     }
   };
 
-  const calculateTimeSpentInSeconds = (startTime, endTime) => {
-    const timeSpentMilliseconds = endTime.getTime() - startTime.getTime();
-    const timeSpentSeconds = Math.floor(timeSpentMilliseconds / 1000);
-
-    return timeSpentSeconds;
-  };
-
   const [scoreLastSubmit, setScoreLastSubmit] = useState<number>();
 
   const handleDoAgain = (record) => {
     // setOneTest(record);
     setShowTable(false);
     // setIdTest(record.test.id);
-    setStartTime(new Date());
+    setStartTime(dayjs().valueOf());
     setSubmitted(false);
     setQuizStarted(true);
     setReviewQuiz(false);
@@ -363,25 +340,21 @@ const Quiz = (props) => {
     if (!quizStarted) {
       // Allow switching tabs only if the quiz is started and not submitted
       setSelectedTab(key);
-      console.log("key", key);
       setIdTest(key);
     }
   };
 
   const [showTable, setShowTable] = useState(true);
   const [oneTest, setOneTest] = useState<Test>();
-  console.log("mía", oneTest);
 
   const handleStartQuiz = (record) => {
-    setStartTime(new Date());
+    setStartTime(dayjs().valueOf());
     setShowTable(false);
-    // console.log("cột này", record);
     setOneTest(record);
     setIdTest(record.test.id);
     setReviewQuiz(false);
     setSubmitted(false);
     setQuizStarted(true);
-    // setSelectedTab(); // Start with the first test
   };
 
   const handleReviewQuiz = (record) => {
@@ -407,11 +380,6 @@ const Quiz = (props) => {
       dataIndex: ["test", "title"],
       key: "test.title",
     },
-    // {
-    //   title: "Description",
-    //   dataIndex: ["test", "description"],
-    //   key: "description",
-    // },
     {
       title: "Total Questions",
       dataIndex: ["test", "totalQuestion"],
@@ -462,15 +430,13 @@ const Quiz = (props) => {
         );
 
         if (timeSpent) {
-          const secondsDifference = Math.floor(timeSpent / 1000);
-
-          if (secondsDifference < 60) {
+          if (timeSpent < 60) {
             // If less than 60 seconds, display only seconds
-            return <span>{`${secondsDifference}s`}</span>;
+            return <span>{`${timeSpent}s`}</span>;
           } else {
             // If 60 seconds or more, display minutes and seconds
-            const minutes = Math.floor(secondsDifference / 60);
-            const remainingSeconds = secondsDifference % 60;
+            const minutes = Math.floor(timeSpent / 60);
+            const remainingSeconds = timeSpent % 60;
 
             return <span>{`${minutes}m ${remainingSeconds}s`}</span>;
           }
