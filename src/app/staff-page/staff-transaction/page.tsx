@@ -106,7 +106,7 @@ const StaffTransaction = () => {
 
   const columns = [
     {
-      title: "Create Date",
+      title: "Date",
       dataIndex: "createDate",
       key: "createDate",
       width: 140,
@@ -114,6 +114,20 @@ const StaffTransaction = () => {
         new Date(a.createDate).getTime() - new Date(b.createDate).getTime(),
       sortDirections: ["ascend", "descend"] as SortOrder[],
       render: (date) => moment(date).format("YYYY-MM-DD HH:mm:ss"),
+    },
+    {
+      title: "Transaction ID",
+      dataIndex: "paymentTransactionId",
+      key: "paymentTransactionId",
+      width: 150,
+      sorter: (a, b) => a.paymentTransactionId - b.paymentTransactionId,
+      sortDirections: ["ascend", "descend"] as SortOrder[],
+      render: (paymentTransactionId) =>
+        paymentTransactionId === 0 ? (
+          <>Free</>
+        ) : (
+          numberWithCommas(paymentTransactionId)
+        ),
     },
     {
       title: "Course Name",
@@ -152,14 +166,14 @@ const StaffTransaction = () => {
     },
 
     {
-      title: "Price",
+      title: "Price (VND)",
       dataIndex: "price",
       key: "price",
       width: 140,
       sorter: (a, b) => a.price - b.price,
       sortDirections: ["ascend", "descend"] as SortOrder[],
       render: (price) =>
-        price === 0 ? <>Free</> : <>{numberWithCommas(price)} vnd</>,
+        price === 0 ? <>Free</> : <>{numberWithCommas(price)}</>,
     },
     {
       title: "VNPay Transaction Code",
@@ -167,14 +181,7 @@ const StaffTransaction = () => {
       key: "transactionId",
       width: 200,
       sortDirections: ["ascend", "descend"] as SortOrder[],
-      render: (text, record) =>
-        record.paymentUrl ? (
-          <a href={record.paymentUrl} target="_blank" rel="noopener noreferrer">
-            {text}
-          </a>
-        ) : (
-          <>-</>
-        ),
+      render: (text) => <span>{text}</span>,
     },
     {
       title: "Enrollment ID",
@@ -186,6 +193,7 @@ const StaffTransaction = () => {
       render: (enrollmentId) =>
         enrollmentId === 0 ? <>Free</> : numberWithCommas(enrollmentId),
     },
+
     {
       title: "Status",
       dataIndex: "status",
@@ -193,17 +201,9 @@ const StaffTransaction = () => {
       width: 100,
       sorter: (a, b) => a.status - b.status,
       sortDirections: ["ascend", "descend"] as SortOrder[],
-      render: (status, record) => {
-        const formattedSuccessDate = record.successDate
-          ? moment(record.successDate).format("YYYY-MM-DD HH:mm:ss")
-          : null;
-
-        return (
-          <Tooltip title={formattedSuccessDate}>
-            <Tag color={getStatusColor(status)}>{getStatusText(status)}</Tag>
-          </Tooltip>
-        );
-      },
+      render: (status, record) => (
+        <Tag color={getStatusColor(status)}>{getStatusText(status)}</Tag>
+      ),
     },
   ];
 
@@ -250,6 +250,20 @@ const StaffTransaction = () => {
       render: (date) => moment(date).format("YYYY-MM-DD HH:mm:ss"),
     },
     {
+      title: "Transaction ID",
+      dataIndex: "paymentTransactionId",
+      key: "paymentTransactionId",
+      width: 150,
+      sorter: (a, b) => a.paymentTransactionId - b.paymentTransactionId,
+      sortDirections: ["ascend", "descend"] as SortOrder[],
+      render: (paymentTransactionId) =>
+        paymentTransactionId === 0 ? (
+          <>Free</>
+        ) : (
+          numberWithCommas(paymentTransactionId)
+        ),
+    },
+    {
       title: "Course Name",
       dataIndex: "courseName",
       key: "courseName",
@@ -273,42 +287,34 @@ const StaffTransaction = () => {
       sortDirections: ["ascend", "descend"] as SortOrder[],
     },
     {
-      title: "Course Price",
+      title: "Course Price (VND)",
       dataIndex: "coursePrice",
       key: "coursePrice",
       width: 140,
       sorter: (a, b) => a.coursePrice - b.coursePrice,
       sortDirections: ["ascend", "descend"] as SortOrder[],
       render: (coursePrice) =>
-        coursePrice === 0 ? (
-          <>Free</>
-        ) : (
-          <>{numberWithCommas(coursePrice)} vnd</>
-        ),
+        coursePrice === 0 ? <>Free</> : <>{numberWithCommas(coursePrice)}</>,
     },
     {
-      title: "Platform Fee",
+      title: "Platform Fee (VND)",
       dataIndex: "platformFee",
       key: "platformFee",
       width: 140,
       sorter: (a, b) => a.platformFee - b.platformFee,
       sortDirections: ["ascend", "descend"] as SortOrder[],
       render: (platformFee) =>
-        platformFee === 0 ? (
-          <>Free</>
-        ) : (
-          <>{numberWithCommas(platformFee)} vnd</>
-        ),
+        platformFee === 0 ? <>Free</> : <>{numberWithCommas(platformFee)}</>,
     },
     {
-      title: "Amount",
+      title: "Amount (VND)",
       dataIndex: "amount",
       key: "amount",
       width: 140,
       sorter: (a, b) => a.amount - b.amount,
       sortDirections: ["ascend", "descend"] as SortOrder[],
       render: (amount) =>
-        amount === 0 ? <>Free</> : <>{numberWithCommas(amount)} vnd</>,
+        amount === 0 ? <>Free</> : <>{numberWithCommas(amount)}</>,
     },
     {
       title: "PayPal Transaction Code",
@@ -339,6 +345,7 @@ const StaffTransaction = () => {
       render: (enrollmentId) =>
         enrollmentId === 0 ? <>Free</> : numberWithCommas(enrollmentId),
     },
+
     {
       title: "Status",
       dataIndex: "status",
@@ -346,17 +353,9 @@ const StaffTransaction = () => {
       width: 100,
       sorter: (a, b) => a.status - b.status,
       sortDirections: ["ascend", "descend"] as SortOrder[],
-      render: (status, record) => {
-        const formattedSuccessDate = record.successDate
-          ? moment(record.successDate).format("YYYY-MM-DD HH:mm:ss")
-          : null;
-
-        return (
-          <Tooltip title={formattedSuccessDate}>
-            <Tag color={getStatusColor(status)}>{getStatusText(status)}</Tag>
-          </Tooltip>
-        );
-      },
+      render: (status, record) => (
+        <Tag color={getStatusColor(status)}>{getStatusText(status)}</Tag>
+      ),
     },
     {
       title: "Note",
@@ -556,8 +555,8 @@ const StaffTransaction = () => {
       <Modal
         destroyOnClose={true}
         title={
-          <div className="text-xl">
-            Are you sure you want to Repay for {mentorPay}?
+          <div className="text-2xl">
+            Are you sure you want to Repay for {mentorPay} ?
           </div>
         }
         open={modalRepay}
@@ -581,10 +580,12 @@ const StaffTransaction = () => {
         >
           <Form.Item className="w-full mb-0">
             <div className="text-lg">
-              Course: <strong>{courseName}</strong>
+              Course: <strong>{courseName}</strong> <br />
               Mentor: <strong>{mentorPay}</strong>
-              Course Price: <strong>{numberWithCommas(amount)}</strong> vnd
-              Error: <strong>{transactionError}</strong>.
+              <br />
+              Course Price: <strong>{numberWithCommas(amount)} VND</strong>
+              <br />
+              Error: <strong>{transactionError}</strong>
             </div>
             {/* <div className="text-lg">
               There seems to be an issue with the payment for the course &quot;
@@ -595,7 +596,7 @@ const StaffTransaction = () => {
             </div> */}
             <div className="text-lg mt-5">
               Are you sure you want to proceed with the payment of{" "}
-              <strong>{numberWithCommas(amount)}</strong> vnd for mentor{" "}
+              <strong>{numberWithCommas(amount)} VND</strong> for mentor{" "}
               <strong>{mentorPay}</strong> ?
             </div>
           </Form.Item>
