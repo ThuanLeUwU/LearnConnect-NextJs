@@ -139,6 +139,20 @@ const OrderHistory = () => {
       render: (date) => moment(date).format("YYYY-MM-DD HH:mm:ss"),
     },
     {
+      title: "Transaction ID",
+      dataIndex: "paymentTransactionId",
+      key: "paymentTransactionId",
+      width: 150,
+      sorter: (a, b) => a.paymentTransactionId - b.paymentTransactionId,
+      sortDirections: ["ascend", "descend"] as SortOrder[],
+      render: (paymentTransactionId) =>
+        paymentTransactionId === 0 ? (
+          <>Free</>
+        ) : (
+          numberWithCommas(paymentTransactionId)
+        ),
+    },
+    {
       title: "Course Name",
       dataIndex: "courseName",
       key: "courseName",
@@ -163,30 +177,30 @@ const OrderHistory = () => {
     },
 
     {
-      title: "Course Price",
+      title: "Course Price (VND)",
       dataIndex: "coursePrice",
       key: "coursePrice",
-      width: 140,
+      width: 180,
       sorter: (a, b) => a.coursePrice - b.coursePrice,
       sortDirections: ["ascend", "descend"] as SortOrder[],
       render: (coursePrice) =>
         coursePrice === 0 ? <>Free</> : numberWithCommas(coursePrice),
     },
     {
-      title: "Platform Fee",
+      title: "Platform Fee (VND)",
       dataIndex: "platformFee",
       key: "platformFee",
-      width: 140,
+      width: 180,
       sorter: (a, b) => a.platformFee - b.platformFee,
       sortDirections: ["ascend", "descend"] as SortOrder[],
       render: (platformFee) =>
         platformFee === 0 ? <>Free</> : numberWithCommas(platformFee),
     },
     {
-      title: "Amount",
+      title: "Amount (VND)",
       dataIndex: "revenue",
       key: "revenue",
-      width: 140,
+      width: 160,
       sorter: (a, b) => a.revenue - b.revenue,
       sortDirections: ["ascend", "descend"] as SortOrder[],
       render: (revenue) =>
@@ -228,17 +242,9 @@ const OrderHistory = () => {
       width: 100,
       sorter: (a, b) => a.status - b.status,
       sortDirections: ["ascend", "descend"] as SortOrder[],
-      render: (status, record) => {
-        const formattedSuccessDate = record.successDate
-          ? moment(record.successDate).format("YYYY-MM-DD HH:mm:ss")
-          : null;
-
-        return (
-          <Tooltip title={formattedSuccessDate}>
-            <Tag color={getStatusColor(status)}>{getStatusText(status)}</Tag>
-          </Tooltip>
-        );
-      },
+      render: (status, record) => (
+        <Tag color={getStatusColor(status)}>{getStatusText(status)}</Tag>
+      ),
     },
     {
       title: "Note",
