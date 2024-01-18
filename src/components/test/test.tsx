@@ -3,7 +3,7 @@ import { ReactNode, useEffect, useState } from "react";
 import "../../app/./globals.css";
 import axios from "axios";
 import { UserAuth } from "@/app/context/AuthContext";
-import { Button, Empty, Modal, Table, Tabs } from "antd";
+import { Button, Empty, Modal, Table, Tabs, Tag } from "antd";
 import { useRouter } from "next/navigation";
 import { http } from "@/api/http";
 import { toast } from "sonner";
@@ -443,6 +443,22 @@ const Quiz = (props) => {
         } else {
           return <span>-</span>;
         }
+      },
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (text, record) => {
+        const timeSubmit = resultAllTest.find(
+          (timeSubmit) => timeSubmit.testId === record.test.id
+        )?.timeSubmit;
+
+        return (
+          <Tag color={timeSubmit ? "green" : "gray"}>
+            {timeSubmit ? "Done" : "Not completed"}
+          </Tag>
+        );
       },
     },
     {

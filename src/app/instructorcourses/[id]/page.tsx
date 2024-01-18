@@ -1612,7 +1612,9 @@ const Dashboard = ({ params }: any) => {
                                         any questions yet. Let&apos;s{" "}
                                         <button
                                           className="text-green-500 underline"
-                                          onClick={handleNewQuestionClick}
+                                          onClick={() =>
+                                            handleNewQuestionClick(item.test.id)
+                                          }
                                         >
                                           create
                                         </button>{" "}

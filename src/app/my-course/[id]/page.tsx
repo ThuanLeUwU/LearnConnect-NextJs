@@ -686,7 +686,7 @@ export default function AfterEnroll({ params }: any) {
           />
         </div>
       </div>
-      <div className="container">
+      <div className="container min-h-[600px]">
         <div className="grid cols-2 lg:grid-cols-12 mt-[40px] gap-5">
           <div className="lg:col-span-8">
             {isTestOpen ? (
