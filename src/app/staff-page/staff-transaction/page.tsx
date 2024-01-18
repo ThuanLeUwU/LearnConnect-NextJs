@@ -555,8 +555,8 @@ const StaffTransaction = () => {
       <Modal
         destroyOnClose={true}
         title={
-          <div className="text-xl">
-            Are you sure you want to Repay for {mentorPay}?
+          <div className="text-2xl">
+            Are you sure you want to Repay for {mentorPay} ?
           </div>
         }
         open={modalRepay}
@@ -583,7 +583,7 @@ const StaffTransaction = () => {
               Course: <strong>{courseName}</strong> <br />
               Mentor: <strong>{mentorPay}</strong>
               <br />
-              Course Price: <strong>{numberWithCommas(amount)}</strong> VND
+              Course Price: <strong>{numberWithCommas(amount)} VND</strong>
               <br />
               Error: <strong>{transactionError}</strong>
             </div>
@@ -596,7 +596,7 @@ const StaffTransaction = () => {
             </div> */}
             <div className="text-lg mt-5">
               Are you sure you want to proceed with the payment of{" "}
-              <strong>{numberWithCommas(amount)}</strong> VND for mentor{" "}
+              <strong>{numberWithCommas(amount)} VND</strong> for mentor{" "}
               <strong>{mentorPay}</strong> ?
             </div>
           </Form.Item>
