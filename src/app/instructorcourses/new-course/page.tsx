@@ -234,7 +234,7 @@ export default function CreateCourse() {
       formData.append("description", data.description);
       formData.append("shortDescription", data.shortDes);
       formData.append("price", data.price);
-      formData.append("contentLength", data.length);
+      // formData.append("contentLength", data.length);
       formData.append("lectureCount", "0");
       formData.append("specializationId", data.specialization);
       if (formDataImage !== undefined) {
@@ -849,7 +849,7 @@ export default function CreateCourse() {
                                 })}
                               </Select>
                             </Form.Item>
-                            <Form.Item
+                            {/* <Form.Item
                               rules={[
                                 {
                                   required: true,
@@ -872,7 +872,7 @@ export default function CreateCourse() {
                                 className="w-[290px]"
                                 controls={false}
                               />
-                            </Form.Item>
+                            </Form.Item> */}
                             <Form.Item
                               rules={[
                                 {
