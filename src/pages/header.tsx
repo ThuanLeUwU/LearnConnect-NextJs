@@ -141,13 +141,13 @@ const Header = () => {
   useEffect(() => {
     if (id) {
       fetchNotificationData();
-      const intervalId = setInterval(() => {
-        fetchNotificationData();
-        // checkNotificationLengthChange();
-      }, 3000);
+      // const intervalId = setInterval(() => {
+      //   fetchNotificationData();
+      //   // checkNotificationLengthChange();
+      // }, 3000);
 
-      // Clear interval khi component unmount
-      return () => clearInterval(intervalId);
+      // // Clear interval khi component unmount
+      // return () => clearInterval(intervalId);
     }
   }, [id, userData]);
 

@@ -598,7 +598,7 @@ const InstructorCourse = () => {
                   })}
                 </Select>
               </Form.Item>
-              <Form.Item
+              {/* <Form.Item
                 rules={[
                   { required: true, message: "Please estimate the time!" },
                   { type: "number", min: 10, message: "At least 10 minutes" },
@@ -614,7 +614,7 @@ const InstructorCourse = () => {
                   // formatter={(value) => `${value} mins`}
                   // parser={(value) => value!.replace("mins", "")}
                 />
-              </Form.Item>
+              </Form.Item> */}
               <Form.Item
                 rules={[
                   {
@@ -747,7 +747,7 @@ const InstructorCourse = () => {
               {/* <Form.Item label="Mentor" name="mentor">
             {`${user?.displayName}`}
           </Form.Item> */}
-              <Form.Item label="Length(mins)" name="length">
+              {/* <Form.Item label="Length(mins)" name="length">
                 <InputNumber
                   defaultValue={course?.contentLength}
                   type="number"
@@ -758,7 +758,7 @@ const InstructorCourse = () => {
                   // formatter={(value) => `${value} mins`}
                   // parser={(value) => value!.replace("mins", "")}
                 />
-              </Form.Item>
+              </Form.Item> */}
               <Form.Item label="Price(VND):" name="price">
                 <InputNumber
                   style={{ width: 200 }}
