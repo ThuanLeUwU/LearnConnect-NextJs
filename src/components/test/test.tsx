@@ -19,6 +19,7 @@ import {
 } from "date-fns";
 import { utcToZonedTime } from "date-fns-tz";
 import dayjs from "dayjs";
+import { ArrowLeftOutlined } from "@ant-design/icons";
 
 ChartJs.register(ArcElement, Tooltip, Legend);
 
@@ -64,7 +65,7 @@ export type TestResult = {
 };
 
 const Quiz = (props) => {
-  const { idCourse, setScore, IdTest } = props;
+  const { idCourse, setScore, IdTest, setIsTestOpen } = props;
   const [idTest, setIdTest] = useState<number>();
   const router = useRouter();
   const [questionsTest, setQuestionsTest] = useState<Test[]>([]);
@@ -311,7 +312,8 @@ const Quiz = (props) => {
   };
 
   const handleClickGotoCourse = () => {
-    router.push(`/my-course/${idCourse}`);
+    // router.push(`/my-course/${idCourse}`);
+    setIsTestOpen(false);
   };
 
   const answerOptions = ["A.", "B.", "C.", "D."];
@@ -683,7 +685,13 @@ const Quiz = (props) => {
                   </div>
                 </>
               ) : (
-                <Table dataSource={questionsTest} columns={columns} />
+                <div className="flex flex-col gap-2 mt-4">
+                  <ArrowLeftOutlined
+                    onClick={handleClickGotoCourse}
+                    style={{ fontSize: "36px" }}
+                  />
+                  <Table dataSource={questionsTest} columns={columns} />
+                </div>
               )}
               {/* {questionsTest.map((item, index) => (
                 <TabPane tab={`Test ${index + 1}`} key={item.test.id}>

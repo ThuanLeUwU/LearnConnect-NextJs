@@ -33,6 +33,7 @@ import Loading from "@/components/loading/loading";
 import Quiz from "@/components/test/test";
 import { type } from "os";
 import moment from "moment";
+import { ArrowLeftOutlined } from "@ant-design/icons";
 
 export type Lecture = {
   id: string | number;
@@ -372,21 +373,22 @@ export default function AfterEnroll({ params }: any) {
   };
 
   const [performance, setPerformance] = useState<Performance>();
-  // useEffect(() => {
-  //   try {
-  //     const fetchData = async () => {
-  //       const responseData = await http.get(
-  //         `/learning-performance/user/${id}/course/${idCourse}`
-  //       );
-  //       setPerformance(responseData?.data);
-  //       setScore(responseData?.data.score);
-  //       // console.log("performance", performance);
-  //     };
-  //     fetchData();
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // }, [score]);
+  useEffect(() => {
+    try {
+      const fetchData = async () => {
+        const responseData = await http.get(
+          `/enrollment/learn-course-result?courseId=${idCourse}&userId=${id}`
+        );
+        setPerformance(responseData?.data);
+        setScore(responseData?.data.totalScore);
+        setTimeSpent(responseData?.data.timeSpent);
+        // console.log("performance", performance);
+      };
+      fetchData();
+    } catch (err) {
+      console.error(err);
+    }
+  }, [score, timeSpent, id, idCourse, isTestOpen]);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const [maxTime, setMaxTime] = useState<number>(0); //truyen maxTime tu API response
@@ -404,7 +406,7 @@ export default function AfterEnroll({ params }: any) {
     }
     if (
       (Math.floor(e.target.currentTime) > 1 &&
-        Math.floor(e.target.currentTime) % 5 == 0) ||
+        Math.floor(e.target.currentTime) % 4 == 0) ||
       Math.floor(e.target.currentTime) === totalTime
     ) {
       // setMaxTime(totalTime);
@@ -469,15 +471,15 @@ export default function AfterEnroll({ params }: any) {
     let formattedTime = "";
 
     if (days > 0) {
-      formattedTime += `${days} Day `;
+      formattedTime += `${days} h `;
     }
 
     if (hours > 0) {
-      formattedTime += `${hours} Hour `;
+      formattedTime += `${hours} m `;
     }
 
     if (remainingMinutes > 0) {
-      formattedTime += `${remainingMinutes} Minute`;
+      formattedTime += `${remainingMinutes} s`;
     }
 
     return formattedTime.trim(); // Remove trailing space
@@ -489,6 +491,10 @@ export default function AfterEnroll({ params }: any) {
 
   const breadcrumbsMyCourses = () => {
     router.push("/my-course");
+  };
+
+  const handlePushCourse = () => {
+    setIsTestOpen(false);
   };
 
   useEffect(() => {
@@ -687,285 +693,293 @@ export default function AfterEnroll({ params }: any) {
         </div>
       </div>
       <div className="container min-h-[600px]">
-        <div className="grid cols-2 lg:grid-cols-12 mt-[40px] gap-5">
-          <div className="lg:col-span-8">
+        <div>
+          <div>
             {isTestOpen ? (
-              <Quiz idCourse={idCourse} setScore={setScore} />
-            ) : (
               <>
-                {!videoSrc && (
-                  <img
-                    src={courses?.imageUrl}
-                    className="w-full object-cover h-[438px]"
-                  />
-                )}
-                {videoSrc && (
-                  <>
-                    {pdf === 1 ? (
-                      <video
-                        width="full"
-                        height="full"
-                        controls
-                        id="courseVideo"
-                        ref={videoRef}
-                        onSeeked={handleOnSeek}
-                        onTimeUpdate={handleOnTimeUpdate}
-                        onProgress={handleOnProgress}
-                        controlsList="nodownload"
-                      >
-                        <source src={videoSrc} type="video/mp4" />
-                      </video>
-                    ) : (
-                      <iframe
-                        title="PDF Viewer"
-                        width="100%"
-                        height="438px"
-                        src={videoSrc}
-                        aria-readonly
-                      ></iframe>
-                    )}
-                  </>
-                )}
-                <div>
-                  <div className="">
-                    <div className="flex justify-between mt-2.5 items-center">
-                      <h2 className="text-[25px] leading-normal text-[#212832] font-medium ">
-                        {activeVideoIndex === 0
-                          ? testVideo[activeVideoIndex].title
-                          : courses?.name}
-                      </h2>
-                      <div className=" flex gap-[10px]">
-                        {value === 0 ? (
-                          <Button
-                            style={{ color: "black" }}
-                            onClick={showModalRating}
-                            className="text-[20px] border border-[#309255]"
-                          >
-                            <FaRankingStar />
-                          </Button>
-                        ) : (
-                          <Tooltip title="You have already rated this course !">
+                {/* <ArrowLeftOutlined onClick={handlePushCourse} /> */}
+                <Quiz
+                  idCourse={idCourse}
+                  setScore={setScore}
+                  setIsTestOpen={setIsTestOpen}
+                />
+              </>
+            ) : (
+              <div className="grid cols-2 lg:grid-cols-12 mt-[40px] gap-5">
+                <div className="lg:col-span-8">
+                  {!videoSrc && (
+                    <img
+                      src={courses?.imageUrl}
+                      className="w-full object-cover h-[438px]"
+                    />
+                  )}
+                  {videoSrc && (
+                    <>
+                      {pdf === 1 ? (
+                        <video
+                          width="full"
+                          height="full"
+                          controls
+                          id="courseVideo"
+                          ref={videoRef}
+                          onSeeked={handleOnSeek}
+                          onTimeUpdate={handleOnTimeUpdate}
+                          onProgress={handleOnProgress}
+                          controlsList="nodownload"
+                        >
+                          <source src={videoSrc} type="video/mp4" />
+                        </video>
+                      ) : (
+                        <iframe
+                          title="PDF Viewer"
+                          width="100%"
+                          height="438px"
+                          src={videoSrc}
+                          aria-readonly
+                        ></iframe>
+                      )}
+                    </>
+                  )}
+                  <div>
+                    <div className="">
+                      <div className="flex justify-between mt-2.5 items-center">
+                        <h2 className="text-[25px] leading-normal text-[#212832] font-medium ">
+                          {activeVideoIndex === 0
+                            ? testVideo[activeVideoIndex].title
+                            : courses?.name}
+                        </h2>
+                        <div className=" flex gap-[10px]">
+                          {value === 0 ? (
                             <Button
-                              disabled
-                              style={{
-                                color: "black",
-                              }}
+                              style={{ color: "black" }}
                               onClick={showModalRating}
+                              className="text-[20px] border border-[#309255]"
                             >
                               <FaRankingStar />
                             </Button>
-                          </Tooltip>
-                        )}
+                          ) : (
+                            <Tooltip title="You have already rated this course !">
+                              <Button
+                                disabled
+                                style={{
+                                  color: "black",
+                                }}
+                                onClick={showModalRating}
+                              >
+                                <FaRankingStar />
+                              </Button>
+                            </Tooltip>
+                          )}
 
-                        <Button
-                          onClick={showModal}
-                          style={{
-                            color: "black",
-                          }}
-                          className="border border-red-500"
-                        >
-                          <BsFillFlagFill />
-                        </Button>
-                      </div>
-
-                      <Modal
-                        destroyOnClose={true}
-                        title={`Rating ${courses?.name} by ${user?.displayName}`}
-                        open={modalRating}
-                        onCancel={handleCancel}
-                        footer={false}
-                      >
-                        <Form
-                          autoComplete="off"
-                          form={form}
-                          labelCol={{ span: 4 }}
-                          wrapperCol={{ span: 14 }}
-                          layout="horizontal"
-                          className="mt-5"
-                          style={{ width: 600 }}
-                          onFinish={handleSubmit}
-                        >
-                          <span className="flex pl-[140px] pb-5">
-                            <Rate
-                              tooltips={desc}
-                              onChange={handleRateChange}
-                              value={value}
-                            />
-                          </span>
-                          <Form.Item label="Description" name="description">
-                            <Input.TextArea rows={3} />
-                          </Form.Item>
-                          <Space className="justify-end w-full pr-[150px]">
-                            <Form.Item className="mb-0">
-                              <Space>
-                                <Button onClick={handleCancel}>Cancel</Button>
-                                <Button
-                                  type="primary"
-                                  htmlType="submit"
-                                  style={{ color: "black" }}
-                                >
-                                  Rating
-                                </Button>
-                              </Space>
-                            </Form.Item>
-                          </Space>
-                        </Form>
-                      </Modal>
-                      <Modal
-                        destroyOnClose={true}
-                        title={`Report ${courses?.name} by ${user?.displayName}`}
-                        open={isModalOpen}
-                        onCancel={handleCancel}
-                        footer={false}
-                      >
-                        <Form
-                          autoComplete="off"
-                          form={form}
-                          labelCol={{ span: 4 }}
-                          wrapperCol={{ span: 14 }}
-                          layout="horizontal"
-                          className="mt-5"
-                          style={{ width: 600 }}
-                          onFinish={handleOk}
-                        >
-                          <Form.Item label="Reason">
-                            <Select onChange={handleChangeReason}>
-                              {Reasons.map((option) => {
-                                return (
-                                  <Option key={option.id} value={option.name}>
-                                    {option.name}
-                                  </Option>
-                                );
-                              })}
-                            </Select>
-                          </Form.Item>
-                          <Form.Item label="Comment" name="comment">
-                            <Input.TextArea rows={4} />
-                          </Form.Item>
-                          <Form.Item
-                            label="Capture"
-                            getValueFromEvent={normFile}
+                          <Button
+                            onClick={showModal}
+                            style={{
+                              color: "black",
+                            }}
+                            className="border border-red-500"
                           >
-                            <Upload
-                              accept="image/png, image/jpeg"
-                              onChange={handleChange}
-                              beforeUpload={beforeUpload}
-                              // headers={{ Authorization: authorization }}
-                              action="https://learnconnectapifpt.azurewebsites.net/api/Upload/image"
-                              listType="picture-card"
-                            >
-                              Upload
-                            </Upload>
-                          </Form.Item>
-                          <Space className="justify-end w-full pr-[150px]">
-                            <Form.Item className="mb-0">
-                              <Space>
-                                <Button onClick={handleCancel}>Cancel</Button>
-                                <Button
-                                  type="primary"
-                                  htmlType="submit"
-                                  style={{ color: "black" }}
-                                >
-                                  Report
-                                </Button>
-                              </Space>
-                            </Form.Item>
-                          </Space>
-                        </Form>
-                      </Modal>
-                    </div>
-                    <div className="flex text-center items-center pt-[10px]">
-                      <div className="author-thumb">
-                        <a href="#">
-                          <img
-                            className="rounded-full w-[50px] h-[50px]"
-                            src={courses?.mentorProfilePictureUrl}
-                            alt="Author"
-                            onClick={handlePushMentor}
-                          />
-                        </a>
-                      </div>
-                      <div className="pl-3">
-                        <button
-                          className="text-[#52565b] hover:text-[#309255] font-medium z-10"
-                          onClick={handlePushMentor}
-                        >
-                          {/* {mentorName} */}
-                          {courses?.mentorName}
-                        </button>
-                      </div>
-                    </div>
-                    {activeVideoIndex + 1 !== 0 ? (
-                      <div className="w-full mx-auto mb-3 shadow-lg rounded-lg">
-                        <div className="flex justify-center bg-[#e7f8ee] p-3 rounded-lg mt-5">
-                          <ul className="tabs flex space-x-5">
-                            <li
-                              className={`cursor-pointer rounded-md ${
-                                activeTab === "tab1"
-                                  ? " text-[#fff] bg-[#309255]"
-                                  : "bg-[#fff] "
-                              }`}
-                              onClick={() =>
-                                handleTabClickComment("tab1", "course")
-                              }
-                            >
-                              <button className="w-28 h-14 px-[15px] text-center text-sm font-medium  rounded-md hover:text-[#fff] hover:bg-[#309255]">
-                                Description
-                              </button>
-                            </li>
-                            <li
-                              className={`cursor-pointer rounded-md ${
-                                activeTab === "tab2"
-                                  ? " text-[#fff] bg-[#309255]"
-                                  : "bg-[#fff] "
-                              }`}
-                              onClick={() =>
-                                handleTabClickComment("tab2", "mentor")
-                              }
-                            >
-                              <button className="w-28 h-14 px-[15px] text-center text-sm font-medium  border-opacity-20 rounded-md hover:border-[#309255] hover:text-[#fff] hover:bg-[#309255]">
-                                Comment
-                              </button>
-                            </li>
-                          </ul>
+                            <BsFillFlagFill />
+                          </Button>
                         </div>
-                        <div className="faq-wrapper">
-                          {activeTab === "tab1" && (
-                            <div className="single-faq-item">
-                              <div className="grid cols-2 lg:grid-cols-12 border-[#dff0e6] border border-solid rounded-lg px-[70px] pb-[35px] mt-5">
-                                <div className="lg:col-span-12">
-                                  <div key={activeVideoIndex}>
-                                    <p className="mt-3.5 text-[#52565b] text-base font-normal">
-                                      {testVideo[activeVideoIndex]?.content}
-                                    </p>
+
+                        <Modal
+                          destroyOnClose={true}
+                          title={`Rating ${courses?.name} by ${user?.displayName}`}
+                          open={modalRating}
+                          onCancel={handleCancel}
+                          footer={false}
+                        >
+                          <Form
+                            autoComplete="off"
+                            form={form}
+                            labelCol={{ span: 4 }}
+                            wrapperCol={{ span: 14 }}
+                            layout="horizontal"
+                            className="mt-5"
+                            style={{ width: 600 }}
+                            onFinish={handleSubmit}
+                          >
+                            <span className="flex pl-[140px] pb-5">
+                              <Rate
+                                tooltips={desc}
+                                onChange={handleRateChange}
+                                value={value}
+                              />
+                            </span>
+                            <Form.Item label="Description" name="description">
+                              <Input.TextArea rows={3} />
+                            </Form.Item>
+                            <Space className="justify-end w-full pr-[150px]">
+                              <Form.Item className="mb-0">
+                                <Space>
+                                  <Button onClick={handleCancel}>Cancel</Button>
+                                  <Button
+                                    type="primary"
+                                    htmlType="submit"
+                                    style={{ color: "black" }}
+                                  >
+                                    Rating
+                                  </Button>
+                                </Space>
+                              </Form.Item>
+                            </Space>
+                          </Form>
+                        </Modal>
+                        <Modal
+                          destroyOnClose={true}
+                          title={`Report ${courses?.name} by ${user?.displayName}`}
+                          open={isModalOpen}
+                          onCancel={handleCancel}
+                          footer={false}
+                        >
+                          <Form
+                            autoComplete="off"
+                            form={form}
+                            labelCol={{ span: 4 }}
+                            wrapperCol={{ span: 14 }}
+                            layout="horizontal"
+                            className="mt-5"
+                            style={{ width: 600 }}
+                            onFinish={handleOk}
+                          >
+                            <Form.Item label="Reason">
+                              <Select onChange={handleChangeReason}>
+                                {Reasons.map((option) => {
+                                  return (
+                                    <Option key={option.id} value={option.name}>
+                                      {option.name}
+                                    </Option>
+                                  );
+                                })}
+                              </Select>
+                            </Form.Item>
+                            <Form.Item label="Comment" name="comment">
+                              <Input.TextArea rows={4} />
+                            </Form.Item>
+                            <Form.Item
+                              label="Capture"
+                              getValueFromEvent={normFile}
+                            >
+                              <Upload
+                                accept="image/png, image/jpeg"
+                                onChange={handleChange}
+                                beforeUpload={beforeUpload}
+                                // headers={{ Authorization: authorization }}
+                                action="https://learnconnectapifpt.azurewebsites.net/api/Upload/image"
+                                listType="picture-card"
+                              >
+                                Upload
+                              </Upload>
+                            </Form.Item>
+                            <Space className="justify-end w-full pr-[150px]">
+                              <Form.Item className="mb-0">
+                                <Space>
+                                  <Button onClick={handleCancel}>Cancel</Button>
+                                  <Button
+                                    type="primary"
+                                    htmlType="submit"
+                                    style={{ color: "black" }}
+                                  >
+                                    Report
+                                  </Button>
+                                </Space>
+                              </Form.Item>
+                            </Space>
+                          </Form>
+                        </Modal>
+                      </div>
+                      <div className="flex text-center items-center pt-[10px]">
+                        <div className="author-thumb">
+                          <a href="#">
+                            <img
+                              className="rounded-full w-[50px] h-[50px]"
+                              src={courses?.mentorProfilePictureUrl}
+                              alt="Author"
+                              onClick={handlePushMentor}
+                            />
+                          </a>
+                        </div>
+                        <div className="pl-3">
+                          <button
+                            className="text-[#52565b] hover:text-[#309255] font-medium z-10"
+                            onClick={handlePushMentor}
+                          >
+                            {/* {mentorName} */}
+                            {courses?.mentorName}
+                          </button>
+                        </div>
+                      </div>
+                      {activeVideoIndex + 1 !== 0 ? (
+                        <div className="w-full mx-auto mb-3 shadow-lg rounded-lg">
+                          <div className="flex justify-center bg-[#e7f8ee] p-3 rounded-lg mt-5">
+                            <ul className="tabs flex space-x-5">
+                              <li
+                                className={`cursor-pointer rounded-md ${
+                                  activeTab === "tab1"
+                                    ? " text-[#fff] bg-[#309255]"
+                                    : "bg-[#fff] "
+                                }`}
+                                onClick={() =>
+                                  handleTabClickComment("tab1", "course")
+                                }
+                              >
+                                <button className="w-28 h-14 px-[15px] text-center text-sm font-medium  rounded-md hover:text-[#fff] hover:bg-[#309255]">
+                                  Description
+                                </button>
+                              </li>
+                              <li
+                                className={`cursor-pointer rounded-md ${
+                                  activeTab === "tab2"
+                                    ? " text-[#fff] bg-[#309255]"
+                                    : "bg-[#fff] "
+                                }`}
+                                onClick={() =>
+                                  handleTabClickComment("tab2", "mentor")
+                                }
+                              >
+                                <button className="w-28 h-14 px-[15px] text-center text-sm font-medium  border-opacity-20 rounded-md hover:border-[#309255] hover:text-[#fff] hover:bg-[#309255]">
+                                  Comment
+                                </button>
+                              </li>
+                            </ul>
+                          </div>
+                          <div className="faq-wrapper">
+                            {activeTab === "tab1" && (
+                              <div className="single-faq-item">
+                                <div className="grid cols-2 lg:grid-cols-12 border-[#dff0e6] border border-solid rounded-lg px-[70px] pb-[35px] mt-5">
+                                  <div className="lg:col-span-12">
+                                    <div key={activeVideoIndex}>
+                                      <p className="mt-3.5 text-[#52565b] text-base font-normal">
+                                        {testVideo[activeVideoIndex]?.content}
+                                      </p>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
-                            </div>
-                          )}
-                          {activeTab === "tab2" && (
-                            <div className="">
-                              <div className="py-7 px-5">
-                                <div className="flex">
-                                  <img
-                                    alt="CommentImg"
-                                    src={userData?.profilePictureUrl}
-                                    className="w-[70px] h-[70px] rounded-full"
-                                  />
-                                  <div className="my-auto pl-5 w-full">
-                                    <TextArea
-                                      placeholder="Post Comment"
-                                      autoSize={{ minRows: 7, maxRows: 15 }}
-                                      className="w-full"
-                                      value={commentText}
-                                      onChange={(e) =>
-                                        setCommentText(e.target.value)
-                                      }
+                            )}
+                            {activeTab === "tab2" && (
+                              <div className="">
+                                <div className="py-7 px-5">
+                                  <div className="flex">
+                                    <img
+                                      alt="CommentImg"
+                                      src={userData?.profilePictureUrl}
+                                      className="w-[70px] h-[70px] rounded-full"
                                     />
+                                    <div className="my-auto pl-5 w-full">
+                                      <TextArea
+                                        placeholder="Post Comment"
+                                        autoSize={{ minRows: 7, maxRows: 15 }}
+                                        className="w-full"
+                                        value={commentText}
+                                        onChange={(e) =>
+                                          setCommentText(e.target.value)
+                                        }
+                                      />
+                                    </div>
                                   </div>
-                                </div>
-                                <div className="pt-5 flex justify-end">
-                                  {/* <button
+                                  <div className="pt-5 flex justify-end">
+                                    {/* <button
                                     className="border border-[#309255] px-[35px] mx-1 py-2 rounded-lg hover:border-red-500"
                                     onClick={() => {
                                       setCommentText("");
@@ -973,479 +987,496 @@ export default function AfterEnroll({ params }: any) {
                                   >
                                     Cancel
                                   </button> */}
-                                  <button
-                                    className="border border-[#309255] px-[35px] mx-1 py-2 rounded-lg text-[#309255] hover:bg-[#309255] hover:text-[#fff]"
-                                    onClick={() => submitComment()}
-                                  >
-                                    Submit
-                                  </button>
+                                    <button
+                                      className="border border-[#309255] px-[35px] mx-1 py-2 rounded-lg text-[#309255] hover:bg-[#309255] hover:text-[#fff]"
+                                      onClick={() => submitComment()}
+                                    >
+                                      Submit
+                                    </button>
+                                  </div>
                                 </div>
-                              </div>
-                              {comment &&
-                                comment.map((item, index) => (
-                                  <div
-                                    className="py-7 px-5 border-t border-[#30925533]"
-                                    key={index}
-                                  >
-                                    <div className="flex">
-                                      <img
-                                        alt="CommentImg"
-                                        src={item?.user.userImage}
-                                        className="w-[70px] h-[70px] rounded-full"
-                                      />
-                                      <div className="my-auto pl-5">
-                                        <p className="font-bold text-xl">
-                                          {item?.user.userName}
-                                        </p>
-                                        <p className="font-light text-[#8e9298]">
-                                          {moment(
-                                            item?.comment.commentTime
-                                          ).format("DD/MM/YYYY HH:mm:ss")}
-                                        </p>
-                                      </div>
+                                {comment &&
+                                  comment.map((item, index) => (
+                                    <div
+                                      className="py-7 px-5 border-t border-[#30925533]"
+                                      key={index}
+                                    >
+                                      <div className="flex">
+                                        <img
+                                          alt="CommentImg"
+                                          src={item?.user.userImage}
+                                          className="w-[70px] h-[70px] rounded-full"
+                                        />
+                                        <div className="my-auto pl-5">
+                                          <p className="font-bold text-xl">
+                                            {item?.user.userName}
+                                          </p>
+                                          <p className="font-light text-[#8e9298]">
+                                            {moment(
+                                              item?.comment.commentTime
+                                            ).format("DD/MM/YYYY HH:mm:ss")}
+                                          </p>
+                                        </div>
 
-                                      <div className="flex ml-auto">
-                                        <button
-                                          className=" my-auto bg-[#d6e9dd] ml-auto px-5 max-h-[40px] flex item-center rounded-lg border border-[#30925533] w-full py-1 hover:text-[#fff] hover:bg-[#309255]"
-                                          onClick={() => {
-                                            AnswerMode(item.comment.id);
-                                          }}
-                                        >
-                                          <span className="my-auto pr-1">
-                                            <IoChatboxSharp />
-                                          </span>
-                                          Answer
-                                        </button>
-                                        {item?.user.userId === userData?.id && (
+                                        <div className="flex ml-auto">
                                           <button
-                                            className="w-full flex my-auto ml-2 border border-[#30925533] p-2 rounded-lg hover:text-[#000] hover:bg-[#30925533]"
+                                            className=" my-auto bg-[#d6e9dd] ml-auto px-5 max-h-[40px] flex item-center rounded-lg border border-[#30925533] w-full py-1 hover:text-[#fff] hover:bg-[#309255]"
                                             onClick={() => {
-                                              toggleDropdown(item?.comment.id);
+                                              AnswerMode(item.comment.id);
                                             }}
                                           >
-                                            <VscEllipsis />
-                                            {isDropdownOpen &&
-                                              item?.comment.id ===
-                                                idDropDown && (
-                                                <div
-                                                  id="dropdown-menu"
-                                                  className="modal-overlay absolute mt-[30px] z-50"
-                                                >
-                                                  <div className="bg-white border border-gray-300 rounded shadow-lg">
-                                                    <div className="p-2 text-black flex flex-col">
-                                                      <button
-                                                        className="px-3 py-2 mb-1 hover:bg-[#e7f8ee]"
-                                                        onClick={
-                                                          EditCommentMode
-                                                        }
-                                                      >
-                                                        Edit Comment
-                                                      </button>
-                                                      <button
-                                                        className="px-3 py-2 hover:bg-[#e7f8ee]"
-                                                        onClick={() => {
-                                                          // DeleteComment(
-                                                          //   item?.comment.id
-                                                          // );
-                                                          setIdDelete(
-                                                            item?.comment.id
-                                                          );
-                                                          setIsConfirmationModalOpen(
-                                                            true
-                                                          );
-                                                        }}
-                                                      >
-                                                        Delete Comment
-                                                      </button>
+                                            <span className="my-auto pr-1">
+                                              <IoChatboxSharp />
+                                            </span>
+                                            Answer
+                                          </button>
+                                          {item?.user.userId ===
+                                            userData?.id && (
+                                            <button
+                                              className="w-full flex my-auto ml-2 border border-[#30925533] p-2 rounded-lg hover:text-[#000] hover:bg-[#30925533]"
+                                              onClick={() => {
+                                                toggleDropdown(
+                                                  item?.comment.id
+                                                );
+                                              }}
+                                            >
+                                              <VscEllipsis />
+                                              {isDropdownOpen &&
+                                                item?.comment.id ===
+                                                  idDropDown && (
+                                                  <div
+                                                    id="dropdown-menu"
+                                                    className="modal-overlay absolute mt-[30px] z-50"
+                                                  >
+                                                    <div className="bg-white border border-gray-300 rounded shadow-lg">
+                                                      <div className="p-2 text-black flex flex-col">
+                                                        <button
+                                                          className="px-3 py-2 mb-1 hover:bg-[#e7f8ee]"
+                                                          onClick={
+                                                            EditCommentMode
+                                                          }
+                                                        >
+                                                          Edit Comment
+                                                        </button>
+                                                        <button
+                                                          className="px-3 py-2 hover:bg-[#e7f8ee]"
+                                                          onClick={() => {
+                                                            // DeleteComment(
+                                                            //   item?.comment.id
+                                                            // );
+                                                            setIdDelete(
+                                                              item?.comment.id
+                                                            );
+                                                            setIsConfirmationModalOpen(
+                                                              true
+                                                            );
+                                                          }}
+                                                        >
+                                                          Delete Comment
+                                                        </button>
+                                                      </div>
                                                     </div>
                                                   </div>
-                                                </div>
-                                              )}
-                                          </button>
-                                        )}
-                                      </div>
-                                    </div>
-                                    <div className="py-5">
-                                      {isEditing &&
-                                      item?.comment.id === idDropDown ? (
-                                        <div>
-                                          <TextArea
-                                            placeholder="Edit Comment"
-                                            autoSize={{
-                                              minRows: 7,
-                                              maxRows: 15,
-                                            }}
-                                            className="w-full"
-                                            defaultValue={
-                                              item?.comment.comment1
-                                            }
-                                            onChange={(e) =>
-                                              setEditText(e.target.value)
-                                            }
-                                          />
-                                          <div className="py-5 flex justify-end">
-                                            <button
-                                              className="border border-[#309255] px-[35px] mx-1 py-2 rounded-lg hover:border-red-500"
-                                              onClick={() => {
-                                                setIsEditing(false);
-                                              }}
-                                            >
-                                              Cancel
+                                                )}
                                             </button>
-                                            <button
-                                              className="border border-[#309255] px-[35px] mx-1 py-2 rounded-lg text-[#309255] hover:bg-[#309255] hover:text-[#fff]"
-                                              onClick={() => {
-                                                EditComment(item.comment);
-                                              }}
-                                            >
-                                              Save
-                                            </button>
-                                          </div>
+                                          )}
                                         </div>
-                                      ) : (
-                                        <p>{item?.comment.comment1}</p>
-                                      )}
-                                    </div>
-                                    {isAnswer &&
-                                      item?.comment.id === idDropDown && (
-                                        <div className="py-7 px-5 ml-[110px] border-t border-[#30925533]">
-                                          <div className="flex">
-                                            <img
-                                              alt="CommentImg"
-                                              src={userData?.profilePictureUrl}
-                                              className="w-[70px] h-[70px] rounded-full"
-                                            />
-                                            <div className="my-auto pl-5">
-                                              <p className="font-bold text-xl">
-                                                {userData?.fullName}
-                                              </p>
-                                            </div>
-                                          </div>
-                                          <div className="pt-5">
+                                      </div>
+                                      <div className="py-5">
+                                        {isEditing &&
+                                        item?.comment.id === idDropDown ? (
+                                          <div>
                                             <TextArea
-                                              placeholder="Post Comment"
+                                              placeholder="Edit Comment"
                                               autoSize={{
                                                 minRows: 7,
                                                 maxRows: 15,
                                               }}
                                               className="w-full"
-                                              value={replyComment}
-                                              // defaultValue={item?.comment.comment1}
+                                              defaultValue={
+                                                item?.comment.comment1
+                                              }
                                               onChange={(e) =>
-                                                setReplyComment(e.target.value)
+                                                setEditText(e.target.value)
                                               }
                                             />
-                                          </div>
-                                          <div className="pt-5 flex justify-end">
-                                            <button
-                                              className="border border-[#309255] px-[35px] mx-1 py-2 rounded-lg hover:border-red-500"
-                                              onClick={() => {
-                                                setIsAnswer(false);
-                                                setReplyComment("");
-                                              }}
-                                            >
-                                              Cancel
-                                            </button>
-                                            <button
-                                              className="border border-[#309255] px-[35px] mx-1 py-2 rounded-lg text-[#309255] hover:bg-[#309255] hover:text-[#fff]"
-                                              onClick={() => {
-                                                ReplyComment(item.comment.id);
-                                              }}
-                                            >
-                                              Reply
-                                            </button>
-                                          </div>
-                                        </div>
-                                      )}
-                                    {item.reply.map((replyItem, replyIndex) => (
-                                      <div
-                                        className="py-7 px-5 ml-[110px] border-t border-[#30925533]"
-                                        key={replyIndex}
-                                      >
-                                        <div className="flex">
-                                          <img
-                                            alt="CommentImg"
-                                            src={replyItem.user.userImage}
-                                            className="w-[70px] h-[70px] rounded-full"
-                                          />
-
-                                          <div className="my-auto pl-5">
-                                            {replyItem.user && (
-                                              <div>
-                                                <p className="font-bold text-xl">
-                                                  {replyItem.user.userName}
-                                                </p>
-                                                <p className="font-light text-[#8e9298]">
-                                                  {moment(
-                                                    replyItem?.comment
-                                                      .commentTime
-                                                  ).format(
-                                                    "DD/MM/YYYY HH:mm:ss"
-                                                  )}
-                                                </p>
-                                              </div>
-                                            )}
-                                          </div>
-                                          <div className="flex ml-auto">
-                                            {replyItem?.user.userId ===
-                                              userData?.id && (
+                                            <div className="py-5 flex justify-end">
                                               <button
-                                                className="w-full flex my-auto ml-2 border border-[#30925533] p-2 rounded-lg hover:text-[#000] hover:bg-[#30925533]"
+                                                className="border border-[#309255] px-[35px] mx-1 py-2 rounded-lg hover:border-red-500"
                                                 onClick={() => {
-                                                  toggleDropdown(
-                                                    replyItem?.comment.id
-                                                  );
+                                                  setIsEditing(false);
                                                 }}
                                               >
-                                                <VscEllipsis />
-                                                {isDropdownOpen &&
-                                                  replyItem?.comment.id ===
-                                                    idDropDown && (
-                                                    <div
-                                                      id="dropdown-menu"
-                                                      className="modal-overlay absolute mt-[30px] z-50"
-                                                    >
-                                                      <div className="bg-white border border-gray-300 rounded shadow-lg">
-                                                        <div className="p-2 text-black flex flex-col">
-                                                          <button
-                                                            className="px-3 py-2 mb-1 hover:bg-[#e7f8ee]"
-                                                            onClick={
-                                                              EditCommentMode
-                                                            }
-                                                          >
-                                                            Edit Comment
-                                                          </button>
-                                                          <button
-                                                            className="px-3 py-2 hover:bg-[#e7f8ee]"
-                                                            onClick={() => {
-                                                              // DeleteComment(
-                                                              //   replyItem
-                                                              //     ?.comment.id
-                                                              // );
-                                                              setIdDelete(
-                                                                replyItem
-                                                                  ?.comment.id
-                                                              );
-                                                              setIsConfirmationModalOpen(
-                                                                true
-                                                              );
-                                                            }}
-                                                          >
-                                                            Delete Comment
-                                                          </button>
-                                                        </div>
-                                                      </div>
-                                                    </div>
-                                                  )}
+                                                Cancel
                                               </button>
-                                            )}
+                                              <button
+                                                className="border border-[#309255] px-[35px] mx-1 py-2 rounded-lg text-[#309255] hover:bg-[#309255] hover:text-[#fff]"
+                                                onClick={() => {
+                                                  EditComment(item.comment);
+                                                }}
+                                              >
+                                                Save
+                                              </button>
+                                            </div>
                                           </div>
-                                        </div>
-                                        <div className="py-5">
-                                          {isEditing &&
-                                          replyItem?.comment.id ===
-                                            idDropDown ? (
-                                            <div>
+                                        ) : (
+                                          <p>{item?.comment.comment1}</p>
+                                        )}
+                                      </div>
+                                      {isAnswer &&
+                                        item?.comment.id === idDropDown && (
+                                          <div className="py-7 px-5 ml-[110px] border-t border-[#30925533]">
+                                            <div className="flex">
+                                              <img
+                                                alt="CommentImg"
+                                                src={
+                                                  userData?.profilePictureUrl
+                                                }
+                                                className="w-[70px] h-[70px] rounded-full"
+                                              />
+                                              <div className="my-auto pl-5">
+                                                <p className="font-bold text-xl">
+                                                  {userData?.fullName}
+                                                </p>
+                                              </div>
+                                            </div>
+                                            <div className="pt-5">
                                               <TextArea
-                                                placeholder="Edit Comment"
+                                                placeholder="Post Comment"
                                                 autoSize={{
                                                   minRows: 7,
                                                   maxRows: 15,
                                                 }}
                                                 className="w-full"
-                                                defaultValue={
-                                                  replyItem?.comment.comment1
-                                                }
+                                                value={replyComment}
+                                                // defaultValue={item?.comment.comment1}
                                                 onChange={(e) =>
-                                                  setEditText(e.target.value)
+                                                  setReplyComment(
+                                                    e.target.value
+                                                  )
                                                 }
                                               />
-                                              <div className="py-5 flex justify-end">
-                                                <button
-                                                  className="border border-[#309255] px-[35px] mx-1 py-2 rounded-lg hover:border-red-500"
-                                                  onClick={() => {
-                                                    setIsEditing(false);
-                                                  }}
-                                                >
-                                                  Cancel
-                                                </button>
-                                                <button
-                                                  className="border border-[#309255] px-[35px] mx-1 py-2 rounded-lg text-[#309255] hover:bg-[#309255] hover:text-[#fff]"
-                                                  onClick={() => {
-                                                    EditComment(
-                                                      replyItem.comment
-                                                    );
-                                                  }}
-                                                >
-                                                  Save
-                                                </button>
+                                            </div>
+                                            <div className="pt-5 flex justify-end">
+                                              <button
+                                                className="border border-[#309255] px-[35px] mx-1 py-2 rounded-lg hover:border-red-500"
+                                                onClick={() => {
+                                                  setIsAnswer(false);
+                                                  setReplyComment("");
+                                                }}
+                                              >
+                                                Cancel
+                                              </button>
+                                              <button
+                                                className="border border-[#309255] px-[35px] mx-1 py-2 rounded-lg text-[#309255] hover:bg-[#309255] hover:text-[#fff]"
+                                                onClick={() => {
+                                                  ReplyComment(item.comment.id);
+                                                }}
+                                              >
+                                                Reply
+                                              </button>
+                                            </div>
+                                          </div>
+                                        )}
+                                      {item.reply.map(
+                                        (replyItem, replyIndex) => (
+                                          <div
+                                            className="py-7 px-5 ml-[110px] border-t border-[#30925533]"
+                                            key={replyIndex}
+                                          >
+                                            <div className="flex">
+                                              <img
+                                                alt="CommentImg"
+                                                src={replyItem.user.userImage}
+                                                className="w-[70px] h-[70px] rounded-full"
+                                              />
+
+                                              <div className="my-auto pl-5">
+                                                {replyItem.user && (
+                                                  <div>
+                                                    <p className="font-bold text-xl">
+                                                      {replyItem.user.userName}
+                                                    </p>
+                                                    <p className="font-light text-[#8e9298]">
+                                                      {moment(
+                                                        replyItem?.comment
+                                                          .commentTime
+                                                      ).format(
+                                                        "DD/MM/YYYY HH:mm:ss"
+                                                      )}
+                                                    </p>
+                                                  </div>
+                                                )}
+                                              </div>
+                                              <div className="flex ml-auto">
+                                                {replyItem?.user.userId ===
+                                                  userData?.id && (
+                                                  <button
+                                                    className="w-full flex my-auto ml-2 border border-[#30925533] p-2 rounded-lg hover:text-[#000] hover:bg-[#30925533]"
+                                                    onClick={() => {
+                                                      toggleDropdown(
+                                                        replyItem?.comment.id
+                                                      );
+                                                    }}
+                                                  >
+                                                    <VscEllipsis />
+                                                    {isDropdownOpen &&
+                                                      replyItem?.comment.id ===
+                                                        idDropDown && (
+                                                        <div
+                                                          id="dropdown-menu"
+                                                          className="modal-overlay absolute mt-[30px] z-50"
+                                                        >
+                                                          <div className="bg-white border border-gray-300 rounded shadow-lg">
+                                                            <div className="p-2 text-black flex flex-col">
+                                                              <button
+                                                                className="px-3 py-2 mb-1 hover:bg-[#e7f8ee]"
+                                                                onClick={
+                                                                  EditCommentMode
+                                                                }
+                                                              >
+                                                                Edit Comment
+                                                              </button>
+                                                              <button
+                                                                className="px-3 py-2 hover:bg-[#e7f8ee]"
+                                                                onClick={() => {
+                                                                  // DeleteComment(
+                                                                  //   replyItem
+                                                                  //     ?.comment.id
+                                                                  // );
+                                                                  setIdDelete(
+                                                                    replyItem
+                                                                      ?.comment
+                                                                      .id
+                                                                  );
+                                                                  setIsConfirmationModalOpen(
+                                                                    true
+                                                                  );
+                                                                }}
+                                                              >
+                                                                Delete Comment
+                                                              </button>
+                                                            </div>
+                                                          </div>
+                                                        </div>
+                                                      )}
+                                                  </button>
+                                                )}
                                               </div>
                                             </div>
-                                          ) : (
-                                            <p> {replyItem.comment.comment1}</p>
-                                          )}
-                                        </div>
-                                      </div>
-                                    ))}
-                                  </div>
-                                ))}
-                              {/* <div className="border-t border-[#30925533]">
+                                            <div className="py-5">
+                                              {isEditing &&
+                                              replyItem?.comment.id ===
+                                                idDropDown ? (
+                                                <div>
+                                                  <TextArea
+                                                    placeholder="Edit Comment"
+                                                    autoSize={{
+                                                      minRows: 7,
+                                                      maxRows: 15,
+                                                    }}
+                                                    className="w-full"
+                                                    defaultValue={
+                                                      replyItem?.comment
+                                                        .comment1
+                                                    }
+                                                    onChange={(e) =>
+                                                      setEditText(
+                                                        e.target.value
+                                                      )
+                                                    }
+                                                  />
+                                                  <div className="py-5 flex justify-end">
+                                                    <button
+                                                      className="border border-[#309255] px-[35px] mx-1 py-2 rounded-lg hover:border-red-500"
+                                                      onClick={() => {
+                                                        setIsEditing(false);
+                                                      }}
+                                                    >
+                                                      Cancel
+                                                    </button>
+                                                    <button
+                                                      className="border border-[#309255] px-[35px] mx-1 py-2 rounded-lg text-[#309255] hover:bg-[#309255] hover:text-[#fff]"
+                                                      onClick={() => {
+                                                        EditComment(
+                                                          replyItem.comment
+                                                        );
+                                                      }}
+                                                    >
+                                                      Save
+                                                    </button>
+                                                  </div>
+                                                </div>
+                                              ) : (
+                                                <p>
+                                                  {" "}
+                                                  {replyItem.comment.comment1}
+                                                </p>
+                                              )}
+                                            </div>
+                                          </div>
+                                        )
+                                      )}
+                                    </div>
+                                  ))}
+                                {/* <div className="border-t border-[#30925533]">
                                 <div className="py-7 px-5  mt-8">
                                   <button className="text-[18px] text-[#309255] border border-[#309255] w-full py-2 rounded-lg hover:text-[#fff] hover:bg-[#309255] bg-[#d6e9dd] ">
                                     Load more 22 answer
                                   </button>
                                 </div>
                               </div> */}
-                              <Modal
-                                destroyOnClose={true}
-                                title={
-                                  <div className="text-lg">
-                                    Are you sure to delete this comment
-                                  </div>
-                                }
-                                open={isConfirmationModalOpen}
-                                width="35%"
-                                onCancel={handleCancel}
-                                footer={false}
-                                style={{
-                                  top: "30%",
-                                }}
-                              >
-                                <Form
-                                  autoComplete="off"
-                                  form={form}
-                                  labelCol={{ span: 4 }}
-                                  wrapperCol={{ span: 16 }}
-                                  layout="horizontal"
-                                  className="mt-5"
-                                  style={{ width: "100%" }}
-                                  onFinish={() => {
-                                    DeleteComment(idDelete);
-                                    setIsConfirmationModalOpen(false);
-                                    setIdDelete(0);
+                                <Modal
+                                  destroyOnClose={true}
+                                  title={
+                                    <div className="text-lg">
+                                      Are you sure to delete this comment
+                                    </div>
+                                  }
+                                  open={isConfirmationModalOpen}
+                                  width="35%"
+                                  onCancel={handleCancel}
+                                  footer={false}
+                                  style={{
+                                    top: "30%",
                                   }}
                                 >
-                                  <Space className="justify-end w-full">
-                                    <Form.Item className="mb-0">
-                                      <Space>
-                                        <Button
-                                          className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
-                                          onClick={handleCancel}
-                                          style={{
-                                            border: "2px solid #E0E0E0",
-                                            color: "black",
-                                          }}
-                                        >
-                                          Cancel
-                                        </Button>
-                                        <Button
-                                          className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
-                                          htmlType="submit"
-                                          style={{
-                                            border: "2px solid #4caf50",
-                                            color: "#fff",
-                                          }}
-                                        >
-                                          Confirm
-                                        </Button>
-                                      </Space>
-                                    </Form.Item>
-                                  </Space>
-                                </Form>
-                              </Modal>
-                            </div>
-                          )}
+                                  <Form
+                                    autoComplete="off"
+                                    form={form}
+                                    labelCol={{ span: 4 }}
+                                    wrapperCol={{ span: 16 }}
+                                    layout="horizontal"
+                                    className="mt-5"
+                                    style={{ width: "100%" }}
+                                    onFinish={() => {
+                                      DeleteComment(idDelete);
+                                      setIsConfirmationModalOpen(false);
+                                      setIdDelete(0);
+                                    }}
+                                  >
+                                    <Space className="justify-end w-full">
+                                      <Form.Item className="mb-0">
+                                        <Space>
+                                          <Button
+                                            className="bg-white min-w-[60px] text-black border  hover:bg-gray-200 hover:text-black transition duration-300 px-2 py-1"
+                                            onClick={handleCancel}
+                                            style={{
+                                              border: "2px solid #E0E0E0",
+                                              color: "black",
+                                            }}
+                                          >
+                                            Cancel
+                                          </Button>
+                                          <Button
+                                            className="hover:bg-[#67b46a] border border-[#4caf50] bg-[#4caf50] text-white transition duration-300 px-2 py-1"
+                                            htmlType="submit"
+                                            style={{
+                                              border: "2px solid #4caf50",
+                                              color: "#fff",
+                                            }}
+                                          >
+                                            Confirm
+                                          </Button>
+                                        </Space>
+                                      </Form.Item>
+                                    </Space>
+                                  </Form>
+                                </Modal>
+                              </div>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    ) : (
-                      <div>
-                        <div className="flex justify-center bg-[#e7f8ee] p-3 rounded-lg mt-5">
-                          <ul className="tabs flex space-x-5">
-                            <li
-                              className={`cursor-pointer rounded-md ${
-                                activeTab === "tab1"
-                                  ? " text-[#fff] bg-[#309255]"
-                                  : "bg-[#fff] "
-                              }`}
-                              onClick={() => handleTabClick("tab1")}
-                            >
-                              <button className="w-28 h-14 px-[15px] text-center text-sm font-medium  rounded-md hover:text-[#fff] hover:bg-[#309255]">
-                                Overview
-                              </button>
-                            </li>
-                            <li
-                              className={`cursor-pointer rounded-md ${
-                                activeTab === "tab2"
-                                  ? " text-[#fff] bg-[#309255]"
-                                  : "bg-[#fff] "
-                              }`}
-                              onClick={() => handleTabClick("tab2")}
-                            >
-                              <button className="w-28 h-14 px-[15px] text-center text-sm font-medium  border-opacity-20 rounded-md hover:border-[#309255] hover:text-[#fff] hover:bg-[#309255]">
-                                Lectures
-                              </button>
-                            </li>
-                          </ul>
-                        </div>
-                        {activeTab === "tab1" && (
-                          <div className="w-full mx-auto mb-3">
-                            <div className="faq-wrapper">
-                              <div className="single-faq-item">
-                                <div className="grid cols-2 lg:grid-cols-12 border-[#dff0e6] border border-solid rounded-lg px-[70px] pb-[35px] mt-5">
-                                  <div className="lg:col-span-12">
-                                    <div className="text-[15px] font-medium mt-[25px] px-[15px]">
-                                      <p className="mb-4 leading-loose">
-                                        {courses?.description}{" "}
-                                      </p>
-                                      <div className="flex flex-col">
-                                        <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
-                                          <div className="inline-block min-w-full sm:px-6 lg:px-8">
-                                            <div className="overflow-hidden">
-                                              <table className="min-w-full text-left text-sm font-light">
-                                                <tbody>
-                                                  <tr className="border-b border-b-[#e7f8ee]">
-                                                    <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-medium">
-                                                      Mentor
-                                                    </td>
-                                                    <td className="whitespace-nowrap px-6 py-4">
-                                                      :
-                                                    </td>
-                                                    <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-normal">
-                                                      {/* {courses.} */}
-                                                      {courses?.mentorName}
-                                                    </td>
-                                                  </tr>
-                                                  <tr className="border-b border-b-[#e7f8ee]">
-                                                    <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-medium">
-                                                      Duration
-                                                    </td>
-                                                    <td className="whitespace-nowrap px-6 py-4">
-                                                      :
-                                                    </td>
-                                                    <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-normal">
-                                                      {courses?.contentLength}{" "}
-                                                      <span>
-                                                        {courses?.contentLength &&
-                                                        courses.contentLength <=
-                                                          1
-                                                          ? "minute"
-                                                          : "minutes"}
-                                                      </span>
-                                                    </td>
-                                                  </tr>
-                                                  <tr className="border-b border-b-[#e7f8ee]">
-                                                    <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-medium">
-                                                      Lectures
-                                                    </td>
-                                                    <td className="whitespace-nowrap px-6 py-4">
-                                                      :
-                                                    </td>
-                                                    <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-normal">
-                                                      {courses?.lectureCount}
-                                                    </td>
-                                                  </tr>
-                                                </tbody>
-                                              </table>
+                      ) : (
+                        <div>
+                          <div className="flex justify-center bg-[#e7f8ee] p-3 rounded-lg mt-5">
+                            <ul className="tabs flex space-x-5">
+                              <li
+                                className={`cursor-pointer rounded-md ${
+                                  activeTab === "tab1"
+                                    ? " text-[#fff] bg-[#309255]"
+                                    : "bg-[#fff] "
+                                }`}
+                                onClick={() => handleTabClick("tab1")}
+                              >
+                                <button className="w-28 h-14 px-[15px] text-center text-sm font-medium  rounded-md hover:text-[#fff] hover:bg-[#309255]">
+                                  Overview
+                                </button>
+                              </li>
+                              <li
+                                className={`cursor-pointer rounded-md ${
+                                  activeTab === "tab2"
+                                    ? " text-[#fff] bg-[#309255]"
+                                    : "bg-[#fff] "
+                                }`}
+                                onClick={() => handleTabClick("tab2")}
+                              >
+                                <button className="w-28 h-14 px-[15px] text-center text-sm font-medium  border-opacity-20 rounded-md hover:border-[#309255] hover:text-[#fff] hover:bg-[#309255]">
+                                  Lectures
+                                </button>
+                              </li>
+                            </ul>
+                          </div>
+                          {activeTab === "tab1" && (
+                            <div className="w-full mx-auto mb-3">
+                              <div className="faq-wrapper">
+                                <div className="single-faq-item">
+                                  <div className="grid cols-2 lg:grid-cols-12 border-[#dff0e6] border border-solid rounded-lg px-[70px] pb-[35px] mt-5">
+                                    <div className="lg:col-span-12">
+                                      <div className="text-[15px] font-medium mt-[25px] px-[15px]">
+                                        <p className="mb-4 leading-loose">
+                                          {courses?.description}{" "}
+                                        </p>
+                                        <div className="flex flex-col">
+                                          <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
+                                            <div className="inline-block min-w-full sm:px-6 lg:px-8">
+                                              <div className="overflow-hidden">
+                                                <table className="min-w-full text-left text-sm font-light">
+                                                  <tbody>
+                                                    <tr className="border-b border-b-[#e7f8ee]">
+                                                      <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-medium">
+                                                        Mentor
+                                                      </td>
+                                                      <td className="whitespace-nowrap px-6 py-4">
+                                                        :
+                                                      </td>
+                                                      <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-normal">
+                                                        {/* {courses.} */}
+                                                        {courses?.mentorName}
+                                                      </td>
+                                                    </tr>
+                                                    <tr className="border-b border-b-[#e7f8ee]">
+                                                      <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-medium">
+                                                        Duration
+                                                      </td>
+                                                      <td className="whitespace-nowrap px-6 py-4">
+                                                        :
+                                                      </td>
+                                                      <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-normal">
+                                                        {courses?.contentLength}{" "}
+                                                        <span>
+                                                          {courses?.contentLength &&
+                                                          courses.contentLength <=
+                                                            1
+                                                            ? "minute"
+                                                            : "minutes"}
+                                                        </span>
+                                                      </td>
+                                                    </tr>
+                                                    <tr className="border-b border-b-[#e7f8ee]">
+                                                      <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-medium">
+                                                        Lectures
+                                                      </td>
+                                                      <td className="whitespace-nowrap px-6 py-4">
+                                                        :
+                                                      </td>
+                                                      <td className="whitespace-nowrap px-6 py-4 text-[#212832] text-[15px] font-normal">
+                                                        {courses?.lectureCount}
+                                                      </td>
+                                                    </tr>
+                                                  </tbody>
+                                                </table>
+                                              </div>
                                             </div>
                                           </div>
                                         </div>
@@ -1455,131 +1486,133 @@ export default function AfterEnroll({ params }: any) {
                                 </div>
                               </div>
                             </div>
-                          </div>
-                        )}
-                        {activeTab === "tab2" && (
-                          <div className="w-full mx-auto mb-3">
-                            <div className="faq-wrapper">
-                              <div className="single-faq-item">
-                                <div className="grid cols-2 lg:grid-cols-12 border-[#dff0e6] border border-solid rounded-lg px-[70px] pb-[35px] mt-5">
-                                  <div className="lg:col-span-12">
-                                    {testVideo &&
-                                      testVideo.map((item, index) => (
-                                        <div key={index}>
-                                          <p className="mt-5 font-bold">
-                                            Lecture {index + 1}: {item.title}
-                                          </p>
-                                          <p className="mt-3.5 text-[#52565b] text-base font-medium">
-                                            {item?.content}
-                                          </p>
-                                        </div>
-                                      ))}
+                          )}
+                          {activeTab === "tab2" && (
+                            <div className="w-full mx-auto mb-3">
+                              <div className="faq-wrapper">
+                                <div className="single-faq-item">
+                                  <div className="grid cols-2 lg:grid-cols-12 border-[#dff0e6] border border-solid rounded-lg px-[70px] pb-[35px] mt-5">
+                                    <div className="lg:col-span-12">
+                                      {testVideo &&
+                                        testVideo.map((item, index) => (
+                                          <div key={index}>
+                                            <p className="mt-5 font-bold">
+                                              Lecture {index + 1}: {item.title}
+                                            </p>
+                                            <p className="mt-3.5 text-[#52565b] text-base font-medium">
+                                              {item?.content}
+                                            </p>
+                                          </div>
+                                        ))}
+                                    </div>
                                   </div>
                                 </div>
                               </div>
                             </div>
-                          </div>
-                        )}
-                      </div>
-                    )}
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </>
-            )}
-          </div>
-
-          <div className="lg:col-span-4">
-            <div className="bg-[#dff0e6] px-[30px] pt-[15px] pb-[25px]">
-              <h3 className="text-[22px] mt-2.5">{courses?.name}</h3>
-              <span className="mt-2.5 text-[#309255] text-[18px]">
-                {courses?.lectureCount}{" "}
-                {courses?.lectureCount && courses.lectureCount <= 1
-                  ? "Lecture"
-                  : "Lectures"}{" "}
-                ({courses?.contentLength}{" "}
-                {courses?.contentLength && courses.contentLength <= 1
-                  ? "minute"
-                  : "minutes"}
-                )
-              </span>
-            </div>
-            <div className="video-playlist bg-[#eefbf3] text-black">
-              <div className="accordion" id="videoPlaylist">
-                <nav className="vids">
-                  {testVideo.map((item, index) => {
-                    return (
-                      <button
-                        key={item.id}
-                        className={`hover:bg-[#dff0e6] w-full text-left link ${
-                          activeVideoIndex === index
-                            ? "active text-[#309255]"
-                            : ""
-                        }`}
-                        onClick={() => {
-                          setMaxTime(0);
-                          changeVideoSource(item, index);
-                          setPDF(item.contentType);
-                          consoleLogLectureId(item.id);
-                        }}
-                      >
-                        <div className="flex">
-                          {index + 1 === learned && (
-                            <CircularProgressbar
-                              value={percentage}
-                              styles={buildStyles({
-                                rotation: 0,
-                                strokeLinecap: "butt",
-                                textSize: "25px",
-                                pathTransitionDuration: 0.5,
-                                pathColor: `#309255`,
-                                trailColor: "#d6d6d6",
-                                backgroundColor: "#309255",
-                              })}
-                              strokeWidth={20}
-                              className="w-[40px] h-[40px] pl-[10px] min-w-[40px]"
-                            />
-                          )}
-                          {index + 1 > learned && (
-                            <FaLock className="h-[20px] pl-[10px] text-gray-500 mt-[10px] min-w-[40px]" />
-                          )}
-                          {index + 1 < learned && (
-                            <FaCheck className="w-[40px] h-[20px] pl-[10px] text-[#309255] mt-[10px] min-w-[40px]" />
-                          )}
-
-                          <div className="py-2 pl-[10px] flex flex-row gap-3">
-                            <p className="flex-none h-[50px]">
-                              Lecture {index + 1}:
-                            </p>
-                            <p className="flex-auto"> {item.title}</p>
-                          </div>
-                        </div>
-                      </button>
-                    );
-                  })}
-                  {/* <div className="pl-10 py-2 pr-[30px] bg-[#dff0e6] flex">
-                    <p className=" py-1">
-                      Time Spent: {formatTime(timeSpent?.timeSpent)}
-                    </p>
-                  </div> */}
-                  <div className="pl-10 py-2 pr-[30px] bg-[#dff0e6] flex flex-end">
-                    <button
-                      className="border-2 border-[#309255] px-5 py-1 rounded-lg hover:bg-[#309255] active:bg-[#75c989] hover:text-white flex"
-                      onClick={handleClick}
-                    >
-                      {!(isComplete && testVideo.length + 1 === learned) && (
-                        <FaLock className="my-auto" />
-                      )}{" "}
-                      <span>Practice Test</span>
-                    </button>
-
-                    {/* <p className="ml-auto my-auto">Score: {score}</p> */}
+                <div className="lg:col-span-4">
+                  <div className="bg-[#dff0e6] px-[30px] pt-[15px] pb-[25px]">
+                    <h3 className="text-[22px] mt-2.5">{courses?.name}</h3>
+                    <span className="mt-2.5 text-[#309255] text-[18px]">
+                      {courses?.lectureCount}{" "}
+                      {courses?.lectureCount && courses.lectureCount <= 1
+                        ? "Lecture"
+                        : "Lectures"}{" "}
+                      ({courses?.contentLength}{" "}
+                      {courses?.contentLength && courses.contentLength <= 1
+                        ? "minute"
+                        : "minutes"}
+                      )
+                    </span>
                   </div>
-                </nav>
+                  <div className="video-playlist bg-[#eefbf3] text-black">
+                    <div className="accordion" id="videoPlaylist">
+                      <nav className="vids">
+                        {testVideo.map((item, index) => {
+                          return (
+                            <button
+                              key={item.id}
+                              className={`hover:bg-[#dff0e6] w-full text-left link ${
+                                activeVideoIndex === index
+                                  ? "active text-[#309255]"
+                                  : ""
+                              }`}
+                              onClick={() => {
+                                setMaxTime(0);
+                                changeVideoSource(item, index);
+                                setPDF(item.contentType);
+                                consoleLogLectureId(item.id);
+                              }}
+                            >
+                              <div className="flex">
+                                {index + 1 === learned && (
+                                  <CircularProgressbar
+                                    value={percentage}
+                                    styles={buildStyles({
+                                      rotation: 0,
+                                      strokeLinecap: "butt",
+                                      textSize: "25px",
+                                      pathTransitionDuration: 0.5,
+                                      pathColor: `#309255`,
+                                      trailColor: "#d6d6d6",
+                                      backgroundColor: "#309255",
+                                    })}
+                                    strokeWidth={20}
+                                    className="w-[40px] h-[40px] pl-[10px] min-w-[40px]"
+                                  />
+                                )}
+                                {index + 1 > learned && (
+                                  <FaLock className="h-[20px] pl-[10px] text-gray-500 mt-[10px] min-w-[40px]" />
+                                )}
+                                {index + 1 < learned && (
+                                  <FaCheck className="w-[40px] h-[20px] pl-[10px] text-[#309255] mt-[10px] min-w-[40px]" />
+                                )}
+
+                                <div className="py-2 pl-[10px] flex flex-row gap-3">
+                                  <p className="flex-none h-[50px]">
+                                    Lecture {index + 1}:
+                                  </p>
+                                  <p className="flex-auto"> {item.title}</p>
+                                </div>
+                              </div>
+                            </button>
+                          );
+                        })}
+                        <div className="pl-10 py-2 pr-[30px] bg-[#dff0e6] flex">
+                          <p className=" py-1">
+                            Time Spent:{" "}
+                            {timeSpent ? formatTime(timeSpent) : "-"}
+                          </p>
+                        </div>
+                        <div className="pl-10 py-2 pr-[30px] bg-[#dff0e6] flex flex-end">
+                          <button
+                            className="border-2 border-[#309255] px-5 py-1 rounded-lg hover:bg-[#309255] active:bg-[#75c989] hover:text-white flex"
+                            onClick={handleClick}
+                          >
+                            {!(
+                              isComplete && testVideo.length + 1 === learned
+                            ) && <FaLock className="my-auto" />}{" "}
+                            <span>Practice Test</span>
+                          </button>
+
+                          <p className="ml-auto my-auto">
+                            Score: {score ? score : "-"}
+                          </p>
+                        </div>
+                      </nav>
+                    </div>
+                  </div>
+                  <div className="video-playlist bg-[#eefbf3] text-black">
+                    <div className="accordion" id="videoPlaylist"></div>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div className="video-playlist bg-[#eefbf3] text-black">
-              <div className="accordion" id="videoPlaylist"></div>
-            </div>
+            )}
           </div>
         </div>
       </div>
